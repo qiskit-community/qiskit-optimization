@@ -2,7 +2,7 @@
 
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2019.
+# (C) Copyright IBM 2018, 2020.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,8 +12,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Optimization test packages """
+"""Optimization Test Case"""
 
-from .optimization_test_case import QiskitOptimizationTestCase
+from test import QiskitBaseTestCase
 
-__all__ = ['QiskitOptimizationTestCase']
+
+class QiskitOptimizationTestCase(QiskitBaseTestCase):
+    """Optimization Test Case"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self._class_location = __file__
