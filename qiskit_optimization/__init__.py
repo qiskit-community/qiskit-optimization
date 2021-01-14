@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,10 @@
 # that they have been altered from the originals.
 """
 =========================================================
-Qiskit's optimization module (:mod:`qiskit.optimization`)
+Qiskit's optimization module (:mod:`qiskit_optimization`)
 =========================================================
 
-.. currentmodule:: qiskit.optimization
+.. currentmodule:: qiskit_optimization
 
 Qiskit's optimization module covers the whole range from high-level modeling of optimization
 problems, with automatic conversion of problems to different required representations,
@@ -26,10 +26,10 @@ This module enables easy, efficient modeling of optimization problems using `doc
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm
-(:class:`~qiskit.aqua.algorithms.QAOA`), to
+(:class:`~qiskit.algorithms.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental :mod:`~qiskit.aqua.algorithms` provided by Qiskit Aqua. Furthermore, the modular design
+fundamental :mod:`~qiskit.algorithms` provided by Qiskit Aqua. Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.
@@ -82,15 +82,13 @@ Submodules
 
 """
 
+from .version import __version__
 from .infinity import INFINITY  # must be at the top of the file
 from .exceptions import QiskitOptimizationError
 from .problems.quadratic_program import QuadraticProgram
-from ._logging import (get_qiskit_optimization_logging,
-                       set_qiskit_optimization_logging)
 
-__all__ = ['QuadraticProgram',
+__all__ = ['__version__',
+           'QuadraticProgram',
            'QiskitOptimizationError',
-           'get_qiskit_optimization_logging',
-           'set_qiskit_optimization_logging',
            'INFINITY'
            ]

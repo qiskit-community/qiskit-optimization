@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,16 +14,17 @@
 
 import unittest
 from math import fsum, isclose
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 
 import retworkx as rx
 import numpy as np
 from docplex.mp.model import Model
 
-from qiskit.aqua import AquaError, aqua_globals
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
-from qiskit.optimization.applications.ising import docplex, tsp
-from qiskit.aqua.operators import I, Z
+from qiskit.utils import aqua_globals
+from qiskit.opflow import I, Z
+from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit_optimization import QiskitOptimizationError
+from qiskit_optimization.applications.ising import docplex, tsp
 
 # Reference operators and offsets for maxcut and tsp.
 QUBIT_OP_MAXCUT = 0.5 * ((I ^ I ^ Z ^ Z) + (I ^ Z ^ I ^ Z) + (I ^ Z ^ Z ^ I) + (Z ^ I ^ I ^ Z)
@@ -90,11 +91,11 @@ class TestDocplex(QiskitOptimizationTestCase):
         """ Validation Test """
         num_var = 3
         # validate an object type of the input.
-        with self.assertRaises(AquaError):
+        with self.assertRaises(QiskitOptimizationError):
             docplex._validate_input_model("Model")
 
         # validate the types of the variables are binary or not
-        with self.assertRaises(AquaError):
+        with self.assertRaises(QiskitOptimizationError):
             mdl = Model(name='Error_integer_variables')
             x = {i: mdl.integer_var(name='x_{0}'.format(i)) for i in range(num_var)}
             obj_func = mdl.sum(x[i] for i in range(num_var))
@@ -102,7 +103,7 @@ class TestDocplex(QiskitOptimizationTestCase):
             docplex.get_operator(mdl)
 
         # validate types of constraints are equality constraints or not.
-        with self.assertRaises(AquaError):
+        with self.assertRaises(QiskitOptimizationError):
             mdl = Model(name='Error_inequality_constraints')
             x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(num_var)}
             obj_func = mdl.sum(x[i] for i in range(num_var))
@@ -175,11 +176,11 @@ class TestDocplex(QiskitOptimizationTestCase):
         mdl.maximize(maxcut_func)
         qubit_op, offset = docplex.get_operator(mdl)
 
-        e_e = NumPyMinimumEigensolver(qubit_op)
-        result = e_e.run()
+        e_e = NumPyMinimumEigensolver()
+        result = e_e.compute_minimum_eigenvalue(operator=qubit_op)
 
-        ee_expected = NumPyMinimumEigensolver(QUBIT_OP_MAXCUT)
-        expected_result = ee_expected.run()
+        ee_expected = NumPyMinimumEigensolver()
+        expected_result = ee_expected.compute_minimum_eigenvalue(operator=QUBIT_OP_MAXCUT)
 
         # Compare objective
         self.assertAlmostEqual(result.eigenvalue.real + offset,
@@ -209,11 +210,11 @@ class TestDocplex(QiskitOptimizationTestCase):
             mdl.add_constraint(mdl.sum(x[(i, j)] for i in range(num_node)) == 1)
         qubit_op, offset = docplex.get_operator(mdl)
 
-        e_e = NumPyMinimumEigensolver(qubit_op)
-        result = e_e.run()
+        e_e = NumPyMinimumEigensolver()
+        result = e_e.compute_minimum_eigenvalue(operator=qubit_op)
 
-        ee_expected = NumPyMinimumEigensolver(QUBIT_OP_TSP)
-        expected_result = ee_expected.run()
+        ee_expected = NumPyMinimumEigensolver()
+        expected_result = ee_expected.compute_minimum_eigenvalue(operator=QUBIT_OP_TSP)
 
         # Compare objective
         self.assertAlmostEqual(result.eigenvalue.real + offset,
@@ -229,8 +230,8 @@ class TestDocplex(QiskitOptimizationTestCase):
         mdl.add_constraint(mdl.sum(i * x[i] for i in range(1, 5)) == 3)
         qubit_op, offset = docplex.get_operator(mdl)
 
-        e_e = NumPyMinimumEigensolver(qubit_op)
-        result = e_e.run()
+        e_e = NumPyMinimumEigensolver()
+        result = e_e.compute_minimum_eigenvalue(operator=qubit_op)
 
         expected_result = -2
 
@@ -258,8 +259,8 @@ class TestDocplex(QiskitOptimizationTestCase):
         mdl.minimize(ising_func)
         qubit_op, offset = docplex.get_operator(mdl)
 
-        e_e = NumPyMinimumEigensolver(qubit_op)
-        result = e_e.run()
+        e_e = NumPyMinimumEigensolver()
+        result = e_e.compute_minimum_eigenvalue(operator=qubit_op)
 
         expected_result = -22
 
@@ -276,12 +277,12 @@ class TestDocplex(QiskitOptimizationTestCase):
         mdl.add_constraint(x == y)
 
         qubit_op, offset = docplex.get_operator(mdl)
-        self.log.debug(qubit_op.print_details())
-        e_e = NumPyMinimumEigensolver(qubit_op)
-        result = e_e.run()
+        self.log.debug(qubit_op)
+        e_e = NumPyMinimumEigensolver()
+        result = e_e.compute_minimum_eigenvalue(operator=qubit_op)
 
-        self.assertEqual(result['eigenvalue'] + offset, -2)
-        actual_sol = result['eigenstate'].to_matrix().tolist()
+        self.assertEqual(result.eigenvalue.real + offset, -2)
+        actual_sol = result.eigenstate.to_matrix().tolist()
         self.assertListEqual(actual_sol, [0, 0, 0, 1])
 
 

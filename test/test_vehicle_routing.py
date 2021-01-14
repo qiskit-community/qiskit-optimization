@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,13 +13,13 @@
 """ Test Vehicle Routing """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 from qiskit.quantum_info import Pauli
-from qiskit.aqua import aqua_globals
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
-from qiskit.optimization.applications.ising.vehicle_routing import get_operator
+from qiskit.utils import aqua_globals
+from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit_optimization.applications.ising.vehicle_routing import get_operator
 
 
 # To run only this test, issue:
@@ -47,7 +47,9 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
                   (160.8, Pauli(z=[False, False], x=[False, False]))]
         # Could also consider op = Operator(paulis) and then __eq__, but
         # that would not use assert_approx_equal
-        for pauli_a, pauli_b in zip(self.qubit_op._paulis, paulis):
+        opflow_list = [(pauli[1], Pauli.from_label(pauli[0]))
+                       for pauli in self.qubit_op.primitive.to_list()]
+        for pauli_a, pauli_b in zip(opflow_list, paulis):
             cost_a, binary_a = pauli_a
             cost_b, binary_b = pauli_b
             # Note that the construction is a bit iffy, i.e.,
@@ -60,7 +62,7 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
     def test_simple2(self):
         """ simple2 test """
         # Solve the problem using the exact eigensolver
-        result = NumPyMinimumEigensolver(self.qubit_op).run()
+        result = NumPyMinimumEigensolver().compute_minimum_eigenvalue(operator=self.qubit_op)
         arr = np.array([0., 0., 0., 1.])
         np.testing.assert_array_almost_equal(arr, np.abs(result.eigenstate.to_matrix()) ** 2, 4)
 

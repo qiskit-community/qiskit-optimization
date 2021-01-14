@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,15 +13,15 @@
 """ Test Graph Partition """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.aqua import aqua_globals, QuantumInstance
-from qiskit.optimization.applications.ising import graph_partition
-from qiskit.optimization.applications.ising.common import random_graph, sample_most_likely
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver, VQE
-from qiskit.aqua.components.optimizers import SPSA
+from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.algorithms import NumPyMinimumEigensolver, VQE
+from qiskit.algorithms.optimizers import SPSA
+from qiskit_optimization.applications.ising import graph_partition
+from qiskit_optimization.applications.ising.common import random_graph, sample_most_likely
 
 
 class TestGraphPartition(QiskitOptimizationTestCase):
@@ -57,8 +57,8 @@ class TestGraphPartition(QiskitOptimizationTestCase):
 
     def test_graph_partition(self):
         """ Graph Partition test """
-        algo = NumPyMinimumEigensolver(self.qubit_op, aux_operators=[])
-        result = algo.run()
+        algo = NumPyMinimumEigensolver()
+        result = algo.compute_minimum_eigenvalue(operator=self.qubit_op, aux_operators=[])
         x = sample_most_likely(result.eigenstate)
         # check against the oracle
         ising_sol = graph_partition.get_graph_solution(x)
@@ -73,13 +73,13 @@ class TestGraphPartition(QiskitOptimizationTestCase):
         aqua_globals.random_seed = 10213
         wavefunction = RealAmplitudes(self.qubit_op.num_qubits, insert_barriers=True,
                                       reps=5, entanglement='linear')
-        result = VQE(self.qubit_op,
-                     wavefunction,
+        q_i = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
+                              seed_simulator=aqua_globals.random_seed,
+                              seed_transpiler=aqua_globals.random_seed)
+        result = VQE(wavefunction,
                      SPSA(maxiter=300),
-                     max_evals_grouped=2).run(
-                         QuantumInstance(BasicAer.get_backend('statevector_simulator'),
-                                         seed_simulator=aqua_globals.random_seed,
-                                         seed_transpiler=aqua_globals.random_seed))
+                     max_evals_grouped=2,
+                     quantum_instance=q_i).compute_minimum_eigenvalue(operator=self.qubit_op)
 
         x = sample_most_likely(result.eigenstate)
         # check against the oracle

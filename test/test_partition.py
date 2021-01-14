@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,15 +13,15 @@
 """ Test Partition """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.aqua import aqua_globals, QuantumInstance
-from qiskit.optimization.applications.ising import partition
-from qiskit.optimization.applications.ising.common import read_numbers_from_file, sample_most_likely
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver, VQE
-from qiskit.aqua.components.optimizers import SPSA
+from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.algorithms import NumPyMinimumEigensolver, VQE
+from qiskit.algorithms.optimizers import SPSA
+from qiskit_optimization.applications.ising import partition
+from qiskit_optimization.applications.ising.common import read_numbers_from_file, sample_most_likely
 
 
 class TestSetPacking(QiskitOptimizationTestCase):
@@ -35,8 +35,8 @@ class TestSetPacking(QiskitOptimizationTestCase):
 
     def test_partition(self):
         """ Partition test """
-        algo = NumPyMinimumEigensolver(self.qubit_op, aux_operators=[])
-        result = algo.run()
+        algo = NumPyMinimumEigensolver()
+        result = algo.compute_minimum_eigenvalue(operator=self.qubit_op, aux_operators=[])
         x = sample_most_likely(result.eigenstate)
         if x[0] != 0:
             x = np.logical_not(x) * 1
@@ -45,13 +45,13 @@ class TestSetPacking(QiskitOptimizationTestCase):
     def test_partition_vqe(self):
         """ Partition VQE test """
         aqua_globals.random_seed = 100
-        result = VQE(self.qubit_op,
-                     RealAmplitudes(reps=5, entanglement='linear'),
+        q_i = QuantumInstance(BasicAer.get_backend('qasm_simulator'),
+                              seed_simulator=aqua_globals.random_seed,
+                              seed_transpiler=aqua_globals.random_seed)
+        result = VQE(RealAmplitudes(reps=5, entanglement='linear'),
                      SPSA(maxiter=200),
-                     max_evals_grouped=2).run(
-                         QuantumInstance(BasicAer.get_backend('qasm_simulator'),
-                                         seed_simulator=aqua_globals.random_seed,
-                                         seed_transpiler=aqua_globals.random_seed))
+                     max_evals_grouped=2,
+                     quantum_instance=q_i).compute_minimum_eigenvalue(operator=self.qubit_op)
         x = sample_most_likely(result.eigenstate)
         self.assertNotEqual(x[0], x[1])
         self.assertNotEqual(x[2], x[1])  # hardcoded oracle

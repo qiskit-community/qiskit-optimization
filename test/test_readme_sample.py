@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,8 +17,8 @@ the issue then ensure changes are made to readme too.
 """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
-from qiskit.aqua import aqua_globals
+from test import QiskitOptimizationTestCase
+from qiskit.utils import aqua_globals
 
 # pylint: disable=import-outside-toplevel,redefined-builtin
 
@@ -38,12 +38,12 @@ class TestReadmeSample(QiskitOptimizationTestCase):
         import networkx as nx
         import numpy as np
 
-        from qiskit.optimization import QuadraticProgram
-        from qiskit.optimization.algorithms import MinimumEigenOptimizer
+        from qiskit_optimization import QuadraticProgram
+        from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
         from qiskit import BasicAer
-        from qiskit.aqua.algorithms import QAOA
-        from qiskit.aqua.components.optimizers import SPSA
+        from qiskit.algorithms import QAOA
+        from qiskit.algorithms.optimizers import SPSA
 
         # Generate a graph of 4 nodes
         n = 4

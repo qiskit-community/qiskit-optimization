@@ -15,8 +15,8 @@ from typing import Optional, Any, Union, List, cast
 
 import numpy as np
 
-from qiskit.aqua.algorithms import MinimumEigensolver, MinimumEigensolverResult
-from qiskit.aqua.operators import StateFn, DictStateFn
+from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
+from qiskit.opflow import StateFn, DictStateFn
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
                                      OptimizationResult, SolutionSample)
 from .. import QiskitOptimizationError
@@ -101,9 +101,9 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.aqua.algorithms import QAOA
-        from qiskit.optimization.problems import QuadraticProgram
-        from qiskit.optimization.algorithms import MinimumEigenOptimizer
+        from qiskit.algorithms import QAOA
+        from qiskit_optimization.problems import QuadraticProgram
+        from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
         # specify problem here
         # specify minimum eigen solver to be used, e.g., QAOA
@@ -126,7 +126,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             penalty: The penalty factor to be used, or ``None`` for applying a default logic.
             converters: The converters to use for converting a problem into a different form.
                 By default, when None is specified, an internally created instance of
-                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` will be used.
+                :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
 
         Raises:
             TypeError: When one of converters has an invalid type.

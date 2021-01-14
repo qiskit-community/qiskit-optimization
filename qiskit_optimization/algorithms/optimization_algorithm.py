@@ -65,8 +65,8 @@ class OptimizationResult:
     a name as follows.
 
     Examples:
-        >>> from qiskit.optimization import QuadraticProgram
-        >>> from qiskit.optimization.algorithms import CplexOptimizer
+        >>> from qiskit_optimization import QuadraticProgram
+        >>> from qiskit_optimization.algorithms import CplexOptimizer
         >>> problem = QuadraticProgram()
         >>> _ = problem.binary_var('x1')
         >>> _ = problem.binary_var('x2')
@@ -335,16 +335,16 @@ class OptimizationAlgorithm(ABC):
         Args:
             converters: The converters to use for converting a problem into a different form.
                 By default, when None is specified, an internally created instance of
-                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` will be used.
+                :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
             penalty: The penalty factor used in the default
-                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` converter
+                :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` converter
 
         Returns:
             The list of converters.
 
         Raises:
             TypeError: When the converters include those that are not
-            :class:`~qiskit.optimization.converters.QuadraticProgramConverter type.
+            :class:`~qiskit_optimization.converters.QuadraticProgramConverter type.
         """
         if converters is None:
             return [QuadraticProgramToQubo(penalty=penalty)]

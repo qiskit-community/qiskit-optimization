@@ -14,20 +14,21 @@
 
 import unittest
 from os import path
-from test.optimization.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt
 
 from qiskit import BasicAer
-from qiskit.aqua import MissingOptionalLibraryError, QuantumInstance, aqua_globals
-from qiskit.aqua.algorithms import QAOA, NumPyMinimumEigensolver
-from qiskit.aqua.components.optimizers import COBYLA
-from qiskit.optimization.algorithms import (CplexOptimizer, MinimumEigenOptimizer)
-from qiskit.optimization.algorithms.optimization_algorithm import OptimizationResultStatus
-from qiskit.optimization.converters import (InequalityToEquality, IntegerToBinary,
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.utils import QuantumInstance, aqua_globals
+from qiskit.algorithms import QAOA, NumPyMinimumEigensolver
+from qiskit.algorithms.optimizers import COBYLA
+from qiskit_optimization.algorithms import (CplexOptimizer, MinimumEigenOptimizer)
+from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
+from qiskit_optimization.converters import (InequalityToEquality, IntegerToBinary,
                                             LinearEqualityToPenalty, QuadraticProgramToQubo)
-from qiskit.optimization.problems import QuadraticProgram
+from qiskit_optimization.problems import QuadraticProgram
 
 
 @ddt

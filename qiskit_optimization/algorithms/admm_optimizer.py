@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,7 @@ import warnings
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms import NumPyMinimumEigensolver
 
 from .minimum_eigen_optimizer import MinimumEigenOptimizer
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,

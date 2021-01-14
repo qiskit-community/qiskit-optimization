@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,10 @@
 # that they have been altered from the originals.
 
 """
-Optimization applications (:mod:`qiskit.optimization.applications`)
+Optimization applications (:mod:`qiskit_optimization.applications`)
 ===================================================================
 
-.. currentmodule:: qiskit.optimization.applications
+.. currentmodule:: qiskit_optimization.applications
 
 Applications for Qiskit's optimization module. The present set are in the form of
 Ising Hamiltonians.

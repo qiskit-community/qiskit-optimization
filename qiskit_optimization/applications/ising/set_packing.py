@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,17 +12,18 @@
 
 """ set packing module """
 
+from typing import List, Tuple
 import logging
 
 import numpy as np
 from qiskit.quantum_info import Pauli
 
-from qiskit.aqua.operators import WeightedPauliOperator
+from qiskit.opflow import PauliSumOp
 
 logger = logging.getLogger(__name__)
 
 
-def get_operator(list_of_subsets):
+def get_operator(list_of_subsets: List) -> Tuple[PauliSumOp, float]:
     """Construct the Hamiltonian for the set packing.
 
     Notes:
@@ -40,16 +41,15 @@ def get_operator(list_of_subsets):
         where Xi = (Zi + 1)/2
 
     Args:
-        list_of_subsets (list): list of lists (i.e., subsets)
+        list_of_subsets: list of lists (i.e., subsets)
 
     Returns:
-        tuple(WeightedPauliOperator, float): operator for the Hamiltonian,
-                                        a constant shift for the obj function.
+        operator for the Hamiltonian, a constant shift for the obj function.
     """
     # pylint: disable=invalid-name
-    shift = 0
+    shift = 0.
     pauli_list = []
-    A = 10
+    A = 10.
     n = len(list_of_subsets)
     for i in range(n):
         for j in range(i):
@@ -77,7 +77,8 @@ def get_operator(list_of_subsets):
         pauli_list.append([-0.5, Pauli(vp, wp)])
         shift += -0.5
 
-    return WeightedPauliOperator(paulis=pauli_list), shift
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    return PauliSumOp.from_list(opflow_list), shift
 
 
 def get_solution(x):

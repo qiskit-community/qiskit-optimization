@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -67,15 +67,15 @@ from docplex.mp.constr import LinearConstraint, QuadraticConstraint
 from docplex.mp.linear import Var
 from docplex.mp.model import Model
 from qiskit.quantum_info import Pauli
+from qiskit.opflow import PauliSumOp
 
-from qiskit.aqua import AquaError
-from qiskit.aqua.operators import WeightedPauliOperator
+from ...exceptions import QiskitOptimizationError
 
 logger = logging.getLogger(__name__)
 
 
 def get_operator(mdl: Model, auto_penalty: bool = True,
-                 default_penalty: float = 1e5) -> Tuple[WeightedPauliOperator, float]:
+                 default_penalty: float = 1e5) -> Tuple[PauliSumOp, float]:
     """Generate Ising Hamiltonian from a model of DOcplex.
 
     Args:
@@ -204,7 +204,8 @@ def get_operator(mdl: Model, auto_penalty: bool = True,
                 shift += penalty_weight1_weight2
 
     # Remove paulis whose coefficients are zeros.
-    qubit_op = WeightedPauliOperator(paulis=pauli_list)
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    qubit_op = PauliSumOp.from_list(opflow_list)
 
     return qubit_op, shift
 
@@ -245,13 +246,13 @@ def _validate_input_model(mdl: Model) -> None:
          mdl: A model of DOcplex for a optimization problem.
 
     Raises:
-        AquaError: Unsupported input model.
+        QiskitOptimizationError: Unsupported input model.
     """
     valid = True
 
     # validate an object type of the input.
     if not isinstance(mdl, Model):
-        raise AquaError('An input model must be docplex.mp.model.Model.')
+        raise QiskitOptimizationError('An input model must be docplex.mp.model.Model.')
 
     # raise an error if the type of the variable is not a binary type.
     for var in mdl.iter_variables():
@@ -267,7 +268,7 @@ def _validate_input_model(mdl: Model) -> None:
             valid = False
 
     if not valid:
-        raise AquaError('The input model has unsupported elements.')
+        raise QiskitOptimizationError('The input model has unsupported elements.')
 
 
 def _auto_define_penalty(mdl: Model, default_penalty: float = 1e5) -> float:

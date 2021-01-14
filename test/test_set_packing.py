@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,15 +14,15 @@
 
 import unittest
 import json
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 import numpy as np
 
 from qiskit.circuit.library import TwoLocal
-from qiskit.optimization.applications.ising import set_packing
-from qiskit.optimization.applications.ising.common import sample_most_likely
-from qiskit.aqua import QuantumInstance, aqua_globals
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver, VQE
-from qiskit.aqua.components.optimizers import SPSA
+from qiskit.utils import QuantumInstance, aqua_globals
+from qiskit.algorithms import NumPyMinimumEigensolver, VQE
+from qiskit.algorithms.optimizers import SPSA
+from qiskit_optimization.applications.ising import set_packing
+from qiskit_optimization.applications.ising.common import sample_most_likely
 
 
 class TestSetPacking(QiskitOptimizationTestCase):
@@ -55,8 +55,8 @@ class TestSetPacking(QiskitOptimizationTestCase):
 
     def test_set_packing(self):
         """ set packing test """
-        algo = NumPyMinimumEigensolver(self.qubit_op, aux_operators=[])
-        result = algo.run()
+        algo = NumPyMinimumEigensolver()
+        result = algo.compute_minimum_eigenvalue(operator=self.qubit_op, aux_operators=[])
         x = sample_most_likely(result.eigenstate)
         ising_sol = set_packing.get_solution(x)
         np.testing.assert_array_equal(ising_sol, [0, 1, 1])
@@ -74,13 +74,13 @@ class TestSetPacking(QiskitOptimizationTestCase):
 
         wavefunction = TwoLocal(rotation_blocks='ry', entanglement_blocks='cz',
                                 reps=3, entanglement='linear')
-        result = VQE(self.qubit_op,
-                     wavefunction,
+        q_i = QuantumInstance(Aer.get_backend('qasm_simulator'),
+                              seed_simulator=aqua_globals.random_seed,
+                              seed_transpiler=aqua_globals.random_seed)
+        result = VQE(wavefunction,
                      SPSA(maxiter=200),
-                     max_evals_grouped=2).run(
-                         QuantumInstance(Aer.get_backend('qasm_simulator'),
-                                         seed_simulator=aqua_globals.random_seed,
-                                         seed_transpiler=aqua_globals.random_seed))
+                     max_evals_grouped=2,
+                     quantum_instance=q_i).compute_minimum_eigenvalue(operator=self.qubit_op)
         x = sample_most_likely(result.eigenstate)
         ising_sol = set_packing.get_solution(x)
         oracle = self._brute_force()

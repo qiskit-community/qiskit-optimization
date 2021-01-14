@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,19 +14,19 @@
 
 import logging
 import unittest
-from test.optimization.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.aqua import MissingOptionalLibraryError
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
-from qiskit.aqua.operators import Z, I
-from qiskit.optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit.optimization.algorithms import MinimumEigenOptimizer, CplexOptimizer, ADMMOptimizer
-from qiskit.optimization.algorithms.admm_optimizer import ADMMParameters
-from qiskit.optimization.converters import (InequalityToEquality, IntegerToBinary,
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.opflow import Z, I
+from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
+from qiskit_optimization.algorithms import MinimumEigenOptimizer, CplexOptimizer, ADMMOptimizer
+from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
+from qiskit_optimization.converters import (InequalityToEquality, IntegerToBinary,
                                             LinearEqualityToPenalty)
-from qiskit.optimization.problems import Constraint, Variable
+from qiskit_optimization.problems import Constraint, Variable
 
 logger = logging.getLogger(__name__)
 
@@ -495,11 +495,11 @@ class TestConverters(QiskitOptimizationTestCase):
         op.binary_var('z')
         op.minimize(linear={'x': 1, 'y': 2})
         op.linear_constraint(linear={'x': 0.5, 'y': 0.5, 'z': 0.5}, sense='EQ', rhs=1, name='xyz')
-        with self.assertLogs('qiskit.optimization', level='WARNING') as log:
+        with self.assertLogs('qiskit_optimization', level='WARNING') as log:
             lineq2penalty = LinearEqualityToPenalty()
             _ = lineq2penalty.convert(op)
         warning = (
-            'WARNING:qiskit.optimization.converters.linear_equality_to_penalty:'
+            'WARNING:qiskit_optimization.converters.linear_equality_to_penalty:'
             'Warning: Using 100000.000000 for the penalty coefficient because a float '
             'coefficient exists in constraints. \nThe value could be too small. If so, '
             'set the penalty coefficient manually.'

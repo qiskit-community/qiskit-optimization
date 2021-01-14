@@ -11,14 +11,14 @@
 # that they have been altered from the originals.
 
 """Tests of the ADMM algorithm."""
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.optimization.algorithms import CobylaOptimizer
-from qiskit.optimization.algorithms.admm_optimizer import ADMMOptimizer, ADMMParameters, \
+from qiskit_optimization.algorithms import CobylaOptimizer
+from qiskit_optimization.algorithms.admm_optimizer import ADMMOptimizer, ADMMParameters, \
     ADMMOptimizationResult, ADMMState
-from qiskit.optimization.problems import QuadraticProgram
+from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestADMMOptimizer(QiskitOptimizationTestCase):

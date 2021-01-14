@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -22,7 +22,8 @@ from typing import Optional, Callable, Tuple, Any
 import numpy as np
 from scipy.stats import uniform
 
-from qiskit.optimization import QuadraticProgram, INFINITY
+from ..problems.quadratic_program import QuadraticProgram
+from ..infinity import INFINITY
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
 logger = logging.getLogger(__name__)

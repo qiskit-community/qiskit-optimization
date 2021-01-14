@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,15 +11,15 @@
 # that they have been altered from the originals.
 
 """
-Optimization converters (:mod:`qiskit.optimization.converters`)
+Optimization converters (:mod:`qiskit_optimization.converters`)
 ===============================================================
 
-.. currentmodule:: qiskit.optimization.converters
+.. currentmodule:: qiskit_optimization.converters
 
 This is a set of converters having `convert` functionality to go between different representations
-of a given :class:`~qiskit.optimization.problems.QuadraticProgram` and to `interpret` a given
+of a given :class:`~qiskit_optimization.problems.QuadraticProgram` and to `interpret` a given
 result for the problem, based on the original problem before conversion, to return an appropriate
-:class:`~qiskit.optimization.algorithms.OptimizationResult`.
+:class:`~qiskit_optimization.algorithms.OptimizationResult`.
 
 Base class for converters
 =========================

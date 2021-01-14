@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -28,14 +28,14 @@ logger = logging.getLogger(__name__)
 
 
 class IntegerToBinary(QuadraticProgramConverter):
-    """Convert a :class:`~qiskit.optimization.problems.QuadraticProgram` into new one by encoding
+    """Convert a :class:`~qiskit_optimization.problems.QuadraticProgram` into new one by encoding
     integer with binary variables.
 
     This bounded-coefficient encoding used in this converted is proposed in [1], Eq. (5).
 
     Examples:
-        >>> from qiskit.optimization.problems import QuadraticProgram
-        >>> from qiskit.optimization.converters import IntegerToBinary
+        >>> from qiskit_optimization.problems import QuadraticProgram
+        >>> from qiskit_optimization.converters import IntegerToBinary
         >>> problem = QuadraticProgram()
         >>> var = problem.integer_var(name='x', lowerbound=0, upperbound=10)
         >>> conv = IntegerToBinary()

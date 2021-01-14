@@ -11,12 +11,12 @@
 # that they have been altered from the originals.
 
 """
-Optimization algorithms (:mod:`qiskit.optimization.algorithms`)
+Optimization algorithms (:mod:`qiskit_optimization.algorithms`)
 ===============================================================
 
 Algorithms for optimization problems.
 
-.. currentmodule:: qiskit.optimization.algorithms
+.. currentmodule:: qiskit_optimization.algorithms
 
 Base classes for algorithms and results
 =======================================

@@ -13,13 +13,13 @@
 """ Test SLSQP Optimizer """
 import unittest
 
-from test.optimization.optimization_test_case import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 
-from qiskit.optimization import INFINITY
-from qiskit.optimization.algorithms import SlsqpOptimizer
-from qiskit.optimization.problems import QuadraticProgram
+from qiskit_optimization import INFINITY
+from qiskit_optimization.algorithms import SlsqpOptimizer
+from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestSlsqpOptimizer(QiskitOptimizationTestCase):

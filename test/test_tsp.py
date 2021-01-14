@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,13 +13,13 @@
 """ Test TSP (Traveling Salesman Problem) """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 import numpy as np
 
-from qiskit.aqua import aqua_globals
-from qiskit.optimization.applications.ising import tsp
-from qiskit.optimization.applications.ising.common import sample_most_likely
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
+from qiskit.utils import aqua_globals
+from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit_optimization.applications.ising import tsp
+from qiskit_optimization.applications.ising.common import sample_most_likely
 
 
 class TestTSP(QiskitOptimizationTestCase):
@@ -35,8 +35,8 @@ class TestTSP(QiskitOptimizationTestCase):
 
     def test_tsp(self):
         """ TSP test """
-        algo = NumPyMinimumEigensolver(self.qubit_op)
-        result = algo.run()
+        algo = NumPyMinimumEigensolver()
+        result = algo.compute_minimum_eigenvalue(operator=self.qubit_op)
         x = sample_most_likely(result.eigenstate)
         # print(self.qubit_op.to_opflow().eval(result.eigenstate).adjoint().eval(result.eigenstate))
         order = tsp.get_tsp_solution(x)

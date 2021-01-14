@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,16 +15,16 @@
 import unittest
 from os import path
 
-from test.optimization.optimization_test_case import QiskitOptimizationTestCase
-from qiskit.optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
+from test import QiskitOptimizationTestCase
 
-from qiskit.aqua import MissingOptionalLibraryError
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.algorithms import NumPyMinimumEigensolver
 
-from qiskit.optimization.algorithms import (MinimumEigenOptimizer, CplexOptimizer,
+from qiskit_optimization.algorithms import (MinimumEigenOptimizer, CplexOptimizer,
                                             RecursiveMinimumEigenOptimizer)
-from qiskit.optimization.problems import QuadraticProgram
-from qiskit.optimization.converters import (IntegerToBinary, InequalityToEquality,
+from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
+from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.converters import (IntegerToBinary, InequalityToEquality,
                                             LinearEqualityToPenalty, QuadraticProgramToQubo)
 
 

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,8 +18,8 @@ from enum import Enum
 from typing import Optional, Union, List, Tuple, Dict, cast
 
 import numpy as np
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
-from qiskit.aqua.utils.validation import validate_min
+from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.utils.validation import validate_min
 
 from .minimum_eigen_optimizer import MinimumEigenOptimizer, MinimumEigenOptimizationResult
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 class IntermediateResult(Enum):
     """
     Defines whether the intermediate results of
-    :class:`~qiskit.optimization.algorithms.RecursiveMinimumEigenOptimizer`
+    :class:`~qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer`
     at each iteration should be stored and returned to the end user.
     """
 
@@ -66,10 +66,10 @@ class RecursiveMinimumEigenOptimizationResult(OptimizationResult):
             replacements: a dictionary of substituted variables. Key is a variable being
                 substituted, value is a tuple of substituting variable and a weight, either 1 or -1.
             history: a tuple containing intermediate results. The first element is a list of
-                :class:`~qiskit.optimization.algorithms.MinimumEigenOptimizerResult` obtained by
-                invoking :class:`~qiskit.optimization.algorithms.MinimumEigenOptimizer` iteratively,
+                :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizerResult` obtained by
+                invoking :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` iteratively,
                 the second element is an instance of
-                :class:`~qiskit.optimization.algorithm.OptimizationResult` obtained at the last step
+                :class:`~qiskit_optimization.algorithm.OptimizationResult` obtained at the last step
                 via `min_num_vars_optimizer`.
         """
         super().__init__(x, fval, variables, status, None)
@@ -87,9 +87,9 @@ class RecursiveMinimumEigenOptimizationResult(OptimizationResult):
     def history(self) -> Tuple[List[MinimumEigenOptimizationResult], OptimizationResult]:
         """
         Returns intermediate results. The first element is a list of
-        :class:`~qiskit.optimization.algorithms.MinimumEigenOptimizerResult` obtained by invoking
-        :class:`~qiskit.optimization.algorithms.MinimumEigenOptimizer` iteratively, the second
-        element is an instance of :class:`~qiskit.optimization.algorithm.OptimizationResult`
+        :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizerResult` obtained by invoking
+        :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` iteratively, the second
+        element is an instance of :class:`~qiskit_optimization.algorithm.OptimizationResult`
         obtained at the last step via `min_num_vars_optimizer`.
         """
         return self._history
@@ -99,7 +99,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
     """A meta-algorithm that applies a recursive optimization.
 
     The recursive minimum eigen optimizer applies a recursive optimization on top of
-    :class:`~qiskit.optimization.algorithms.MinimumEigenOptimizer`.
+    :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer`.
     The algorithm is introduced in [1].
 
     Examples:
@@ -107,9 +107,9 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.aqua.algorithms import QAOA
-        from qiskit.optimization.problems import QuadraticProgram
-        from qiskit.optimization.algorithms import RecursiveMinimumEigenOptimizer
+        from qiskit.algorithms import QAOA
+        from qiskit_optimization.problems import QuadraticProgram
+        from qiskit_optimization.algorithms import RecursiveMinimumEigenOptimizer
         problem = QuadraticProgram()
         # specify problem here
         # specify minimum eigen solver to be used, e.g., QAOA
@@ -146,7 +146,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
                 Default value is :py:obj:`~IntermediateResult.LAST_ITERATION`.
             converters: The converters to use for converting a problem into a different form.
                 By default, when None is specified, an internally created instance of
-                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` will be used.
+                :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
 
         Raises:
             QiskitOptimizationError: In case of invalid parameters (num_min_vars < 1).

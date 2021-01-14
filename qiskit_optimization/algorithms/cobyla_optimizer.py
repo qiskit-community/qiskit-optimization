@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -34,8 +34,8 @@ class CobylaOptimizer(MultiStartOptimizer):
     The arguments for ``fmin_cobyla`` are passed via the constructor.
 
     Examples:
-        >>> from qiskit.optimization.problems import QuadraticProgram
-        >>> from qiskit.optimization.algorithms import CobylaOptimizer
+        >>> from qiskit_optimization.problems import QuadraticProgram
+        >>> from qiskit_optimization.algorithms import CobylaOptimizer
         >>> problem = QuadraticProgram()
         >>> # specify problem here
         >>> optimizer = CobylaOptimizer()

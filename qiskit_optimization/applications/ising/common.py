@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,8 +16,8 @@ from collections import OrderedDict
 
 import numpy as np
 
-from qiskit.aqua import aqua_globals
-from qiskit.aqua.operators import StateFn
+from qiskit.utils import aqua_globals
+from qiskit.opflow import StateFn
 
 
 def random_graph(n, weight_range=10, edge_prob=0.3, negative_weight=True,

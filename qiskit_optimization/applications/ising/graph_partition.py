@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,17 +15,18 @@ Convert graph partitioning instances into Pauli list
 Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
 """
 
+from typing import Tuple
 import logging
 
 import numpy as np
 
 from qiskit.quantum_info import Pauli
-from qiskit.aqua.operators import WeightedPauliOperator
+from qiskit.opflow import PauliSumOp
 
 logger = logging.getLogger(__name__)
 
 
-def get_operator(weight_matrix):
+def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
     r"""Generate Hamiltonian for the graph partitioning
 
     Notes:
@@ -39,15 +40,15 @@ def get_operator(weight_matrix):
             H_A is for achieving goal 2 and H_B is for achieving goal 1.
 
     Args:
-        weight_matrix (numpy.ndarray) : adjacency matrix.
+        weight_matrix: adjacency matrix.
 
     Returns:
-        WeightedPauliOperator: operator for the Hamiltonian
-        float: a constant shift for the obj function.
+        operator for the Hamiltonian
+        a constant shift for the obj function.
     """
     num_nodes = len(weight_matrix)
     pauli_list = []
-    shift = 0
+    shift = 0.
 
     for i in range(num_nodes):
         for j in range(i):
@@ -69,7 +70,8 @@ def get_operator(weight_matrix):
                 pauli_list.append([1, Pauli(z_p, x_p)])
             else:
                 shift += 1
-    return WeightedPauliOperator(paulis=pauli_list), shift
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    return PauliSumOp.from_list(opflow_list), shift
 
 
 def objective_value(x, w):

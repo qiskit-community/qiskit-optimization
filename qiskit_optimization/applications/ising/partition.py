@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,27 +15,28 @@ Generate Number Partitioning (Partition) instances, and convert them
 into a Hamiltonian given as a Pauli list.
 """
 
+from typing import Tuple
 import logging
 
 import numpy as np
 from qiskit.quantum_info import Pauli
 
-from qiskit.aqua.operators import WeightedPauliOperator
+from qiskit.opflow import PauliSumOp
 
 logger = logging.getLogger(__name__)
 
 
-def get_operator(values):
+def get_operator(values: np.ndarray) -> Tuple[PauliSumOp, float]:
     """Construct the Hamiltonian for a given Partition instance.
 
     Given a list of numbers for the Number Partitioning problem, we
     construct the Hamiltonian described as a list of Pauli gates.
 
     Args:
-        values (numpy.ndarray): array of values.
+        values: array of values.
 
     Returns:
-        tuple(WeightedPauliOperator, float): operator for the Hamiltonian and a
+        operator for the Hamiltonian and a
         constant shift for the obj function.
 
     """
@@ -50,7 +51,8 @@ def get_operator(values):
             z_p[i] = True
             z_p[j] = True
             pauli_list.append([2. * values[i] * values[j], Pauli(z_p, x_p)])
-    return WeightedPauliOperator(paulis=pauli_list), sum(values * values)
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    return PauliSumOp.from_list(opflow_list), sum(values * values)
 
 
 def partition_value(x, number_list):

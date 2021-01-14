@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,12 +13,12 @@
 """ Test Knapsack Problem """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 import numpy as np
 
-from qiskit.optimization.applications.ising import knapsack
-from qiskit.optimization.applications.ising.common import sample_most_likely
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit_optimization.applications.ising import knapsack
+from qiskit_optimization.applications.ising.common import sample_most_likely
 
 
 class TestTSP(QiskitOptimizationTestCase):
@@ -28,8 +28,8 @@ class TestTSP(QiskitOptimizationTestCase):
     def _run_knapsack(values, weights, max_weight):
         qubit_op, _ = knapsack.get_operator(values, weights, max_weight)
 
-        algo = NumPyMinimumEigensolver(qubit_op)
-        result = algo.run()
+        algo = NumPyMinimumEigensolver()
+        result = algo.compute_minimum_eigenvalue(operator=qubit_op)
         x = sample_most_likely(result.eigenstate)
 
         solution = knapsack.get_solution(x, values)

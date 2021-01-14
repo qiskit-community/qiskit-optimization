@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,11 +14,11 @@
 
 import unittest
 from os import path
-from test.optimization.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase
 from ddt import ddt, data
-from qiskit.aqua import MissingOptionalLibraryError
-from qiskit.optimization.algorithms import CplexOptimizer
-from qiskit.optimization.problems import QuadraticProgram
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit_optimization.algorithms import CplexOptimizer
+from qiskit_optimization.problems import QuadraticProgram
 
 
 @ddt

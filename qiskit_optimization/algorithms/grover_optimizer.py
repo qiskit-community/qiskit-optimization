@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -19,8 +19,8 @@ from typing import Optional, Dict, Union, List, cast
 
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
-from qiskit.aqua import QuantumInstance, aqua_globals
-from qiskit.aqua.algorithms.amplitude_amplifiers.grover import Grover
+from qiskit.utils import QuantumInstance, aqua_globals
+from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
 from qiskit.providers import Backend, BaseBackend
 
@@ -49,9 +49,9 @@ class GroverOptimizer(OptimizationAlgorithm):
             quantum_instance: Instance of selected backend, defaults to Aer's statevector simulator.
             converters: The converters to use for converting a problem into a different form.
                 By default, when None is specified, an internally created instance of
-                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` will be used.
+                :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
             penalty: The penalty factor used in the default
-                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` converter
+                :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` converter
 
         Raises:
             TypeError: When there one of converters is an invalid type.

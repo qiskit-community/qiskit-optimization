@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,8 +20,8 @@ from typing import Tuple
 import numpy as np
 from qiskit.quantum_info import Pauli
 
-from qiskit.aqua.algorithms import MinimumEigensolverResult
-from qiskit.aqua.operators import WeightedPauliOperator
+from qiskit.algorithms import MinimumEigensolverResult
+from qiskit.opflow import PauliSumOp
 
 # pylint: disable=invalid-name
 
@@ -109,7 +109,7 @@ def get_vehiclerouting_cost(instance: np.ndarray, n: int, K: int, x_sol: np.ndar
     return cost
 
 
-def get_operator(instance: np.ndarray, n: int, K: int) -> WeightedPauliOperator:
+def get_operator(instance: np.ndarray, n: int, K: int) -> PauliSumOp:
     """Converts an instance of a vehicle routing problem into a list of Paulis.
 
     Args:
@@ -151,7 +151,8 @@ def get_operator(instance: np.ndarray, n: int, K: int) -> WeightedPauliOperator:
                 pauli_list.append((2 * q_z[i, j], Pauli(v_p, w_p)))
 
     pauli_list.append((c_z, Pauli(np.zeros(N), np.zeros(N))))
-    return WeightedPauliOperator(paulis=pauli_list)
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    return PauliSumOp.from_list(opflow_list)
 
 
 def get_vehiclerouting_solution(instance: np.ndarray,

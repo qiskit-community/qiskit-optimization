@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,23 +15,23 @@ Convert vertex cover instances into Pauli list
 Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
 """
 
+from typing import Tuple
 import logging
 
 import numpy as np
 from qiskit.quantum_info import Pauli
 
-from qiskit.aqua.operators import WeightedPauliOperator
+from qiskit.opflow import PauliSumOp
 
 logger = logging.getLogger(__name__)
 
 
-def get_operator(weight_matrix):
+def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
     r"""Generate Hamiltonian for the vertex cover
     Args:
-        weight_matrix (numpy.ndarray) : adjacency matrix.
-
+        weight_matrix: adjacency matrix.
     Returns:
-        tuple(WeightedPauliOperator, float): operator for the Hamiltonian and a
+        operator for the Hamiltonian and a
         constant shift for the obj function.
 
     Goals:
@@ -50,8 +50,8 @@ def get_operator(weight_matrix):
     """
     n = len(weight_matrix)
     pauli_list = []
-    shift = 0
-    a__ = 5
+    shift = 0.
+    a__ = 5.
 
     for i in range(n):
         for j in range(i):
@@ -78,7 +78,8 @@ def get_operator(weight_matrix):
         v_p[i] = 1
         pauli_list.append([0.5, Pauli(v_p, w_p)])
         shift += 0.5
-    return WeightedPauliOperator(paulis=pauli_list), shift
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    return PauliSumOp.from_list(opflow_list), shift
 
 
 def check_full_edge_coverage(x, w):

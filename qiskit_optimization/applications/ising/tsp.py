@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2020.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -19,14 +19,15 @@ e.g., w[i, j] = x means that the length of a edge between i and j is x
 Note that the weights are symmetric, i.e., w[j, i] = x always holds.
 """
 
+from typing import Tuple
 import logging
 from collections import namedtuple
 
 import numpy as np
 from qiskit.quantum_info import Pauli
 
-from qiskit.aqua import aqua_globals
-from qiskit.aqua.operators import WeightedPauliOperator
+from qiskit.utils import aqua_globals
+from qiskit.opflow import PauliSumOp
 
 logger = logging.getLogger(__name__)
 
@@ -123,23 +124,21 @@ def parse_tsplib_format(filename):
     return calc_distance(coord, name)
 
 
-def get_operator(ins, penalty=1e5):
+def get_operator(ins,
+                 penalty: float = 1e5) -> Tuple[PauliSumOp, float]:
     """Generate Hamiltonian for TSP of a graph.
-
     Args:
         ins (TspData) : TSP data including coordinates and distances.
-        penalty (float) : Penalty coefficient for the constraints
-
+        penalty: Penalty coefficient for the constraints
     Returns:
-        tuple(WeightedPauliOperator, float): operator for the Hamiltonian and a
+        operator for the Hamiltonian and a
         constant shift for the obj function.
-
     """
     num_nodes = ins.dim
     num_qubits = num_nodes ** 2
     zero = np.zeros(num_qubits, dtype=np.bool)
     pauli_list = []
-    shift = 0
+    shift = 0.
     for i in range(num_nodes):
         for j in range(num_nodes):
             if i == j:
@@ -204,7 +203,8 @@ def get_operator(ins, penalty=1e5):
                 z_p[i * num_nodes + q] = True
                 pauli_list.append([penalty / 2, Pauli(z_p, zero)])
     shift += 2 * penalty * num_nodes
-    return WeightedPauliOperator(paulis=pauli_list), shift
+    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
+    return PauliSumOp.from_list(opflow_list), shift
 
 
 def tsp_value(z, w):

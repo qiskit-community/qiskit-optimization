@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,12 +13,12 @@
 """ Test LinearConstraint """
 
 import unittest
-from test.optimization.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 
-from qiskit.optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit.optimization.problems import Constraint
+from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
+from qiskit_optimization.problems import Constraint
 
 
 class TestLinearConstraint(QiskitOptimizationTestCase):

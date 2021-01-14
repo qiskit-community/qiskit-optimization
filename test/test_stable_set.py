@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020.
+# (C) Copyright IBM 2020, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,16 +13,15 @@
 """ Test Stable Set """
 
 import unittest
-from test.optimization import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import EfficientSU2
-
-from qiskit.aqua import aqua_globals, QuantumInstance
-from qiskit.optimization.applications.ising import stable_set
-from qiskit.optimization.applications.ising.common import random_graph, sample_most_likely
-from qiskit.aqua.algorithms import NumPyMinimumEigensolver, VQE
-from qiskit.aqua.components.optimizers import L_BFGS_B
+from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.algorithms import NumPyMinimumEigensolver, VQE
+from qiskit.algorithms.optimizers import L_BFGS_B
+from qiskit_optimization.applications.ising import stable_set
+from qiskit_optimization.applications.ising.common import random_graph, sample_most_likely
 
 
 class TestStableSet(QiskitOptimizationTestCase):
@@ -38,8 +37,8 @@ class TestStableSet(QiskitOptimizationTestCase):
 
     def test_stable_set(self):
         """ Stable set test """
-        algo = NumPyMinimumEigensolver(self.qubit_op, aux_operators=[])
-        result = algo.run()
+        algo = NumPyMinimumEigensolver()
+        result = algo.compute_minimum_eigenvalue(self.qubit_op, aux_operators=[])
         x = sample_most_likely(result.eigenstate)
         self.assertAlmostEqual(result.eigenvalue.real, -39.5)
         self.assertAlmostEqual(result.eigenvalue.real + self.offset, -38.0)
@@ -49,12 +48,12 @@ class TestStableSet(QiskitOptimizationTestCase):
 
     def test_stable_set_vqe(self):
         """ VQE Stable set  test """
-        result = VQE(self.qubit_op,
-                     EfficientSU2(reps=3, entanglement='linear'),
-                     L_BFGS_B(maxfun=6000)).run(
-                         QuantumInstance(BasicAer.get_backend('statevector_simulator'),
-                                         seed_simulator=aqua_globals.random_seed,
-                                         seed_transpiler=aqua_globals.random_seed))
+        q_i = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
+                              seed_simulator=aqua_globals.random_seed,
+                              seed_transpiler=aqua_globals.random_seed)
+        result = VQE(EfficientSU2(reps=3, entanglement='linear'),
+                     L_BFGS_B(maxfun=6000),
+                     quantum_instance=q_i).compute_minimum_eigenvalue(self.qubit_op)
         x = sample_most_likely(result.eigenstate)
         self.assertAlmostEqual(result.eigenvalue, -39.5)
         self.assertAlmostEqual(result.eigenvalue + self.offset, -38.0)

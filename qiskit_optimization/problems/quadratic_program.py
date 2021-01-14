@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2020.
+# (C) Copyright IBM 2019, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -32,9 +32,9 @@ from docplex.mp.model_reader import ModelReader
 from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import ContinuousVarType, BinaryVarType, IntegerVarType
 
-from qiskit.aqua import MissingOptionalLibraryError
-from qiskit.aqua.operators import (I, ListOp, OperatorBase, PauliOp, SummedOp,
-                                   PauliSumOp, WeightedPauliOperator)
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.opflow import (I, ListOp, OperatorBase, PauliOp, SummedOp,
+                           PauliSumOp)
 from qiskit.quantum_info import Pauli
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
@@ -1100,7 +1100,7 @@ class QuadraticProgram:
             raise MissingOptionalLibraryError(
                 libname='CPLEX',
                 name='QuadraticProgram.read_from_lp_file',
-                pip_install='pip install qiskit-aqua[cplex]') from ex
+                pip_install='pip install qiskit-optimization[cplex]') from ex
 
         def _parse_problem_name(filename: str) -> str:
             # Because docplex model reader uses the base name as model name,
@@ -1260,7 +1260,7 @@ class QuadraticProgram:
         return qubit_op, offset
 
     def from_ising(self,
-                   qubit_op: Union[OperatorBase, WeightedPauliOperator],
+                   qubit_op: Union[OperatorBase, PauliSumOp],
                    offset: float = 0.0, linear: bool = False) -> None:
         r"""Create a quadratic program from a qubit operator and a shift value.
 
@@ -1277,8 +1277,6 @@ class QuadraticProgram:
             QiskitOptimizationError: If there are more than 2 Pauli Zs in any Pauli term
             NotImplementedError: If the input operator is a ListOp
         """
-        if isinstance(qubit_op, WeightedPauliOperator):
-            qubit_op = qubit_op.to_opflow()
         if isinstance(qubit_op, PauliSumOp):
             qubit_op = qubit_op.to_pauli_op()
 
