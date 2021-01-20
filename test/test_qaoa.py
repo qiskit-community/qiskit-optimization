@@ -249,7 +249,7 @@ class TestQAOA(QiskitOptimizationTestCase):
         [W2, CUSTOM_SUPERPOSITION]
     ])
     @unpack
-    def disabled_test_qaoa_initial_state(self, w, init_state):
+    def test_qaoa_initial_state(self, w, init_state):
         """ QAOA initial state test """
 
         optimizer = COBYLA()
@@ -260,11 +260,11 @@ class TestQAOA(QiskitOptimizationTestCase):
         if init_state is None:
             initial_state = None
         else:
-            initial_state = QuantumCircuit(QuantumRegister(4))
+            initial_state = QuantumCircuit(QuantumRegister(4, "q"))
             initial_state.initialize(init_state, initial_state.qubits)
 
         quantum_instance = QuantumInstance(BasicAer.get_backend('statevector_simulator'))
-        zero_init_state = QuantumCircuit(QuantumRegister(qubit_op.num_qubits))
+        zero_init_state = QuantumCircuit(QuantumRegister(qubit_op.num_qubits, "q"))
         qaoa_zero_init_state = QAOA(optimizer=optimizer,
                                     initial_state=zero_init_state,
                                     initial_point=init_pt,
@@ -295,7 +295,7 @@ class TestQAOA(QiskitOptimizationTestCase):
                 original_init_qc = QuantumCircuit(qubit_op.num_qubits)
                 original_init_qc.h(range(qubit_op.num_qubits))
             else:
-                original_init_qc = initial_state.construct_circuit()
+                original_init_qc = initial_state
 
             job_init_state = execute(original_init_qc, backend)
             job_qaoa_init_state = execute(custom_init_qc, backend)
