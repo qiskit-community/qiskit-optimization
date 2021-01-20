@@ -174,8 +174,6 @@ class QuadraticProgram:
                 "Cannot create non-positive number of variables: {}".format(keys))
         if name is None:
             name = 'x'
-        if key_format == '' and name in self._variables_index:
-            raise QiskitOptimizationError("Variable name already exists: {}".format(name))
         if '{{}}' in key_format:
             raise QiskitOptimizationError(
                 "Formatter cannot contain nested substitutions: {}".format(key_format))
@@ -184,9 +182,18 @@ class QuadraticProgram:
                 "Formatter cannot contain more than one substitution: {}".format(key_format))
 
         def _find_name(name, key_format, k):
-            while name + key_format.format(k) in self._variables_index:
-                k += 1
-            return name + key_format.format(k), k + 1
+            prev = None
+            while True:
+                new_name = name + key_format.format(k)
+                if new_name == prev:
+                    raise QiskitOptimizationError(
+                        "Variable name already exists: {}".format(new_name))
+                if new_name in self._variables_index:
+                    k += 1
+                    prev = new_name
+                else:
+                    break
+            return new_name, k + 1
 
         names = []
         variables = []
