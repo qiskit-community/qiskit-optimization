@@ -11,24 +11,19 @@ The Optimization module enables easy, efficient modeling of optimization problem
 [docplex](https://developer.ibm.com/docloud/documentation/optimization-modeling/modeling-for-python/).
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
-such as the Quantum Approximate Optimization Algorithm
-[QAOA](https://qiskit.org/documentation/stubs/qiskit.algorithms.QAOA.html),
-to [Grover Adaptive Search](https://arxiv.org/abs/quant-ph/9607014>) using the
-[GroverOptimizer](https://qiskit.org/documentation/stubs/qiskit_optimization.algorithms.GroverOptimizer.html)
+such as the Quantum Approximate Optimization Algorithm QAOA, to Grover Adaptive Search using the
+GroverOptimizer
 leveraging fundamental algorithms provided by Terra. Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.
 
-* [API reference](https://qiskit.org/documentation/apidoc/qiskit_optimization.html)
-
 ## Installation
 
-We encourage installing Qiskit via the pip tool (a python package manager), which installs all
-Qiskit elements, including Optimization.
+We encourage installing Qiskit Optimization via the pip tool (a python package manager).
 
 ```bash
-pip install qiskit
+pip install qiskit-optimization
 ```
 
 **pip** will handle all dependencies automatically and you will always install the latest
@@ -39,23 +34,20 @@ their official release or if you want to contribute to Optimization, then you ca
 To do this follow the instructions in the
  [documentation](https://qiskit.org/documentation/contributing_to_qiskit.html#installing-from-source).
 
-_**Note*: tutorials are undergoing revision and re-organization. Hence you may notice some content
-you will see referenced is under legacy_tutorials pending such re-work._
 
 ----------------------------------------------------------------------------------------------------
 
 ### Optional Installs
 
-* **IBM CPLEX** may be installed using `pip install qiskit-optimization[cplex]` to allow the use of the
- `CplexOptimizer` classical solver algorithm, as well as enabling the reading of `LP` files.
+* **IBM CPLEX** may be installed using `pip install qiskit-optimization[cplex]` to enable the reading of `LP` files.
 
 ### Creating Your First Optimization Programming Experiment in Qiskit
 
-Now that Qiskit is installed, it's time to begin working with the optimization module.
+Now that Qiskit Optimization is installed, it's time to begin working with the optimization module.
 Let's try an optimization experiment to compute the solution of a
 [Max-Cut](https://en.wikipedia.org/wiki/Maximum_cut). The Max-Cut problem can be formulated as
 quadratic program, which can be solved using many several different algorithms in Qiskit.
-In this example, the [MinimumEigenOptimizer](https://qiskit.org/documentation/stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html)
+In this example, the MinimumEigenOptimizer
 is employed in combination with the Quantum Approximate Optimization Algorithm (QAOA) as minimum
 eigensolver routine.
 
@@ -105,20 +97,7 @@ Learning path notebooks may be found in the
 [optimization tutorials](https://qiskit.org/documentation/tutorials/optimization/index.html) section
 of the documentation and are a great place to start.
 
-Jupyter notebooks containing further examples, for the optimization module, may be found in the
-following Qiskit GitHub repositories at 
-[qiskit-community-tutorials/optimization](https://github.com/Qiskit/qiskit-community-tutorials/tree/master/optimization).
-
 ----------------------------------------------------------------------------------------------------
-
-## Using a Real Device
-
-You can also use Qiskit to execute your code on a **real quantum chip**.
-In order to do so, you need to configure Qiskit to use the credentials in
-your [IBM Quantum Experience](https://quantum-computing.ibm.com) account.
-For more detailed information refer to the relevant instructions in the
-[Qiskit Terra GitHub repository](https://github.com/Qiskit/qiskit-terra/blob/master/README.md#executing-your-code-on-a-real-quantum-chip)
-.
 
 ## Contribution Guidelines
 
@@ -136,8 +115,7 @@ For questions that are more suited for a forum, we use the **Qiskit** tag in [St
 
 Now you're set up and ready to check out some of the other examples from the
 [Qiskit Tutorials](https://github.com/Qiskit/qiskit-tutorials)
-repository, that are used for the IBM Quantum Experience, and from the
-[Qiskit Community Tutorials](https://github.com/Qiskit/qiskit-community-tutorials).
+repository, that are used for the IBM Quantum Experience.
 
 
 ## Authors and Citation

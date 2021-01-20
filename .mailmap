@@ -11,7 +11,7 @@
 # If you don't like the way your name is cited by qiskit, please feel free to
 # open a pull request against this file to set your preferred naming.
 #
-# Note that each qiskit element uses its own mailmap so it may be necessary to
+# Note that each qiskit optimization element uses its own mailmap so it may be necessary to
 # propagate changes in other repos for consistency.
 
 Abdón Rodríguez Davila <a@abdonrd.com>

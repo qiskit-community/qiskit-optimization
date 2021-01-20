@@ -19,8 +19,7 @@ long_description = """Qiskit Optimization is a open-source library of quantum co
  """
 
 requirements = [
-    "qiskit-terra>=0.16.0",
-    "qiskit-ignis>=0.4.0",
+    "qiskit-terra>=0.17.0",
     "scipy>=1.4",
     "numpy>=1.17",
     "psutil>=5",
@@ -64,7 +63,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering"
     ),
-    keywords='qiskit sdk quantum aqua',
+    keywords='qiskit sdk quantum optimization',
     packages=setuptools.find_namespace_packages(include=['qiskit_optimization.*']),
     install_requires=requirements,
     include_package_data=True,

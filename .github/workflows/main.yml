@@ -243,7 +243,7 @@ jobs:
           pip install -U jupyter sphinx nbsphinx sphinx_rtd_theme 'matplotlib<3.3.0' qiskit-terra[visualization] cvxpy
           sudo apt-get install -y pandoc graphviz
         shell: bash
-      - name: Run Aqua Tutorials
+      - name: Run Qiskit Optimization Tutorials
         run: |
           git clone https://github.com/Qiskit/qiskit-tutorials
           cd qiskit-tutorials

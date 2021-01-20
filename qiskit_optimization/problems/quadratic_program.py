@@ -882,7 +882,7 @@ class QuadraticProgram:
                     isinstance(constraint, NotEqualConstraint):
                 # If any constraint is not linear/quadratic constraints, it raises an error.
                 # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
-                # but it cannot be handled by Aqua optimization.
+                # but it cannot be handled by optimization.
                 raise QiskitOptimizationError(
                     'Unsupported constraint: {}'.format(constraint))
             name = constraint.name
