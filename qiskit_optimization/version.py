@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Contains the Aqua version."""
+"""Contains the version."""
 
 import os
 import subprocess

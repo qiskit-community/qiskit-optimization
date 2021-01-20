@@ -240,7 +240,7 @@ def _iter_net_linear_coeffs(constraint: Union[LinearConstraint, QuadraticConstra
 
 
 def _validate_input_model(mdl: Model) -> None:
-    """Check whether an input model is valid. If not, raise an AquaError.
+    """Check whether an input model is valid.
 
     Args:
          mdl: A model of DOcplex for a optimization problem.

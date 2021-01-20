@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""A wrapper for minimum eigen solvers from Aqua to be used within the optimization module."""
+"""A wrapper for minimum eigen solvers to be used within the optimization module."""
 from typing import Optional, Any, Union, List, cast
 
 import numpy as np
@@ -83,7 +83,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
 
 
 class MinimumEigenOptimizer(OptimizationAlgorithm):
-    """A wrapper for minimum eigen solvers from Qiskit Aqua.
+    """A wrapper for minimum eigen solvers.
 
     This class provides a wrapper for minimum eigen solvers from Qiskit to be used within
     the optimization module.
