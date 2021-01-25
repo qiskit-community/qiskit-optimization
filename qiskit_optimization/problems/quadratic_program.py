@@ -1208,7 +1208,7 @@ class QuadraticProgram:
             weight = coef * sense / 2
             z_p[idx] = True
 
-            pauli_list.append([-weight, Pauli(z_p, zero)])
+            pauli_list.append([-weight, Pauli((z_p, zero))])
             offset += weight
 
         # convert quadratic parts of the object function into Hamiltonian.
@@ -1231,15 +1231,15 @@ class QuadraticProgram:
                 z_p = zeros(num_nodes, dtype=nbool)
                 z_p[i] = True
                 z_p[j] = True
-                pauli_list.append([weight, Pauli(z_p, zero)])
+                pauli_list.append([weight, Pauli((z_p, zero))])
 
             z_p = zeros(num_nodes, dtype=nbool)
             z_p[i] = True
-            pauli_list.append([-weight, Pauli(z_p, zero)])
+            pauli_list.append([-weight, Pauli((z_p, zero))])
 
             z_p = zeros(num_nodes, dtype=nbool)
             z_p[j] = True
-            pauli_list.append([-weight, Pauli(z_p, zero)])
+            pauli_list.append([-weight, Pauli((z_p, zero))])
 
             offset += weight
 

@@ -60,15 +60,15 @@ def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
                 v_p = np.zeros(n)
                 v_p[i] = 1
                 v_p[j] = 1
-                pauli_list.append([a__ * 0.25, Pauli(v_p, w_p)])
+                pauli_list.append([a__ * 0.25, Pauli((v_p, w_p))])
 
                 v_p2 = np.zeros(n)
                 v_p2[i] = 1
-                pauli_list.append([-a__ * 0.25, Pauli(v_p2, w_p)])
+                pauli_list.append([-a__ * 0.25, Pauli((v_p2, w_p))])
 
                 v_p3 = np.zeros(n)
                 v_p3[j] = 1
-                pauli_list.append([-a__ * 0.25, Pauli(v_p3, w_p)])
+                pauli_list.append([-a__ * 0.25, Pauli((v_p3, w_p))])
 
                 shift += a__ * 0.25
 
@@ -76,7 +76,7 @@ def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
         w_p = np.zeros(n)
         v_p = np.zeros(n)
         v_p[i] = 1
-        pauli_list.append([0.5, Pauli(v_p, w_p)])
+        pauli_list.append([0.5, Pauli((v_p, w_p))])
         shift += 0.5
     opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
     return PauliSumOp.from_list(opflow_list), shift
