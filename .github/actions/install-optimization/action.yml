@@ -17,6 +17,6 @@ runs:
   using: "composite"
   steps: 
     - run : |
-        pip install -e .
+        pip install -e .[cplex]
         pip install -U -c constraints.txt -r requirements-dev.txt
       shell: bash
