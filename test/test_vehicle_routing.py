@@ -42,12 +42,12 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
     def test_simple1(self):
         """ simple1 test """
         # Compares the output in terms of Paulis.
-        paulis = [(79.6, Pauli(z=[True, False], x=[False, False])),
-                  (79.6, Pauli(z=[False, True], x=[False, False])),
-                  (160.8, Pauli(z=[False, False], x=[False, False]))]
+        paulis = [(79.6, Pauli(([True, False], [False, False]))),
+                  (79.6, Pauli(([False, True], [False, False]))),
+                  (160.8, Pauli(([False, False], [False, False])))]
         # Could also consider op = Operator(paulis) and then __eq__, but
         # that would not use assert_approx_equal
-        opflow_list = [(pauli[1], Pauli.from_label(pauli[0]))
+        opflow_list = [(pauli[1], Pauli(pauli[0]))
                        for pauli in self.qubit_op.primitive.to_list()]
         for pauli_a, pauli_b in zip(opflow_list, paulis):
             cost_a, binary_a = pauli_a

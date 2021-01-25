@@ -47,14 +47,14 @@ def get_operator(w: np.ndarray) -> Tuple[PauliSumOp, float]:
                 z_p = np.zeros(num_nodes, dtype=np.bool)
                 z_p[i] = True
                 z_p[j] = True
-                pauli_list.append([1.0, Pauli(z_p, x_p)])
+                pauli_list.append([1.0, Pauli((z_p, x_p))])
                 shift += 1
     for i in range(num_nodes):
         degree = np.sum(w[i, :])
         x_p = np.zeros(num_nodes, dtype=np.bool)
         z_p = np.zeros(num_nodes, dtype=np.bool)
         z_p[i] = True
-        pauli_list.append([degree - 1 / 2, Pauli(z_p, x_p)])
+        pauli_list.append([degree - 1 / 2, Pauli((z_p, x_p))])
     opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
     return PauliSumOp.from_list(opflow_list), shift - num_nodes / 2
 

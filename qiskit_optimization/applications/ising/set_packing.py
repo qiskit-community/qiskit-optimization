@@ -58,15 +58,15 @@ def get_operator(list_of_subsets: List) -> Tuple[PauliSumOp, float]:
                 vp = np.zeros(n)
                 vp[i] = 1
                 vp[j] = 1
-                pauli_list.append([A * 0.25, Pauli(vp, wp)])
+                pauli_list.append([A * 0.25, Pauli((vp, wp))])
 
                 vp2 = np.zeros(n)
                 vp2[i] = 1
-                pauli_list.append([A * 0.25, Pauli(vp2, wp)])
+                pauli_list.append([A * 0.25, Pauli((vp2, wp))])
 
                 vp3 = np.zeros(n)
                 vp3[j] = 1
-                pauli_list.append([A * 0.25, Pauli(vp3, wp)])
+                pauli_list.append([A * 0.25, Pauli((vp3, wp))])
 
                 shift += A * 0.25
 
@@ -74,7 +74,7 @@ def get_operator(list_of_subsets: List) -> Tuple[PauliSumOp, float]:
         wp = np.zeros(n)
         vp = np.zeros(n)
         vp[i] = 1
-        pauli_list.append([-0.5, Pauli(vp, wp)])
+        pauli_list.append([-0.5, Pauli((vp, wp))])
         shift += -0.5
 
     opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]

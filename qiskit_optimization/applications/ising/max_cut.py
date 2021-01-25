@@ -50,7 +50,7 @@ def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
                 z_p = np.zeros(num_nodes, dtype=np.bool)
                 z_p[i] = True
                 z_p[j] = True
-                pauli_list.append([0.5 * weight_matrix[i, j], Pauli(z_p, x_p)])
+                pauli_list.append([0.5 * weight_matrix[i, j], Pauli((z_p, x_p))])
                 shift -= 0.5 * weight_matrix[i, j]
     opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
     return PauliSumOp.from_list(opflow_list), shift
