@@ -39,7 +39,7 @@ To do this follow the instructions in the
 
 ### Optional Installs
 
-* **IBM CPLEX** may be installed using `pip install qiskit-optimization[cplex]` to enable the reading of `LP` files.
+* **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files.
 
 ### Creating Your First Optimization Programming Experiment in Qiskit
 
