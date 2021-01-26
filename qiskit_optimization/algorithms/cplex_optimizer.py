@@ -56,7 +56,7 @@ class CplexOptimizer(OptimizationAlgorithm):
             raise MissingOptionalLibraryError(
                 libname='CPLEX',
                 name='CplexOptimizer',
-                pip_install='pip install qiskit-optimization[cplex]')
+                pip_install="pip install 'qiskit-optimization[cplex]'")
 
         self._disp = disp
 
