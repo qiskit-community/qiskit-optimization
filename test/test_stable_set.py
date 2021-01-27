@@ -17,7 +17,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import EfficientSU2
-from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import L_BFGS_B
 from qiskit_optimization.applications.ising import stable_set
@@ -30,7 +30,7 @@ class TestStableSet(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         self.seed = 8123179
-        aqua_globals.random_seed = self.seed
+        algorithm_globals.random_seed = self.seed
         self.num_nodes = 5
         self.w = random_graph(self.num_nodes, edge_prob=0.5)
         self.qubit_op, self.offset = stable_set.get_operator(self.w)
@@ -49,8 +49,8 @@ class TestStableSet(QiskitOptimizationTestCase):
     def test_stable_set_vqe(self):
         """ VQE Stable set  test """
         q_i = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(EfficientSU2(reps=3, entanglement='linear'),
                      L_BFGS_B(maxfun=6000),
                      quantum_instance=q_i).compute_minimum_eigenvalue(self.qubit_op)

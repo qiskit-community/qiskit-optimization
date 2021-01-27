@@ -16,7 +16,7 @@ import unittest
 from test import QiskitOptimizationTestCase
 import numpy as np
 
-from qiskit.utils import aqua_globals
+from qiskit.utils import algorithm_globals
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.applications.ising import tsp
 from qiskit_optimization.applications.ising.common import sample_most_likely
@@ -28,7 +28,7 @@ class TestTSP(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         self.seed = 80598
-        aqua_globals.random_seed = self.seed
+        algorithm_globals.random_seed = self.seed
         self.num_nodes = 3
         self.ins = tsp.random_tsp(self.num_nodes)
         self.qubit_op, self.offset = tsp.get_operator(self.ins)

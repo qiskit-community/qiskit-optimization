@@ -69,7 +69,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.6",
     extras_require={
-        'cplex': ["cplex; python_version >= '3.6' and python_version < '3.9'"],
+        'cplex': ["cplex; python_version < '3.9'"],
     },
     zip_safe=False
 )

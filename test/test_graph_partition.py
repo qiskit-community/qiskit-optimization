@@ -17,7 +17,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import SPSA
 from qiskit_optimization.applications.ising import graph_partition
@@ -29,7 +29,7 @@ class TestGraphPartition(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        aqua_globals.random_seed = 100
+        algorithm_globals.random_seed = 100
         self.num_nodes = 4
         self.w = random_graph(self.num_nodes, edge_prob=0.8, weight_range=10)
         self.qubit_op, self.offset = graph_partition.get_operator(self.w)
@@ -70,12 +70,12 @@ class TestGraphPartition(QiskitOptimizationTestCase):
 
     def test_graph_partition_vqe(self):
         """ Graph Partition VQE test """
-        aqua_globals.random_seed = 10213
+        algorithm_globals.random_seed = 10213
         wavefunction = RealAmplitudes(self.qubit_op.num_qubits, insert_barriers=True,
                                       reps=5, entanglement='linear')
         q_i = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(wavefunction,
                      SPSA(maxiter=300),
                      max_evals_grouped=2,

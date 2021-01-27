@@ -18,7 +18,7 @@ the issue then ensure changes are made to readme too.
 
 import unittest
 from test import QiskitOptimizationTestCase
-from qiskit.utils import aqua_globals
+from qiskit.utils import algorithm_globals
 
 # pylint: disable=import-outside-toplevel,redefined-builtin
 
@@ -87,7 +87,7 @@ class TestReadmeSample(QiskitOptimizationTestCase):
             try:
                 print(f'Trial number {idx+1}')
                 # Fix the random seed of SPSA (Optional)
-                aqua_globals.random_seed = 123
+                algorithm_globals.random_seed = 123
                 result = self._sample_code()
                 np.testing.assert_array_almost_equal(result.x, [1, 0, 1, 0])
                 self.assertAlmostEqual(result.fval, 4.0)

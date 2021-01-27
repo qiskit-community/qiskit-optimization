@@ -18,7 +18,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 
 from qiskit.circuit.library import TwoLocal
-from qiskit.utils import QuantumInstance, aqua_globals
+from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import SPSA
 from qiskit_optimization.applications.ising import set_packing
@@ -30,7 +30,7 @@ class TestSetPacking(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        aqua_globals.random_seed = 2752
+        algorithm_globals.random_seed = 2752
         input_file = self.get_resource_path('sample.setpacking')
         with open(input_file) as file:
             self.list_of_subsets = json.load(file)
@@ -75,8 +75,8 @@ class TestSetPacking(QiskitOptimizationTestCase):
         wavefunction = TwoLocal(rotation_blocks='ry', entanglement_blocks='cz',
                                 reps=3, entanglement='linear')
         q_i = QuantumInstance(Aer.get_backend('qasm_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(wavefunction,
                      SPSA(maxiter=200),
                      max_evals_grouped=2,
