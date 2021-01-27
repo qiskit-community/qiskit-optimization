@@ -17,7 +17,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import COBYLA
 from qiskit_optimization.applications.ising import clique
@@ -31,7 +31,7 @@ class TestClique(QiskitOptimizationTestCase):
         super().setUp()
         self.k = 5  # K means the size of the clique
         self.seed = 100
-        aqua_globals.random_seed = self.seed
+        algorithm_globals.random_seed = self.seed
         self.num_nodes = 5
         self.w = random_graph(self.num_nodes, edge_prob=0.8, weight_range=10)
         self.qubit_op, self.offset = clique.get_operator(self.w, self.k)
@@ -65,10 +65,10 @@ class TestClique(QiskitOptimizationTestCase):
 
     def test_clique_vqe(self):
         """ VQE Clique test """
-        aqua_globals.random_seed = 10598
+        algorithm_globals.random_seed = 10598
         q_i = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(RealAmplitudes(reps=5, entanglement='linear'),
                      COBYLA(),
                      max_evals_grouped=2,

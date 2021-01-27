@@ -17,7 +17,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import SPSA
 from qiskit_optimization.applications.ising import partition
@@ -44,10 +44,10 @@ class TestSetPacking(QiskitOptimizationTestCase):
 
     def test_partition_vqe(self):
         """ Partition VQE test """
-        aqua_globals.random_seed = 100
+        algorithm_globals.random_seed = 100
         q_i = QuantumInstance(BasicAer.get_backend('qasm_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(RealAmplitudes(reps=5, entanglement='linear'),
                      SPSA(maxiter=200),
                      max_evals_grouped=2,

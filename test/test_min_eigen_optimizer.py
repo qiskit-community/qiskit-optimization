@@ -21,7 +21,7 @@ from ddt import data, ddt
 
 from qiskit import BasicAer
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.utils import QuantumInstance, aqua_globals
+from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import QAOA, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA
 from qiskit_optimization.algorithms import (CplexOptimizer, MinimumEigenOptimizer)
@@ -163,7 +163,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def test_samples(self):
         """Test samples"""
         SUCCESS = OptimizationResultStatus.SUCCESS  # pylint: disable=invalid-name
-        aqua_globals.random_seed = 123
+        algorithm_globals.random_seed = 123
         quantum_instance = QuantumInstance(backend=BasicAer.get_backend('qasm_simulator'),
                                            seed_simulator=123, seed_transpiler=123,
                                            shots=1000)

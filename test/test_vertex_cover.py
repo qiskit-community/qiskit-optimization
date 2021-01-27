@@ -18,7 +18,7 @@ import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import EfficientSU2
 
-from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import SPSA
 from qiskit_optimization.applications.ising import vertex_cover
@@ -31,7 +31,7 @@ class TestVertexCover(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         self.seed = 100
-        aqua_globals.random_seed = self.seed
+        algorithm_globals.random_seed = self.seed
         self.num_nodes = 3
         self.w = random_graph(self.num_nodes, edge_prob=0.8, weight_range=10)
         self.qubit_op, self.offset = vertex_cover.get_operator(self.w)
@@ -68,11 +68,11 @@ class TestVertexCover(QiskitOptimizationTestCase):
 
     def test_vertex_cover_vqe(self):
         """ Vertex Cover VQE test """
-        aqua_globals.random_seed = self.seed
+        algorithm_globals.random_seed = self.seed
 
         q_i = QuantumInstance(BasicAer.get_backend('qasm_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(EfficientSU2(reps=3),
                      SPSA(maxiter=200),
                      max_evals_grouped=2,

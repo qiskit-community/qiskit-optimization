@@ -18,7 +18,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from qiskit import BasicAer
 from qiskit.circuit.library import EfficientSU2
-from qiskit.utils import aqua_globals, QuantumInstance
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit.algorithms import NumPyMinimumEigensolver, VQE
 from qiskit.algorithms.optimizers import COBYLA
 from qiskit_optimization.applications.ising import exact_cover
@@ -66,10 +66,10 @@ class TestExactCover(QiskitOptimizationTestCase):
 
     def test_exact_cover_vqe(self):
         """ Exact Cover VQE test """
-        aqua_globals.random_seed = 10598
+        algorithm_globals.random_seed = 10598
         q_i = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
-                              seed_simulator=aqua_globals.random_seed,
-                              seed_transpiler=aqua_globals.random_seed)
+                              seed_simulator=algorithm_globals.random_seed,
+                              seed_transpiler=algorithm_globals.random_seed)
         result = VQE(EfficientSU2(self.qubit_op.num_qubits, reps=5),
                      COBYLA(),
                      max_evals_grouped=2,

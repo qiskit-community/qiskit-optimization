@@ -26,7 +26,7 @@ from collections import namedtuple
 import numpy as np
 from qiskit.quantum_info import Pauli
 
-from qiskit.utils import aqua_globals
+from qiskit.utils import algorithm_globals
 from qiskit.opflow import PauliSumOp
 
 logger = logging.getLogger(__name__)
@@ -65,9 +65,9 @@ def random_tsp(n, low=0, high=100, savefile=None, seed=None, name='tmp'):
     """
     assert n > 0
     if seed:
-        aqua_globals.random_seed = seed
+        algorithm_globals.random_seed = seed
 
-    coord = aqua_globals.random.uniform(low, high, (n, 2))
+    coord = algorithm_globals.random.uniform(low, high, (n, 2))
     ins = calc_distance(coord, name)
     if savefile:
         with open(savefile, 'w') as outfile:

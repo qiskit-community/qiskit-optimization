@@ -20,7 +20,7 @@ import retworkx as rx
 import numpy as np
 from docplex.mp.model import Model
 
-from qiskit.utils import aqua_globals
+from qiskit.utils import algorithm_globals
 from qiskit.opflow import I, Z
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization import QiskitOptimizationError
@@ -85,7 +85,7 @@ class TestDocplex(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        aqua_globals.random_seed = 100
+        algorithm_globals.random_seed = 100
 
     def test_validation(self):
         """ Validation Test """
@@ -114,7 +114,7 @@ class TestDocplex(QiskitOptimizationTestCase):
     def test_auto_define_penalty(self):
         """ Auto define Penalty test """
         # check _auto_define_penalty() for positive coefficients.
-        positive_coefficients = aqua_globals.random.random((10, 10))
+        positive_coefficients = algorithm_globals.random.random((10, 10))
         for i in range(10):
             mdl = Model(name='Positive_auto_define_penalty')
             x = {j: mdl.binary_var(name='x_{0}'.format(j)) for j in range(10)}
@@ -125,7 +125,7 @@ class TestDocplex(QiskitOptimizationTestCase):
             self.assertEqual(isclose(actual, expected), True)
 
         # check _auto_define_penalty() for negative coefficients
-        negative_coefficients = -1 * aqua_globals.random.random((10, 10))
+        negative_coefficients = -1 * algorithm_globals.random.random((10, 10))
         for i in range(10):
             mdl = Model(name='Negative_auto_define_penalty')
             x = {j: mdl.binary_var(name='x_{0}'.format(j)) for j in range(10)}
@@ -136,7 +136,7 @@ class TestDocplex(QiskitOptimizationTestCase):
             self.assertEqual(isclose(actual, expected), True)
 
         # check _auto_define_penalty() for mixed coefficients
-        mixed_coefficients = aqua_globals.random.integers(-100, 100, (10, 10))
+        mixed_coefficients = algorithm_globals.random.integers(-100, 100, (10, 10))
         for i in range(10):
             mdl = Model(name='Mixed_auto_define_penalty')
             x = {j: mdl.binary_var(name='x_{0}'.format(j)) for j in range(10)}

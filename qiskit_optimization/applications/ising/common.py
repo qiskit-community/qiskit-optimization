@@ -16,7 +16,7 @@ from collections import OrderedDict
 
 import numpy as np
 
-from qiskit.utils import aqua_globals
+from qiskit.utils import algorithm_globals
 from qiskit.opflow import StateFn
 
 
@@ -39,14 +39,14 @@ def random_graph(n, weight_range=10, edge_prob=0.3, negative_weight=True,
     """
     assert weight_range >= 0
     if seed:
-        aqua_globals.random_seed = seed
+        algorithm_globals.random_seed = seed
     w = np.zeros((n, n))
     m = 0
     for i in range(n):
         for j in range(i + 1, n):
-            if aqua_globals.random.random() <= edge_prob:
-                w[i, j] = aqua_globals.random.integers(1, weight_range)
-                if aqua_globals.random.random() >= 0.5 and negative_weight:
+            if algorithm_globals.random.random() <= edge_prob:
+                w[i, j] = algorithm_globals.random.integers(1, weight_range)
+                if algorithm_globals.random.random() >= 0.5 and negative_weight:
                     w[i, j] *= -1
                 m += 1
     w += w.T
@@ -73,9 +73,9 @@ def random_number_list(n, weight_range=100, savefile=None, seed=None):
         numpy.ndarray: the list of integer numbers.
     """
     if seed:
-        aqua_globals.random_seed = seed
+        algorithm_globals.random_seed = seed
 
-    number_list = aqua_globals.random.integers(low=1, high=(weight_range + 1), size=n)
+    number_list = algorithm_globals.random.integers(low=1, high=(weight_range + 1), size=n)
     if savefile:
         with open(savefile, 'w') as outfile:
             for i in range(n):
