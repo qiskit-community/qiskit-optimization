@@ -22,9 +22,12 @@ from typing import Tuple
 import logging
 
 import numpy as np
+from docplex.mp.model import Model
 
 from qiskit.quantum_info import Pauli
 from qiskit.opflow import PauliSumOp
+
+from qiskit_optimization import QuadraticProgram
 
 logger = logging.getLogger(__name__)
 
@@ -81,3 +84,45 @@ def get_graph_solution(x):
         numpy.ndarray: graph solution as binary numpy array.
     """
     return 1 - x
+
+
+# todo: review location of this function
+def cut_value(x: np.ndarray, w: np.ndarray):
+    """Compute the value of a cut.
+
+    Args:
+        x (numpy.ndarray): binary string as numpy array.
+        w (numpy.ndarray): adjacency matrix.
+
+    Returns:
+        float: value of the cut.
+    """
+    # pylint: disable=invalid-name
+    return np.dot((1 - x), np.dot(w, x))
+
+
+def max_cut_qp(adjacency_matrix: np.array) -> QuadraticProgram:
+    """
+    Creates the max-cut instance based on the adjacency graph.
+    """
+
+    size = len(adjacency_matrix)
+
+    # todo: should we use DOCplex here?
+    mdl = Model()
+    x = [mdl.binary_var('x%s' % i) for i in range(size)]
+
+    objective_terms = []
+    for i in range(size):
+        for j in range(size):
+            if adjacency_matrix[i, j] != 0.:
+                objective_terms.append(
+                    adjacency_matrix[i, j] * x[i] * (1 - x[j]))
+
+    objective = mdl.sum(objective_terms)
+    mdl.maximize(objective)
+
+    q_p = QuadraticProgram()
+    q_p.from_docplex(mdl)
+
+    return q_p

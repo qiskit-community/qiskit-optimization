@@ -16,7 +16,7 @@ from typing import Optional, Any, Union, List, cast
 import numpy as np
 
 from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
-from qiskit.opflow import StateFn, DictStateFn
+from qiskit.opflow import StateFn, DictStateFn, OperatorBase
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
                                      OptimizationResult, SolutionSample)
 from .. import QiskitOptimizationError
@@ -187,6 +187,14 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         # construct operator and offset
         operator, offset = problem_.to_ising()
 
+        return self._solve_internal(operator, offset, problem_, problem)
+
+    def _solve_internal(self,
+                        operator: OperatorBase,
+                        offset: float,
+                        converted_problem: QuadraticProgram,
+                        original_problem: QuadraticProgram):
+
         # only try to solve non-empty Ising Hamiltonians
         x = None  # type: Optional[Any]
         eigen_result = None  # type: MinimumEigensolverResult
@@ -201,17 +209,17 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             x = None
             raw_samples = None
             if eigen_result.eigenstate is not None:
-                raw_samples = _eigenvector_to_solutions(eigen_result.eigenstate, problem_)
+                raw_samples = _eigenvector_to_solutions(eigen_result.eigenstate, converted_problem)
                 # print(offset, samples)
                 # samples = [(res[0], problem_.objective.sense.value * (res[1] + offset), res[2])
                 #    for res in samples]
-                raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
+                raw_samples.sort(key=lambda x: converted_problem.objective.sense.value * x.fval)
                 x = raw_samples[0].x
                 fval = raw_samples[0].fval
 
         # if Hamiltonian is empty, then the objective function is constant to the offset
         else:
-            x = np.zeros(problem_.get_num_binary_vars())
+            x = np.zeros(converted_problem.get_num_binary_vars())
             fval = offset
             raw_samples = [SolutionSample(x, fval, 1.0, OptimizationResultStatus.SUCCESS)]
 
@@ -219,14 +227,14 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             # if not function value is given, then something went wrong, e.g., a
             # NumPyMinimumEigensolver has been configured with an infeasible filter criterion.
             return MinimumEigenOptimizationResult(x=None, fval=None,
-                                                  variables=problem.variables,
+                                                  variables=original_problem.variables,
                                                   status=OptimizationResultStatus.FAILURE,
                                                   samples=None, raw_samples=None,
                                                   min_eigen_solver_result=eigen_result)
         # translate result back to integers
-        samples = self._interpret_samples(problem, raw_samples)
+        samples = self._interpret_samples(original_problem, raw_samples)
         return cast(MinimumEigenOptimizationResult,
-                    self._interpret(x=x, converters=self._converters, problem=problem,
+                    self._interpret(x=x, converters=self._converters, problem=original_problem,
                                     result_class=MinimumEigenOptimizationResult,
                                     samples=samples, raw_samples=raw_samples,
                                     min_eigen_solver_result=eigen_result))
