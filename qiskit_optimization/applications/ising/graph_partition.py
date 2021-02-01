@@ -53,8 +53,8 @@ def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
     for i in range(num_nodes):
         for j in range(i):
             if weight_matrix[i, j] != 0:
-                x_p = np.zeros(num_nodes, dtype=np.bool)
-                z_p = np.zeros(num_nodes, dtype=np.bool)
+                x_p = np.zeros(num_nodes, dtype=bool)
+                z_p = np.zeros(num_nodes, dtype=bool)
                 z_p[i] = True
                 z_p[j] = True
                 pauli_list.append([-0.5, Pauli((z_p, x_p))])
@@ -63,8 +63,8 @@ def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
     for i in range(num_nodes):
         for j in range(num_nodes):
             if i != j:
-                x_p = np.zeros(num_nodes, dtype=np.bool)
-                z_p = np.zeros(num_nodes, dtype=np.bool)
+                x_p = np.zeros(num_nodes, dtype=bool)
+                z_p = np.zeros(num_nodes, dtype=bool)
                 z_p[i] = True
                 z_p[j] = True
                 pauli_list.append([1, Pauli((z_p, x_p))])

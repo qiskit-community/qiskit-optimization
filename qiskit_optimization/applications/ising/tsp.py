@@ -136,7 +136,7 @@ def get_operator(ins,
     """
     num_nodes = ins.dim
     num_qubits = num_nodes ** 2
-    zero = np.zeros(num_qubits, dtype=np.bool)
+    zero = np.zeros(num_qubits, dtype=bool)
     pauli_list = []
     shift = 0.
     for i in range(num_nodes):
@@ -147,22 +147,22 @@ def get_operator(ins,
                 q = (p__ + 1) % num_nodes
                 shift += ins.w[i, j] / 4
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + p__] = True
                 pauli_list.append([-ins.w[i, j] / 4, Pauli((z_p, zero))])
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[j * num_nodes + q] = True
                 pauli_list.append([-ins.w[i, j] / 4, Pauli((z_p, zero))])
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + p__] = True
                 z_p[j * num_nodes + q] = True
                 pauli_list.append([ins.w[i, j] / 4, Pauli((z_p, zero))])
 
     for i in range(num_nodes):
         for p__ in range(num_nodes):
-            z_p = np.zeros(num_qubits, dtype=np.bool)
+            z_p = np.zeros(num_qubits, dtype=bool)
             z_p[i * num_nodes + p__] = True
             pauli_list.append([penalty, Pauli((z_p, zero))])
             shift += -penalty
@@ -172,15 +172,15 @@ def get_operator(ins,
             for j in range(i):
                 shift += penalty / 2
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + p__] = True
                 pauli_list.append([-penalty / 2, Pauli((z_p, zero))])
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[j * num_nodes + p__] = True
                 pauli_list.append([-penalty / 2, Pauli((z_p, zero))])
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + p__] = True
                 z_p[j * num_nodes + p__] = True
                 pauli_list.append([penalty / 2, Pauli((z_p, zero))])
@@ -190,15 +190,15 @@ def get_operator(ins,
             for q in range(p__):
                 shift += penalty / 2
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + p__] = True
                 pauli_list.append([-penalty / 2, Pauli((z_p, zero))])
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + q] = True
                 pauli_list.append([-penalty / 2, Pauli((z_p, zero))])
 
-                z_p = np.zeros(num_qubits, dtype=np.bool)
+                z_p = np.zeros(num_qubits, dtype=bool)
                 z_p[i * num_nodes + p__] = True
                 z_p[i * num_nodes + q] = True
                 pauli_list.append([penalty / 2, Pauli((z_p, zero))])
