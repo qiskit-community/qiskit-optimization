@@ -25,7 +25,7 @@ We need to maximize sum(x[i]*v[i]) while respecting W_max >= sum(x[i]*w[i])
 
 """
 
-from typing import Tuple, List
+from typing import Tuple, List, cast
 import logging
 import math
 import numpy as np
@@ -97,10 +97,10 @@ def get_operator(values: List[int],
     n = len(values)
     num_values = n + y_size
     pauli_list = []
-    shift = 0
+    shift = 0.
 
     # pylint: disable=invalid-name
-    M = 10 * np.sum(values)
+    M = 10. * cast(float, np.sum(values))
 
     # term for sum(x_i*w_i)**2
     for i in range(n):

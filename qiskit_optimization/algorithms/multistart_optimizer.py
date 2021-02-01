@@ -55,7 +55,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         self._trials = trials
         self._clip = clip
 
-    def multi_start_solve(self, minimize: Callable[[np.array], Tuple[np.array, Any]],
+    def multi_start_solve(self, minimize: Callable[[np.ndarray], Tuple[np.ndarray, Any]],
                           problem: QuadraticProgram) -> OptimizationResult:
         """Applies a multi start method given a local optimizer.
 
@@ -67,8 +67,8 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             The result of the multi start algorithm applied to the problem.
         """
         fval_sol = INFINITY
-        x_sol = None        # type: Optional[np.array]
-        rest_sol = None     # type: Optional[Tuple]
+        x_sol: Optional[np.ndarray] = None
+        rest_sol: Optional[Tuple] = None
 
         # Implementation of multi-start optimizer
         for trial in range(self._trials):

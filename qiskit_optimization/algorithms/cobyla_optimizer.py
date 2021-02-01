@@ -150,7 +150,7 @@ class CobylaOptimizer(MultiStartOptimizer):
                 raise QiskitOptimizationError('Unsupported constraint type!')
 
         # actual minimization function to be called by multi_start_solve
-        def _minimize(x_0: np.array) -> Tuple[np.array, Any]:
+        def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
             x = fmin_cobyla(objective, x_0, constraints, rhobeg=self._rhobeg,
                             rhoend=self._rhoend, maxfun=self._maxfun, disp=self._disp,
                             catol=self._catol)
