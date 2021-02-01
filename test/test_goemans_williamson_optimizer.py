@@ -11,14 +11,14 @@
 # that they have been altered from the originals.
 
 """ Test Goemans-Williamson optimizer. """
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 from qiskit.exceptions import MissingOptionalLibraryError
 
-from qiskit_optimization.algorithms.goemans_williamson_optimizer import GoemansWilliamsonOptimizer, \
-    GoemansWilliamsonOptimizationResult
+from qiskit_optimization.algorithms.goemans_williamson_optimizer \
+    import (GoemansWilliamsonOptimizer, GoemansWilliamsonOptimizationResult)
 from qiskit_optimization.applications.ising.max_cut import max_cut_qp
-from test import QiskitOptimizationTestCase
 
 
 class TestGoemansWilliamson(QiskitOptimizationTestCase):

@@ -50,9 +50,6 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
             status: the termination status of the optimization algorithm.
             all_solutions: all solutions.
             sdp_solution: an SDP solution of the problem.
-
-        Raises:
-            MissingOptionalLibraryError: CVXPY is not installed.
         """
         super().__init__(x, fval, variables, status, None)
         self._all_solutions = all_solutions
@@ -96,6 +93,9 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             unique_cuts: The solve method returns only unique cuts, thus there may be less cuts
                 than ``num_cuts``.
             seed: A seed value for the random number generator.
+
+        Raises:
+            MissingOptionalLibraryError: CVXPY is not installed.
         """
         if not _HAS_CVXPY:
             raise MissingOptionalLibraryError(

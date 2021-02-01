@@ -11,6 +11,10 @@
 # that they have been altered from the originals.
 
 """ Test warm start QAOA optimizer. """
+from test import QiskitOptimizationTestCase
+
+import numpy as np
+
 from docplex.mp.model import Model
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA
@@ -21,9 +25,6 @@ from qiskit_optimization.algorithms.goemans_williamson_optimizer import GoemansW
 from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import MeanAggregator, \
     WarmStartQAOAOptimizer
 from qiskit_optimization.applications.ising.max_cut import max_cut_qp
-from test import QiskitOptimizationTestCase
-
-import numpy as np
 
 
 class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
