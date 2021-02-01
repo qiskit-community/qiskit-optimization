@@ -46,8 +46,8 @@ def get_operator(values: np.ndarray) -> Tuple[PauliSumOp, float]:
     pauli_list = []
     for i in range(n):
         for j in range(i):
-            x_p = np.zeros(n, dtype=np.bool)
-            z_p = np.zeros(n, dtype=np.bool)
+            x_p = np.zeros(n, dtype=bool)
+            z_p = np.zeros(n, dtype=bool)
             z_p[i] = True
             z_p[j] = True
             pauli_list.append([2. * values[i] * values[j], Pauli((z_p, x_p))])
