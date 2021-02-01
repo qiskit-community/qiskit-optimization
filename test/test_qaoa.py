@@ -318,7 +318,7 @@ class TestQAOA(QiskitOptimizationTestCase):
         qaoa = QAOA(optimizer=NELDER_MEAD(disp=True), p=1, quantum_instance=q_i)
         _ = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
 
-        np.testing.assert_almost_equal([-0.8792, 0.3948], qaoa.optimal_params, decimal=4)
+        np.testing.assert_almost_equal([-0.2372, 0.3423], qaoa.optimal_params, decimal=3)
 
 
 if __name__ == '__main__':
