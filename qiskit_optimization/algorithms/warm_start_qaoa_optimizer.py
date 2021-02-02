@@ -24,7 +24,7 @@ from qiskit.circuit import Parameter
 
 from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.algorithms import MinimumEigenOptimizationResult, MinimumEigenOptimizer, \
-    OptimizationAlgorithm
+    OptimizationAlgorithm, OptimizationResultStatus, SolutionSample
 from qiskit_optimization.converters import QuadraticProgramConverter
 from qiskit_optimization.problems import VarType
 
@@ -33,7 +33,7 @@ class BaseAggregator(ABC):
     """A base abstract class for aggregates results"""
 
     def aggregate(self, results: List[MinimumEigenOptimizationResult]) \
-            -> List[Tuple[str, float, float]]:
+            -> List[SolutionSample]:
         """
         Aggregates the results.
 
@@ -50,7 +50,7 @@ class MeanAggregator(BaseAggregator):
     """Aggregates the results by averaging the probability of each sample."""
 
     def aggregate(self, results: List[MinimumEigenOptimizationResult]) \
-            -> List[Tuple[str, float, float]]:
+            -> List[SolutionSample]:
         """
         Args:
             results: List of result objects that need to be combined.
@@ -63,26 +63,37 @@ class MeanAggregator(BaseAggregator):
         # Key: sample code, value: tuple of fval, probability
         dict_samples: Dict[str, Tuple[float, float]] = {}
 
+        def _to_string(x: np.ndarray) -> str:
+            return "".join(str(int(v)) for v in x)
+
+        def _from_string(string) -> np.ndarray:
+            return np.array([float(c) for c in string])
+
         # Sum up all the probabilities in the results
         for result in results:
             for sample in result.samples:
-                state, fval, prob = sample[0], sample[1], sample[2]
+                # state, fval, prob = sample[0], sample[1], sample[2]
+                state, fval, prob = _to_string(sample.x), sample.fval, sample.probability
                 if state in dict_samples:
                     dict_samples[state] = (fval, dict_samples[state][1] + prob)
                 else:
                     dict_samples[state] = (fval, prob)
 
         # Divide by the number of results to normalize
-        new_samples = []
+        aggregated_samples = []
         num_results = len(results)
         for state in dict_samples:
-            sample = (state, dict_samples[state][0], dict_samples[state][1] / num_results)
-            new_samples.append(sample)
+            # sample = (state, dict_samples[state][0], dict_samples[state][1] / num_results)
+            sample = SolutionSample(x=_from_string(state),
+                                    fval=dict_samples[state][0],
+                                    probability=dict_samples[state][1] / num_results,
+                                    status=OptimizationResultStatus.SUCCESS)
+            aggregated_samples.append(sample)
 
         # new_samples.sort(key=lambda sample: problem.objective.sense.value * sample[1])
         # x = [float(e) for e in new_samples[0][0]]
 
-        return new_samples
+        return aggregated_samples
 
 
 class WarmStartQAOACircuitFactory:
@@ -178,7 +189,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                  pre_solver: OptimizationAlgorithm,
                  relax_for_pre_solver: bool,
                  qaoa: QAOA,
-                 epsilon: Optional[float] = None,
+                 epsilon: float = 0.25,
                  num_initial_solutions: int = 1,
                  circuit_factory: Optional[WarmStartQAOACircuitFactory] = None,
                  aggregator: Optional[BaseAggregator] = None,
@@ -186,11 +197,12 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                  converters: Optional[Union[QuadraticProgramConverter,
                                             List[QuadraticProgramConverter]]] = None
                  ) -> None:
-        """ Initializes the warm start minimum eigen optimizer. For correct initialization either
-            ``epsilon`` or ``circuit_factory`` must be specified. If only ``epsilon`` is specified,
-            then a default ``WarmStartQAOACircuitFactory`` is created. If only ``circuit_factory``
-            is specified then this instance is used in the implementation. If both parameters are
-            specified then the circuit factory is used and ``epsilon`` is no longer relevant.
+        """ Initializes the optimizer. For correct initialization either
+            ``epsilon`` or ``circuit_factory`` must be passed. If only ``epsilon`` is specified
+            (either an explicit value or the default one), then an instance of
+            :class:`~qiskit.optimization.algorithms.WarmStartQAOACircuitFactory` is created.
+            If ``circuit_factory`` is specified then this instance is used in the implementation
+            and ``epsilon`` value is ignored.
 
         Args:
             pre_solver: An instance of an optimizer to solve the relaxed version of the problem.
@@ -202,11 +214,13 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                 xi = 1-epsilon if xi > epsilon.
                 The regularization parameter epsilon should be between 0 and 0.5. When it
                 is 0.5 then warm start corresponds to standard QAOA. If ``circuit_factory`` is
-                specified then this parameter is ignored.
-            num_initial_solutions: A number of relaxed (continuous) solutions to use.
-            circuit_factory: An instance of the circuit factory to be used to create circuits for
-                the initial state and mixer. If none is passed then a default one,
-                ``WarmStartQAOACircuitFactory`` is created using ``epsilon`` parameter.
+                specified then this parameter is ignored. Default value is 0.25.
+            num_initial_solutions: An optional number of relaxed (continuous) solutions to use.
+                Default value is 1.
+            circuit_factory: An optional instance of the circuit factory to be used to create
+                circuits for the initial state and mixer. If None is specified then a default one,
+                an instance of :class:`~qiskit.optimization.algorithms.WarmStartQAOACircuitFactory`
+                is created using the value of the ``epsilon`` parameter.
             aggregator: Class that aggregates different results. This is used if the pre-solver
                 returns several initial states.
             penalty: The penalty factor to be used, or ``None`` for applying a default logic.
@@ -215,14 +229,9 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                 :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` will be used.
 
         Raises:
-            QiskitOptimizationError: if both ``epsilon`` and ``circuit_factory`` are not specified
-                or ``epsilon`` value is not in the range [0, 0.5].
+            QiskitOptimizationError: if ``epsilon`` is not in the range [0, 0.5].
         """
-        if epsilon is None and circuit_factory is None:
-            raise QiskitOptimizationError(
-                'Either epsilon or circuit_factory must be specified for the warm start QAOA')
-
-        if epsilon is not None and (epsilon < 0. or epsilon > 0.5):
+        if epsilon < 0. or epsilon > 0.5:
             raise QiskitOptimizationError(
                 'Epsilon for warm-start QAOA needs to be between 0 and 0.5.')
 
@@ -233,7 +242,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         self._num_initial_solutions = num_initial_solutions
 
         if circuit_factory is None:
-            circuit_factory = WarmStartQAOACircuitFactory(self._epsilon)
+            circuit_factory = WarmStartQAOACircuitFactory(epsilon)
         self._circuit_factory = circuit_factory
 
         if num_initial_solutions > 1 and aggregator is None:
@@ -255,12 +264,13 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
             The result of the optimizer applied to the problem.
 
         Raises:
-            QiskitOptimizationError: If problem not compatible.
+            QiskitOptimizationError: If problem not compatible or the presolver can't solve
+                a problem.
         """
 
-        msg = self.get_compatibility_msg(problem)
-        if len(msg) > 0:
-            raise QiskitOptimizationError('Incompatible problem: {}'.format(msg))
+        message = self.get_compatibility_msg(problem)
+        if len(message) > 0:
+            raise QiskitOptimizationError(f"Incompatible problem: {message}")
 
         # convert problem to QUBO or another form if converters are specified
         converted_problem = self._convert(problem, self._converters)
@@ -272,16 +282,21 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
             pre_solver_problem = converted_problem
 
         opt_result = self._pre_solver.solve(pre_solver_problem)
-        num_initial_solutions = min(self._num_initial_solutions, len(opt_result.samples))
-        initial_solutions = opt_result.samples[:num_initial_solutions]
+        if opt_result.status != OptimizationResultStatus.SUCCESS:
+            raise QiskitOptimizationError(f"Presolver returned status {opt_result.status}, "
+                                          f"the problem can't be solved")
+
+        # we pick only a certain number of the pre-solved solutions.
+        num_pre_solutions = min(self._num_initial_solutions, len(opt_result.samples))
+        pre_solutions = opt_result.samples[:num_pre_solutions]
 
         # construct operator and offset
         operator, offset = converted_problem.to_ising()
 
-        results = []  # type: List[MinimumEigenOptimizationResult]
-        for initial_solution in initial_solutions:
+        results: List[MinimumEigenOptimizationResult] = []
+        for pre_solution in pre_solutions:
             # Set the solver using the result of the pre-solver.
-            initial_variables = self._circuit_factory.create_initial_variables(initial_solution.x)
+            initial_variables = self._circuit_factory.create_initial_variables(pre_solution.x)
             self._qaoa.initial_state = self._circuit_factory.create_initial_state(initial_variables)
             self._qaoa.mixer = self._circuit_factory.create_mixer(initial_variables)
 
@@ -294,12 +309,15 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         else:
             samples = self._aggregator.aggregate(results)
 
-            samples.sort(key=lambda sample: problem.objective.sense.value * sample[1])
-            x = [float(e) for e in samples[0][0]]
+            # List[Tuple[str, float, float]
+            # todo: converted problem or original problem sense?
+            samples.sort(key=lambda sample: converted_problem.objective.sense.value * sample.fval)
 
             # translate result back to the original variables
             return cast(MinimumEigenOptimizationResult,
-                        self._interpret(x=x, converters=self._converters, problem=problem,
+                        self._interpret(x=samples[0].x,
+                                        problem=problem,
+                                        converters=self._converters,
                                         result_class=MinimumEigenOptimizationResult,
                                         samples=samples))
 

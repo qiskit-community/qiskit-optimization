@@ -22,7 +22,7 @@ from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus, \
-    OptimizationAlgorithm
+    OptimizationAlgorithm, SolutionSample
 from qiskit_optimization.applications.ising.max_cut import cut_value
 from qiskit_optimization.problems import Variable
 
@@ -40,7 +40,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
     """
     def __init__(self, x: Optional[Union[List[float], np.ndarray]], fval: float,
                  variables: List[Variable], status: OptimizationResultStatus,
-                 all_solutions: Optional[List[Tuple[np.ndarray, float]]],
+                 samples: Optional[List[SolutionSample]],
                  sdp_solution: np.ndarray) -> None:
         """
         Args:
@@ -48,21 +48,11 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
             fval: the optimal function value.
             variables: the list of variables of the optimization problem.
             status: the termination status of the optimization algorithm.
-            all_solutions: all solutions.
+            samples: the solution samples.
             sdp_solution: an SDP solution of the problem.
         """
-        super().__init__(x, fval, variables, status, None)
-        self._all_solutions = all_solutions
+        super().__init__(x, fval, variables, status, samples=samples)
         self._sdp_solution = sdp_solution
-
-    @property
-    def explored_solutions(self) -> Optional[List[Tuple[np.ndarray, float]]]:
-        """
-        Returns:
-            All generated solutions and their values.
-
-        """
-        return self._all_solutions
 
     @property
     def sdp_solution(self) -> np.ndarray:
@@ -109,7 +99,6 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         self._unique_cuts = unique_cuts
         np.random.seed(seed)
 
-    # todo: implement
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with the optimizer implementing this method.
 
@@ -119,7 +108,12 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         Returns:
             Returns the incompatibility message. If the message is empty no issues were found.
         """
-        raise NotImplementedError
+        message = ""
+        if problem.get_num_binary_vars() != problem.get_num_vars():
+            message = f"Only binary variables are supported, while the total number of variables " \
+                      f"{problem.get_num_vars()} and there are {problem.get_num_binary_vars()} " \
+                      f"binary variables across them"
+        return message
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
         """
@@ -131,26 +125,35 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         Returns:
             cuts: A list of generated cuts.
         """
+        self._verify_compatibility(problem)
+
         adj_matrix = self._extract_adjacency_matrix(problem)
 
         chi = self._solve_max_cut_sdp(adj_matrix)
 
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
-        solutions = [(cuts[i, :], cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)]
+        numeric_solutions = [(cuts[i, :],
+                              cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)]
 
         if self._sort_cuts:
-            solutions.sort(key=lambda x: -x[1])
+            numeric_solutions.sort(key=lambda x: -x[1])
 
         if self._unique_cuts:
-            solutions = self._get_unique_cuts(solutions)
+            numeric_solutions = self._get_unique_cuts(numeric_solutions)
 
-        solutions = solutions[:self._num_cuts]
-        return GoemansWilliamsonOptimizationResult(x=solutions[0][0],
-                                                   fval=solutions[0][1],
+        numeric_solutions = numeric_solutions[:self._num_cuts]
+        samples = [SolutionSample(
+            x=solution[0],
+            fval=solution[1],
+            probability=1.0 / len(numeric_solutions),
+            status=OptimizationResultStatus.SUCCESS) for solution in numeric_solutions]
+
+        return GoemansWilliamsonOptimizationResult(x=samples[0].x,
+                                                   fval=samples[0].fval,
                                                    variables=problem.variables,
                                                    status=OptimizationResultStatus.SUCCESS,
-                                                   all_solutions=solutions,
+                                                   samples=samples,
                                                    sdp_solution=chi)
 
     def _get_unique_cuts(self, solutions: List[Tuple[np.ndarray, float]]) \
@@ -180,7 +183,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         return unique_cuts
 
     @staticmethod
-    def _extract_adjacency_matrix(problem: QuadraticProgram) -> np.array:
+    def _extract_adjacency_matrix(problem: QuadraticProgram) -> np.ndarray:
         """
         Extracts the adjacency matrix from the given quadratic program.
 
@@ -204,9 +207,6 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         Returns:
             chi: a list of length |V| where the i-th element is +1 or -1, representing which
                 set the it-h vertex is in. Returns None if an error occurs.
-
-        Raises:
-            MissingOptionalLibraryError: if CVXPY is not installed.
         """
         num_vertices = len(adj_matrix)
         constraints, expr = [], 0

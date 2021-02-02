@@ -101,7 +101,7 @@ def cut_value(x: np.ndarray, w: np.ndarray):
     return np.dot((1 - x), np.dot(w, x))
 
 
-def max_cut_qp(adjacency_matrix: np.array) -> QuadraticProgram:
+def max_cut_qp(adjacency_matrix: np.ndarray) -> QuadraticProgram:
     """
     Creates the max-cut instance based on the adjacency graph.
     """

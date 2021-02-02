@@ -70,6 +70,7 @@ setuptools.setup(
     python_requires=">=3.6",
     extras_require={
         'cplex': ["cplex; python_version < '3.9'"],
+        'cvx': ['cvxpy>1.0.0,!=1.1.0,!=1.1.1,!=1.1.2'],
     },
     zip_safe=False
 )
