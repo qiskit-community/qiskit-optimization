@@ -24,7 +24,7 @@ import numpy as np
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
 from docplex.mp.constr import QuadraticConstraint as DocplexQuadraticConstraint
-from docplex.mp.linear import Var
+from docplex.mp.dvar import Var
 from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from docplex.mp.quad import QuadExpr
