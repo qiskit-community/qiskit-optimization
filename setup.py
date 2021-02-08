@@ -23,7 +23,7 @@ requirements = [
     "scipy>=1.4",
     "numpy>=1.17",
     "psutil>=5",
-    "docplex>=2.16.196",
+    "docplex",
     "setuptools>=40.1.0",
     "retworkx>=0.5.0",
     "dataclasses; python_version < '3.7'"
