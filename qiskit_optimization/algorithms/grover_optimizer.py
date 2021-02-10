@@ -19,6 +19,7 @@ from typing import Optional, Dict, Union, List, cast
 
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
+from qiskit.algorithms import AmplificationProblem
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
@@ -211,10 +212,12 @@ class GroverOptimizer(OptimizationAlgorithm):
                 rotations += rotation_count
                 # Apply Grover's Algorithm to find values below the threshold.
                 # TODO: Utilize Grover's incremental feature - requires changes to Grover.
-                grover = Grover(oracle,
-                                state_preparation=a_operator,
-                                good_state=is_good_state)
-                circuit = grover.construct_circuit(rotation_count, measurement=measurement)
+                amp_problem = AmplificationProblem(oracle=oracle,
+                                                   state_preparation=a_operator,
+                                                   is_good_state=is_good_state)
+                grover = Grover()
+                circuit = grover.construct_circuit(problem=amp_problem,
+                                                   power=rotation_count, measurement=measurement)
 
                 # Get the next outcome.
                 outcome = self._measure(circuit)
