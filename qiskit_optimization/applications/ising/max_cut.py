@@ -1,4 +1,5 @@
 import copy
+from functools import lru_cache
 
 import networkx as nx
 from docplex.mp.model import Model
@@ -12,16 +13,17 @@ class Maxcut(GraphProblem):
     def __init__(self, g=None):
         self._g = copy.deepcopy(g)
 
+    @lru_cache()
     def to_quadratic_problem(self):
         mdl = Model()
 
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self.g.number_of_nodes())}
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self._g.number_of_nodes())}
 
-        for u, v in self.g.edges:
-            self.g.edges[u, v].setdefault('weight', 1)
+        for u, v in self._g.edges:
+            self._g.edges[u, v].setdefault('weight', 1)
 
-        objective = mdl.sum(self.g.edges[i, j]['weight'] * x[i]
-                            * (1 - x[j]) for i, j in self.g.edges)
+        objective = mdl.sum(self._g.edges[i, j]['weight'] * x[i]
+                            * (1 - x[j]) for i, j in self._g.edges)
 
         mdl.maximize(objective)
 
@@ -29,9 +31,9 @@ class Maxcut(GraphProblem):
 
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
-        #print(qp.export_as_lp_string())
+        # print(qp.export_as_lp_string())
 
-        return self.qp
+        return qp
 
     # def is_feasible(self, x):
     #     return self.qp.is_feasible(x)
@@ -44,7 +46,7 @@ class Maxcut(GraphProblem):
 
     def plot_graph(self, x, pos=None):
         colors = ['r' if value == 0 else 'b' for value in x]
-        nx.draw(self.g, node_color=colors, pos=pos)
+        nx.draw(self._g, node_color=colors, pos=pos)
 
     def g(self):
         return self._g
