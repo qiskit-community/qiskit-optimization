@@ -10,11 +10,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-# todo: update documentation
 """Implementation of the warm start QAOA optimizer."""
 
 import copy
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Optional, List, Union, Dict, Tuple, cast
 
 import numpy as np
@@ -22,16 +21,18 @@ from qiskit import QuantumCircuit
 from qiskit.algorithms import QAOA
 from qiskit.circuit import Parameter
 
-from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
-from qiskit_optimization.algorithms import MinimumEigenOptimizationResult, MinimumEigenOptimizer, \
-    OptimizationAlgorithm, OptimizationResultStatus, SolutionSample
-from qiskit_optimization.converters import QuadraticProgramConverter
-from qiskit_optimization.problems import VarType
+from .minimum_eigen_optimizer import MinimumEigenOptimizer, MinimumEigenOptimizationResult
+from .optimization_algorithm import OptimizationAlgorithm, OptimizationResultStatus, SolutionSample
+from ..converters.quadratic_program_converter import QuadraticProgramConverter
+from ..exceptions import QiskitOptimizationError
+from ..problems.quadratic_program import QuadraticProgram
+from ..problems.variable import VarType
 
 
 class BaseAggregator(ABC):
     """A base abstract class for aggregates results"""
 
+    @abstractmethod
     def aggregate(self, results: List[MinimumEigenOptimizationResult]) \
             -> List[SolutionSample]:
         """
@@ -90,13 +91,10 @@ class MeanAggregator(BaseAggregator):
                                     status=OptimizationResultStatus.SUCCESS)
             aggregated_samples.append(sample)
 
-        # new_samples.sort(key=lambda sample: problem.objective.sense.value * sample[1])
-        # x = [float(e) for e in new_samples[0][0]]
-
         return aggregated_samples
 
 
-class WarmStartQAOACircuitFactory:
+class WarmStartQAOAFactory:
     """
     A factory that produces quantum circuits for the QAOA implementation. The methods of this
     factory can be overridden to modify behavior of QAOA. This implementation generates quantum
@@ -111,10 +109,14 @@ class WarmStartQAOACircuitFactory:
                 xi = 1-epsilon if xi > epsilon.
                 The regularization parameter epsilon should be between 0 and 0.5. When it
                 is 0.5 then warm start corresponds to standard QAOA.
+
         Raises:
-            AquaError: if ``epsilon`` is not specified for the warm start QAOA or value is not in
-                the range [0, 0.5].
+            QiskitOptimizationError: if ``epsilon`` is not in the range [0, 0.5].
         """
+        if epsilon < 0. or epsilon > 0.5:
+            raise QiskitOptimizationError(
+                f"Epsilon for warm-start QAOA needs to be between 0 and 0.5, "
+                f"actual value: {epsilon}")
         self._epsilon = epsilon
 
     def create_initial_variables(self, solution: np.ndarray) -> List[float]:
@@ -181,9 +183,15 @@ class WarmStartQAOACircuitFactory:
 
 
 class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
-    # todo: update documentation
     """A meta-algorithm that uses a pre-solver to solve a relaxed version of the problem.
-    Users must implement their own pre solvers by inheriting from the base class."""
+    Users must implement their own pre solvers by inheriting from the base class.
+
+    References:
+
+        [1]: Daniel J. Egger et al., Warm-starting quantum optimization.
+            `arXiv:2009.10095 <https://arxiv.org/abs/2009.10095>`_
+
+    """
 
     def __init__(self,
                  pre_solver: OptimizationAlgorithm,
@@ -191,7 +199,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                  qaoa: QAOA,
                  epsilon: float = 0.25,
                  num_initial_solutions: int = 1,
-                 circuit_factory: Optional[WarmStartQAOACircuitFactory] = None,
+                 circuit_factory: Optional[WarmStartQAOAFactory] = None,
                  aggregator: Optional[BaseAggregator] = None,
                  penalty: Optional[float] = None,
                  converters: Optional[Union[QuadraticProgramConverter,
@@ -233,7 +241,8 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         """
         if epsilon < 0. or epsilon > 0.5:
             raise QiskitOptimizationError(
-                'Epsilon for warm-start QAOA needs to be between 0 and 0.5.')
+                f"Epsilon for warm-start QAOA needs to be between 0 and 0.5, "
+                f"actual value: {epsilon}")
 
         self._pre_solver = pre_solver
         self._relax_for_pre_solver = relax_for_pre_solver
@@ -242,7 +251,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         self._num_initial_solutions = num_initial_solutions
 
         if circuit_factory is None:
-            circuit_factory = WarmStartQAOACircuitFactory(epsilon)
+            circuit_factory = WarmStartQAOAFactory(epsilon)
         self._circuit_factory = circuit_factory
 
         if num_initial_solutions > 1 and aggregator is None:
@@ -304,13 +313,10 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
             results.append(self._solve_internal(operator, offset, converted_problem, problem))
 
         if len(results) == 1:
-            # there's no need to call _interpret, it is done by MinimumEigenOptimizer
+            # there's no need to call _interpret, it is already done by MinimumEigenOptimizer
             return results[0]
         else:
             samples = self._aggregator.aggregate(results)
-
-            # List[Tuple[str, float, float]
-            # todo: converted problem or original problem sense?
             samples.sort(key=lambda sample: converted_problem.objective.sense.value * sample.fval)
 
             # translate result back to the original variables

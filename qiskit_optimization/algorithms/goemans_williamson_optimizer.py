@@ -14,17 +14,18 @@
 Implementation of the Goemans-Williamson algorithm as an optimizer.
 Requires CVXPY to run.
 """
-
+import logging
 from typing import Optional, List, Tuple, Union
 
 import numpy as np
+from cvxpy import DCPError, DGPError, SolverError
 from qiskit.exceptions import MissingOptionalLibraryError
 
-from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus, \
+from .optimization_algorithm import OptimizationResult, OptimizationResultStatus, \
     OptimizationAlgorithm, SolutionSample
-from qiskit_optimization.applications.ising.max_cut import max_cut_value
-from qiskit_optimization.problems import Variable
+from ..applications.ising.max_cut import max_cut_value
+from ..problems.quadratic_program import QuadraticProgram
+from ..problems.variable import Variable
 
 try:
     import cvxpy as cvx
@@ -33,15 +34,18 @@ except ImportError:
     _HAS_CVXPY = False
 
 
+logger = logging.getLogger(__name__)
+
+
 class GoemansWilliamsonOptimizationResult(OptimizationResult):
     """
     Contains results of the Goemans-Williamson algorithm. The properties ``x`` and ``fval`` contain
-    values of just one solution. Explore ``all_solution`` for all possible solutions.
+    values of just one solution. Explore ``samples`` for all possible solutions.
     """
     def __init__(self, x: Optional[Union[List[float], np.ndarray]], fval: float,
                  variables: List[Variable], status: OptimizationResultStatus,
                  samples: Optional[List[SolutionSample]],
-                 sdp_solution: np.ndarray) -> None:
+                 sdp_solution: Optional[np.ndarray] = None) -> None:
         """
         Args:
             x: the optimal value found in the optimization.
@@ -55,7 +59,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
         self._sdp_solution = sdp_solution
 
     @property
-    def sdp_solution(self) -> np.ndarray:
+    def sdp_solution(self) -> Optional[np.ndarray]:
         """
         Returns:
             Returns an SDP solution of the problem.
@@ -89,9 +93,9 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         """
         if not _HAS_CVXPY:
             raise MissingOptionalLibraryError(
-                libname='CVXPY',
-                name='GoemansWilliamsonOptimizer',
-                pip_install='pip install qiskit-optimization[cvxpy]')
+                libname="CVXPY",
+                name="GoemansWilliamsonOptimizer",
+                pip_install="pip install 'qiskit-optimization[cvxpy]'")
         super().__init__()
 
         self._num_cuts = num_cuts
@@ -129,7 +133,13 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
 
         adj_matrix = self._extract_adjacency_matrix(problem)
 
-        chi = self._solve_max_cut_sdp(adj_matrix)
+        try:
+            chi = self._solve_max_cut_sdp(adj_matrix)
+        except (DCPError, DGPError, SolverError):
+            logger.error("Can't solve SDP problem")
+            return GoemansWilliamsonOptimizationResult(x=[], fval=0, variables=problem.variables,
+                                                       status=OptimizationResultStatus.FAILURE,
+                                                       samples=[])
 
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
@@ -225,7 +235,6 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         problem = cvx.Problem(cvx.Maximize(expr), constraints)
         problem.solve()
 
-        # todo: add checks that the problem is solved
         return x.value
 
     def _generate_random_cuts(self, chi: np.ndarray, num_vertices: int) -> np.ndarray:
@@ -241,7 +250,6 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             An array of random cuts.
         """
         eigenvalues = np.linalg.eigh(chi)[0]
-        # todo: weird numbers: 1.001 and 0.00001
         if min(eigenvalues) < 0:
             chi = chi + (1.001 * abs(min(eigenvalues)) * np.identity(num_vertices))
         elif min(eigenvalues) == 0:
@@ -250,5 +258,4 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
 
         r = np.random.normal(size=(self._num_cuts, num_vertices))
 
-        # todo: why "+ 0" ?
         return (np.dot(r, x) > 0) + 0
