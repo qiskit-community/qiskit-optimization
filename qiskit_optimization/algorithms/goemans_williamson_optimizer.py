@@ -18,7 +18,6 @@ import logging
 from typing import Optional, List, Tuple, Union
 
 import numpy as np
-from cvxpy import DCPError, DGPError, SolverError
 from qiskit.exceptions import MissingOptionalLibraryError
 
 from .optimization_algorithm import OptimizationResult, OptimizationResultStatus, \
@@ -29,6 +28,7 @@ from ..problems.variable import Variable
 
 try:
     import cvxpy as cvx
+    from cvxpy import DCPError, DGPError, SolverError
     _HAS_CVXPY = True
 except ImportError:
     _HAS_CVXPY = False
