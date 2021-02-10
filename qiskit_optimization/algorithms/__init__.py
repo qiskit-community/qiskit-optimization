@@ -58,7 +58,7 @@ Algorithms and results
    SlsqpOptimizer
    SolutionSample
    WarmStartQAOAOptimizer
-   WarmStartQAOACircuitFactory
+   WarmStartQAOAFactory
 
 """
 
