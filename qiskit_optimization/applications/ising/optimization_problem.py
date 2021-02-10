@@ -19,3 +19,7 @@ class OptimizationProblem(ABC):
         for i, var in enumerate(qp.variables):
             var_values[var.name] = x[i]
         return qp.substitute_variables(var_values).objective.constant
+
+    @abstractmethod
+    def interpret():
+        raise NotImplementedError

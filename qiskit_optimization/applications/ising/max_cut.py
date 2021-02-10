@@ -10,8 +10,8 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 class Maxcut(GraphProblem):
 
-    def __init__(self, g=None):
-        self._g = g.copy(as_view=True)
+    def __init__(self, g):
+        super().__init__(g)
 
     @lru_cache()
     def to_quadratic_problem(self):
@@ -31,5 +31,11 @@ class Maxcut(GraphProblem):
         colors = ['r' if value == 0 else 'b' for value in x]
         nx.draw(self._g, node_color=colors, pos=pos)
 
-    def g(self):
-        return self._g
+    def interpret(self, x):
+        cut = [[], []]
+        for i, value in enumerate(x):
+            if value == 0:
+                cut[0].append(i)
+            else:
+                cut[1].append(i)
+        return cut
