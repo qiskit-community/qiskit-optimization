@@ -11,7 +11,7 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 class Maxcut(GraphProblem):
 
     def __init__(self, g=None):
-        self._g = copy.deepcopy(g)
+        self._g = g.copy(as_view=True)
 
     @lru_cache()
     def to_quadratic_problem(self):
@@ -49,4 +49,4 @@ class Maxcut(GraphProblem):
         nx.draw(self._g, node_color=colors, pos=pos)
 
     def g(self):
-        return self._g.copy(as_view=True)
+        return self._g
