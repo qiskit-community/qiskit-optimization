@@ -16,33 +16,16 @@ class Maxcut(GraphProblem):
     @lru_cache()
     def to_quadratic_problem(self):
         mdl = Model()
-
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self._g.number_of_nodes())}
-
         for u, v in self._g.edges:
             self._g.edges[u, v].setdefault('weight', 1)
-
         objective = mdl.sum(self._g.edges[i, j]['weight'] * x[i]
                             * (1 - x[j]) for i, j in self._g.edges)
-
         mdl.maximize(objective)
-
-        # print(mdl.export_as_lp_string())
-
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
-        # print(qp.export_as_lp_string())
 
         return qp
-
-    # def is_feasible(self, x):
-    #     return self.qp.is_feasible(x)
-
-    # def objective_value(self, x):
-    #     var_values = {}
-    #     for i, var in enumerate(self.qp.variables):
-    #         var_values[var.name] = x[i]
-    #     return self.qp.substitute_variables(var_values).objective.constant
 
     def plot_graph(self, x, pos=None):
         colors = ['r' if value == 0 else 'b' for value in x]
