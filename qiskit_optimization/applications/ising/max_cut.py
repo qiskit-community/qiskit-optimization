@@ -1,3 +1,5 @@
+import copy
+
 import networkx as nx
 from docplex.mp.model import Model
 
@@ -8,7 +10,7 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 class Maxcut(GraphProblem):
 
     def __init__(self, g=None):
-        self.g = g
+        self.g = copy.deepcopy(g)
 
     def to_quadratic_problem(self):
         mdl = Model()
