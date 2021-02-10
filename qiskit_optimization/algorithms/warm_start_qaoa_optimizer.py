@@ -199,7 +199,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                  qaoa: QAOA,
                  epsilon: float = 0.25,
                  num_initial_solutions: int = 1,
-                 circuit_factory: Optional[WarmStartQAOAFactory] = None,
+                 warming_factory: Optional[WarmStartQAOAFactory] = None,
                  aggregator: Optional[BaseAggregator] = None,
                  penalty: Optional[float] = None,
                  converters: Optional[Union[QuadraticProgramConverter,
@@ -225,8 +225,9 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
                 specified then this parameter is ignored. Default value is 0.25.
             num_initial_solutions: An optional number of relaxed (continuous) solutions to use.
                 Default value is 1.
-            circuit_factory: An optional instance of the circuit factory to be used to create
-                circuits for the initial state and mixer. If None is specified then a default one,
+            warming_factory: An optional instance of the factory to warm start QAOA.
+                This factory is used to create circuits for initial state and mixer.
+                If ``None`` is specified then a default one,
                 an instance of :class:`~qiskit.optimization.algorithms.WarmStartQAOACircuitFactory`
                 is created using the value of the ``epsilon`` parameter.
             aggregator: Class that aggregates different results. This is used if the pre-solver
@@ -250,9 +251,9 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         self._epsilon = epsilon
         self._num_initial_solutions = num_initial_solutions
 
-        if circuit_factory is None:
-            circuit_factory = WarmStartQAOAFactory(epsilon)
-        self._circuit_factory = circuit_factory
+        if warming_factory is None:
+            warming_factory = WarmStartQAOAFactory(epsilon)
+        self._warming_factory = warming_factory
 
         if num_initial_solutions > 1 and aggregator is None:
             aggregator = MeanAggregator()
@@ -305,9 +306,9 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         results: List[MinimumEigenOptimizationResult] = []
         for pre_solution in pre_solutions:
             # Set the solver using the result of the pre-solver.
-            initial_variables = self._circuit_factory.create_initial_variables(pre_solution.x)
-            self._qaoa.initial_state = self._circuit_factory.create_initial_state(initial_variables)
-            self._qaoa.mixer = self._circuit_factory.create_mixer(initial_variables)
+            initial_variables = self._warming_factory.create_initial_variables(pre_solution.x)
+            self._qaoa.initial_state = self._warming_factory.create_initial_state(initial_variables)
+            self._qaoa.mixer = self._warming_factory.create_mixer(initial_variables)
 
             # approximate ground state of operator using min eigen solver.
             results.append(self._solve_internal(operator, offset, converted_problem, problem))
