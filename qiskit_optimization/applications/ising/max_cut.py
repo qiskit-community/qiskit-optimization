@@ -1,83 +1,48 @@
-# This code is part of Qiskit.
-#
-# (C) Copyright IBM 2018, 2021.
-#
-# This code is licensed under the Apache License, Version 2.0. You may
-# obtain a copy of this license in the LICENSE.txt file in the root directory
-# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
-#
-# Any modifications or derivative works of this code must retain this
-# copyright notice, and modified files need to carry a notice indicating
-# that they have been altered from the originals.
+import networkx as nx
+from docplex.mp.model import Model
 
-"""
-Convert max-cut instances into Pauli list
-Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
-Design the max-cut object `w` as a two-dimensional np.array
-e.g., w[i, j] = x means that the weight of a edge between i and j is x
-Note that the weights are symmetric, i.e., w[j, i] = x always holds.
-"""
-
-from typing import Tuple
-import logging
-
-import numpy as np
-
-from qiskit.quantum_info import Pauli
-from qiskit.opflow import PauliSumOp
-
-logger = logging.getLogger(__name__)
+from .graph_problem import GraphProblem
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
-    """Generate Hamiltonian for the max-cut problem of a graph.
+class Maxcut(GraphProblem):
 
-    Args:
-        weight_matrix: adjacency matrix.
+    def __init__(self, g=None):
+        self.g = g
+        self.qp = self.to_quadratic_problem()
 
-    Returns:
-        operator for the Hamiltonian
-        a constant shift for the obj function.
+    def to_quadratic_problem(self):
+        mdl = Model()
 
-    """
-    num_nodes = weight_matrix.shape[0]
-    pauli_list = []
-    shift = 0
-    for i in range(num_nodes):
-        for j in range(i):
-            if weight_matrix[i, j] != 0:
-                x_p = np.zeros(num_nodes, dtype=bool)
-                z_p = np.zeros(num_nodes, dtype=bool)
-                z_p[i] = True
-                z_p[j] = True
-                pauli_list.append([0.5 * weight_matrix[i, j], Pauli((z_p, x_p))])
-                shift -= 0.5 * weight_matrix[i, j]
-    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
-    return PauliSumOp.from_list(opflow_list), shift
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self.g.number_of_nodes())}
 
+        for u, v in self.g.edges:
+            self.g.edges[u, v].setdefault('weight', 1)
 
-def max_cut_value(x, w):
-    """Compute the value of a cut.
+        objective = mdl.sum(self.g.edges[i, j]['weight'] * x[i]
+                            * (1 - x[j]) for i, j in self.g.edges)
 
-    Args:
-        x (numpy.ndarray): binary string as numpy array.
-        w (numpy.ndarray): adjacency matrix.
+        mdl.maximize(objective)
 
-    Returns:
-        float: value of the cut.
-    """
-    # pylint: disable=invalid-name
-    X = np.outer(x, (1 - x))
-    return np.sum(w * X)
+        # print(mdl.export_as_lp_string())
 
+        qp = QuadraticProgram()
+        qp.from_docplex(mdl)
+        #print(qp.export_as_lp_string())
 
-def get_graph_solution(x):
-    """Get graph solution from binary string.
+        self.qp = qp
 
-    Args:
-        x (numpy.ndarray) : binary string as numpy array.
+        return self.qp
 
-    Returns:
-        numpy.ndarray: graph solution as binary numpy array.
-    """
-    return 1 - x
+    # def is_feasible(self, x):
+    #     return self.qp.is_feasible(x)
+
+    # def objective_value(self, x):
+    #     var_values = {}
+    #     for i, var in enumerate(self.qp.variables):
+    #         var_values[var.name] = x[i]
+    #     return self.qp.substitute_variables(var_values).objective.constant
+
+    def plot_graph(self, x, pos=None):
+        colors = ['r' if value == 0 else 'b' for value in x]
+        nx.draw(self.g, node_color=colors, pos=pos)
