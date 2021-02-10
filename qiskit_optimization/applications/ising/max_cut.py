@@ -9,7 +9,6 @@ class Maxcut(GraphProblem):
 
     def __init__(self, g=None):
         self.g = g
-        self.qp = self.to_quadratic_problem()
 
     def to_quadratic_problem(self):
         mdl = Model()
@@ -29,8 +28,6 @@ class Maxcut(GraphProblem):
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
         #print(qp.export_as_lp_string())
-
-        self.qp = qp
 
         return self.qp
 
