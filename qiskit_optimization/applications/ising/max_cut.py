@@ -49,4 +49,4 @@ class Maxcut(GraphProblem):
         nx.draw(self._g, node_color=colors, pos=pos)
 
     def g(self):
-        return self._g
+        return copy.deepcopy(self._g)
