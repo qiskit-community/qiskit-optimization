@@ -23,7 +23,7 @@ from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus, \
     OptimizationAlgorithm, SolutionSample
-from qiskit_optimization.applications.ising.max_cut import cut_value
+from qiskit_optimization.applications.ising.max_cut import max_cut_value
 from qiskit_optimization.problems import Variable
 
 try:
@@ -134,7 +134,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
         numeric_solutions = [(cuts[i, :],
-                              cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)]
+                              max_cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)]
 
         if self._sort_cuts:
             numeric_solutions.sort(key=lambda x: -x[1])
