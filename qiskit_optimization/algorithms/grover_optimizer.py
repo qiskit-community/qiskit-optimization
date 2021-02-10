@@ -126,9 +126,8 @@ class GroverOptimizer(OptimizationAlgorithm):
         oracle = QuantumCircuit(qr_key_value, oracle_bit)
         oracle.z(self._num_key_qubits)  # recognize negative values.
 
-        def is_good_state(self, measurement) -> bool:
+        def is_good_state(self, measurement):
             """Check whether ``measurement`` is a good state or not."""
-            print("is_good_state is called!")
             value = measurement[self._num_key_qubits:self._num_key_qubits + self._num_value_qubits]
             return value[0] == '1'
 
