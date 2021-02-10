@@ -86,5 +86,5 @@ __all__ = ["ADMMOptimizer", "OptimizationAlgorithm", "OptimizationResult", "Base
            "MeanAggregator",
            "MinimumEigenOptimizer", "MinimumEigenOptimizationResult",
            "RecursiveMinimumEigenOptimizer", "RecursiveMinimumEigenOptimizationResult",
-           "IntermediateResult",  "SlsqpOptimizer", "SlsqpOptimizationResult", "SolutionSample",
+           "IntermediateResult", "SlsqpOptimizer", "SlsqpOptimizationResult", "SolutionSample",
            "WarmStartQAOAOptimizer", "WarmStartQAOAFactory"]
