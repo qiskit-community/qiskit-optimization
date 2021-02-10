@@ -11,8 +11,7 @@ class OptimizationProblem(ABC):
         raise NotImplementedError
 
     def is_feasible(self, x):
-        qp = self.to_quadratic_problem()
-        return qp.is_feasible(x)
+        return self.to_quadratic_problem().is_feasible(x)
 
     def objective_value(self, x):
         qp = self.to_quadratic_problem()
