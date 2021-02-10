@@ -10,7 +10,7 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 class Maxcut(GraphProblem):
 
     def __init__(self, g=None):
-        self.g = copy.deepcopy(g)
+        self._g = copy.deepcopy(g)
 
     def to_quadratic_problem(self):
         mdl = Model()
@@ -45,3 +45,6 @@ class Maxcut(GraphProblem):
     def plot_graph(self, x, pos=None):
         colors = ['r' if value == 0 else 'b' for value in x]
         nx.draw(self.g, node_color=colors, pos=pos)
+
+    def g(self):
+        return self._g
