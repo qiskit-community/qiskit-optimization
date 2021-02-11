@@ -29,6 +29,7 @@ dtype
 durr
 eckstein
 ee
+egger
 eigen
 eigensolver
 eigenstate
@@ -42,6 +43,7 @@ fx
 gambella
 geq
 getter
+goemans
 grover
 gset
 hamiltonian
@@ -89,6 +91,7 @@ penality
 pooya
 pre
 preprint
+presolver
 qaoa
 qasm
 qiskit
@@ -107,10 +110,12 @@ rhobeg
 rhoend
 rhs
 ronagh
+rqaoa
 sahar
 satisfiability
 savefile
 scipy
+sdp
 simonetto
 sj
 smode
