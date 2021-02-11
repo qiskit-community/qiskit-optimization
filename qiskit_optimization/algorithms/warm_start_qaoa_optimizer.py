@@ -307,7 +307,8 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         for pre_solution in pre_solutions:
             # Set the solver using the result of the pre-solver.
             initial_variables = self._warm_start_factory.create_initial_variables(pre_solution.x)
-            self._qaoa.initial_state = self._warm_start_factory.create_initial_state(initial_variables)
+            self._qaoa.initial_state = \
+                self._warm_start_factory.create_initial_state(initial_variables)
             self._qaoa.mixer = self._warm_start_factory.create_mixer(initial_variables)
 
             # approximate ground state of operator using min eigen solver.
