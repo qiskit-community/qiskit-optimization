@@ -13,7 +13,6 @@
 """ Test Cplex Optimizer """
 
 import unittest
-from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase
 from ddt import ddt, data
 from qiskit.exceptions import MissingOptionalLibraryError
@@ -44,7 +43,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
 
         # load optimization problem
         problem = QuadraticProgram()
-        lp_file = self.get_resource_path(path.join('resources', filename))
+        lp_file = self.get_resource_path(filename, 'algorithms/resources')
         problem.read_from_lp_file(lp_file)
 
         # solve problem with cplex

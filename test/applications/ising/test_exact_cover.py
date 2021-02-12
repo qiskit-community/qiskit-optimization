@@ -30,7 +30,8 @@ class TestExactCover(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        input_file = self.get_resource_path('sample.exactcover')
+        input_file = self.get_resource_path('sample.exactcover',
+                                            'applications/ising')
         with open(input_file) as file:
             self.list_of_subsets = json.load(file)
             self.qubit_op, _ = exact_cover.get_operator(self.list_of_subsets)
