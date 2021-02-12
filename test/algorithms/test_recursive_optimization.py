@@ -13,7 +13,6 @@
 """Test Recursive Min Eigen Optimizer."""
 
 import unittest
-from os import path
 
 from test import QiskitOptimizationTestCase
 
@@ -45,7 +44,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(path.join('resources', filename))
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
             problem.read_from_lp_file(lp_file)
 
             # solve problem with cplex
@@ -66,7 +65,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             filename = 'op_ip1.lp'
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(path.join('resources', filename))
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
             problem.read_from_lp_file(lp_file)
 
             # get minimum eigen solver

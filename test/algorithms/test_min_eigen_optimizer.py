@@ -13,7 +13,6 @@
 """ Test Min Eigen Optimizer """
 
 import unittest
-from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
@@ -69,7 +68,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(path.join('resources', filename))
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
             problem.read_from_lp_file(lp_file)
 
             # solve problem with cplex
@@ -115,7 +114,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(path.join('resources', filename))
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
             problem.read_from_lp_file(lp_file)
 
             # solve problem

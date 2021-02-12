@@ -29,7 +29,8 @@ class TestSetPacking(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        input_file = self.get_resource_path('sample.partition')
+        input_file = self.get_resource_path('sample.partition',
+                                            'applications/ising')
         number_list = read_numbers_from_file(input_file)
         self.qubit_op, _ = partition.get_operator(number_list)
 
