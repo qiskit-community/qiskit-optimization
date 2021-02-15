@@ -4,18 +4,17 @@ from functools import lru_cache
 import networkx as nx
 from docplex.mp.model import Model
 
-from .graph_problem import GraphProblem
+from .graph_application import GraphApplication
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-class Maxcut(GraphProblem):
+class Maxcut(GraphApplication):
 
     def __init__(self, g):
         super().__init__(g)
 
-    @lru_cache()
-    def to_quadratic_problem(self):
-        mdl = Model()
+    def to_quadratic_program(self):
+        mdl = Model(name='maxcut')
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self._g.number_of_nodes())}
         for u, v in self._g.edges:
             self._g.edges[u, v].setdefault('weight', 1)
@@ -24,7 +23,6 @@ class Maxcut(GraphProblem):
         mdl.maximize(objective)
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
-
         return qp
 
     def plot_graph(self, x, pos=None):

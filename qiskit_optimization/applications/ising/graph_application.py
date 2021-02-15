@@ -1,10 +1,11 @@
-from .optimization_problem import OptimizationProblem
 from abc import abstractmethod
 
 import networkx as nx
 
+from .base_application import BaseApplication
 
-class GraphProblem(OptimizationProblem):
+
+class GraphApplication(BaseApplication):
     """
     An abstract class for graph problems in optimization problems
     """
