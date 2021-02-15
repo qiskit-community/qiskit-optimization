@@ -52,7 +52,58 @@ class TSP(GraphApplication):
     def random_graph(n=5, low=0, high=100, seed=None):
         random.seed(seed)
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
-        g = nx.random_geometric_graph(n, 1+(high-low)**2, pos=pos)
+        g = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
+        for u, v in g.edges:
+            delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
+            g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+        return g
+
+    @staticmethod
+    def parse_tsplib_format(filename):
+        """Read graph in TSPLIB format from file.
+
+        Args:
+            filename (str): name of the file.
+
+        Returns:
+            TspData: instance data.
+
+        """
+        name = ''
+        coord = []
+        with open(filename) as infile:
+            coord_section = False
+            for line in infile:
+                if line.startswith('NAME'):
+                    name = line.split(':')[1]
+                    name.strip()
+                elif line.startswith('TYPE'):
+                    typ = line.split(':')[1]
+                    typ.strip()
+                    if typ != 'TSP':
+                        logger.warning('This supports only "TSP" type. Actual: %s', typ)
+                elif line.startswith('DIMENSION'):
+                    dim = int(line.split(':')[1])
+                    coord = np.zeros((dim, 2))
+                elif line.startswith('EDGE_WEIGHT_TYPE'):
+                    typ = line.split(':')[1]
+                    typ.strip()
+                    if typ != 'EUC_2D':
+                        logger.warning('This supports only "EUC_2D" edge weight. Actual: %s', typ)
+                elif line.startswith('NODE_COORD_SECTION'):
+                    coord_section = True
+                elif coord_section:
+                    v = line.split()
+                    index = int(v[0]) - 1
+                    coord[index][0] = float(v[1])
+                    coord[index][1] = float(v[2])
+
+        x_max = max(coord_[0] for coord_ in coord)
+        x_min = min(coord_[0] for coord_ in coord)
+        y_max = max(coord_[1] for coord_ in coord)
+        y_min = min(coord_[1] for coord_ in coord)
+
+        g = nx.random_geometric_graph(n, np.hypot(x_max-x_min, y_max-y_min)+1, pos=coord)
         for u, v in g.edges:
             delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
             g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
