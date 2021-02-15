@@ -12,11 +12,7 @@ class GraphApplication(BaseApplication):
 
     def __init__(self, g):
         self._g = g.copy(as_view=True)
-
-    @staticmethod
-    def random_graph(n, m, seed=None):
-        g = nx.gnm_random_graph(n, m, seed)
-        return g
+        self._qp = self._build_quadratic_program()
 
     @abstractmethod
     def plot_graph(self):
@@ -24,3 +20,8 @@ class GraphApplication(BaseApplication):
 
     def g(self):
         return self._g
+
+    @staticmethod
+    def random_graph(n, m, seed=None):
+        g = nx.gnm_random_graph(n, m, seed)
+        return g

@@ -1,3 +1,4 @@
+import copy
 from abc import ABC, abstractmethod
 
 
@@ -7,20 +8,18 @@ class BaseApplication(ABC):
     """
 
     @abstractmethod
-    def to_quadratic_program(self):
+    def _build_quadratic_program(self):
         raise NotImplementedError
-
-    def is_feasible(self, x):
-        return self.to_quadratic_program().is_feasible(x)
-
-    def evaluate(self, x):
-        return self.to_quadratic_program().objective.evaluate(x)
-        # qp = self.to_quadratic_problem()
-        # var_values = {}
-        # for i, var in enumerate(qp.variables):
-        #     var_values[var.name] = x[i]
-        # return qp.substitute_variables(var_values).objective.constant
 
     @abstractmethod
     def interpret():
         raise NotImplementedError
+
+    def is_feasible(self, x):
+        return self._build_quadratic_program().is_feasible(x)
+
+    def evaluate(self, x):
+        return self._build_quadratic_program().objective.evaluate(x)
+
+    def to_quadratic_program(self):
+        return copy.deepcopy(self._qp)
