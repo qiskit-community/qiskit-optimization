@@ -43,9 +43,14 @@ class TSP(GraphApplication):
         n = int(np.sqrt(len(x)))
         route = []
         for p__ in range(n):
+            p_step = []
             for i in range(n):
                 if x[i * n + p__]:
-                    route.append(i)
+                    p_step.append(i)
+            if len(p_step) == 1:
+                route.extend(p_step)
+            else:
+                route.append(p_step)
         return route
 
     @staticmethod
