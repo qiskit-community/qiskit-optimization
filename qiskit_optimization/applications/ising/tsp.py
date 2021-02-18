@@ -13,7 +13,7 @@ class TSP(GraphApplication):
     def __init__(self, g):
         super().__init__(g)
 
-    def _build_quadratic_program(self):
+    def to_quadratic_program(self):
         mdl = Model(name='tsp')
         n = self._g.number_of_nodes()
         x = {(i, p): mdl.binary_var(name='x_{0}_{1}'.format(i, p))
