@@ -18,77 +18,49 @@ as they are not really used and are always assumed to be 1.  The
 graph is represented by an adjacency matrix.
 """
 
-from typing import Tuple
-import logging
-
+import networkx as nx
 import numpy as np
-from qiskit.quantum_info import Pauli
+from docplex.mp.model import Model
 
-from qiskit.opflow import PauliSumOp
-
-logger = logging.getLogger(__name__)
-
-
-def get_operator(w: np.ndarray) -> Tuple[PauliSumOp, float]:
-    """Generate Hamiltonian for the maximum stable set in a graph.
-    Args:
-        w: adjacency matrix.
-    Returns:
-        operator for the Hamiltonian and a
-        constant shift for the obj function.
-    """
-    num_nodes = len(w)
-    pauli_list = []
-    shift = 0
-    for i in range(num_nodes):
-        for j in range(i + 1, num_nodes):
-            if w[i, j] != 0:
-                x_p = np.zeros(num_nodes, dtype=bool)
-                z_p = np.zeros(num_nodes, dtype=bool)
-                z_p[i] = True
-                z_p[j] = True
-                pauli_list.append([1.0, Pauli((z_p, x_p))])
-                shift += 1
-    for i in range(num_nodes):
-        degree = np.sum(w[i, :])
-        x_p = np.zeros(num_nodes, dtype=bool)
-        z_p = np.zeros(num_nodes, dtype=bool)
-        z_p[i] = True
-        pauli_list.append([degree - 1 / 2, Pauli((z_p, x_p))])
-    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
-    return PauliSumOp.from_list(opflow_list), shift - num_nodes / 2
+from .graph_application import GraphApplication
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def stable_set_value(x, w):
-    """Compute the value of a stable set, and its feasibility.
+class StableSet(GraphApplication):
 
-    Args:
-        x (numpy.ndarray): binary string in original format -- not
-            graph solution!.
-        w (numpy.ndarray): adjacency matrix.
+    def __init__(self, g):
+        super().__init__(g)
 
-    Returns:
-        tuple(float, bool): size of the stable set, and Boolean indicating
-            feasibility.
-    """
-    assert len(x) == w.shape[0]
-    feasible = True
-    num_nodes = w.shape[0]
-    for i in range(num_nodes):
-        for j in range(i + 1, num_nodes):
-            if w[i, j] != 0 and x[i] == 0 and x[j] == 0:
-                feasible = False
-                break
-    return len(x) - np.sum(x), feasible
+    def to_quadratic_program(self):
+        mdl = Model(name='stable set')
+        n = self._graph.number_of_nodes()
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        for u, v in self._graph.edges:
+            self._graph.edges[u, v].setdefault('weight', 1)
+        objective = mdl.sum(x[i] for i in x)
+        penalty_terms = mdl.sum(-10000 * x[i] * x[j] for i, j in self._graph.edges)
+        mdl.maximize(objective + penalty_terms)
+        qp = QuadraticProgram()
+        qp.from_docplex(mdl)
+        return qp
 
+    def draw_graph(self, result=None, pos=None):
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            colors = ['r' if value == 0 else 'b' for value in result.x]
+            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
 
-def get_graph_solution(x):
-    """Get graph solution from binary string.
+    def interpret(self, result):
+        stable_set = []
+        for i, value in enumerate(result.x):
+            if value:
+                stable_set.append(i)
+        return stable_set
 
-    Args:
-        x (numpy.ndarray) : binary string as numpy array.
-
-    Returns:
-        numpy.ndarray: graph solution as binary numpy array.
-    """
-    return 1 - x
+    def draw_graph(self, result, pos=None):
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            colors = ['r' if value == 1 else 'darkgrey' for value in result.x]
+            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
