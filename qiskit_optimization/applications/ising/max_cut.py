@@ -12,23 +12,26 @@ class Maxcut(GraphApplication):
 
     def to_quadratic_program(self):
         mdl = Model(name='maxcut')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self._g.number_of_nodes())}
-        for u, v in self._g.edges:
-            self._g.edges[u, v].setdefault('weight', 1)
-        objective = mdl.sum(self._g.edges[i, j]['weight'] * x[i]
-                            * (1 - x[j]) for i, j in self._g.edges)
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self._graph.number_of_nodes())}
+        for u, v in self._graph.edges:
+            self._graph.edges[u, v].setdefault('weight', 1)
+        objective = mdl.sum(self._graph.edges[i, j]['weight'] * x[i]
+                            * (1 - x[j]) for i, j in self._graph.edges)
         mdl.maximize(objective)
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
         return qp
 
-    def plot_graph(self, x, pos=None):
-        colors = ['r' if value == 0 else 'b' for value in x]
-        nx.draw(self._g, node_color=colors, pos=pos, with_labels=True)
+    def draw_graph(self, result=None, pos=None):
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            colors = ['r' if value == 0 else 'b' for value in result.x]
+            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
 
-    def interpret(self, x):
+    def interpret(self, result):
         cut = [[], []]
-        for i, value in enumerate(x):
+        for i, value in enumerate(result.x):
             if value == 0:
                 cut[0].append(i)
             else:

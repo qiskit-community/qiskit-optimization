@@ -15,9 +15,9 @@ class BaseApplication(ABC):
     def interpret():
         raise NotImplementedError
 
-    def is_feasible(self, x):
-        return self.to_quadratic_program().is_feasible(x)
+    def is_feasible(self, result):
+        return self.to_quadratic_program().is_feasible(result.x)
 
-    def evaluate(self, x):
-        return self.to_quadratic_program().objective.evaluate(x)
+    def evaluate(self, result):
+        return self.to_quadratic_program().objective.evaluate(result.x)
 

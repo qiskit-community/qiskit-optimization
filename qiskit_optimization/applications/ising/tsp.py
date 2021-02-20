@@ -15,10 +15,10 @@ class TSP(GraphApplication):
 
     def to_quadratic_program(self):
         mdl = Model(name='tsp')
-        n = self._g.number_of_nodes()
+        n = self._graph.number_of_nodes()
         x = {(i, p): mdl.binary_var(name='x_{0}_{1}'.format(i, p))
              for i in range(n) for p in range(n)}
-        tsp_func = mdl.sum(self._g.edges[i, j]['weight'] * x[(i, p)] * x[(j, (p+1) % n)]
+        tsp_func = mdl.sum(self._graph.edges[i, j]['weight'] * x[(i, p)] * x[(j, (p+1) % n)]
                            for i in range(n) for j in range(n) for p in range(n) if i != j)
         mdl.minimize(tsp_func)
         for i in range(n):
@@ -29,23 +29,23 @@ class TSP(GraphApplication):
         qp.from_docplex(mdl)
         return qp
 
-    def plot_graph(self, x, pos=None):
-        route = self.interpret(x)
-        nx.draw(self._g, with_labels=True, pos=pos)
+    def draw_graph(self, result, pos=None):
+        route = self.interpret(result)
+        nx.draw(self._graph, with_labels=True, pos=pos)
         nx.draw_networkx_edges(
-            self._g,
+            self._graph,
             pos,
             edgelist=[(route[i], route[(i+1) % len(route)]) for i in range(len(route))],
             width=8, alpha=0.5, edge_color="tab:red",
             )
 
-    def interpret(self, x):
-        n = int(np.sqrt(len(x)))
+    def interpret(self, result):
+        n = int(np.sqrt(len(result.x)))
         route = []
         for p__ in range(n):
             p_step = []
             for i in range(n):
-                if x[i * n + p__]:
+                if result.x[i * n + p__]:
                     p_step.append(i)
             if len(p_step) == 1:
                 route.extend(p_step)
@@ -61,7 +61,7 @@ class TSP(GraphApplication):
         for u, v in g.edges:
             delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
             g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
-        return g
+        return TSP(g)
 
     @staticmethod
     def parse_tsplib_format(filename):
@@ -86,7 +86,8 @@ class TSP(GraphApplication):
                     typ = line.split(':')[1]
                     typ.strip()
                     if typ != 'TSP':
-                        logger.warning('This supports only "TSP" type. Actual: %s', typ)
+                        raise QiskitOptimizationError(
+                            'This supports only "TSP" type. Actual: %s', typ)
                 elif line.startswith('DIMENSION'):
                     dim = int(line.split(':')[1])
                     coord = np.zeros((dim, 2))
@@ -94,7 +95,8 @@ class TSP(GraphApplication):
                     typ = line.split(':')[1]
                     typ.strip()
                     if typ != 'EUC_2D':
-                        logger.warning('This supports only "EUC_2D" edge weight. Actual: %s', typ)
+                        raise QiskitOptimizationError(
+                            'This supports only "EUC_2D" edge weight. Actual: %s', typ)
                 elif line.startswith('NODE_COORD_SECTION'):
                     coord_section = True
                 elif coord_section:
@@ -112,4 +114,4 @@ class TSP(GraphApplication):
         for u, v in g.edges:
             delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
             g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
-        return g
+        return TSP(g)

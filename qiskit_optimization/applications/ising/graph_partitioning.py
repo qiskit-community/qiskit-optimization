@@ -28,27 +28,30 @@ class GraphPartitioning(GraphApplication):
 
     def to_quadratic_program(self):
         mdl = Model(name='graph partinioning')
-        n = self._g.number_of_nodes()
+        n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
-        for u, v in self._g.edges:
-            self._g.edges[u, v].setdefault('weight', 1)
-        objective = mdl.sum(self._g.edges[i, j]['weight'] *
-                            (x[i] + x[j] - 2*x[i]*x[j]) for i, j in self._g.edges)
+        for u, v in self._graph.edges:
+            self._graph.edges[u, v].setdefault('weight', 1)
+        objective = mdl.sum(self._graph.edges[i, j]['weight'] *
+                            (x[i] + x[j] - 2*x[i]*x[j]) for i, j in self._graph.edges)
         mdl.minimize(objective)
         mdl.add_constraint(mdl.sum([x[i] for i in x]) == n//2)
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
         return qp
 
-    def interpret(self, x):
+    def interpret(self, result):
         partition = [[], []]
-        for i, value in enumerate(x):
+        for i, value in enumerate(result.x):
             if value == 0:
                 partition[0].append(i)
             else:
                 partition[1].append(i)
         return partition
 
-    def plot_graph(self, x, pos=None):
-        colors = ['r' if value == 0 else 'b' for value in x]
-        nx.draw(self._g, node_color=colors, pos=pos, with_labels=True)
+    def draw_graph(self, result=None, pos=None):
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            colors = ['r' if value == 0 else 'b' for value in result.x]
+            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
