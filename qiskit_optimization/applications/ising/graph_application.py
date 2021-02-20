@@ -12,7 +12,6 @@ class GraphApplication(BaseApplication):
 
     def __init__(self, g):
         self._g = g.copy(as_view=True)
-        self._qp = self._build_quadratic_program()
 
     @abstractmethod
     def plot_graph(self):
