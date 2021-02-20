@@ -15,100 +15,41 @@ Convert vertex cover instances into Pauli list
 Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
 """
 
-from typing import Tuple
-import logging
-
+import networkx as nx
 import numpy as np
-from qiskit.quantum_info import Pauli
+from docplex.mp.model import Model
 
-from qiskit.opflow import PauliSumOp
-
-logger = logging.getLogger(__name__)
-
-
-def get_operator(weight_matrix: np.ndarray) -> Tuple[PauliSumOp, float]:
-    r"""Generate Hamiltonian for the vertex cover
-    Args:
-        weight_matrix: adjacency matrix.
-    Returns:
-        operator for the Hamiltonian and a
-        constant shift for the obj function.
-
-    Goals:
-    1 color some vertices as red such that every edge is connected to some red vertex
-    2 minimize the vertices to be colored as red
-
-    Hamiltonian:
-    H = A * H_A + H_B
-    H_A = sum\_{(i,j)\in E}{(1-Xi)(1-Xj)}
-    H_B = sum_{i}{Zi}
-
-    H_A is to achieve goal 1 while H_b is to achieve goal 2.
-    H_A is hard constraint so we place a huge penality on it. A=5.
-    Note Xi = (Zi+1)/2
-
-    """
-    n = len(weight_matrix)
-    pauli_list = []
-    shift = 0.
-    a__ = 5.
-
-    for i in range(n):
-        for j in range(i):
-            if weight_matrix[i, j] != 0:
-                w_p = np.zeros(n)
-                v_p = np.zeros(n)
-                v_p[i] = 1
-                v_p[j] = 1
-                pauli_list.append([a__ * 0.25, Pauli((v_p, w_p))])
-
-                v_p2 = np.zeros(n)
-                v_p2[i] = 1
-                pauli_list.append([-a__ * 0.25, Pauli((v_p2, w_p))])
-
-                v_p3 = np.zeros(n)
-                v_p3[j] = 1
-                pauli_list.append([-a__ * 0.25, Pauli((v_p3, w_p))])
-
-                shift += a__ * 0.25
-
-    for i in range(n):
-        w_p = np.zeros(n)
-        v_p = np.zeros(n)
-        v_p[i] = 1
-        pauli_list.append([0.5, Pauli((v_p, w_p))])
-        shift += 0.5
-    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
-    return PauliSumOp.from_list(opflow_list), shift
+from .graph_application import GraphApplication
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def check_full_edge_coverage(x, w):
-    """
-    Args:
-        x (numpy.ndarray): binary string as numpy array.
-        w (numpy.ndarray): adjacency matrix.
+class VertexCover(GraphApplication):
 
-    Returns:
-        float: value of the cut.
-    """
-    first = w.shape[0]
-    second = w.shape[1]
-    for i in range(first):
-        for j in range(second):
-            if w[i, j] != 0:
-                if x[i] != 1 and x[j] != 1:
-                    return False
+    def __init__(self, g):
+        super().__init__(g)
 
-    return True
+    def to_quadratic_program(self):
+        mdl = Model(name='vertex cover')
+        n = self._graph.number_of_nodes()
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        objective = mdl.sum(x[i] for i in x)
+        for u, v in self._graph.edges:
+            mdl.add_constraint(x[u] + x[v] >= 1)
+        mdl.minimize(objective)
+        qp = QuadraticProgram()
+        qp.from_docplex(mdl)
+        return qp
 
+    def interpret(self, result):
+        vertex_cover = []
+        for i, value in enumerate(result.x):
+            if value:
+                vertex_cover.append(i)
+        return vertex_cover
 
-def get_graph_solution(x):
-    """Get graph solution from binary string.
-
-    Args:
-        x (numpy.ndarray) : binary string as numpy array.
-
-    Returns:
-        numpy.ndarray: graph solution as binary numpy array.
-    """
-    return 1 - x
+    def draw_graph(self, result, pos=None):
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            colors = ['r' if value == 1 else 'darkgrey' for value in result.x]
+            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)

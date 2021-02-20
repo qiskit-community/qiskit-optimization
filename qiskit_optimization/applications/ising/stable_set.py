@@ -38,18 +38,12 @@ class StableSet(GraphApplication):
         for u, v in self._graph.edges:
             self._graph.edges[u, v].setdefault('weight', 1)
         objective = mdl.sum(x[i] for i in x)
-        penalty_terms = mdl.sum(-10000 * x[i] * x[j] for i, j in self._graph.edges)
-        mdl.maximize(objective + penalty_terms)
+        for u, v in self._graph.edges:
+            mdl.add_constraint(x[u] + x[v] <= 1)
+        mdl.maximize(objective)
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
         return qp
-
-    def draw_graph(self, result=None, pos=None):
-        if result is None:
-            nx.draw(self._graph, pos=pos, with_labels=True)
-        else:
-            colors = ['r' if value == 0 else 'b' for value in result.x]
-            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
 
     def interpret(self, result):
         stable_set = []
