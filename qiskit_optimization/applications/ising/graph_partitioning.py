@@ -23,8 +23,8 @@ from .graph_application import GraphApplication
 
 
 class GraphPartitioning(GraphApplication):
-    def __init__(self, g):
-        super().__init__(g)
+    def __init__(self, graph):
+        super().__init__(graph)
 
     def to_quadratic_program(self):
         mdl = Model(name='graph partinioning')

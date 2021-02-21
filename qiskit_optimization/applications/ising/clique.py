@@ -10,135 +10,56 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Convert clique instances into Pauli list
-
+"""
+Convert vertex cover instances into Pauli list
 Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
 """
 
-from typing import Tuple
-import logging
-
+import networkx as nx
 import numpy as np
-from qiskit.quantum_info import Pauli
+from docplex.mp.model import Model
 
-from qiskit.opflow import PauliSumOp
-
-logger = logging.getLogger(__name__)
-# pylint: disable=invalid-name
+from .graph_application import GraphApplication
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def get_operator(weight_matrix: np.ndarray,
-                 K: np.ndarray) -> Tuple[PauliSumOp, float]:
-    r"""
-    Generate Hamiltonian for the clique.
+class Clique(GraphApplication):
 
-    The goals is can we find a complete graph of size K?
+    def __init__(self, graph):
+        super().__init__(graph)
 
-    To build the Hamiltonian the following logic is applied.
+    def to_quadratic_program(self, K=None):
+        complement_g = nx.complement(self._graph)
 
-    | Suppose Xv denotes whether v should appear in the clique (Xv=1 or 0)\n
-    | H = Ha + Hb\n
-    | Ha = (K-sum_{v}{Xv})\^2
-    | Hb = K(K−1)/2 - sum_{(u,v)\in E}{XuXv}
+        mdl = Model(name='clique')
+        n = self._graph.number_of_nodes()
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        for u, v in complement_g.edges:
+            mdl.add_constraint(x[u] + x[v] <= 1)
+        if K is None:
+            mdl.maximize(mdl.sum(x[i] for i in x))
+        else:
+            mdl.add_constraint(mdl.sum(x[i] for i in x) == K)
+        qp = QuadraticProgram()
+        qp.from_docplex(mdl)
+        return qp
 
-    | Besides, Xv = (Zv+1)/2
-    | By replacing Xv with Zv and simplifying it, we get what we want below.
+    def interpret(self, result):
+        clique = []
+        for i, value in enumerate(result.x):
+            if value:
+                clique.append(i)
+        return clique
 
-    Note: in practice, we use H = A\*Ha + Bb, where A is a large constant such as 1000.
+    def draw_graph(self, result, pos=None):
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            colors = ['r' if value == 1 else 'darkgrey' for value in result.x]
+            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
 
-    A is like a huge penality over the violation of Ha,
-    which forces Ha to be 0, i.e., you have exact K vertices selected.
-    Under this assumption, Hb = 0 starts to make sense,
-    it means the subgraph constitutes a clique or complete graph.
-    Note the lowest possible value of Hb is 0.
+    def is_feasible(self, result, K=None):
+        return self.to_quadratic_program(K=K).is_feasible(result.x)
 
-    Without the above assumption, Hb may be negative (say you select all).
-    In this case, one needs to use Hb\^2 in the hamiltonian to minimize the difference.
-
-    Args:
-        weight_matrix : adjacency matrix.
-        K: K
-
-    Returns:
-        The operator for the Hamiltonian and a constant shift for the obj function.
-    """
-    # pylint: disable=invalid-name
-    num_nodes = len(weight_matrix)
-    pauli_list = []
-    shift = 0.
-
-    Y = K - 0.5 * num_nodes  # Y = K - sum_{v}{1 / 2}
-
-    A = 1000.
-    # Ha part:
-    shift += A * Y * Y
-
-    for i in range(num_nodes):
-        for j in range(num_nodes):
-            if i != j:
-                xp = np.zeros(num_nodes, dtype=bool)
-                zp = np.zeros(num_nodes, dtype=bool)
-                zp[i] = True
-                zp[j] = True
-                pauli_list.append([A * 0.25, Pauli((zp, xp))])
-            else:
-                shift += A * 0.25
-    for i in range(num_nodes):
-        xp = np.zeros(num_nodes, dtype=bool)
-        zp = np.zeros(num_nodes, dtype=bool)
-        zp[i] = True
-        pauli_list.append([-A * Y, Pauli((zp, xp))])
-
-    shift += 0.5 * K * (K - 1)
-
-    for i in range(num_nodes):
-        for j in range(i):
-            if weight_matrix[i, j] != 0:
-                xp = np.zeros(num_nodes, dtype=bool)
-                zp = np.zeros(num_nodes, dtype=bool)
-                zp[i] = True
-                zp[j] = True
-                pauli_list.append([-0.25, Pauli((zp, xp))])
-
-                zp2 = np.zeros(num_nodes, dtype=bool)
-                zp2[i] = True
-                pauli_list.append([-0.25, Pauli((zp2, xp))])
-
-                zp3 = np.zeros(num_nodes, dtype=bool)
-                zp3[j] = True
-                pauli_list.append([-0.25, Pauli((zp3, xp))])
-
-                shift += -0.25
-
-    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
-    return PauliSumOp.from_list(opflow_list), shift
-
-
-def satisfy_or_not(x, w, K):  # pylint: disable=invalid-name
-    """Compute the value of a cut.
-
-    Args:
-        x (numpy.ndarray): binary string as numpy array.
-        w (numpy.ndarray): adjacency matrix.
-        K (numpy.ndarray): K
-
-    Returns:
-        float: value of the cut.
-    """
-    # pylint: disable=invalid-name
-    X = np.outer(x, x)
-    w_01 = np.where(w != 0, 1, 0)
-
-    return np.sum(w_01 * X) == K * (K - 1)  # note sum() count the same edge twice
-
-
-def get_graph_solution(x):
-    """Get graph solution from binary string.
-
-    Args:
-        x (numpy.ndarray) : binary string as numpy array.
-
-    Returns:
-        numpy.ndarray: graph solution as binary numpy array.
-    """
-    return 1 - x
+    def evaluate(self, result, K=None):
+        return self.to_quadratic_program(K=K).objective.evaluate(result.x)

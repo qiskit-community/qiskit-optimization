@@ -25,8 +25,8 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 class VertexCover(GraphApplication):
 
-    def __init__(self, g):
-        super().__init__(g)
+    def __init__(self, graph):
+        super().__init__(graph)
 
     def to_quadratic_program(self):
         mdl = Model(name='vertex cover')
