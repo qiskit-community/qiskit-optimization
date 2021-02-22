@@ -54,7 +54,7 @@ class TSP(GraphApplication):
         return route
 
     @staticmethod
-    def random_graph(n=5, low=0, high=100, seed=None):
+    def random_graph(n, low=0, high=100, seed=None):
         random.seed(seed)
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
         g = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)

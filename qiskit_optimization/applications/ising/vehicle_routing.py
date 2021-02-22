@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2018, 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,186 +11,113 @@
 # that they have been altered from the originals.
 
 """
-Converts vehicle routing instances into a list of Paulis,
-and provides some related routines (extracting a solution,
-checking its objective function value).
+Convert vertex cover instances into Pauli list
+Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
 """
+import itertools
+import random
 
-from typing import Tuple, List
+import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
-from qiskit.quantum_info import Pauli
+from docplex.mp.model import Model
 
-from qiskit.algorithms import MinimumEigensolverResult
-from qiskit.opflow import PauliSumOp
-
-# pylint: disable=invalid-name
+from .graph_application import GraphApplication
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def get_vehiclerouting_matrices(instance: np.ndarray,
-                                n: int,
-                                K: int) -> Tuple[np.ndarray, np.ndarray, float]:
-    """Constructs auxiliary matrices from a vehicle routing instance,
-        which represent the encoding into a binary quadratic program.
-        This is used in the construction of the qubit ops and computation
-        of the solution cost.
+class VehicleRouting(GraphApplication):
 
-    Args:
-        instance: a customers-to-customers distance matrix.
-        n: the number of customers.
-        K: the number of vehicles available.
+    def __init__(self, graph):
+        super().__init__(graph)
 
-    Returns:
-        a matrix defining the interactions between variables.
-        a matrix defining the contribution from the individual variables.
-        the constant offset.
-    """
-    # N = (n - 1) * n
-    A = np.max(instance) * 100  # A parameter of cost function
+    def to_quadratic_program(self, num_vehicle, depot=0):
+        mdl = Model(name='vehicle_routing')
+        n = self._graph.number_of_nodes()
+        x = {}
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    x[(i, j)] = mdl.binary_var(name='x_{0}_{1}'.format(i, j))
+        mdl.minimize(mdl.sum(self._graph.edges[i, j]['weight']*x[(i, j)]
+                             for i in range(n) for j in range(n) if i != j))
+        # Only 1 edge goes out from each node
+        for i in range(n):
+            if i != depot:
+                mdl.add_constraint(mdl.sum(x[i, j] for j in range(n) if i != j) == 1)
+        # Only 1 edge comes into each node
+        for j in range(n):
+            if j != depot:
+                mdl.add_constraint(mdl.sum(x[i, j] for i in range(n) if i != j) == 1)
+        # For the depot node
+        mdl.add_constraint(mdl.sum(x[i, depot] for i in range(n) if i != depot) == num_vehicle)
+        mdl.add_constraint(mdl.sum(x[depot, j] for j in range(n) if j != depot) == num_vehicle)
 
-    # Determine the weights w
-    instance_vec = instance.reshape(n ** 2)
-    w_list = [instance_vec[x] for x in range(n ** 2) if instance_vec[x] > 0]
-    w = np.zeros(n * (n - 1))
-    for i_i, _ in enumerate(w_list):
-        w[i_i] = w_list[i_i]
+        # To eliminate sub-routes
+        node_list = [i for i in range(n) if i != depot]
+        clique_set = []
+        for i in range(2, len(node_list)+1):
+            for comb in itertools.combinations(node_list, i):
+                clique_set.append(list(comb))
+        for clique in clique_set:
+            mdl.add_constraint(mdl.sum(x[(i, j)]
+                                       for i in clique
+                                       for j in clique if i != j) <= len(clique) - 1)
+        qp = QuadraticProgram()
+        qp.from_docplex(mdl)
+        return qp
 
-    # Some additional variables
-    id_n = np.eye(n)
-    im_n_1 = np.ones([n - 1, n - 1])
-    iv_n_1 = np.ones(n)
-    iv_n_1[0] = 0
-    iv_n = np.ones(n - 1)
-    neg_iv_n_1 = np.ones(n) - iv_n_1
+    def interpret(self, result, num_vehicle, depot=0):
+        n = self._graph.number_of_nodes()
+        idx = 0
+        edge_list = []
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    if result.x[idx]:
+                        edge_list.append([i, j])
+                    idx += 1
+        route_list = []
+        for k in range(num_vehicle):
+            i = 0
+            start = depot
+            route_list.append([])
+            while(i < len(edge_list)):
+                if edge_list[i][0] == start:
+                    if edge_list[i][1] == 0:
+                        # If a loop is completed
+                        route_list[k].append(edge_list.pop(i))
+                        break
+                    # Move onto the next edge
+                    start = edge_list[i][1]
+                    route_list[k].append(edge_list.pop(i))
+                    i = 0
+                    continue
+                i += 1
+        if len(edge_list):
+            route_list.append(edge_list)
 
-    v = np.zeros([n, n * (n - 1)])
-    for i_i in range(n):
-        count = i_i - 1
-        for j_j in range(n * (n - 1)):
+        return route_list
 
-            if j_j // (n - 1) == i_i:
-                count = i_i
+    def draw_graph(self, result, num_vehicle, depot=0, pos=None):
+        route_list = self.interpret(result, num_vehicle, depot)
+        len_list = len(route_list)
+        nx.draw(self._graph, with_labels=True, pos=pos)
+        color_list = [k/len_list for k in range(len_list) for edge in route_list[k]]
+        route_list = [edge for k in range(len_list) for edge in route_list[k]]
+        nx.draw_networkx_edges(
+            self._graph,
+            pos,
+            edgelist=route_list,
+            width=8, alpha=0.5, edge_color=color_list, edge_cmap=plt.cm.plasma
+            )
 
-            if j_j // (n - 1) != i_i and j_j % (n - 1) == count:
-                v[i_i][j_j] = 1.
-
-    v_n = np.sum(v[1:], axis=0)
-
-    # Q defines the interactions between variables
-    Q = A * (np.kron(id_n, im_n_1) + np.dot(v.T, v))
-
-    # g defines the contribution from the individual variables
-    g = w - 2 * A * (np.kron(iv_n_1, iv_n) + v_n.T) - \
-        2 * A * K * (np.kron(neg_iv_n_1, iv_n) + v[0].T)
-
-    # c is the constant offset
-    c = 2 * A * (n - 1) + 2 * A * (K ** 2)
-
-    return Q, g, c
-
-
-def get_vehiclerouting_cost(instance: np.ndarray, n: int, K: int, x_sol: np.ndarray) -> float:
-    """Computes the cost of a solution to an instance of a vehicle routing problem.
-
-    Args:
-        instance: a customers-to-customers distance matrix.
-        n: the number of customers.
-        K: the number of vehicles available.
-        x_sol: a solution, i.e., a path, in its binary representation.
-
-    Returns:
-        objective function value.
-    """
-    (Q, g, c) = get_vehiclerouting_matrices(instance, n, K)
-
-    def fun(x):
-        return np.dot(np.around(x), np.dot(Q, np.around(x))) + np.dot(g, np.around(x)) + c
-
-    cost = fun(x_sol)
-    return cost
-
-
-def get_operator(instance: np.ndarray, n: int, K: int) -> PauliSumOp:
-    """Converts an instance of a vehicle routing problem into a list of Paulis.
-
-    Args:
-        instance: a customers-to-customers distance matrix.
-        n: the number of customers.
-        K: the number of vehicles available.
-
-    Returns:
-        operator for the Hamiltonian.
-    """
-    N = (n - 1) * n
-    (Q, g__, c) = get_vehiclerouting_matrices(instance, n, K)
-
-    # Defining the new matrices in the Z-basis
-    i_v = np.ones(N)
-    q_z = (Q / 4)
-    g_z = (-g__ / 2 - np.dot(i_v, Q / 4) - np.dot(Q / 4, i_v))
-    c_z = (c + np.dot(g__ / 2, i_v) + np.dot(i_v, np.dot(Q / 4, i_v)))
-
-    c_z = c_z + np.trace(q_z)
-    q_z = q_z - np.diag(np.diag(q_z))
-
-    # Getting the Hamiltonian in the form of a list of Pauli terms
-
-    pauli_list = []
-    for i in range(N):
-        if g_z[i] != 0:
-            w_p = np.zeros(N)
-            v_p = np.zeros(N)
-            v_p[i] = 1
-            pauli_list.append((g_z[i], Pauli((v_p, w_p))))
-    for i in range(N):
-        for j in range(i):
-            if q_z[i, j] != 0:
-                w_p = np.zeros(N)
-                v_p = np.zeros(N)
-                v_p[i] = 1
-                v_p[j] = 1
-                pauli_list.append((2 * q_z[i, j], Pauli((v_p, w_p))))
-
-    pauli_list.append((c_z, Pauli((np.zeros(N), np.zeros(N)))))
-    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
-    return PauliSumOp.from_list(opflow_list)
-
-
-def get_vehiclerouting_solution(instance: np.ndarray,
-                                n: int,
-                                K: int,
-                                result: MinimumEigensolverResult) -> List[int]:
-    """Tries to obtain a feasible solution (in vector form) of an instance
-        of vehicle routing from the results dictionary.
-
-    Args:
-        instance: a customers-to-customers distance matrix.
-        n: the number of customers.
-        K: the number of vehicles available.
-        result: a result obtained by QAOA.run or VQE.run.
-
-    Returns:
-        a solution, i.e., a path, in its binary representation.
-
-    #TODO: support statevector simulation, results should be a statevector or counts format, not
-           a result from algorithm run
-    """
-    del instance, K  # unused
-    v = result.eigenstate
-    N = (n - 1) * n
-
-    index_value = [x for x in range(len(v)) if v[x] == max(v)][0]
-    string_value = "{0:b}".format(index_value)
-
-    while len(string_value) < N:
-        string_value = '0' + string_value
-
-    x_sol = list()
-    for elements in string_value:
-        if elements == '0':
-            x_sol.append(0)
-        else:
-            x_sol.append(1)
-
-    x_sol = np.flip(x_sol, axis=0)
-
-    return x_sol
+    @staticmethod
+    def random_graph(n, low=0, high=100, seed=None):
+        random.seed(seed)
+        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
+        g = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
+        for u, v in g.edges:
+            delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
+            g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+        return VehicleRouting(g)
