@@ -23,6 +23,7 @@ import logging
 
 import numpy as np
 from docplex.mp.model import Model
+import gurobipy as gp
 
 from qiskit.quantum_info import Pauli
 from qiskit.opflow import PauliSumOp
@@ -86,13 +87,25 @@ def get_graph_solution(x):
     return 1 - x
 
 
-def max_cut_qp(adjacency_matrix: np.ndarray) -> QuadraticProgram:
+def max_cut_qp(adjacency_matrix: np.ndarray, optimizer: str = "cplex") -> QuadraticProgram:
     """
     Creates the max-cut instance based on the adjacency graph.
     """
 
     size = len(adjacency_matrix)
 
+    if optimizer == "cplex":
+        mdl = solve_max_cut_qp_with_cplex(size, adjacency_matrix)
+    if optimizer == "gurobi":
+        mdl = solve_max_cut_qp_with_gurobi(size, adjacency_matrix)
+
+    q_p = QuadraticProgram()
+    q_p.from_docplex(mdl)
+
+    return q_p
+
+
+def solve_max_cut_qp_with_cplex(size, adjacency_matrix):
     mdl = Model()
     x = [mdl.binary_var('x%s' % i) for i in range(size)]
 
@@ -106,7 +119,16 @@ def max_cut_qp(adjacency_matrix: np.ndarray) -> QuadraticProgram:
     objective = mdl.sum(objective_terms)
     mdl.maximize(objective)
 
-    q_p = QuadraticProgram()
-    q_p.from_docplex(mdl)
 
-    return q_p
+def solve_max_cut_qp_with_gurobi(size, adjacency_matrix):
+    mdl = gp.Model()
+    x = mdl.addVars(size, name='x')
+
+    objective_terms = 0
+    for i in range(size):
+        for j in range(size):
+            if adjacency_matrix[i, j] != 0.:
+                objective_terms += adjacency_matrix[i, j] * x[i] * (1 - x[j])
+
+    mdl.setObjective(objective_terms, sense=gp.GRB.MAXIMIZE)
+    mdl.optimize()
