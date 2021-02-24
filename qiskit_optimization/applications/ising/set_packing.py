@@ -10,103 +10,43 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" set packing module """
+"""
+Convert vertex cover instances into Pauli list
+Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
+"""
+import copy
 
-from typing import List, Tuple
-import logging
-
+import networkx as nx
 import numpy as np
-from qiskit.quantum_info import Pauli
+from docplex.mp.model import Model
 
-from qiskit.opflow import PauliSumOp
-
-logger = logging.getLogger(__name__)
-
-
-def get_operator(list_of_subsets: List) -> Tuple[PauliSumOp, float]:
-    """Construct the Hamiltonian for the set packing.
-
-    Notes:
-        find the maximal number of subsets which are disjoint pairwise.
-
-        Hamiltonian:
-        H = A Ha + B Hb
-        Ha = sum_{Si and Sj overlaps}{XiXj}
-        Hb = -sum_{i}{Xi}
-
-        Ha is to ensure the disjoint condition, while Hb is to achieve the maximal number.
-        Ha is hard constraint that must be satisfied. Therefore A >> B.
-        In the following, we set A=10 and B = 1
-
-        where Xi = (Zi + 1)/2
-
-    Args:
-        list_of_subsets: list of lists (i.e., subsets)
-
-    Returns:
-        operator for the Hamiltonian, a constant shift for the obj function.
-    """
-    # pylint: disable=invalid-name
-    shift = 0.
-    pauli_list = []
-    A = 10.
-    n = len(list_of_subsets)
-    for i in range(n):
-        for j in range(i):
-            if set(list_of_subsets[i]) & set(list_of_subsets[j]):
-                wp = np.zeros(n)
-                vp = np.zeros(n)
-                vp[i] = 1
-                vp[j] = 1
-                pauli_list.append([A * 0.25, Pauli((vp, wp))])
-
-                vp2 = np.zeros(n)
-                vp2[i] = 1
-                pauli_list.append([A * 0.25, Pauli((vp2, wp))])
-
-                vp3 = np.zeros(n)
-                vp3[j] = 1
-                pauli_list.append([A * 0.25, Pauli((vp3, wp))])
-
-                shift += A * 0.25
-
-    for i in range(n):
-        wp = np.zeros(n)
-        vp = np.zeros(n)
-        vp[i] = 1
-        pauli_list.append([-0.5, Pauli((vp, wp))])
-        shift += -0.5
-
-    opflow_list = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
-    return PauliSumOp.from_list(opflow_list), shift
+from .base_application import BaseApplication
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def get_solution(x):
-    """
+class SetPacking(BaseApplication):
 
-    Args:
-        x (numpy.ndarray) : binary string as numpy array.
+    def __init__(self, subsets):
+        self._subsets = copy.deepcopy(subsets)
+        self._set = []
+        for sub in self._subsets:
+            self._set.extend(sub)
+        self._set = np.unique(self._set)
 
-    Returns:
-        numpy.ndarray: graph solution as binary numpy array.
-    """
-    return 1 - x
+    def to_quadratic_program(self):
+        mdl = Model(name='exact_cover')
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._subsets))}
+        mdl.maximize(mdl.sum(x[i] for i in x))
+        for e in self._set:
+            mdl.add_constraint(mdl.sum(x[i] for i, sub in enumerate(self._subsets)
+                                       if e in sub) <= 1)
+        qp = QuadraticProgram()
+        qp.from_docplex(mdl)
+        return qp
 
-
-def check_disjoint(sol, list_of_subsets):
-    """ check disjoint """
-    # pylint: disable=invalid-name
-    n = len(list_of_subsets)
-    selected_subsets = []
-    for i in range(n):
-        if sol[i] == 1:
-            selected_subsets.append(list_of_subsets[i])
-    tmplen = len(selected_subsets)
-    for i in range(tmplen):
-        for j in range(i):
-            L = selected_subsets[i]
-            R = selected_subsets[j]
-            if set(L) & set(R):
-                return False
-
-    return True
+    def interpret(self, result):
+        sub = []
+        for i, value in enumerate(result.x):
+            if value:
+                sub.append(self._subsets[i])
+        return sub
