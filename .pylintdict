@@ -46,6 +46,8 @@ getter
 goemans
 grover
 gset
+gurobi
+gurobipy
 hamiltonian
 hamiltonians
 hardcoded
