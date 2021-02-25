@@ -26,7 +26,7 @@ requirements = [
     "docplex; sys_platform != 'darwin'",
     "docplex==2.15.194; sys_platform == 'darwin'",
     "setuptools>=40.1.0",
-    "retworkx>=0.5.0",
+    "retworkx>=0.7.0",
     "dataclasses; python_version < '3.7'"
 ]
 
