@@ -122,7 +122,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
             from Symmetry Protection. http://arxiv.org/abs/1910.08980.
     """
 
-    def __init__(self, min_eigen_optimizer: MinimumEigenOptimizer, min_num_vars: int = 1,
+    def __init__(self, optimizer: OptimizationAlgorithm, min_num_vars: int = 1,
                  min_num_vars_optimizer: Optional[OptimizationAlgorithm] = None,
                  penalty: Optional[float] = None,
                  history: Optional[IntermediateResult] = IntermediateResult.LAST_ITERATION,
@@ -135,7 +135,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
         variables is reached.
 
         Args:
-            min_eigen_optimizer: The eigen optimizer to use in every iteration.
+            optimizer: The optimizer to use in every iteration.
             min_num_vars: The minimum number of variables to apply the recursive scheme. If this
                 threshold is reached, the min_num_vars_optimizer is used.
             min_num_vars_optimizer: This optimizer is used after the recursive scheme for the
@@ -155,7 +155,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
         validate_min('min_num_vars', min_num_vars, 1)
 
-        self._min_eigen_optimizer = min_eigen_optimizer
+        self._optimizer = optimizer
         self._min_num_vars = min_num_vars
         if min_num_vars_optimizer:
             self._min_num_vars_optimizer = min_num_vars_optimizer
@@ -203,11 +203,11 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
         # run recursive optimization until the resulting problem is small enough
         replacements = {}  # type: Dict[str, Tuple[str, int]]
-        min_eigen_results = []  # type: List[MinimumEigenOptimizationResult]
+        min_eigen_results = []  # type: List[OptimizationResult]
         while problem_.get_num_vars() > self._min_num_vars:
 
             # solve current problem with optimizer
-            res = self._min_eigen_optimizer.solve(problem_)  # type: MinimumEigenOptimizationResult
+            res = self._optimizer.solve(problem_)  # type: OptimizationResult
             if self._history == IntermediateResult.ALL_ITERATIONS:
                 min_eigen_results.append(res)
 
