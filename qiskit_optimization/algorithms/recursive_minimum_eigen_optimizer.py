@@ -99,7 +99,9 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
     """A meta-algorithm that applies a recursive optimization.
 
     The recursive minimum eigen optimizer applies a recursive optimization on top of
-    :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer`.
+    :class:`~qiskit_optimization.algorithms.OptimizationAlgorithm`. This optimizer can use
+    :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` as an optimizer that is called
+    at each iteration.
     The algorithm is introduced in [1].
 
     Examples:
@@ -130,7 +132,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
                                             List[QuadraticProgramConverter]]] = None) -> None:
         """ Initializes the recursive minimum eigen optimizer.
 
-        This initializer takes a ``MinimumEigenOptimizer``, the parameters to specify until when to
+        This initializer takes an ``OptimizationAlgorithm``, the parameters to specify until when to
         to apply the iterative scheme, and the optimizer to be applied once the threshold number of
         variables is reached.
 
@@ -139,7 +141,9 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
             min_num_vars: The minimum number of variables to apply the recursive scheme. If this
                 threshold is reached, the min_num_vars_optimizer is used.
             min_num_vars_optimizer: This optimizer is used after the recursive scheme for the
-                problem with the remaining variables.
+                problem with the remaining variables. Default value is
+                :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` created on top of
+                :class:`~qiskit.algorithms.minimum_eigen_solver.NumPyMinimumEigensolver`.
             penalty: The factor that is used to scale the penalty terms corresponding to linear
                 equality constraints.
             history: Whether the intermediate results are stored.
@@ -203,13 +207,13 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
         # run recursive optimization until the resulting problem is small enough
         replacements = {}  # type: Dict[str, Tuple[str, int]]
-        min_eigen_results = []  # type: List[OptimizationResult]
+        optimization_results = []  # type: List[OptimizationResult]
         while problem_.get_num_vars() > self._min_num_vars:
 
             # solve current problem with optimizer
             res = self._optimizer.solve(problem_)  # type: OptimizationResult
             if self._history == IntermediateResult.ALL_ITERATIONS:
-                min_eigen_results.append(res)
+                optimization_results.append(res)
 
             # analyze results to get strongest correlation
             correlations = res.get_correlations()
@@ -284,7 +288,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
         # build history before any translations are applied
         # min_eigen_results is an empty list if history is set to NO or LAST.
-        history = (min_eigen_results,
+        history = (optimization_results,
                    None if self._history == IntermediateResult.NO_ITERATIONS else result)
 
         # construct result
