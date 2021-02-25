@@ -54,24 +54,6 @@ class MinimumEigenOptimizationResult(OptimizationResult):
         """Returns a result object obtained from the instance of :class:`MinimumEigensolver`."""
         return self._min_eigen_solver_result
 
-    def get_correlations(self) -> np.ndarray:
-        """Get <Zi x Zj> correlation matrix from samples."""
-
-        states = [v.x for v in self.samples]
-        probs = [v.probability for v in self.samples]
-
-        n = len(states[0])
-        correlations = np.zeros((n, n))
-        for k, prob in enumerate(probs):
-            b = states[k]
-            for i in range(n):
-                for j in range(i):
-                    if b[i] == b[j]:
-                        correlations[i, j] += prob
-                    else:
-                        correlations[i, j] -= prob
-        return correlations
-
     @property
     def raw_samples(self) -> Optional[List[SolutionSample]]:
         """Returns the list of raw solution samples of ``MinimumEigensolver``.
