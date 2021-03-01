@@ -17,6 +17,7 @@ import math
 from copy import deepcopy
 from typing import Optional, Dict, Union, List, cast
 
+
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.algorithms import AmplificationProblem
@@ -291,7 +292,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         probs = self._get_probs(circuit)
         freq = sorted(probs.items(), key=lambda x: x[1], reverse=True)
         # Pick a random outcome.
-        freq[-1] = (freq[-1][0], 1.0 - sum(x[1] for x in freq[0:len(freq) - 1]))
+        freq[-1] = (freq[-1][0], 1.0 - math.fsum(x[1] for x in freq[0:len(freq) - 1]))
         idx = algorithm_globals.random.choice(len(freq), 1, p=[x[1] for x in freq])[0]
         logger.info('Frequencies: %s', freq)
         return freq[idx][0]
@@ -305,6 +306,8 @@ class GroverOptimizer(OptimizationAlgorithm):
             keys = [bin(i)[2::].rjust(int(np.log2(len(state))), '0')[::-1]
                     for i in range(0, len(state))]
             probs = [np.round(abs(a) * abs(a), 5) for a in state]
+            total = math.fsum(probs)
+            probs = [p / total for p in probs]
             hist = dict(zip(keys, probs))
             self._circuit_results = state
         else:
