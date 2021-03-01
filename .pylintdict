@@ -81,6 +81,7 @@ nosignatures
 np
 num
 numpy
+optimizationresult
 optimizers
 params
 parikh
@@ -127,6 +128,7 @@ subgraph
 submodules
 th
 toctree
+todo
 todok
 tol
 unittest
