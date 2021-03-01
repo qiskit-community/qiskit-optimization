@@ -32,7 +32,7 @@ class VehicleRouting(GraphApplication):
         super().__init__(graph)
 
     def to_quadratic_program(self, num_vehicle, depot=0):
-        mdl = Model(name='vehicle_routing')
+        mdl = Model(name='Vehicle Routing')
         n = self._graph.number_of_nodes()
         x = {}
         for i in range(n):
@@ -101,16 +101,19 @@ class VehicleRouting(GraphApplication):
 
     def draw_graph(self, result, num_vehicle, depot=0, pos=None):
         route_list = self.interpret(result, num_vehicle, depot)
-        len_list = len(route_list)
         nx.draw(self._graph, with_labels=True, pos=pos)
-        color_list = [k/len_list for k in range(len_list) for edge in route_list[k]]
-        route_list = [edge for k in range(len_list) for edge in route_list[k]]
         nx.draw_networkx_edges(
             self._graph,
             pos,
-            edgelist=route_list,
-            width=8, alpha=0.5, edge_color=color_list, edge_cmap=plt.cm.plasma
+            edgelist=self._edgelist(route_list),
+            width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
             )
+
+    def _edgelist(self, route_list):
+        return [edge for k in range(len(route_list)) for edge in route_list[k]]
+
+    def _edge_color(self, route_list):
+        return [k/len(route_list) for k in range(len(route_list)) for edge in route_list[k]]
 
     @staticmethod
     def random_graph(n, low=0, high=100, seed=None):

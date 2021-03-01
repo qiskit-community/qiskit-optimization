@@ -11,7 +11,7 @@ class Maxcut(GraphApplication):
         super().__init__(graph)
 
     def to_quadratic_program(self):
-        mdl = Model(name='maxcut')
+        mdl = Model(name='Max-cut')
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(self._graph.number_of_nodes())}
         for u, v in self._graph.edges:
             self._graph.edges[u, v].setdefault('weight', 1)
@@ -37,3 +37,6 @@ class Maxcut(GraphApplication):
             else:
                 cut[1].append(i)
         return cut
+
+    def _node_colors(self, result):
+        return ['r' if value == 0 else 'b' for value in result.x]

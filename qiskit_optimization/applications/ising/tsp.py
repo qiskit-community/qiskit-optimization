@@ -8,13 +8,13 @@ from .graph_application import GraphApplication
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-class TSP(GraphApplication):
+class Tsp(GraphApplication):
 
     def __init__(self, graph):
         super().__init__(graph)
 
     def to_quadratic_program(self):
-        mdl = Model(name='tsp')
+        mdl = Model(name='TSP')
         n = self._graph.number_of_nodes()
         x = {(i, p): mdl.binary_var(name='x_{0}_{1}'.format(i, p))
              for i in range(n) for p in range(n)}
@@ -28,16 +28,6 @@ class TSP(GraphApplication):
         qp = QuadraticProgram()
         qp.from_docplex(mdl)
         return qp
-
-    def draw_graph(self, result, pos=None):
-        route = self.interpret(result)
-        nx.draw(self._graph, with_labels=True, pos=pos)
-        nx.draw_networkx_edges(
-            self._graph,
-            pos,
-            edgelist=[(route[i], route[(i+1) % len(route)]) for i in range(len(route))],
-            width=8, alpha=0.5, edge_color="tab:red",
-            )
 
     def interpret(self, result):
         n = int(np.sqrt(len(result.x)))
@@ -53,6 +43,19 @@ class TSP(GraphApplication):
                 route.append(p_step)
         return route
 
+    def draw_graph(self, result, pos=None):
+        nx.draw(self._graph, with_labels=True, pos=pos)
+        nx.draw_networkx_edges(
+            self._graph,
+            pos,
+            edgelist=self._edgelist(result),
+            width=8, alpha=0.5, edge_color="tab:red",
+            )
+
+    def _edgelist(self, result):
+        route = self.interpret(result)
+        return [(route[i], route[(i+1) % len(route)]) for i in range(len(route))]
+
     @staticmethod
     def random_graph(n, low=0, high=100, seed=None):
         random.seed(seed)
@@ -61,7 +64,7 @@ class TSP(GraphApplication):
         for u, v in g.edges:
             delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
             g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
-        return TSP(g)
+        return Tsp(g)
 
     @staticmethod
     def parse_tsplib_format(filename):

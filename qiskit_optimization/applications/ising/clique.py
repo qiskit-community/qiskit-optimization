@@ -31,7 +31,7 @@ class Clique(GraphApplication):
     def to_quadratic_program(self, K=None):
         complement_g = nx.complement(self._graph)
 
-        mdl = Model(name='clique')
+        mdl = Model(name='Clique')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         for u, v in complement_g.edges:
@@ -55,8 +55,10 @@ class Clique(GraphApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            colors = ['r' if value == 1 else 'darkgrey' for value in result.x]
-            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_color(result), pos=pos, with_labels=True)
+
+    def _node_color(self, result):
+        return ['r' if value == 1 else 'darkgrey' for value in result.x]
 
     def is_feasible(self, result, K=None):
         return self.to_quadratic_program(K=K).is_feasible(result.x)

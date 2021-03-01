@@ -27,7 +27,7 @@ class GraphPartitioning(GraphApplication):
         super().__init__(graph)
 
     def to_quadratic_program(self):
-        mdl = Model(name='graph partinioning')
+        mdl = Model(name='Graph partinioning')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         for u, v in self._graph.edges:
@@ -53,5 +53,7 @@ class GraphPartitioning(GraphApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            colors = ['r' if value == 0 else 'b' for value in result.x]
-            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_colors, pos=pos, with_labels=True)
+
+    def _node_colors(self, result):
+        return ['r' if value == 0 else 'b' for value in result.x]

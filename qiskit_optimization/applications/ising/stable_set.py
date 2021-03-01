@@ -32,7 +32,7 @@ class StableSet(GraphApplication):
         super().__init__(graph)
 
     def to_quadratic_program(self):
-        mdl = Model(name='stable set')
+        mdl = Model(name='Stable set')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         for u, v in self._graph.edges:
@@ -52,9 +52,11 @@ class StableSet(GraphApplication):
                 stable_set.append(i)
         return stable_set
 
-    def draw_graph(self, result, pos=None):
+    def draw_graph(self, result=None, pos=None):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            colors = ['r' if value == 1 else 'darkgrey' for value in result.x]
-            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
+
+    def _node_colors(self, result):
+        return ['r' if value == 1 else 'darkgrey' for value in result.x]

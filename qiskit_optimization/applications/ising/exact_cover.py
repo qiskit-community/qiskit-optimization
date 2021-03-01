@@ -11,8 +11,7 @@
 # that they have been altered from the originals.
 
 """
-Convert vertex cover instances into Pauli list
-Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
+
 """
 import copy
 
