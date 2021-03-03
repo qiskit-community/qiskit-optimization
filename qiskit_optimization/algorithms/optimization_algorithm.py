@@ -446,13 +446,13 @@ class OptimizationAlgorithm(ABC):
                             status=cls._get_feasibility_status(problem, x),
                             **kwargs)
 
-    def _interpret_samples(self, problem: QuadraticProgram, raw_samples: List[SolutionSample]) \
-            -> List[SolutionSample]:
+    def _interpret_samples(self, problem: QuadraticProgram, raw_samples: List[SolutionSample],
+                           converters: List[QuadraticProgramConverter]) -> List[SolutionSample]:
         prob = {}  # type: dict
         array = {}
         for sample in raw_samples:
             x = sample.x
-            for converter in self._converters[::-1]:
+            for converter in converters[::-1]:
                 x = converter.interpret(x)
             key = tuple(x)
             prob[key] = prob.get(key, 0.0) + sample.probability

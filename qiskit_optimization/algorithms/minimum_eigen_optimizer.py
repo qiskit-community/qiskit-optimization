@@ -16,7 +16,7 @@ from typing import Optional, Any, Union, List, cast
 import numpy as np
 
 from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
-from qiskit.opflow import StateFn, DictStateFn, OperatorBase
+from qiskit.opflow import OperatorBase
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
                                      OptimizationResult, SolutionSample)
 from .. import QiskitOptimizationError
@@ -210,7 +210,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                                                   samples=None, raw_samples=None,
                                                   min_eigen_solver_result=eigen_result)
         # translate result back to integers
-        samples = self._interpret_samples(original_problem, raw_samples)
+        samples = self._interpret_samples(original_problem, raw_samples, self._converters)
         return cast(MinimumEigenOptimizationResult,
                     self._interpret(x=x, converters=self._converters, problem=original_problem,
                                     result_class=MinimumEigenOptimizationResult,
