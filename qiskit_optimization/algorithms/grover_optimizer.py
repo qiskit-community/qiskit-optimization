@@ -63,7 +63,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._num_key_qubits = None
         self._n_iterations = num_iterations
         self._quantum_instance = None
-        self._circuit_results = None
+        self._circuit_results = {}  # type: Union[dict, np.ndarray]
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
@@ -259,7 +259,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                     self._circuit_results = np.diag(rho.data) ** 0.5
                 else:
                     self._circuit_results = {i[0:n_key]: v for i,
-                                             v in self._circuit_results.items()}  # type: ignore
+                                             v in self._circuit_results.items()}
 
                 raw_samples = self._eigenvector_to_solutions(self._circuit_results, problem_init)
                 raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
