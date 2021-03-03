@@ -169,26 +169,27 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                             converters=invalid)
 
     def test_samples_and_raw_samples(self):
-        qp = QuadraticProgram()
-        qp.integer_var(0, 3, 'x')
-        qp.binary_var('y')
-        qp.minimize(linear={'x': 1, 'y': 2})
-        qp.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
+        """Test samples and raw_samples"""
+        op = QuadraticProgram()
+        op.integer_var(0, 3, 'x')
+        op.binary_var('y')
+        op.minimize(linear={'x': 1, 'y': 2})
+        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
         opt_sol = 1
-        SUCCESS = OptimizationResultStatus.SUCCESS
+        success = OptimizationResultStatus.SUCCESS
         algorithm_globals.random_seed = 1
         grover_optimizer = GroverOptimizer(
             5, num_iterations=2, quantum_instance=self.qasm_simulator)
-        result = grover_optimizer.solve(qp)
+        result = grover_optimizer.solve(op)
         self.assertEqual(len(result.samples), 8)
         self.assertEqual(len(result.raw_samples), 32)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == SUCCESS), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
-            self.assertEqual(sample.status, SUCCESS)
+            self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(result.x, result.samples[0].x)
         self.assertAlmostEqual(result.fval, result.samples[0].fval)
         self.assertEqual(result.status, result.samples[0].status)

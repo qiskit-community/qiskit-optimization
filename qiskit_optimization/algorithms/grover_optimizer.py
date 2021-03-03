@@ -63,6 +63,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._num_key_qubits = None
         self._n_iterations = num_iterations
         self._quantum_instance = None
+        self._circuit_results = None
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
@@ -253,7 +254,7 @@ class GroverOptimizer(OptimizationAlgorithm):
 
                 # trace out work qubits
                 if self._quantum_instance.is_statevector:
-                    indices = [i for i in range(n_key, len(outcome))]
+                    indices = list(range(n_key, len(outcome)))
                     rho = partial_trace(self._circuit_results, indices)
                     self._circuit_results = np.diag(rho.data) ** 0.5
                 else:
@@ -292,7 +293,6 @@ class GroverOptimizer(OptimizationAlgorithm):
         probs = self._get_probs(circuit)
         freq = sorted(probs.items(), key=lambda x: x[1], reverse=True)
         # Pick a random outcome.
-        freq[-1] = (freq[-1][0], 1.0 - math.fsum(x[1] for x in freq[0:len(freq) - 1]))
         idx = algorithm_globals.random.choice(len(freq), 1, p=[x[1] for x in freq])[0]
         logger.info('Frequencies: %s', freq)
         return freq[idx][0]
@@ -302,10 +302,10 @@ class GroverOptimizer(OptimizationAlgorithm):
         # Execute job and filter results.
         result = self.quantum_instance.execute(qc)
         if self.quantum_instance.is_statevector:
-            state = np.round(result.get_statevector(qc), 5)
+            state = result.get_statevector(qc)
             keys = [bin(i)[2::].rjust(int(np.log2(len(state))), '0')[::-1]
                     for i in range(0, len(state))]
-            probs = [np.round(abs(a) * abs(a), 5) for a in state]
+            probs = [abs(a) * abs(a) for a in state]
             total = math.fsum(probs)
             probs = [p / total for p in probs]
             hist = dict(zip(keys, probs))
@@ -353,6 +353,10 @@ class GroverOptimizationResult(OptimizationResult):
                 that is expected to be identical with ``fval``.
             threshold: The threshold of Grover algorithm.
             status: the termination status of the optimization algorithm.
+            samples: the x value, the objective function value of the original problem,
+                the probability, and the status of sampling.
+            raw_samples: the x values of the QUBO, the objective function value of the QUBO,
+                and the probability of sampling.
         """
         super().__init__(x=x, fval=fval, variables=variables, status=status, raw_results=None,
                          samples=samples)
