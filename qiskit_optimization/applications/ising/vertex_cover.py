@@ -29,7 +29,7 @@ class VertexCover(GraphApplication):
         super().__init__(graph)
 
     def to_quadratic_program(self):
-        mdl = Model(name='vertex cover')
+        mdl = Model(name='Vertex cover')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         objective = mdl.sum(x[i] for i in x)

@@ -33,7 +33,7 @@ class ExactCover(BaseApplication):
         self._set = np.unique(self._set)
 
     def to_quadratic_program(self):
-        mdl = Model(name='exact_cover')
+        mdl = Model(name='Exact cover')
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._subsets))}
         mdl.minimize(mdl.sum(x[i] for i in x))
         for e in self._set:

@@ -26,8 +26,7 @@ class Maxcut(GraphApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            colors = ['r' if value == 0 else 'b' for value in result.x]
-            nx.draw(self._graph, node_color=colors, pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_color, pos=pos, with_labels=True)
 
     def interpret(self, result):
         cut = [[], []]
@@ -38,5 +37,5 @@ class Maxcut(GraphApplication):
                 cut[1].append(i)
         return cut
 
-    def _node_colors(self, result):
+    def _node_color(self, result):
         return ['r' if value == 0 else 'b' for value in result.x]

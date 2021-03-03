@@ -30,7 +30,7 @@ class NumberPartitioning(BaseApplication):
         self._num_set = copy.deepcopy(num_set)
 
     def to_quadratic_program(self):
-        mdl = Model(name='exact_cover')
+        mdl = Model(name='Number partitioning')
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._num_set))}
         mdl.add_constraint(mdl.sum(num * (-2 * x[i] + 1)
                                    for i, num in enumerate(self._num_set)) == 0)

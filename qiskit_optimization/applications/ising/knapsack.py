@@ -32,7 +32,7 @@ class Knapsack(BaseApplication):
         self._max_weight = copy.deepcopy(max_weight)
 
     def to_quadratic_program(self):
-        mdl = Model(name='K_napsack')
+        mdl = Model(name='K napsack')
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._values))}
         mdl.maximize(mdl.sum(self._values[i]*x[i] for i in x))
         mdl.add_constraint(mdl.sum(self._weights[i] * x[i] for i in x) <= self._max_weight)
