@@ -63,7 +63,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._num_key_qubits = None
         self._n_iterations = num_iterations
         self._quantum_instance = None
-        self._circuit_results = {}  # type: Union[dict, np.ndarray]
+        self._circuit_results = {}  # type: ignore
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
