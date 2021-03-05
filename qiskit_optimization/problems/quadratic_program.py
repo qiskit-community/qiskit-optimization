@@ -36,7 +36,7 @@ from docplex.mp.model_reader import ModelReader
 from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 
-import guroibpy as gp
+import gurobipy as gp
 
 from numpy import ndarray, zeros
 from scipy.sparse import spmatrix
@@ -842,16 +842,16 @@ class QuadraticProgram:
         # keep track of names separately, since gurobipy allows to have None names.
         var_names = {}
         for x in model.getVars():
-            if isinstance(x.vtype, gp.GRB.CONTINUOUS):
+            if x.vtype == gp.GRB.CONTINUOUS:
                 x_new = self.continuous_var(x.lb, x.ub, x.VarName)
-            elif isinstance(x.vtype, gp.GRB.BINARY):
+            elif x.vtype == gp.GRB.BINARY:
                 x_new = self.binary_var(x.VarName)
-            elif isinstance(x.vtype, gp.GRB.INTEGER):
+            elif x.vtype == gp.GRB.INTEGER:
                 x_new = self.integer_var(x.lb, x.ub, x.VarName)
             else:
                 raise QiskitOptimizationError(
                     "Unsupported variable type: {} {}".format(x.name, x.vartype))
-            var_names[x] = x_new.VarName
+            var_names[x] = x_new.name
 
         # objective sense
         minimize = model.ModelSense == gp.GRB.MINIMIZE
@@ -920,8 +920,8 @@ class QuadraticProgram:
 
         # get quadratic constraints
         for constraint in model.getQConstrs():
-            name = constraint.Constrname
-            sense = constraint.Sense
+            name = constraint.QCName
+            sense = constraint.QCSense
 
             left_expr = model.getQCRow(constraint)
             rhs = constraint.QCRHS
