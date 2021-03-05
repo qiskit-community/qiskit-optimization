@@ -17,7 +17,6 @@ on:
     branches:
       - master
       - 'stable/**'
-      - tutorials
   pull_request:
     branches:
       - master
@@ -180,7 +179,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: tutorials${{ matrix.python-version }}
-          path: ./qiskit-tutorials/_build/html/artifacts/tutorials.tar.gz
+          path: ./tutorials/_build/html/artifacts/tutorials.tar.gz
   Deprecation_Messages_and_Coverage:
     needs: [Checks, Lint, Optimization, Tutorials]
     runs-on: ubuntu-latest

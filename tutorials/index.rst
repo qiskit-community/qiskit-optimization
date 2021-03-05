@@ -1,5 +1,3 @@
-.. _tutorials-optim:
-
 ######################
 Optimization Tutorials
 ######################
@@ -15,3 +13,4 @@ Optimization Tutorials
    :ref:`genindex`
    :ref:`modindex`
    :ref:`search`
+
