@@ -23,9 +23,10 @@ requirements = [
     "scipy>=1.4",
     "numpy>=1.17",
     "psutil>=5",
-    "docplex",
+    "docplex; sys_platform != 'darwin'",
+    "docplex==2.15.194; sys_platform == 'darwin'",
     "setuptools>=40.1.0",
-    "retworkx>=0.5.0",
+    "retworkx>=0.7.0",
     "dataclasses; python_version < '3.7'"
 ]
 
@@ -70,6 +71,7 @@ setuptools.setup(
     python_requires=">=3.6",
     extras_require={
         'cplex': ["cplex; python_version < '3.9'"],
+        'cvx': ['cvxpy'],
     },
     zip_safe=False
 )

@@ -13,15 +13,19 @@
 """Test Recursive Min Eigen Optimizer."""
 
 import unittest
-from os import path
-
 from test import QiskitOptimizationTestCase
 
+import numpy as np
+
+from qiskit import BasicAer
+from qiskit.utils import algorithm_globals
+
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
 
 from qiskit_optimization.algorithms import (MinimumEigenOptimizer, CplexOptimizer,
-                                            RecursiveMinimumEigenOptimizer)
+                                            RecursiveMinimumEigenOptimizer, WarmStartQAOAOptimizer,
+                                            SlsqpOptimizer)
 from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.converters import (IntegerToBinary, InequalityToEquality,
@@ -45,7 +49,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(path.join('resources', filename))
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
             problem.read_from_lp_file(lp_file)
 
             # solve problem with cplex
@@ -56,17 +60,18 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             result = recursive_min_eigen_optimizer.solve(problem)
 
             # analyze results
+            np.testing.assert_array_almost_equal(cplex_result.x, result.x, 4)
             self.assertAlmostEqual(cplex_result.fval, result.fval)
         except MissingOptionalLibraryError as ex:
             self.skipTest(str(ex))
 
-    def test_min_eigen_optimizer_history(self):
+    def test_recursive_history(self):
         """Tests different options for history."""
         try:
             filename = 'op_ip1.lp'
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(path.join('resources', filename))
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
             problem.read_from_lp_file(lp_file)
 
             # get minimum eigen solver
@@ -111,6 +116,36 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             self.assertGreater(len(result.history[0]), 1)
             self.assertIsNotNone(result.history[1])
 
+        except MissingOptionalLibraryError as ex:
+            self.skipTest(str(ex))
+
+    def test_recursive_warm_qaoa(self):
+        """Test the recursive optimizer with warm start qaoa."""
+        try:
+            algorithm_globals.random_seed = 12345
+            backend = BasicAer.get_backend("statevector_simulator")
+            qaoa = QAOA(quantum_instance=backend, reps=1)
+            warm_qaoa = WarmStartQAOAOptimizer(pre_solver=SlsqpOptimizer(),
+                                               relax_for_pre_solver=True, qaoa=qaoa)
+
+            recursive_min_eigen_optimizer = RecursiveMinimumEigenOptimizer(
+                warm_qaoa, min_num_vars=4)
+
+            # load optimization problem
+            problem = QuadraticProgram()
+            lp_file = self.get_resource_path('op_ip1.lp', 'algorithms/resources')
+            problem.read_from_lp_file(lp_file)
+
+            # solve problem with cplex
+            cplex = CplexOptimizer()
+            cplex_result = cplex.solve(problem)
+
+            # solve problem
+            result = recursive_min_eigen_optimizer.solve(problem)
+
+            # analyze results
+            np.testing.assert_array_almost_equal(cplex_result.x, result.x, 4)
+            self.assertAlmostEqual(cplex_result.fval, result.fval)
         except MissingOptionalLibraryError as ex:
             self.skipTest(str(ex))
 

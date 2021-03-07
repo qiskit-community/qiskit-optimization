@@ -172,6 +172,29 @@ class OptimizationResult:
             "Integer or string key required,"
             "instead {}({}) provided.".format(type(key), key))
 
+    def get_correlations(self) -> np.ndarray:
+        """
+        Get <Zi x Zj> correlation matrix from the samples.
+
+        Returns:
+            A correlation matrix.
+        """
+
+        states = [v.x for v in self.samples]
+        probs = [v.probability for v in self.samples]
+
+        n = len(states[0])
+        correlations = np.zeros((n, n))
+        for k, prob in enumerate(probs):
+            b = states[k]
+            for i in range(n):
+                for j in range(i):
+                    if b[i] == b[j]:
+                        correlations[i, j] += prob
+                    else:
+                        correlations[i, j] -= prob
+        return correlations
+
     @property
     def x(self) -> Optional[np.ndarray]:
         """Returns the optimal value found in the optimization or None in case of FAILURE.

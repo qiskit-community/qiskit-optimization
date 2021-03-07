@@ -9,14 +9,3 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-
-name: 'Install Qiskit Optimization Master Dependencies'
-description: 'Installs Python dependencies from Master'
-
-runs:
-  using: "composite"
-  steps: 
-    - run : |
-        pip install https://github.com/Qiskit/qiskit-terra/archive/master.zip
-        pip install https://github.com/Qiskit/qiskit-aer/archive/master.zip
-      shell: bash

@@ -610,7 +610,8 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 q_p.read_from_lp_file('')
             with self.assertRaises(FileNotFoundError):
                 q_p.read_from_lp_file('no_file.txt')
-            lp_file = self.get_resource_path(path.join('resources', 'test_quadratic_program.lp'))
+            lp_file = self.get_resource_path('test_quadratic_program.lp',
+                                             'problems/resources')
             q_p.read_from_lp_file(lp_file)
             self.assertEqual(q_p.name, 'my problem')
             self.assertEqual(q_p.get_num_vars(), 3)
@@ -695,8 +696,8 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.quadratic_constraint({'x': 1, 'y': 1}, {('x', 'x'): 1, ('y', 'z'): -1, ('z', 'z'): 2},
                                  '>=', 1, 'quad_geq')
 
-        reference_file_name = self.get_resource_path(path.join('resources',
-                                                               'test_quadratic_program.lp'))
+        reference_file_name = self.get_resource_path('test_quadratic_program.lp',
+                                                     'problems/resources')
         temp_output_file = tempfile.NamedTemporaryFile(mode='w+t', suffix='.lp')
         q_p.write_to_lp_file(temp_output_file.name)
         with open(reference_file_name) as reference:

@@ -31,7 +31,8 @@ class TestSetPacking(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 2752
-        input_file = self.get_resource_path('sample.setpacking')
+        input_file = self.get_resource_path('sample.setpacking',
+                                            'applications/ising')
         with open(input_file) as file:
             self.list_of_subsets = json.load(file)
             self.qubit_op, _ = set_packing.get_operator(self.list_of_subsets)
