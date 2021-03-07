@@ -12,7 +12,7 @@
 
 """An application class for Traveling salesman problem (TSP)."""
 import random
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -56,7 +56,7 @@ class Tsp(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[int]:
+    def interpret(self, result: OptimizationResult) -> List[Union[int, List[int]]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -66,7 +66,7 @@ class Tsp(GraphOptimizationApplication):
             A list of nodes whose indices correspondord to its order in a prospective cycle.
         """
         n = int(np.sqrt(len(result.x)))
-        route = []
+        route = []  # type: List[Union[int, List[int]]]
         for p__ in range(n):
             p_step = []
             for i in range(n):
@@ -140,7 +140,7 @@ class Tsp(GraphOptimizationApplication):
             A Tsp instance data.
         """
         name = ''
-        coord = []
+        coord = []  # type: ignore
         with open(filename) as infile:
             coord_section = False
             for line in infile:
@@ -155,7 +155,7 @@ class Tsp(GraphOptimizationApplication):
                             "This supports only \"TSP\" type. Actual: {}".format(typ))
                 elif line.startswith('DIMENSION'):
                     dim = int(line.split(':')[1])
-                    coord = np.zeros((dim, 2))
+                    coord = np.zeros((dim, 2))  # type: ignore
                 elif line.startswith('EDGE_WEIGHT_TYPE'):
                     typ = line.split(':')[1]
                     typ.strip()

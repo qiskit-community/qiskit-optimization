@@ -12,7 +12,6 @@
 
 """An application class for the number partitioning."""
 
-import copy
 from typing import List
 
 from docplex.mp.model import Model
@@ -22,8 +21,8 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .base_optimization_application import BaseOptimizationApplication
 
 
-class NumberPartitioning(BaseOptimizationApplication):
-    """Convert a number partitioning problem [1] instance
+class NumberPartition(BaseOptimizationApplication):
+    """Convert a number partition problem [1] instance
     into a :class:`~qiskit_optimization.problems.QuadraticProgram`
 
     References:
@@ -63,7 +62,7 @@ class NumberPartitioning(BaseOptimizationApplication):
         Returns:
             A list of subsets whose sum is the half of the total.
         """
-        num_subsets = [[], []]
+        num_subsets = [[], []]  # type: List[List[int]]
         for i, value in enumerate(result.x):
             if value == 0:
                 num_subsets[0].append(self._number_set[i])

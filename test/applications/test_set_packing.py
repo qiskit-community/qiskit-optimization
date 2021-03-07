@@ -27,36 +27,36 @@ class TestSetPacking(QiskitOptimizationTestCase):
         super().setUp()
         self.total_set = [1, 2, 3, 4, 5]
         self.list_of_subsets = [[1, 2, 3], [2, 3, 4], [4, 5], [1, 3], [2]]
-        qp = QuadraticProgram()
-        for i in range(5):
-            qp.binary_var()
+        op = QuadraticProgram()
+        for _ in range(5):
+            op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 0, 1, 1, 1], fval=3, variables=qp.variables,
+            x=[0, 0, 1, 1, 1], fval=3, variables=op.variables,
             status=OptimizationResultStatus.SUCCESS)
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
         set_packing = SetPacking(self.list_of_subsets)
-        qp = set_packing.to_quadratic_program()
+        op = set_packing.to_quadratic_program()
         # Test name
-        self.assertEqual(qp.name, "Set packing")
+        self.assertEqual(op.name, "Set packing")
         # Test variables
-        self.assertEqual(qp.get_num_vars(), 5)
-        for var in qp.variables:
+        self.assertEqual(op.get_num_vars(), 5)
+        for var in op.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
         # Test objective
-        obj = qp.objective
+        obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MAXIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {0: 1, 1: 1, 2: 1, 3: 1, 4: 1})
         self.assertEqual(obj.quadratic.to_dict(), {})
         # Test constraint
-        lin = qp.linear_constraints
+        lin = op.linear_constraints
         self.assertEqual(len(lin), len(self.total_set))
-        for i in range(len(lin)):
-            self.assertEqual(lin[i].sense, Constraint.Sense.LE)
-            self.assertEqual(lin[i].rhs, 1)
-            self.assertEqual(lin[i].linear.to_dict(), {
+        for i, lin in enumerate(lin):
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertEqual(lin.rhs, 1)
+            self.assertEqual(lin.linear.to_dict(), {
                              j: 1 for j, subset in enumerate(self.list_of_subsets)
                              if i+1 in subset})
 

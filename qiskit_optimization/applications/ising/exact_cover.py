@@ -20,6 +20,7 @@ from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .base_optimization_application import BaseOptimizationApplication
 
+
 class ExactCover(BaseOptimizationApplication):
     """Convert an exact cover problem [1] instance
     into a :class:`~qiskit_optimization.problems.QuadraticProgram`
@@ -40,7 +41,7 @@ class ExactCover(BaseOptimizationApplication):
             self._set.extend(sub)
         self._set = np.unique(self._set)
 
-    def to_quadratic_program(self) -> None:
+    def to_quadratic_program(self) -> QuadraticProgram:
         """Convert an exact cover instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
 

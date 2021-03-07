@@ -10,18 +10,18 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test NumberPartitioning class"""
+""" Test NumberPartition class"""
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
-from qiskit_optimization.applications.ising.number_partitioning import NumberPartitioning
+from qiskit_optimization.applications.ising.number_partition import NumberPartition
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
 
 
-class TestNumberPartitioning(QiskitOptimizationTestCase):
-    """ Test NumberPartitioning class"""
+class TestNumberPartition(QiskitOptimizationTestCase):
+    """ Test NumberPartition class"""
 
     def setUp(self):
         """Set up for the test"""
@@ -36,8 +36,8 @@ class TestNumberPartitioning(QiskitOptimizationTestCase):
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
-        number_partitioning = NumberPartitioning(self.num_set)
-        op = number_partitioning.to_quadratic_program()
+        number_partition = NumberPartition(self.num_set)
+        op = number_partition.to_quadratic_program()
         # Test name
         self.assertEqual(op.name, "Number partitioning")
         # Test variables
@@ -61,5 +61,5 @@ class TestNumberPartitioning(QiskitOptimizationTestCase):
 
     def test_interpret(self):
         """Test interpret"""
-        number_partitioning = NumberPartitioning(self.num_set)
-        self.assertEqual(number_partitioning.interpret(self.result), [[6, 5, 4], [8, 7]])
+        number_partition = NumberPartition(self.num_set)
+        self.assertEqual(number_partition.interpret(self.result), [[6, 5, 4], [8, 7]])

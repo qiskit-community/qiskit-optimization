@@ -121,7 +121,7 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
     def test_create_random_instance(self):
         """Test create_random_instance"""
         vehicle_routing = VehicleRouting.create_random_instance(n=4, seed=600)
-        graph = vehicle_routing.graph()
+        graph = vehicle_routing.graph
         for node in graph.nodes:
             self.assertEqual(graph.nodes[node]['pos'], self.graph.nodes[node]['pos'])
         for edge in graph.edges:

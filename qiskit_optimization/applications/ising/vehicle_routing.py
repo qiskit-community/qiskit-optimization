@@ -110,7 +110,7 @@ class VehicleRouting(GraphOptimizationApplication):
                     if result.x[idx]:
                         edge_list.append([i, j])
                     idx += 1
-        route_list = []
+        route_list = []  # type: List[List[List[int]]]
         for k in range(self.num_vehicles):
             i = 0
             start = self.depot

@@ -61,7 +61,7 @@ class GraphPartition(GraphOptimizationApplication):
         Returns:
             A list of node indices divided into two groups.
         """
-        partition = [[], []]
+        partition = [[], []]  # type: List[List[int]]
         for i, value in enumerate(result.x):
             if value == 0:
                 partition[0].append(i)
@@ -70,7 +70,7 @@ class GraphPartition(GraphOptimizationApplication):
         return partition
 
     def draw_graph(self, result: Optional[OptimizationResult] = None,
-                   pos: Optional[Dict[int, np.ndarray]]=None) -> None:
+                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
 

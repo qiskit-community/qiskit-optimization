@@ -90,7 +90,7 @@ class TestTsp(QiskitOptimizationTestCase):
     def test_create_random_instance(self):
         """Test create_random_instance"""
         tsp = Tsp.create_random_instance(n=4, seed=123)
-        graph = tsp.graph()
+        graph = tsp.graph
         for node in graph.nodes:
             self.assertEqual(graph.nodes[node]['pos'], self.graph.nodes[node]['pos'])
         for edge in graph.edges:

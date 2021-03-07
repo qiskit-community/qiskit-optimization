@@ -43,12 +43,12 @@ class VertexCover(GraphOptimizationApplication):
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         objective = mdl.sum(x[i] for i in x)
-        for u, v in self._graph.edges:
-            mdl.add_constraint(x[u] + x[v] >= 1)
+        for w, v in self._graph.edges:
+            mdl.add_constraint(x[w] + x[v] >= 1)
         mdl.minimize(objective)
-        qp = QuadraticProgram()
-        qp.from_docplex(mdl)
-        return qp
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        return op
 
     def interpret(self, result: OptimizationResult) -> List[int]:
         """Interpret a result as a list of node indices

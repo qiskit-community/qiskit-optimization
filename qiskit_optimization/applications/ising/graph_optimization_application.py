@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An abstract class for graph optimization application classs."""
+"""An abstract class for graph optimization application classes."""
 
 from typing import Union, Optional, Dict, List
 from abc import abstractmethod
@@ -19,7 +19,7 @@ import networkx as nx
 import numpy as np
 
 from qiskit_optimization.algorithms import OptimizationResult
-from .base_application import BaseOptimizationApplication
+from .base_optimization_application import BaseOptimizationApplication
 
 
 class GraphOptimizationApplication(BaseOptimizationApplication):

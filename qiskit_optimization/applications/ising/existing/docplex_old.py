@@ -69,7 +69,7 @@ from docplex.mp.model import Model
 from qiskit.quantum_info import Pauli
 from qiskit.opflow import PauliSumOp
 
-from ...exceptions import QiskitOptimizationError
+from ....exceptions import QiskitOptimizationError
 
 logger = logging.getLogger(__name__)
 
