@@ -25,18 +25,26 @@ Ising Models
    :toctree: ../stubs/
    :nosignatures:
 
-   base_optimization_application
    clique
+   common
    exact_cover
-   graph_optimization_application
    graph_partition
-   knapsack
    max_cut
-   number_partition
+   partition
    set_packing
    stable_set
    tsp
    vehicle_routing
    vertex_cover
+   knapsack
+
+Automatic Ising Model Generator from DoCPLEX Model
+==================================================
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   docplex
 
 """

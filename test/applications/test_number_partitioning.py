@@ -11,50 +11,47 @@
 # that they have been altered from the originals.
 
 """ Test NumberPartitioning class"""
-
-import random
-
-import networkx as nx
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
 from qiskit_optimization.applications.ising.number_partitioning import NumberPartitioning
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 
 class TestNumberPartitioning(QiskitOptimizationTestCase):
     """ Test NumberPartitioning class"""
 
     def setUp(self):
+        """Set up for the test"""
         super().setUp()
         self.num_set = [8, 7, 6, 5, 4]
-        qp = QuadraticProgram()
-        for i in range(5):
-            qp.binary_var()
+        op = QuadraticProgram()
+        for _ in range(5):
+            op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 1, 0, 0, 0], fval=0, variables=qp.variables,
+            x=[1, 1, 0, 0, 0], fval=0, variables=op.variables,
             status=OptimizationResultStatus.SUCCESS)
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
         number_partitioning = NumberPartitioning(self.num_set)
-        qp = number_partitioning.to_quadratic_program()
+        op = number_partitioning.to_quadratic_program()
         # Test name
-        self.assertEqual(qp.name, "Number partitioning")
+        self.assertEqual(op.name, "Number partitioning")
         # Test variables
-        self.assertEqual(qp.get_num_vars(), 5)
-        for var in qp.variables:
+        self.assertEqual(op.get_num_vars(), 5)
+        for var in op.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
         # Test objective
-        obj = qp.objective
+        obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {})
         self.assertEqual(obj.quadratic.to_dict(), {})
         # Test constraint
-        lin = qp.linear_constraints
+        lin = op.linear_constraints
         self.assertEqual(len(lin), 1)
         self.assertEqual(lin[0].sense, Constraint.Sense.EQ)
         self.assertEqual(lin[0].rhs, -30)

@@ -10,53 +10,80 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Convert stable set instances into Pauli list.  We read instances in
-the Gset format, see https://web.stanford.edu/~yyye/yyye/Gset/ , for
-compatibility with the maxcut format, but the weights on the edges
-as they are not really used and are always assumed to be 1.  The
-graph is represented by an adjacency matrix.
-"""
+"""An application class for the stable set."""
+
+from typing import Dict, List, Optional
 
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
 
-from .graph_application import GraphApplication
+from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from .graph_optimization_application import GraphOptimizationApplication
 
 
-class StableSet(GraphApplication):
+class StableSet(GraphOptimizationApplication):
+    """Convert a stable set (a.k.a independent set) [1] instance based on a graph of NetworkX
+    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
 
-    def __init__(self, graph):
-        super().__init__(graph)
+    References:
+        [1]: "Independent set (graph theory)",
+        https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+    """
 
-    def to_quadratic_program(self):
+    def to_quadratic_program(self) -> QuadraticProgram:
+        """Convert a stable set instance into a
+        :class:`~qiskit_optimization.problems.QuadraticProgram`
+
+        Returns:
+            The :class:`~qiskit_optimization.problems.QuadraticProgram` created
+            from the stable set instance.
+        """
         mdl = Model(name='Stable set')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
-        for u, v in self._graph.edges:
-            self._graph.edges[u, v].setdefault('weight', 1)
+        for w, v in self._graph.edges:
+            self._graph.edges[w, v].setdefault('weight', 1)
         objective = mdl.sum(x[i] for i in x)
-        for u, v in self._graph.edges:
-            mdl.add_constraint(x[u] + x[v] <= 1)
+        for w, v in self._graph.edges:
+            mdl.add_constraint(x[w] + x[v] <= 1)
         mdl.maximize(objective)
-        qp = QuadraticProgram()
-        qp.from_docplex(mdl)
-        return qp
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        return op
 
-    def interpret(self, result):
+    def interpret(self, result: OptimizationResult) -> List[int]:
+        """Interpret a result as a list of node indices
+
+        Args:
+            result : The calculated result of the problem
+
+        Returns:
+            A list of node indices whose corresponding variable is 1
+        """
         stable_set = []
         for i, value in enumerate(result.x):
             if value:
                 stable_set.append(i)
         return stable_set
 
-    def draw_graph(self, result=None, pos=None):
+    def draw_graph(self, result: Optional[OptimizationResult] = None,
+                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+        """Draw a graph with the result. When the result is None, draw an original graph without
+        colors.
+
+        Args:
+            result : The calculated result for the problem
+            pos: The positions of nodes
+        """
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
             nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
 
     def _node_colors(self, result):
+        # Return a list of strings for draw_graph.
+        # Color a node with red when the corresponding variable is 1.
+        # Otherwise color it with darkgrey.
         return ['r' if value == 1 else 'darkgrey' for value in result.x]

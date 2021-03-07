@@ -9,19 +9,21 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-
 """ Test VehicleRouting class"""
 
 import random
-import numpy as np
+from test.optimization_test_case import QiskitOptimizationTestCase
+
 import networkx as nx
+import numpy as np
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
-from qiskit_optimization.applications.ising.vehicle_routing import VehicleRouting
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
-from test.optimization_test_case import QiskitOptimizationTestCase
+from qiskit_optimization.applications.ising.vehicle_routing import \
+    VehicleRouting
+from qiskit_optimization.problems import (Constraint, QuadraticObjective,
+                                          VarType)
 
 
 class TestVehicleRouting(QiskitOptimizationTestCase):
@@ -34,29 +36,29 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
         high = 100
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(4)}
         self.graph = nx.random_geometric_graph(4, np.hypot(high-low, high-low)+1, pos=pos)
-        for u, v in self.graph.edges:
-            delta = [self.graph.nodes[u]['pos'][i] - self.graph.nodes[v]['pos'][i]
+        for w, v in self.graph.edges:
+            delta = [self.graph.nodes[w]['pos'][i] - self.graph.nodes[v]['pos'][i]
                      for i in range(2)]
-            self.graph.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
-        qp = QuadraticProgram()
+            self.graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+        op = QuadraticProgram()
         for i in range(12):
-            qp.binary_var()
+            op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0], fval=184, variables=qp.variables,
+            x=[1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0], fval=184, variables=op.variables,
             status=OptimizationResultStatus.SUCCESS)
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
         vehicle_routing = VehicleRouting(self.graph)
-        qp = vehicle_routing.to_quadratic_program(num_vehicle=2)
+        op = vehicle_routing.to_quadratic_program()
         # Test name
-        self.assertEqual(qp.name, 'Vehicle Routing')
+        self.assertEqual(op.name, 'Vehicle Routing')
         # Test variables
-        self.assertEqual(qp.get_num_vars(), 12)
-        for var in qp.variables:
+        self.assertEqual(op.get_num_vars(), 12)
+        for var in op.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
         # Test objective
-        obj = qp.objective
+        obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {0: 49.0, 1: 36.0, 2: 21.0, 3: 49.0, 4: 65.0,
@@ -64,7 +66,7 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
                                                     10: 67.0, 11: 29.0})
         self.assertEqual(obj.quadratic.to_dict(), {})
         # Test constraint
-        lin = qp.linear_constraints
+        lin = op.linear_constraints
         self.assertEqual(len(lin), 12)
         for i in range(3):
             self.assertEqual(lin[i].sense, Constraint.Sense.EQ)
@@ -101,25 +103,38 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
     def test_interpret(self):
         """Test interpret"""
         vehicle_routing = VehicleRouting(self.graph)
-        self.assertEqual(vehicle_routing.interpret(self.result, num_vehicle=2),
+        self.assertEqual(vehicle_routing.interpret(self.result),
                          [[[0, 1], [1, 0]], [[0, 2], [2, 3], [3, 0]]])
 
     def test_edgelist(self):
+        """Test _edgelist"""
         vehicle_routing = VehicleRouting(self.graph)
-        self.assertEqual(vehicle_routing._edgelist(vehicle_routing.interpret(self.result,
-                                                                             num_vehicle=2)),
+        self.assertEqual(vehicle_routing._edgelist(vehicle_routing.interpret(self.result)),
                          [[0, 1], [1, 0], [0, 2], [2, 3], [3, 0]])
 
     def test_edge_color(self):
+        """Test _edge_color"""
         vehicle_routing = VehicleRouting(self.graph)
-        self.assertEqual(vehicle_routing._edge_color(vehicle_routing.interpret(self.result,
-                                                                               num_vehicle=2)),
+        self.assertEqual(vehicle_routing._edge_color(vehicle_routing.interpret(self.result)),
                          [0.0, 0.0, 0.5, 0.5, 0.5])
 
-    def test_random_graph(self):
-        vehicle_routing = VehicleRouting.random_graph(n=4, seed=600)
+    def test_create_random_instance(self):
+        """Test create_random_instance"""
+        vehicle_routing = VehicleRouting.create_random_instance(n=4, seed=600)
         graph = vehicle_routing.graph()
         for node in graph.nodes:
             self.assertEqual(graph.nodes[node]['pos'], self.graph.nodes[node]['pos'])
         for edge in graph.edges:
             self.assertEqual(graph.edges[edge]['weight'], self.graph.edges[edge]['weight'])
+
+    def test_num_vehicles(self):
+        """Test num_vehicles"""
+        vehicle_routing = VehicleRouting(self.graph, num_vehicles=2)
+        vehicle_routing.num_vehicles = 5
+        self.assertEqual(vehicle_routing.num_vehicles, 5)
+
+    def test_depot(self):
+        """Test depot"""
+        vehicle_routing = VehicleRouting(self.graph, depot=0)
+        vehicle_routing.depot = 2
+        self.assertEqual(vehicle_routing.depot, 2)

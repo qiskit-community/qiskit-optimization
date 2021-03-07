@@ -11,56 +11,53 @@
 # that they have been altered from the originals.
 
 """ Test ExactCover class"""
-
-import random
-
-import networkx as nx
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
 from qiskit_optimization.applications.ising.exact_cover import ExactCover
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 
 class TestExactCover(QiskitOptimizationTestCase):
     """ Test ExactCover class"""
 
     def setUp(self):
+        """Set up for the tests"""
         super().setUp()
         self.total_set = [1, 2, 3, 4, 5]
         self.list_of_subsets = [[1, 4], [2, 3, 4], [1, 5], [2, 3]]
-        qp = QuadraticProgram()
-        for i in range(4):
-            qp.binary_var()
+        op = QuadraticProgram()
+        for _ in range(4):
+            op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 1, 1, 0], fval=2, variables=qp.variables,
+            x=[0, 1, 1, 0], fval=2, variables=op.variables,
             status=OptimizationResultStatus.SUCCESS)
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
         exact_cover = ExactCover(self.list_of_subsets)
-        qp = exact_cover.to_quadratic_program()
+        op = exact_cover.to_quadratic_program()
         # Test name
-        self.assertEqual(qp.name, "Exact cover")
+        self.assertEqual(op.name, "Exact cover")
         # Test variables
-        self.assertEqual(qp.get_num_vars(), 4)
-        for var in qp.variables:
+        self.assertEqual(op.get_num_vars(), 4)
+        for var in op.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
         # Test objective
-        obj = qp.objective
+        obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {0: 1, 1: 1, 2: 1, 3: 1})
         self.assertEqual(obj.quadratic.to_dict(), {})
         # Test constraint
-        lin = qp.linear_constraints
+        lin = op.linear_constraints
         self.assertEqual(len(lin), len(self.total_set))
-        for i in range(len(lin)):
-            self.assertEqual(lin[i].sense, Constraint.Sense.EQ)
-            self.assertEqual(lin[i].rhs, 1)
-            self.assertEqual(lin[i].linear.to_dict(), {
+        for i, lin in enumerate(lin):
+            self.assertEqual(lin.sense, Constraint.Sense.EQ)
+            self.assertEqual(lin.rhs, 1)
+            self.assertEqual(lin.linear.to_dict(), {
                              j: 1 for j, subset in enumerate(self.list_of_subsets)
                              if i+1 in subset})
 

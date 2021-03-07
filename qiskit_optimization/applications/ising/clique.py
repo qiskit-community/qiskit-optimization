@@ -10,58 +10,110 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Convert vertex cover instances into Pauli list
-Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
-"""
+"""An application class for the clique."""
+from typing import Optional, Union, List, Dict
 
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
 
-from .graph_application import GraphApplication
+from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from .graph_optimization_application import GraphOptimizationApplication
 
 
-class Clique(GraphApplication):
+class Clique(GraphOptimizationApplication):
+    """Convert a clique problem [1] instance based on a graph of Networkx
+    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
 
-    def __init__(self, graph):
+    References:
+        [1]: "Clique (graph theory)",
+        https://en.wikipedia.org/wiki/Clique_(graph_theory)
+    """
+
+    def __init__(self, graph: Union[nx.Graph, np.ndarray, List],
+                 size: Optional[int] = None) -> None:
+        """
+        Args:
+            graph: A graph of the NetworkX. It can be anything that the constructor of
+            networkx.Graph can accept.
+            size: The size of the clique
+        """
         super().__init__(graph)
+        self._size = size
 
-    def to_quadratic_program(self, K=None):
+    def to_quadratic_program(self) -> QuadraticProgram:
+        """Convert a clique problem instance into a
+        :class:`~qiskit_optimization.problems.QuadraticProgram`
+
+        Returns:
+            The :class:`~qiskit_optimization.problems.QuadraticProgram` created
+            from the clique problem instance.
+        """
         complement_g = nx.complement(self._graph)
 
         mdl = Model(name='Clique')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
-        for u, v in complement_g.edges:
-            mdl.add_constraint(x[u] + x[v] <= 1)
-        if K is None:
+        for w, v in complement_g.edges:
+            mdl.add_constraint(x[w] + x[v] <= 1)
+        if self.size is None:
             mdl.maximize(mdl.sum(x[i] for i in x))
         else:
-            mdl.add_constraint(mdl.sum(x[i] for i in x) == K)
-        qp = QuadraticProgram()
-        qp.from_docplex(mdl)
-        return qp
+            mdl.add_constraint(mdl.sum(x[i] for i in x) == self.size)
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        return op
 
-    def interpret(self, result):
+    def interpret(self, result: OptimizationResult) -> List[int]:
+        """Interpret a result as a list of node indices
+
+        Args:
+            result : The calculated result of the problem
+
+        Returns:
+            The list of node indices whose corresponding variable is 1
+        """
         clique = []
         for i, value in enumerate(result.x):
             if value:
                 clique.append(i)
         return clique
 
-    def draw_graph(self, result, pos=None):
+    def draw_graph(self, result: Optional[OptimizationResult] = None,
+                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+        """Draw a graph with the result. When the result is None, draw an original graph without
+        colors.
+
+        Args:
+            result : The calculated result for the problem
+            pos: The positions of nodes
+        """
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_color(result), pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
 
-    def _node_color(self, result):
-        return ['r' if value == 1 else 'darkgrey' for value in result.x]
+    def _node_colors(self, result: OptimizationResult) -> List[str]:
+        # Return a list of strings for draw_graph.
+        # Color a node with red when the corresponding variable is 1.
+        # Otherwise color it with darkgrey.
+        return ['r' if value else 'darkgrey' for value in result.x]
 
-    def is_feasible(self, result, K=None):
-        return self.to_quadratic_program(K=K).is_feasible(result.x)
+    @property
+    def size(self) -> int:
+        """Getter of size
 
-    def evaluate(self, result, K=None):
-        return self.to_quadratic_program(K=K).objective.evaluate(result.x)
+        Returns:
+            The size of the clique
+        """
+        return self._size
+
+    @size.setter
+    def size(self, size: int) -> None:
+        """Setter of size
+
+        Args:
+            size: The size of the clique
+        """
+        self._size = size

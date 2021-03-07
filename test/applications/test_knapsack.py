@@ -10,58 +10,54 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test Knapsack class"""
-
-import random
-
-import networkx as nx
+"""Test Knapsack class"""
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
 from qiskit_optimization.applications.ising.knapsack import Knapsack
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 
 class TestKnapsack(QiskitOptimizationTestCase):
     """ Test Knapsack class"""
 
     def setUp(self):
+        """Set up for the tests"""
         super().setUp()
         self.values = [10, 40, 30, 50]
         self.weights = [5, 4, 6, 3]
         self.max_weight = 10
-        qp = QuadraticProgram()
-        for i in range(4):
-            qp.binary_var()
+        op = QuadraticProgram()
+        for _ in range(4):
+            op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 1, 0, 1], fval=90, variables=qp.variables,
+            x=[0, 1, 0, 1], fval=90, variables=op.variables,
             status=OptimizationResultStatus.SUCCESS)
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
         knapsack = Knapsack(values=self.values, weights=self.weights, max_weight=self.max_weight)
-        qp = knapsack.to_quadratic_program()
+        op = knapsack.to_quadratic_program()
         # Test name
-        self.assertEqual(qp.name, "K napsack")
+        self.assertEqual(op.name, "Knapsack")
         # Test variables
-        self.assertEqual(qp.get_num_vars(), 4)
-        for var in qp.variables:
+        self.assertEqual(op.get_num_vars(), 4)
+        for var in op.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
         # Test objective
-        obj = qp.objective
+        obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MAXIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {0: 10, 1: 40, 2: 30, 3: 50})
         self.assertEqual(obj.quadratic.to_dict(), {})
         # Test constraint
-        lin = qp.linear_constraints
+        lin = op.linear_constraints
         self.assertEqual(len(lin), 1)
         self.assertEqual(lin[0].sense, Constraint.Sense.LE)
         self.assertEqual(lin[0].rhs, self.max_weight)
-        self.assertEqual(lin[0].linear.to_dict(), {
-                         i: weight for i, weight in enumerate(self.weights)})
+        self.assertEqual(lin[0].linear.to_dict(), dict(enumerate(self.weights)))
 
     def test_interpret(self):
         """Test interpret"""

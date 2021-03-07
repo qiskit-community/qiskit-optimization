@@ -13,6 +13,8 @@
 """ Test Tsp class"""
 
 import random
+from test.optimization_test_case import QiskitOptimizationTestCase
+
 import numpy as np
 import networkx as nx
 
@@ -21,7 +23,6 @@ from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
 from qiskit_optimization.applications.ising.tsp import Tsp
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 
 class TestTsp(QiskitOptimizationTestCase):
@@ -34,30 +35,30 @@ class TestTsp(QiskitOptimizationTestCase):
         high = 100
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(4)}
         self.graph = nx.random_geometric_graph(4, np.hypot(high-low, high-low)+1, pos=pos)
-        for u, v in self.graph.edges:
-            delta = [self.graph.nodes[u]['pos'][i] - self.graph.nodes[v]['pos'][i]
+        for w, v in self.graph.edges:
+            delta = [self.graph.nodes[w]['pos'][i] - self.graph.nodes[v]['pos'][i]
                      for i in range(2)]
-            self.graph.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+            self.graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
 
-        qp = QuadraticProgram()
+        op = QuadraticProgram()
         for i in range(16):
-            qp.binary_var()
+            op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], fval=272, variables=qp.variables,
+            x=[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], fval=272, variables=op.variables,
             status=OptimizationResultStatus.SUCCESS)
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
         tsp = Tsp(self.graph)
-        qp = tsp.to_quadratic_program()
+        op = tsp.to_quadratic_program()
         # Test name
-        self.assertEqual(qp.name, 'TSP')
+        self.assertEqual(op.name, 'TSP')
         # Test variables
-        self.assertEqual(qp.get_num_vars(), 16)
-        for var in qp.variables:
+        self.assertEqual(op.get_num_vars(), 16)
+        for var in op.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
         # Test objective
-        obj = qp.objective
+        obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {})
@@ -65,7 +66,7 @@ class TestTsp(QiskitOptimizationTestCase):
             self.assertEqual(val, self.graph.edges[edge[0]//4, edge[1]//4]['weight'])
 
         # Test constraint
-        lin = qp.linear_constraints
+        lin = op.linear_constraints
         self.assertEqual(len(lin), 8)
         for i in range(4):
             self.assertEqual(lin[i].sense, Constraint.Sense.EQ)
@@ -82,11 +83,13 @@ class TestTsp(QiskitOptimizationTestCase):
         self.assertEqual(tsp.interpret(self.result), [0, 1, 2, 3])
 
     def test_edgelist(self):
+        """Test _edgelist"""
         tsp = Tsp(self.graph)
         self.assertEqual(tsp._edgelist(self.result), [(0, 1), (1, 2), (2, 3), (3, 0)])
 
-    def test_random_graph(self):
-        tsp = Tsp.random_graph(n=4, seed=123)
+    def test_create_random_instance(self):
+        """Test create_random_instance"""
+        tsp = Tsp.create_random_instance(n=4, seed=123)
         graph = tsp.graph()
         for node in graph.nodes:
             self.assertEqual(graph.nodes[node]['pos'], self.graph.nodes[node]['pos'])

@@ -10,18 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test SetPacking class"""
-
-import random
-
-import networkx as nx
+""" Test ExactCover class"""
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
 from qiskit_optimization.applications.ising.set_packing import SetPacking
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 
 class TestSetPacking(QiskitOptimizationTestCase):

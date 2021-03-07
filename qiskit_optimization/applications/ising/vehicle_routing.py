@@ -10,28 +10,51 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Convert vertex cover instances into Pauli list
-Deal with Gset format. See https://web.stanford.edu/~yyye/yyye/Gset/
-"""
+"""An application class for the vehicle routing problem."""
+
 import itertools
 import random
+from typing import List, Dict, Union, Optional
 
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
 
-from .graph_application import GraphApplication
+from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from .graph_optimization_application import GraphOptimizationApplication
 
 
-class VehicleRouting(GraphApplication):
+class VehicleRouting(GraphOptimizationApplication):
+    """Convert a vehicle routing problem [1] instance based on a graph of NetworkX into a
+    :class:`~qiskit_optimization.problems.QuadraticProgram`
 
-    def __init__(self, graph):
+    References:
+        [1]: "Vehicle routing problem", https://en.wikipedia.org/wiki/Vehicle_routing_problem
+    """
+
+    def __init__(self, graph: Union[nx.Graph, np.ndarray, List],
+                 num_vehicles: int = 2, depot: int = 0) -> None:
+        """
+        Args:
+            graph: A graph of the NetworkX. It can be anything that the constructor of
+            networkx.Graph can accept.
+            num_vehicles: The number of vehicles
+            depot: The index of the depot node where all the vehicle depart
+        """
         super().__init__(graph)
+        self._num_vehicles = num_vehicles
+        self._depot = depot
 
-    def to_quadratic_program(self, num_vehicle, depot=0):
+    def to_quadratic_program(self) -> QuadraticProgram:
+        """Convert a vehicle routing problem instance into a
+        :class:`~qiskit_optimization.problems.QuadraticProgram`
+
+        Returns:
+            The :class:`~qiskit_optimization.problems.QuadraticProgram` created
+            from the vehicle routing problem instance.
+        """
         mdl = Model(name='Vehicle Routing')
         n = self._graph.number_of_nodes()
         x = {}
@@ -43,18 +66,20 @@ class VehicleRouting(GraphApplication):
                              for i in range(n) for j in range(n) if i != j))
         # Only 1 edge goes out from each node
         for i in range(n):
-            if i != depot:
+            if i != self.depot:
                 mdl.add_constraint(mdl.sum(x[i, j] for j in range(n) if i != j) == 1)
         # Only 1 edge comes into each node
         for j in range(n):
-            if j != depot:
+            if j != self.depot:
                 mdl.add_constraint(mdl.sum(x[i, j] for i in range(n) if i != j) == 1)
         # For the depot node
-        mdl.add_constraint(mdl.sum(x[i, depot] for i in range(n) if i != depot) == num_vehicle)
-        mdl.add_constraint(mdl.sum(x[depot, j] for j in range(n) if j != depot) == num_vehicle)
+        mdl.add_constraint(mdl.sum(x[i, self.depot]
+                                   for i in range(n) if i != self.depot) == self.num_vehicles)
+        mdl.add_constraint(mdl.sum(x[self.depot, j]
+                                   for j in range(n) if j != self.depot) == self.num_vehicles)
 
         # To eliminate sub-routes
-        node_list = [i for i in range(n) if i != depot]
+        node_list = [i for i in range(n) if i != self.depot]
         clique_set = []
         for i in range(2, len(node_list)+1):
             for comb in itertools.combinations(node_list, i):
@@ -63,11 +88,19 @@ class VehicleRouting(GraphApplication):
             mdl.add_constraint(mdl.sum(x[(i, j)]
                                        for i in clique
                                        for j in clique if i != j) <= len(clique) - 1)
-        qp = QuadraticProgram()
-        qp.from_docplex(mdl)
-        return qp
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        return op
 
-    def interpret(self, result, num_vehicle, depot=0):
+    def interpret(self, result: OptimizationResult) -> List[List[List[int]]]:
+        """Interpret a result as a list of the routes for each vehicle
+
+        Args:
+            result : The calculated result of the problem
+
+        Returns:
+            A list of the routes for each vehicle
+        """
         n = self._graph.number_of_nodes()
         idx = 0
         edge_list = []
@@ -78,11 +111,11 @@ class VehicleRouting(GraphApplication):
                         edge_list.append([i, j])
                     idx += 1
         route_list = []
-        for k in range(num_vehicle):
+        for k in range(self.num_vehicles):
             i = 0
-            start = depot
+            start = self.depot
             route_list.append([])
-            while(i < len(edge_list)):
+            while i < len(edge_list):
                 if edge_list[i][0] == start:
                     if edge_list[i][1] == 0:
                         # If a loop is completed
@@ -94,33 +127,98 @@ class VehicleRouting(GraphApplication):
                     i = 0
                     continue
                 i += 1
-        if len(edge_list):
+        if edge_list:
             route_list.append(edge_list)
 
         return route_list
 
-    def draw_graph(self, result, num_vehicle, depot=0, pos=None):
-        route_list = self.interpret(result, num_vehicle, depot)
-        nx.draw(self._graph, with_labels=True, pos=pos)
-        nx.draw_networkx_edges(
-            self._graph,
-            pos,
-            edgelist=self._edgelist(route_list),
-            width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
-            )
+    def draw_graph(self, result: Optional[OptimizationResult] = None,
+                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+        """Draw a graph with the result. When the result is None, draw an original graph without
+        colors.
+
+        Args:
+            result: The calculated result for the problem
+            pos: The positions of nodes
+        """
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            route_list = self.interpret(result)
+            nx.draw(self._graph, with_labels=True, pos=pos)
+            nx.draw_networkx_edges(
+                self._graph,
+                pos,
+                edgelist=self._edgelist(route_list),
+                width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
+                )
 
     def _edgelist(self, route_list):
+        # Arrange route_list and return the list of the edges for edgelist of nx.draw_networkx_edges
         return [edge for k in range(len(route_list)) for edge in route_list[k]]
 
     def _edge_color(self, route_list):
+        # Arrange route_list and return the list of the colors of each route
+        # for edge_color of nx.draw_networkx_edges
         return [k/len(route_list) for k in range(len(route_list)) for edge in route_list[k]]
 
+    @property
+    def num_vehicles(self) -> int:
+        """Getter of num_vehicles
+
+        Returns:
+            The number of the vehicles
+        """
+        return self._num_vehicles
+
+    @num_vehicles.setter
+    def num_vehicles(self, num_vehicles: int) -> None:
+        """Setter of num_vehicles
+
+        Args:
+            num_vehicles: The number of vehicle
+        """
+        self._num_vehicles = num_vehicles
+
+    @property
+    def depot(self) -> int:
+        """Getter of depot
+
+        Returns:
+            The node index of the depot where all the vehicles depart
+        """
+        return self._depot
+
+    @depot.setter
+    def depot(self, depot: int) -> None:
+        """Setter of depot
+
+        Args:
+            depot: The node index of the depot where all the vehicles depart
+        """
+        self._depot = depot
+
     @staticmethod
-    def random_graph(n, low=0, high=100, seed=None):
+    # pylint: disable=undefined-variable
+    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: Optional[int] = None,
+                               num_vehicle: int = 2, depot: int = 0) -> 'VehicleRouting':
+        """Create a rondom instance of the vehicle routing problem.
+
+        Args:
+            n: the number of nodes.
+            low: The minimum value for the coordinate of a node.
+            high: The maximum value for the coordinate of a node.
+            seed: the seed for the random coordinates.
+            num_vehicle: The number of the vehicles
+            depot: The index of the depot node where all the vehicle depart
+
+        Returns:
+            A VehicleRouting instance created from the input information
+        """
         random.seed(seed)
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
-        g = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
-        for u, v in g.edges:
-            delta = [g.nodes[u]['pos'][i] - g.nodes[v]['pos'][i] for i in range(2)]
-            g.edges[u, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
-        return VehicleRouting(g)
+        graph = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
+        for w, v in graph.edges:
+            delta = [graph.nodes[w]['pos'][i] - graph.nodes[v]['pos'][i] for i in range(2)]
+            graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+        return VehicleRouting(graph, num_vehicle, depot)
