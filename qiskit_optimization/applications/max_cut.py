@@ -52,7 +52,7 @@ class Maxcut(GraphOptimizationApplication):
         return op
 
     def draw(self, result: Optional[OptimizationResult] = None,
-                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+             pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
 

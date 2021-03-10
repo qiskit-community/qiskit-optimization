@@ -79,7 +79,7 @@ class Tsp(GraphOptimizationApplication):
         return route
 
     def draw(self, result: Optional[OptimizationResult] = None,
-                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+             pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
 
@@ -105,7 +105,7 @@ class Tsp(GraphOptimizationApplication):
 
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> Tsp:
+    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> 'Tsp':
         """Create a random instance of the traveling salesman problem
 
         Args:
@@ -126,7 +126,7 @@ class Tsp(GraphOptimizationApplication):
         return Tsp(graph)
 
     @staticmethod
-    def parse_tsplib_format(filename: str) -> Tsp:
+    def parse_tsplib_format(filename: str) -> 'Tsp':
         """Read a graph in TSPLIB format from file and return a Tsp instance.
 
         Args:

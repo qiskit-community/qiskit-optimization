@@ -38,7 +38,7 @@ class GraphOptimizationApplication(OptimizationApplication):
 
     @abstractmethod
     def draw(self, result: Optional[OptimizationResult] = None,
-                   pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+             pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """An abstract method to draw the graph based on the result.
 
         Args:

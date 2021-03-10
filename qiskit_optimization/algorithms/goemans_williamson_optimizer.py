@@ -41,6 +41,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
     Contains results of the Goemans-Williamson algorithm. The properties ``x`` and ``fval`` contain
     values of just one solution. Explore ``samples`` for all possible solutions.
     """
+
     def __init__(self, x: Optional[Union[List[float], np.ndarray]], fval: float,
                  variables: List[Variable], status: OptimizationResultStatus,
                  samples: Optional[List[SolutionSample]],
@@ -144,7 +145,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
 
         numeric_solutions = [(cuts[i, :],
                               self._max_cut_value(cuts[i, :], adj_matrix))
-                              for i in range(self._num_cuts)]
+                             for i in range(self._num_cuts)]
 
         if self._sort_cuts:
             numeric_solutions.sort(key=lambda x: -x[1])
