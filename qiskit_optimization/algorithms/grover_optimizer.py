@@ -304,7 +304,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_statevector(qc)
             keys = [bin(i)[2::].rjust(int(np.log2(len(state))), '0')[::-1]
                     for i in range(0, len(state))]
-            probs = [abs(a) * abs(a) for a in state]
+            probs = [abs(a) ** 2 for a in state]
             total = math.fsum(probs)
             probs = [p / total for p in probs]
             hist = dict(zip(keys, probs))
