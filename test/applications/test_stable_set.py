@@ -18,7 +18,7 @@ import networkx as nx
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
-from qiskit_optimization.applications.ising.stable_set import StableSet
+from qiskit_optimization.applications.stable_set import StableSet
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
 
 

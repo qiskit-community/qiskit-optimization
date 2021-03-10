@@ -18,7 +18,7 @@ import networkx as nx
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
-from qiskit_optimization.applications.ising.clique import Clique
+from qiskit_optimization.applications.clique import Clique
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
 
 

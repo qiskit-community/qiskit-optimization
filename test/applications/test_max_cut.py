@@ -18,7 +18,7 @@ import networkx as nx
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
-from qiskit_optimization.applications.ising.max_cut import Maxcut
+from qiskit_optimization.applications.max_cut import Maxcut
 from qiskit_optimization.problems import QuadraticObjective, VarType
 
 

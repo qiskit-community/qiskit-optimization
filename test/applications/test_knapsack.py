@@ -16,7 +16,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
-from qiskit_optimization.applications.ising.knapsack import Knapsack
+from qiskit_optimization.applications.knapsack import Knapsack
 from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
 
 
