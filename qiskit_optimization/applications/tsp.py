@@ -25,8 +25,7 @@ from .graph_optimization_application import GraphOptimizationApplication
 
 
 class Tsp(GraphOptimizationApplication):
-    """Convert a Travelling salesman problem [1] instance based on a graph of NetworkX into a
-    :class:`~qiskit_optimization.problems.QuadraticProgram`
+    """Optimization application for the "travelling salesman problem" [1] based on a NetworkX graph.
 
     References:
         [1]: "Travelling salesman problem",
@@ -78,7 +77,7 @@ class Tsp(GraphOptimizationApplication):
                 route.append(p_step)
         return route
 
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.

@@ -52,7 +52,7 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
         vehicle_routing = VehicleRouting(self.graph)
         op = vehicle_routing.to_quadratic_program()
         # Test name
-        self.assertEqual(op.name, 'Vehicle Routing')
+        self.assertEqual(op.name, 'Vehicle routing')
         # Test variables
         self.assertEqual(op.get_num_vars(), 12)
         for var in op.variables:

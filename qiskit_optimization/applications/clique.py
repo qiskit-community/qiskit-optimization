@@ -23,8 +23,7 @@ from .graph_optimization_application import GraphOptimizationApplication
 
 
 class Clique(GraphOptimizationApplication):
-    """Convert a clique problem [1] instance based on a graph of Networkx
-    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
+    """Optimization application for the "clique" [1] problem based on a NetworkX graph.
 
     References:
         [1]: "Clique (graph theory)",
@@ -35,8 +34,8 @@ class Clique(GraphOptimizationApplication):
                  size: Optional[int] = None) -> None:
         """
         Args:
-            graph: A graph of the NetworkX. It can be anything that the constructor of
-            networkx.Graph can accept.
+            graph: A graph representing a clique problem. It can be specified directly as a
+            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
             size: The size of the clique
         """
         super().__init__(graph)
@@ -80,7 +79,7 @@ class Clique(GraphOptimizationApplication):
                 clique.append(i)
         return clique
 
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -95,7 +94,7 @@ class Clique(GraphOptimizationApplication):
             nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
 
     def _node_colors(self, result: OptimizationResult) -> List[str]:
-        # Return a list of strings for draw_graph.
+        # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with darkgrey.
         return ['r' if value else 'darkgrey' for value in result.x]

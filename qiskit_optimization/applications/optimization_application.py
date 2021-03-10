@@ -18,32 +18,28 @@ from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-class BaseOptimizationApplication(ABC):
+class OptimizationApplication(ABC):
     """
-    An abstract class for optimization problems
+    An abstract class for optimization applications.
     """
 
     @abstractmethod
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert a problem instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
-
-        Raises:
-            NotImplementedError: When this function is not implemented in sub classes.
         """
-        raise NotImplementedError
+        pass
 
     @abstractmethod
     def interpret(self, result: OptimizationResult):
-        """Interpret a result based on the problem
+        """Convert the calculation result of the problem
+        (:class:`~qiskit_optimization.algorithms.OptimizationResult`) to the answer of the problem
+        in an easy-to-understand format.
 
         Args:
             result: The calculated result of the problem
-
-        Raises:
-            NotImplementedError: When this function is not implemented in sub classes.
         """
-        raise NotImplementedError
+        pass
 
     def is_feasible(self, result: OptimizationResult) -> bool:
         """Check whether the result is feasible or not
@@ -57,12 +53,12 @@ class BaseOptimizationApplication(ABC):
         return self.to_quadratic_program().is_feasible(result.x)
 
     def evaluate(self, result: OptimizationResult) -> float:
-        """Evaluate the result
+        """Calculate the value of the objective function based on the result.
 
         Args:
             result: The calculated result of the problem
 
         Returns:
-            The evaluated value with the result
+            The value of the objective function based on the result
         """
         return self.to_quadratic_program().objective.evaluate(result.x)

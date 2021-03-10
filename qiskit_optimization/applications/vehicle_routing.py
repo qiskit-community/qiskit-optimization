@@ -27,8 +27,7 @@ from .graph_optimization_application import GraphOptimizationApplication
 
 
 class VehicleRouting(GraphOptimizationApplication):
-    """Convert a vehicle routing problem [1] instance based on a graph of NetworkX into a
-    :class:`~qiskit_optimization.problems.QuadraticProgram`
+    """Optimization application for the "vehicle routing problem" [1] based on a NetworkX graph.
 
     References:
         [1]: "Vehicle routing problem", https://en.wikipedia.org/wiki/Vehicle_routing_problem
@@ -38,8 +37,8 @@ class VehicleRouting(GraphOptimizationApplication):
                  num_vehicles: int = 2, depot: int = 0) -> None:
         """
         Args:
-            graph: A graph of the NetworkX. It can be anything that the constructor of
-            networkx.Graph can accept.
+            graph: A graph representing a vehicle routing problem. It can be specified directly as a
+            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
             num_vehicles: The number of vehicles
             depot: The index of the depot node where all the vehicle depart
         """
@@ -132,7 +131,7 @@ class VehicleRouting(GraphOptimizationApplication):
 
         return route_list
 
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.

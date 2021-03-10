@@ -16,8 +16,7 @@ Optimization applications (:mod:`qiskit_optimization.applications`)
 
 .. currentmodule:: qiskit_optimization.applications
 
-Applications for Qiskit's optimization module. The present set are in the form of
-Ising Hamiltonians.
+Applications for Qiskit's optimization module.
 
 Submodules
 ==========
@@ -25,6 +24,17 @@ Submodules
 .. autosummary::
    :toctree:
 
-   ising
-
+   optimization_application
+   clique
+   exact_cover
+   graph_optimization_application
+   graph_partition
+   knapsack
+   max_cut
+   number_partition
+   set_packing
+   stable_set
+   tsp
+   vehicle_routing
+   vertex_cover
 """

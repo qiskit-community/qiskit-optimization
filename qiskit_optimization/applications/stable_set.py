@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An application class for the vertex cover."""
+"""An application class for the stable set."""
 
 from typing import Dict, List, Optional
 
@@ -23,29 +23,31 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .graph_optimization_application import GraphOptimizationApplication
 
 
-class VertexCover(GraphOptimizationApplication):
-    """Convert a vertex cover [1] instance based on a graph of NetworkX into a
-    :class:`~qiskit_optimization.problems.QuadraticProgram`
+class StableSet(GraphOptimizationApplication):
+    """Optimization application for the "stable set" [1] problem based on a NetworkX graph.
 
     References:
-        [1]: "Vertex cover", https://en.wikipedia.org/wiki/Vertex_cover
+        [1]: "Independent set (graph theory)",
+        https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
     """
 
     def to_quadratic_program(self) -> QuadraticProgram:
-        """Convert a vertex cover instance into a
+        """Convert a stable set instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
-            from the vertex cover instance.
+            from the stable set instance.
         """
-        mdl = Model(name='Vertex cover')
+        mdl = Model(name='Stable set')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        for w, v in self._graph.edges:
+            self._graph.edges[w, v].setdefault('weight', 1)
         objective = mdl.sum(x[i] for i in x)
         for w, v in self._graph.edges:
-            mdl.add_constraint(x[w] + x[v] >= 1)
-        mdl.minimize(objective)
+            mdl.add_constraint(x[w] + x[v] <= 1)
+        mdl.maximize(objective)
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
@@ -59,13 +61,13 @@ class VertexCover(GraphOptimizationApplication):
         Returns:
             A list of node indices whose corresponding variable is 1
         """
-        vertex_cover = []
+        stable_set = []
         for i, value in enumerate(result.x):
             if value:
-                vertex_cover.append(i)
-        return vertex_cover
+                stable_set.append(i)
+        return stable_set
 
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -79,8 +81,8 @@ class VertexCover(GraphOptimizationApplication):
         else:
             nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
 
-    def _node_colors(self, result: OptimizationResult) -> List[str]:
-        # Return a list of strings for draw_graph.
+    def _node_colors(self, result):
+        # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with darkgrey.
-        return ['r' if value else 'darkgrey' for value in result.x]
+        return ['r' if value == 1 else 'darkgrey' for value in result.x]

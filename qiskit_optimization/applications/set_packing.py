@@ -19,12 +19,11 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-from .base_optimization_application import BaseOptimizationApplication
+from .optimization_application import OptimizationApplication
 
 
-class SetPacking(BaseOptimizationApplication):
-    """Convert a set packing problem [1] instance
-    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
+class SetPacking(OptimizationApplication):
+    """Optimization application for the "set packing" [1] problem.
 
     References:
         [1]: "Set packing",

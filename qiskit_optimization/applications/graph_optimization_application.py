@@ -19,25 +19,25 @@ import networkx as nx
 import numpy as np
 
 from qiskit_optimization.algorithms import OptimizationResult
-from .base_optimization_application import BaseOptimizationApplication
+from .optimization_application import OptimizationApplication
 
 
-class GraphOptimizationApplication(BaseOptimizationApplication):
+class GraphOptimizationApplication(OptimizationApplication):
     """
-    An abstract class for graph problems in optimization problems
+    An abstract class for graph optimization applications.
     """
 
     def __init__(self, graph: Union[nx.Graph, np.ndarray, List]) -> None:
         """
         Args:
-            graph: A graph of the NetworkX. It can be anything that the constructor of
-            networkx.Graph can accept.
+            graph: A graph representing a problem. It can be specified directly as a
+            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
         """
         # The view of the graph is stored which means the graph can not be changed.
         self._graph = nx.Graph(graph).copy(as_view=True)
 
     @abstractmethod
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """An abstract method to draw the graph based on the result.
 
@@ -48,7 +48,7 @@ class GraphOptimizationApplication(BaseOptimizationApplication):
         Raises:
             NotImplementedError: When this function is not implemented in sub classes.
         """
-        raise NotImplementedError
+        pass
 
     @property
     def graph(self) -> nx.Graph:

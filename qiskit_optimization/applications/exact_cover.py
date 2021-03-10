@@ -10,45 +10,50 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An application class for the number partitioning."""
-
+"""An application class for the exact cover."""
 from typing import List
 
+import numpy as np
 from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-from .base_optimization_application import BaseOptimizationApplication
+from .optimization_application import OptimizationApplication
 
 
-class NumberPartition(BaseOptimizationApplication):
-    """Convert a number partition problem [1] instance
-    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
+class ExactCover(OptimizationApplication):
+    """Optimization application for the "exact cover" [1] problem.
 
     References:
-        [1]: "Partition problem",
-        https://en.wikipedia.org/wiki/Partition_problem
+        [1]: "Exact cover",
+        https://en.wikipedia.org/wiki/Exact_cover
     """
 
-    def __init__(self, number_set: List[int]) -> None:
+    def __init__(self, subsets: List[List[int]]) -> None:
         """
         Args:
-            number_set: A list of intergers
+            subsets: A list of subsets
         """
-        self._number_set = number_set
+        self._subsets = subsets
+        self._set = []
+        for sub in self._subsets:
+            self._set.extend(sub)
+        self._set = np.unique(self._set)
 
     def to_quadratic_program(self) -> QuadraticProgram:
-        """Convert a number partitioning problem instance into a
+        """Convert an exact cover instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
-            from the number partitioning problem instance.
+            from the exact cover instance.
         """
-        mdl = Model(name='Number partitioning')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._number_set))}
-        mdl.add_constraint(mdl.sum(num * (-2 * x[i] + 1)
-                                   for i, num in enumerate(self._number_set)) == 0)
+        mdl = Model(name='Exact cover')
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._subsets))}
+        mdl.minimize(mdl.sum(x[i] for i in x))
+        for element in self._set:
+            mdl.add_constraint(mdl.sum(x[i] for i, sub in enumerate(self._subsets)
+                                       if element in sub) == 1)
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
@@ -60,12 +65,10 @@ class NumberPartition(BaseOptimizationApplication):
             result: The calculated result of the problem
 
         Returns:
-            A list of subsets whose sum is the half of the total.
+            A list of subsets whose corresponding variable is 1
         """
-        num_subsets = [[], []]  # type: List[List[int]]
+        sub = []
         for i, value in enumerate(result.x):
-            if value == 0:
-                num_subsets[0].append(self._number_set[i])
-            else:
-                num_subsets[1].append(self._number_set[i])
-        return num_subsets
+            if value:
+                sub.append(self._subsets[i])
+        return sub

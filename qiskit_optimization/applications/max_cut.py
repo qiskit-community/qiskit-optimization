@@ -10,10 +10,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An application class for the stable set."""
 
-from typing import Dict, List, Optional
+"""An application class for the Max-cut."""
 
+from typing import List, Dict, Optional
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
@@ -23,52 +23,35 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .graph_optimization_application import GraphOptimizationApplication
 
 
-class StableSet(GraphOptimizationApplication):
-    """Convert a stable set (a.k.a independent set) [1] instance based on a graph of NetworkX
-    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
+class Maxcut(GraphOptimizationApplication):
+    """Optimization application for the "max-cut" [1] problem based on a NetworkX graph.
 
     References:
-        [1]: "Independent set (graph theory)",
-        https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+        [1]: "Maximum cut",
+        https://en.wikipedia.org/wiki/Maximum_cut
     """
 
     def to_quadratic_program(self) -> QuadraticProgram:
-        """Convert a stable set instance into a
+        """Convert a Max-cut problem instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
-            from the stable set instance.
+            from the Max-cut problem instance.
         """
-        mdl = Model(name='Stable set')
-        n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        mdl = Model(name='Max-cut')
+        x = {i: mdl.binary_var(name='x_{0}'.format(i))
+             for i in range(self._graph.number_of_nodes())}
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault('weight', 1)
-        objective = mdl.sum(x[i] for i in x)
-        for w, v in self._graph.edges:
-            mdl.add_constraint(x[w] + x[v] <= 1)
+        objective = mdl.sum(self._graph.edges[i, j]['weight'] * x[i]
+                            * (1 - x[j]) for i, j in self._graph.edges)
         mdl.maximize(objective)
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[int]:
-        """Interpret a result as a list of node indices
-
-        Args:
-            result : The calculated result of the problem
-
-        Returns:
-            A list of node indices whose corresponding variable is 1
-        """
-        stable_set = []
-        for i, value in enumerate(result.x):
-            if value:
-                stable_set.append(i)
-        return stable_set
-
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -80,10 +63,27 @@ class StableSet(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_color, pos=pos, with_labels=True)
 
-    def _node_colors(self, result):
-        # Return a list of strings for draw_graph.
+    def interpret(self, result: OptimizationResult) -> List[List[int]]:
+        """Interpret a result as two lists of node indices
+
+        Args:
+            result : The calculated result of the problem
+
+        Returns:
+            Two lists of node indices correspond to two node sets for the Max-cut
+        """
+        cut = [[], []]  # type: List[List[int]]
+        for i, value in enumerate(result.x):
+            if value == 0:
+                cut[0].append(i)
+            else:
+                cut[1].append(i)
+        return cut
+
+    def _node_color(self, result: OptimizationResult) -> List[str]:
+        # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
-        # Otherwise color it with darkgrey.
-        return ['r' if value == 1 else 'darkgrey' for value in result.x]
+        # Otherwise color it with blue.
+        return ['r' if value == 0 else 'b' for value in result.x]

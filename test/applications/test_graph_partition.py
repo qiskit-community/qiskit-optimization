@@ -40,7 +40,7 @@ class TestGraphPartition(QiskitOptimizationTestCase):
         graph_partitioning = GraphPartition(self.graph)
         op = graph_partitioning.to_quadratic_program()
         # Test name
-        self.assertEqual(op.name, "Graph partinion")
+        self.assertEqual(op.name, "Graph partition")
         # Test variables
         self.assertEqual(op.get_num_vars(), 4)
         for var in op.variables:

@@ -10,10 +10,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""An application class for the graph partitioning."""
 
-"""An application class for the Max-cut."""
+from typing import Dict, List, Optional
 
-from typing import List, Dict, Optional
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
@@ -23,36 +23,52 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .graph_optimization_application import GraphOptimizationApplication
 
 
-class Maxcut(GraphOptimizationApplication):
-    """Convert a Max-cut problem [1] instance based on a graph of Networkx
-    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
+class GraphPartition(GraphOptimizationApplication):
+    """Optimization application for the "graph partition" [1] problem based on a NetworkX graph.
 
     References:
-        [1]: "Maximum cut",
-        https://en.wikipedia.org/wiki/Maximum_cut
+        [1]: "Graph partition", https://en.wikipedia.org/wiki/Graph_partition
     """
 
     def to_quadratic_program(self) -> QuadraticProgram:
-        """Convert a Max-cut problem instance into a
+        """Convert a graph partition instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
-            from the Max-cut problem instance.
+            from the graph partition instance.
         """
-        mdl = Model(name='Max-cut')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i))
-             for i in range(self._graph.number_of_nodes())}
+        mdl = Model(name='Graph partinion')
+        n = self._graph.number_of_nodes()
+        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault('weight', 1)
-        objective = mdl.sum(self._graph.edges[i, j]['weight'] * x[i]
-                            * (1 - x[j]) for i, j in self._graph.edges)
-        mdl.maximize(objective)
+        objective = mdl.sum(self._graph.edges[i, j]['weight'] *
+                            (x[i] + x[j] - 2*x[i]*x[j]) for i, j in self._graph.edges)
+        mdl.minimize(objective)
+        mdl.add_constraint(mdl.sum([x[i] for i in x]) == n//2)
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def draw_graph(self, result: Optional[OptimizationResult] = None,
+    def interpret(self, result: OptimizationResult) -> List[List[int]]:
+        """Interpret a result as a list of node indices
+
+        Args:
+            result : The calculated result of the problem
+
+        Returns:
+            A list of node indices divided into two groups.
+        """
+        partition = [[], []]  # type: List[List[int]]
+        for i, value in enumerate(result.x):
+            if value == 0:
+                partition[0].append(i)
+            else:
+                partition[1].append(i)
+        return partition
+
+    def draw(self, result: Optional[OptimizationResult] = None,
                    pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -64,27 +80,10 @@ class Maxcut(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_color, pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_colors, pos=pos, with_labels=True)
 
-    def interpret(self, result: OptimizationResult) -> List[List[int]]:
-        """Interpret a result as two lists of node indices
-
-        Args:
-            result : The calculated result of the problem
-
-        Returns:
-            Two lists of node indices correspond to two node sets for the Max-cut
-        """
-        cut = [[], []]  # type: List[List[int]]
-        for i, value in enumerate(result.x):
-            if value == 0:
-                cut[0].append(i)
-            else:
-                cut[1].append(i)
-        return cut
-
-    def _node_color(self, result: OptimizationResult) -> List[str]:
-        # Return a list of strings for draw_graph.
+    def _node_colors(self, result: OptimizationResult) -> List[str]:
+        # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ['r' if value == 0 else 'b' for value in result.x]
+        return ['r' if value else 'b' for value in result.x]

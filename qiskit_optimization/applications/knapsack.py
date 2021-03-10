@@ -17,12 +17,11 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-from .base_optimization_application import BaseOptimizationApplication
+from .optimization_application import OptimizationApplication
 
 
-class Knapsack(BaseOptimizationApplication):
-    """Convert a Knapsack problem [1] instance based on a graph of Networkx
-    into a :class:`~qiskit_optimization.problems.QuadraticProgram`
+class Knapsack(OptimizationApplication):
+    """Optimization application for the "knapsack problem" [1].
 
     References:
         [1]: "Knapsack problem",
