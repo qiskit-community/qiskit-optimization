@@ -307,16 +307,13 @@ class GroverOptimizer(OptimizationAlgorithm):
             probs = [abs(a) ** 2 for a in state]
             total = math.fsum(probs)
             probs = [p / total for p in probs]
-            hist = dict(zip(keys, probs))
+            hist = {key: prob for key, prob in zip(keys, probs) if prob > 0}
             self._circuit_results = state
         else:
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
-            hist = {}
-            for key in state:
-                hist[key[::-1]] = state[key] / shots
+            hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
             self._circuit_results = {b[::-1]: (v / shots) ** 0.5 for (b, v) in state.items()}
-        hist = dict(filter(lambda p: p[1] > 0, hist.items()))
         return hist
 
     @staticmethod
