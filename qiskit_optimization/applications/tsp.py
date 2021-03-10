@@ -24,8 +24,9 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .graph_optimization_application import GraphOptimizationApplication
 
 
+# pylint: disable=wrong-spelling-in-docstring
 class Tsp(GraphOptimizationApplication):
-    """Optimization application for the "travelling salesman problem" [1] based on a NetworkX graph.
+    """Optimization application for the "traveling salesman problem" [1] based on a NetworkX graph.
 
     References:
         [1]: "Travelling salesman problem",
@@ -33,12 +34,12 @@ class Tsp(GraphOptimizationApplication):
     """
 
     def to_quadratic_program(self) -> QuadraticProgram:
-        """Convert a travelling salesman problem instance into a
+        """Convert a traveling salesman problem instance into a
         :class:`~qiskit_optimization.problems.QuadraticProgram`
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
-            from the travelling salesman problem instance.
+            from the traveling salesman problem instance.
         """
         mdl = Model(name='TSP')
         n = self._graph.number_of_nodes()
@@ -62,7 +63,7 @@ class Tsp(GraphOptimizationApplication):
             result : The calculated result of the problem
 
         Returns:
-            A list of nodes whose indices correspondord to its order in a prospective cycle.
+            A list of nodes whose indices correspond to its order in a prospective cycle.
         """
         n = int(np.sqrt(len(result.x)))
         route = []  # type: List[Union[int, List[int]]]
@@ -98,14 +99,14 @@ class Tsp(GraphOptimizationApplication):
                 )
 
     def _edgelist(self, result):
-        # Arrange route and return the list of the edges for edgelist of nx.draw_networkx_edges
+        # Arrange route and return the list of the edges for the edge list of nx.draw_networkx_edges
         route = self.interpret(result)
         return [(route[i], route[(i+1) % len(route)]) for i in range(len(route))]
 
     @staticmethod
     # pylint: disable=undefined-variable
     def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> Tsp:
-        """Create a rondom instance of the traveling salesman problem
+        """Create a random instance of the traveling salesman problem
 
         Args:
             n: the number of nodes.

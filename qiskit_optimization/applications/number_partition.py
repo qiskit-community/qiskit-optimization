@@ -32,7 +32,7 @@ class NumberPartition(OptimizationApplication):
     def __init__(self, number_set: List[int]) -> None:
         """
         Args:
-            number_set: A list of intergers
+            number_set: A list of integers
         """
         self._number_set = number_set
 

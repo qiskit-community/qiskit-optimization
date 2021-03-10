@@ -27,7 +27,7 @@ from .graph_optimization_application import GraphOptimizationApplication
 
 
 class VehicleRouting(GraphOptimizationApplication):
-    """Optimization application for the "vehicle routing problem" [1] based on a NetworkX graph.
+    """Optimization application for the "vehicle routing problem" [1] based on a ``NetworkX`` graph.
 
     References:
         [1]: "Vehicle routing problem", https://en.wikipedia.org/wiki/Vehicle_routing_problem
@@ -38,7 +38,8 @@ class VehicleRouting(GraphOptimizationApplication):
         """
         Args:
             graph: A graph representing a vehicle routing problem. It can be specified directly as a
-            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
+            NetworkX Graph, or as an array or list if format suitable to build out a ``NetworkX``
+            graph.
             num_vehicles: The number of vehicles
             depot: The index of the depot node where all the vehicle depart
         """
@@ -153,7 +154,8 @@ class VehicleRouting(GraphOptimizationApplication):
                 )
 
     def _edgelist(self, route_list):
-        # Arrange route_list and return the list of the edges for edgelist of nx.draw_networkx_edges
+        # Arrange route_list and return the list of the edges for the edge list of
+        # nx.draw_networkx_edges
         return [edge for k in range(len(route_list)) for edge in route_list[k]]
 
     def _edge_color(self, route_list):
@@ -201,7 +203,7 @@ class VehicleRouting(GraphOptimizationApplication):
     # pylint: disable=undefined-variable
     def create_random_instance(n: int, low: int = 0, high: int = 100, seed: Optional[int] = None,
                                num_vehicle: int = 2, depot: int = 0) -> 'VehicleRouting':
-        """Create a rondom instance of the vehicle routing problem.
+        """Create a random instance of the vehicle routing problem.
 
         Args:
             n: the number of nodes.

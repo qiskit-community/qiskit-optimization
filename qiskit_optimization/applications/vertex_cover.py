@@ -81,5 +81,5 @@ class VertexCover(GraphOptimizationApplication):
     def _node_colors(self, result: OptimizationResult) -> List[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
-        # Otherwise color it with darkgrey.
+        # Otherwise color it with dark gray.
         return ['r' if value else 'darkgrey' for value in result.x]
