@@ -12,7 +12,7 @@
 
 """An application class for the stable set."""
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -52,7 +52,7 @@ class StableSet(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[int]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -61,13 +61,14 @@ class StableSet(GraphOptimizationApplication):
         Returns:
             A list of node indices whose corresponding variable is 1
         """
+        x = self._result_to_x(result)
         stable_set = []
-        for i, value in enumerate(result.x):
+        for i, value in enumerate(x):
             if value:
                 stable_set.append(i)
         return stable_set
 
-    def draw(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -79,10 +80,11 @@ class StableSet(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_colors(result), pos=pos, with_labels=True)
+            x = self._result_to_x(result)
+            nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
-    def _node_colors(self, result):
+    def _node_colors(self, x: np.ndarray):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with dark gray.
-        return ['r' if value == 1 else 'darkgrey' for value in result.x]
+        return ['r' if value == 1 else 'darkgrey' for value in x]

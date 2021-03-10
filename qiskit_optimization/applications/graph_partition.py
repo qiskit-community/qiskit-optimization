@@ -12,7 +12,7 @@
 
 """An application class for the graph partitioning."""
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -51,7 +51,7 @@ class GraphPartition(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -60,15 +60,16 @@ class GraphPartition(GraphOptimizationApplication):
         Returns:
             A list of node indices divided into two groups.
         """
+        x = self._result_to_x(result)
         partition = [[], []]  # type: List[List[int]]
-        for i, value in enumerate(result.x):
+        for i, value in enumerate(x):
             if value == 0:
                 partition[0].append(i)
             else:
                 partition[1].append(i)
         return partition
 
-    def draw(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -80,10 +81,11 @@ class GraphPartition(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_colors, pos=pos, with_labels=True)
+            x = self._result_to_x(result)
+            nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
-    def _node_colors(self, result: OptimizationResult) -> List[str]:
+    def _node_colors(self, x: np.ndarray) -> List[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ['r' if value else 'b' for value in result.x]
+        return ['r' if value else 'b' for value in x]

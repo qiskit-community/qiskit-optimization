@@ -11,8 +11,10 @@
 # that they have been altered from the originals.
 
 """An abstract class for optimization application classes."""
-
+from typing import Union
 from abc import ABC, abstractmethod
+
+import numpy as np
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
@@ -31,34 +33,23 @@ class OptimizationApplication(ABC):
         pass
 
     @abstractmethod
-    def interpret(self, result: OptimizationResult):
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]):
         """Convert the calculation result of the problem
-        (:class:`~qiskit_optimization.algorithms.OptimizationResult`) to the answer of the problem
-        in an easy-to-understand format.
+        (:class:`~qiskit_optimization.algorithms.OptimizationResult` or a binary array using
+        np.ndarray) to the answer of the problem in an easy-to-understand format.
 
         Args:
             result: The calculated result of the problem
         """
         pass
 
-    def is_feasible(self, result: OptimizationResult) -> bool:
-        """Check whether the result is feasible or not
-
-        Args:
-            result: The calculated result of the problem
-
-        Returns:
-            The result is feasible or not
-        """
-        return self.to_quadratic_program().is_feasible(result.x)
-
-    def evaluate(self, result: OptimizationResult) -> float:
-        """Calculate the value of the objective function based on the result.
-
-        Args:
-            result: The calculated result of the problem
-
-        Returns:
-            The value of the objective function based on the result
-        """
-        return self.to_quadratic_program().objective.evaluate(result.x)
+    def _result_to_x(self, result: Union[OptimizationResult, np.ndarray]) -> np.ndarray:
+        # Return result.x for OptimizationResult and return result itself for np.ndarray
+        if isinstance(result, OptimizationResult):
+            x = result.x
+        elif isinstance(result, np.ndarray):
+            x = result
+        else:
+            raise TypeError("Unsupported format of result. Provide an　OptimizationResult or a",
+                            "binary array using np.ndarray instead of {}".format(type(result)))
+        return x

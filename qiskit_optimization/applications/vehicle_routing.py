@@ -92,7 +92,7 @@ class VehicleRouting(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[List[List[int]]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[List[int]]]:
         """Interpret a result as a list of the routes for each vehicle
 
         Args:
@@ -101,13 +101,14 @@ class VehicleRouting(GraphOptimizationApplication):
         Returns:
             A list of the routes for each vehicle
         """
+        x = self._result_to_x(result)
         n = self._graph.number_of_nodes()
         idx = 0
         edge_list = []
         for i in range(n):
             for j in range(n):
                 if i != j:
-                    if result.x[idx]:
+                    if x[idx]:
                         edge_list.append([i, j])
                     idx += 1
         route_list = []  # type: List[List[List[int]]]
@@ -132,7 +133,7 @@ class VehicleRouting(GraphOptimizationApplication):
 
         return route_list
 
-    def draw(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -153,12 +154,12 @@ class VehicleRouting(GraphOptimizationApplication):
                 width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
                 )
 
-    def _edgelist(self, route_list):
+    def _edgelist(self, route_list: List[List[List[int]]]):
         # Arrange route_list and return the list of the edges for the edge list of
         # nx.draw_networkx_edges
         return [edge for k in range(len(route_list)) for edge in route_list[k]]
 
-    def _edge_color(self, route_list):
+    def _edge_color(self, route_list: List[List[List[int]]]):
         # Arrange route_list and return the list of the colors of each route
         # for edge_color of nx.draw_networkx_edges
         return [k/len(route_list) for k in range(len(route_list)) for edge in route_list[k]]

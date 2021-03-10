@@ -13,7 +13,7 @@
 
 """An application class for the Max-cut."""
 
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
@@ -52,7 +52,7 @@ class Maxcut(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def draw(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -64,9 +64,10 @@ class Maxcut(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_color(result), pos=pos, with_labels=True)
+            x = self._result_to_x(result)
+            nx.draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
 
-    def interpret(self, result: OptimizationResult) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as two lists of node indices
 
         Args:
@@ -75,16 +76,17 @@ class Maxcut(GraphOptimizationApplication):
         Returns:
             Two lists of node indices correspond to two node sets for the Max-cut
         """
+        x = self._result_to_x(result)
         cut = [[], []]  # type: List[List[int]]
-        for i, value in enumerate(result.x):
+        for i, value in enumerate(x):
             if value == 0:
                 cut[0].append(i)
             else:
                 cut[1].append(i)
         return cut
 
-    def _node_color(self, result: OptimizationResult) -> List[str]:
+    def _node_color(self, x: np.ndarray) -> List[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ['r' if value == 0 else 'b' for value in result.x]
+        return ['r' if value == 0 else 'b' for value in x]

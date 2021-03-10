@@ -12,8 +12,9 @@
 
 """An application class for the number partitioning."""
 
-from typing import List
+from typing import List, Union
 
+import numpy as np
 from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
@@ -52,7 +53,7 @@ class NumberPartition(OptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as a list of subsets
 
         Args:
@@ -61,8 +62,9 @@ class NumberPartition(OptimizationApplication):
         Returns:
             A list of subsets whose sum is the half of the total.
         """
+        x = self._result_to_x(result)
         num_subsets = [[], []]  # type: List[List[int]]
-        for i, value in enumerate(result.x):
+        for i, value in enumerate(x):
             if value == 0:
                 num_subsets[0].append(self._number_set[i])
             else:

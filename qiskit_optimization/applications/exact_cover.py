@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """An application class for the exact cover."""
-from typing import List
+from typing import List, Union
 
 import numpy as np
 from docplex.mp.model import Model
@@ -58,7 +58,7 @@ class ExactCover(OptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as a list of subsets
 
         Args:
@@ -67,8 +67,9 @@ class ExactCover(OptimizationApplication):
         Returns:
             A list of subsets whose corresponding variable is 1
         """
+        x = self._result_to_x(result)
         sub = []
-        for i, value in enumerate(result.x):
+        for i, value in enumerate(x):
             if value:
                 sub.append(self._subsets[i])
         return sub

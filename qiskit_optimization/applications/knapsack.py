@@ -11,8 +11,9 @@
 # that they have been altered from the originals.
 
 """An application class for the Knapsack problem"""
-from typing import List
+from typing import List, Union
 
+import numpy as np
 from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
@@ -55,7 +56,7 @@ class Knapsack(OptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[int]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
         """Interpret a result as item indices
 
         Args:
@@ -64,4 +65,5 @@ class Knapsack(OptimizationApplication):
         Returns:
             A list of items whose corresponding variable is 1
         """
-        return [i for i, value in enumerate(result.x) if value]
+        x = self._result_to_x(result)
+        return [i for i, value in enumerate(x) if value]

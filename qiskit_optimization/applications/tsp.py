@@ -56,7 +56,8 @@ class Tsp(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: OptimizationResult) -> List[Union[int, List[int]]]:
+    def interpret(self,
+                  result: Union[OptimizationResult, np.ndarray]) -> List[Union[int, List[int]]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -65,12 +66,13 @@ class Tsp(GraphOptimizationApplication):
         Returns:
             A list of nodes whose indices correspond to its order in a prospective cycle.
         """
-        n = int(np.sqrt(len(result.x)))
+        x = self._result_to_x(result)
+        n = int(np.sqrt(len(x)))
         route = []  # type: List[Union[int, List[int]]]
         for p__ in range(n):
             p_step = []
             for i in range(n):
-                if result.x[i * n + p__]:
+                if x[i * n + p__]:
                     p_step.append(i)
             if len(p_step) == 1:
                 route.extend(p_step)
@@ -78,7 +80,7 @@ class Tsp(GraphOptimizationApplication):
                 route.append(p_step)
         return route
 
-    def draw(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -90,17 +92,18 @@ class Tsp(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
+            x = self._result_to_x(result)
             nx.draw(self._graph, with_labels=True, pos=pos)
             nx.draw_networkx_edges(
                 self._graph,
                 pos,
-                edgelist=self._edgelist(result),
+                edgelist=self._edgelist(x),
                 width=8, alpha=0.5, edge_color="tab:red",
                 )
 
-    def _edgelist(self, result):
+    def _edgelist(self, x: np.ndarray):
         # Arrange route and return the list of the edges for the edge list of nx.draw_networkx_edges
-        route = self.interpret(result)
+        route = self.interpret(x)
         return [(route[i], route[(i+1) % len(route)]) for i in range(len(route))]
 
     @staticmethod

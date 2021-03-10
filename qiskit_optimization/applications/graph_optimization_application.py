@@ -37,7 +37,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         self._graph = nx.Graph(graph).copy(as_view=True)
 
     @abstractmethod
-    def draw(self, result: Optional[OptimizationResult] = None,
+    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
         """An abstract method to draw the graph based on the result.
 
