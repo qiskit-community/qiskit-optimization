@@ -39,7 +39,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
             variables: the list of variables of the optimization problem.
             status: the termination status of the optimization algorithm.
             min_eigen_solver_result: the result obtained from the underlying algorithm.
-            samples: the x value, the objective function value of the original problem,
+            samples: the x values, the objective function value of the original problem,
                 the probability, and the status of sampling.
             raw_samples: the x values of the QUBO, the objective function value of the QUBO,
                 and the probability of sampling.

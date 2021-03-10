@@ -353,7 +353,7 @@ class GroverOptimizationResult(OptimizationResult):
                 that is expected to be identical with ``fval``.
             threshold: The threshold of Grover algorithm.
             status: the termination status of the optimization algorithm.
-            samples: the x value, the objective function value of the original problem,
+            samples: the x values, the objective function value of the original problem,
                 the probability, and the status of sampling.
             raw_samples: the x values of the QUBO, the objective function value of the QUBO,
                 and the probability of sampling.

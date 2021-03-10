@@ -446,7 +446,8 @@ class OptimizationAlgorithm(ABC):
                             status=cls._get_feasibility_status(problem, x),
                             **kwargs)
 
-    def _interpret_samples(self, problem: QuadraticProgram, raw_samples: List[SolutionSample],
+    @classmethod
+    def _interpret_samples(cls, problem: QuadraticProgram, raw_samples: List[SolutionSample],
                            converters: List[QuadraticProgramConverter]) -> List[SolutionSample]:
         prob = {}  # type: dict
         array = {}
@@ -462,13 +463,14 @@ class OptimizationAlgorithm(ABC):
         for key, x in array.items():
             probability = prob[key]
             fval = problem.objective.evaluate(x)
-            status = self._get_feasibility_status(problem, x)
+            status = cls._get_feasibility_status(problem, x)
             samples.append(SolutionSample(x, fval, probability, status))
 
         return sorted(samples,
                       key=lambda v: (v.status.value, problem.objective.sense.value * v.fval))
 
-    def _eigenvector_to_solutions(self, eigenvector: Union[dict, np.ndarray, StateFn],
+    @staticmethod
+    def _eigenvector_to_solutions(eigenvector: Union[dict, np.ndarray, StateFn],
                                   qubo: QuadraticProgram,
                                   min_probability: float = 1e-6,
                                   ) -> List[SolutionSample]:
