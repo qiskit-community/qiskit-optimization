@@ -49,9 +49,9 @@ class TestMaxcut(QiskitOptimizationTestCase):
         obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MAXIMIZE)
         self.assertEqual(obj.constant, 0)
-        self.assertDictEqual(obj.linear.to_dict(), {0: 3.0, 1: 2.0, 2: 1.0})
-        self.assertDictEqual(obj.quadratic.to_dict(), {(0, 1): -1.0, (0, 2): -1.0, (1, 2): -1.0,
-                                                       (0, 3): -1.0, (1, 3): -1.0, (2, 3): -1.0})
+        self.assertDictEqual(obj.linear.to_dict(), {0: 3.0, 1: 3.0, 2: 3.0, 3: 3.0})
+        self.assertDictEqual(obj.quadratic.to_dict(), {(0, 1): -2.0, (0, 2): -2.0, (1, 2): -2.0,
+                                                       (0, 3): -2.0, (1, 3): -2.0, (2, 3): -2.0})
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), 0)
