@@ -55,7 +55,7 @@ class VehicleRouting(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the vehicle routing problem instance.
         """
-        mdl = Model(name='Vehicle Routing')
+        mdl = Model(name='Vehicle routing')
         n = self._graph.number_of_nodes()
         x = {}
         for i in range(n):

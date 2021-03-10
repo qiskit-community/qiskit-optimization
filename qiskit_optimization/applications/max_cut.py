@@ -45,7 +45,8 @@ class Maxcut(GraphOptimizationApplication):
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault('weight', 1)
         objective = mdl.sum(self._graph.edges[i, j]['weight'] * x[i]
-                            * (1 - x[j]) for i, j in self._graph.edges)
+                            * (1 - x[j]) + self._graph.edges[i, j]['weight'] * x[j]
+                            * (1 - x[i]) for i, j in self._graph.edges)
         mdl.maximize(objective)
         op = QuadraticProgram()
         op.from_docplex(mdl)
@@ -63,7 +64,7 @@ class Maxcut(GraphOptimizationApplication):
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
-            nx.draw(self._graph, node_color=self._node_color, pos=pos, with_labels=True)
+            nx.draw(self._graph, node_color=self._node_color(result), pos=pos, with_labels=True)
 
     def interpret(self, result: OptimizationResult) -> List[List[int]]:
         """Interpret a result as two lists of node indices

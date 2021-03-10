@@ -38,7 +38,7 @@ class GraphPartition(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the graph partition instance.
         """
-        mdl = Model(name='Graph partinion')
+        mdl = Model(name='Graph partition')
         n = self._graph.number_of_nodes()
         x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
         for w, v in self._graph.edges:
