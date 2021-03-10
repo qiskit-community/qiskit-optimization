@@ -17,8 +17,8 @@ import math
 from copy import deepcopy
 from typing import Optional, Dict, Union, List, cast
 
-
 import numpy as np
+
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.algorithms import AmplificationProblem
 from qiskit.utils import QuantumInstance, algorithm_globals
@@ -26,7 +26,6 @@ from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
 from qiskit.providers import Backend, BaseBackend
 from qiskit.quantum_info import partial_trace
-
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
                                      OptimizationResult, SolutionSample)
 from ..converters.quadratic_program_to_qubo import QuadraticProgramToQubo, QuadraticProgramConverter
