@@ -11,7 +11,8 @@
 # that they have been altered from the originals.
 
 """An abstract class for optimization application classes."""
-from typing import Union, OrderedDict
+from typing import Union
+from collections import OrderedDict
 from abc import ABC, abstractmethod
 
 import numpy as np
