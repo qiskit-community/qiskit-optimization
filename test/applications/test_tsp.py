@@ -89,9 +89,8 @@ class TestTsp(QiskitOptimizationTestCase):
 
     def test_create_random_instance(self):
         """Test create_random_instance"""
-        tsp = Tsp.create_random_instance(n=4, seed=123)
+        tsp = Tsp.create_random_instance(n=3, seed=123)
         graph = tsp.graph
-        for node in graph.nodes:
-            self.assertEqual(graph.nodes[node]['pos'], self.graph.nodes[node]['pos'])
-        for edge in graph.edges:
-            self.assertEqual(graph.edges[edge]['weight'], self.graph.edges[edge]['weight'])
+        edge_weight = [graph.edges[edge]['weight'] for edge in graph.edges]
+        expected_weight = [48, 91, 63]
+        self.assertEqual(edge_weight, expected_weight)
