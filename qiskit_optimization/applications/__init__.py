@@ -50,6 +50,7 @@ Applications
 from .clique import Clique
 from .exact_cover import ExactCover
 from .graph_optimization_application import GraphOptimizationApplication
+from .graph_partition import GraphPartition
 from .knapsack import Knapsack
 from .max_cut import Maxcut
 from .number_partition import NumberPartition
