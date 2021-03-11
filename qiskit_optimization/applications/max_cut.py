@@ -90,17 +90,3 @@ class Maxcut(GraphOptimizationApplication):
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
         return ['r' if value == 0 else 'b' for value in x]
-
-    @staticmethod
-    def max_cut_value(x: np.ndarray, adj_matrix: np.ndarray):
-        """Compute the value of a cut from an adjacency matrix and a list of binary values.
-
-        Args:
-            x: a list of binary value in numpy array.
-            adj_matrix: adjacency matrix.
-
-        Returns:
-            float: value of the cut.
-        """
-        cut_matrix = np.outer(x, (1 - x))
-        return np.sum(adj_matrix * cut_matrix)

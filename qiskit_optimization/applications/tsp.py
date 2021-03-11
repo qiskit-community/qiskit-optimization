@@ -11,7 +11,6 @@
 # that they have been altered from the originals.
 
 """An application class for Traveling salesman problem (TSP)."""
-import random
 from typing import Dict, List, Optional, Union
 
 import networkx as nx
