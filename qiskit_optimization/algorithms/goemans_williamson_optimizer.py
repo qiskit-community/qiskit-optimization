@@ -143,8 +143,9 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
 
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
+        from qiskit_optimization.applications.max_cut import Maxcut
         numeric_solutions = [(cuts[i, :],
-                              self._max_cut_value(cuts[i, :], adj_matrix))
+                              Maxcut.max_cut_value(cuts[i, :], adj_matrix))
                              for i in range(self._num_cuts)]
 
         if self._sort_cuts:
@@ -260,16 +261,3 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         r = np.random.normal(size=(self._num_cuts, num_vertices))
 
         return (np.dot(r, x) > 0) + 0
-
-    def _max_cut_value(self, x: np.ndarray, adj_matrix: np.ndarray):
-        """Compute the value of a cut.
-
-        Args:
-            x: binary string as numpy array.
-            adj_matrix: adjacency matrix.
-
-        Returns:
-            float: value of the cut.
-        """
-        cut_matrix = np.outer(x, (1 - x))
-        return np.sum(adj_matrix * cut_matrix)

@@ -44,9 +44,6 @@ class GraphOptimizationApplication(OptimizationApplication):
         Args:
             result: The calculated result for the problem
             pos: The positions of nodes
-
-        Raises:
-            NotImplementedError: When this function is not implemented in sub classes.
         """
         pass
 
@@ -74,7 +71,8 @@ class GraphOptimizationApplication(OptimizationApplication):
         graph = nx.gnm_random_graph(num_nodes, num_edges, seed)
         return graph
 
-    def parse_gset_format(self, filename: str) -> np.ndarray:
+    @staticmethod
+    def parse_gset_format(filename: str) -> np.ndarray:
         """Read graph in Gset format from file.
 
         Args:
@@ -104,7 +102,8 @@ class GraphOptimizationApplication(OptimizationApplication):
         w += w.T
         return w
 
-    def get_gset_result(self, x: np.ndarray) -> Dict[int, int]:
+    @staticmethod
+    def get_gset_result(x: np.ndarray) -> Dict[int, int]:
         """Get graph solution in Gset format from binary string.
 
         Args:

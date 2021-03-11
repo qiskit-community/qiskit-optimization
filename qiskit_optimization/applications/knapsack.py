@@ -67,3 +67,21 @@ class Knapsack(OptimizationApplication):
         """
         x = self._result_to_x(result)
         return [i for i, value in enumerate(x) if value]
+
+    @property
+    def max_weight(self) -> int:
+        """Getter of max_weight
+
+        Returns:
+            The maximal weight for the knapsack problem
+        """
+        return self._max_weight
+
+    @max_weight.setter
+    def max_weight(self, max_weight: int) -> None:
+        """Setter of max_weight
+
+        Args:
+            max_weight: The maximal weight for the knapsack problem
+        """
+        self._max_weight = max_weight

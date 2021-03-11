@@ -36,14 +36,17 @@ class Clique(GraphOptimizationApplication):
         Args:
             graph: A graph representing a clique problem. It can be specified directly as a
             NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
-            size: The size of the clique
+            size: The size of the clique. When it's None, this class makes an optimization model for
+            a maximal clique instead of the specified size of a clique.
         """
         super().__init__(graph)
         self._size = size
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert a clique problem instance into a
-        :class:`~qiskit_optimization.problems.QuadraticProgram`
+        :class:`~qiskit_optimization.problems.QuadraticProgram`.
+        When "size" is None, this makes an optimization model for a maximal clique
+        instead of the specified size of a clique.
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created

@@ -18,6 +18,7 @@ import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
 
+from qiskit.utils import algorithm_globals
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
@@ -120,8 +121,10 @@ class Tsp(GraphOptimizationApplication):
         Returns:
              A Tsp instance created from the input information
         """
-        random.seed(seed)
-        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
+        if seed:
+            algorithm_globals.random_seed = seed
+        coord = algorithm_globals.random.uniform(low, high, (n, 2))
+        pos = {i: (coord_[0], coord_[1])for i, coord_ in enumerate(coord)}
         graph = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
         for w, v in graph.edges:
             delta = [graph.nodes[w]['pos'][i] - graph.nodes[v]['pos'][i] for i in range(2)]
@@ -184,3 +187,19 @@ class Tsp(GraphOptimizationApplication):
             delta = [graph.nodes[w]['pos'][i] - graph.nodes[v]['pos'][i] for i in range(2)]
             graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
         return Tsp(graph)
+
+    @staticmethod
+    def tsp_value(z: List[int], adj_matrix: np.ndarray) -> float:
+        """Compute the TSP value of a solution.
+        Args:
+            z: list of cities.
+            adj_matrix: adjacency matrix.
+
+        Returns:
+            value of the total length
+        """
+        ret = 0.0
+        for i in range(len(z) - 1):
+            ret += adj_matrix[z[i], z[i + 1]]
+        ret += adj_matrix[z[-1], z[0]]
+        return ret

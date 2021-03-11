@@ -63,3 +63,8 @@ class TestKnapsack(QiskitOptimizationTestCase):
         """Test interpret"""
         knapsack = Knapsack(values=self.values, weights=self.weights, max_weight=self.max_weight)
         self.assertEqual(knapsack.interpret(self.result), [1, 3])
+
+    def test_max_weight(self):
+        knapsack = Knapsack(values=self.values, weights=self.weights, max_weight=self.max_weight)
+        knapsack.max_weight = 5
+        self.assertEqual(knapsack.max_weight, 5)

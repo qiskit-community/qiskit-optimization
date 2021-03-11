@@ -71,3 +71,9 @@ class TestClique(QiskitOptimizationTestCase):
         """Test _node_colors"""
         clique = Clique(self.graph)
         self.assertEqual(clique._node_colors(self.result), ['r', 'darkgrey', 'r', 'r', 'r'])
+
+    def test_size(self):
+        """Test size"""
+        clique = Clique(self.graph)
+        clique.size = 3
+        self.assertEqual(clique.size, 3)

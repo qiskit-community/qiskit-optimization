@@ -16,25 +16,50 @@ Optimization applications (:mod:`qiskit_optimization.applications`)
 
 .. currentmodule:: qiskit_optimization.applications
 
-Applications for Qiskit's optimization module.
+Applications for common optimization problems.
 
-Submodules
-==========
+Base classes for applications
+=======================================
 
 .. autosummary::
-   :toctree:
+   :toctree: ../stubs/
+   :nosignatures:
 
-   optimization_application
-   clique
-   exact_cover
-   graph_optimization_application
-   graph_partition
-   knapsack
-   max_cut
-   number_partition
-   set_packing
-   stable_set
-   tsp
-   vehicle_routing
-   vertex_cover
+   OptimizationApplication
+   GraphOptimizationApplication
+
+Applications
+======================
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   Clique
+   ExactCover
+   GraphPartition
+   Knapsack
+   Maxcut
+   NumberPartition
+   SetPacking
+   StableSet
+   Tsp
+   VehicleRouting
+   VertexCover
 """
+
+from .clique import Clique
+from .exact_cover import ExactCover
+from .graph_optimization_application import GraphOptimizationApplication
+from .knapsack import Knapsack
+from .max_cut import Maxcut
+from .number_partition import NumberPartition
+from .optimization_application import OptimizationResult
+from .set_packing import SetPacking
+from .stable_set import StableSet
+from .tsp import Tsp
+from .vehicle_routing import VehicleRouting
+from .vertex_cover import VertexCover
+
+_all__ = ["Clique", "ExactCover", "GraphOptimizationApplication", "Knapsack",
+          "Maxcut", "NumberPartition", "OptimizationResult", "SetPacking", "StableSet",
+          "Tsp", "VehicleRouting", "VertexCover"]

@@ -11,11 +11,12 @@
 # that they have been altered from the originals.
 
 """An abstract class for optimization application classes."""
-from typing import Union
+from typing import Union, OrderedDict
 from abc import ABC, abstractmethod
 
 import numpy as np
 
+from qiskit.opflow import StateFn
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
@@ -53,3 +54,31 @@ class OptimizationApplication(ABC):
             raise TypeError("Unsupported format of result. Provide an　OptimizationResult or a",
                             "binary array using np.ndarray instead of {}".format(type(result)))
         return x
+
+    @staticmethod
+    def sample_most_likely(state_vector: Union[np.ndarray, dict]) -> np.ndarray:
+        """Compute the most likely binary string from state vector.
+
+        Args:
+            state_vector: state vector or counts.
+
+        Returns:
+            binary string as numpy.ndarray of ints.
+        """
+        if isinstance(state_vector, (OrderedDict, dict)):
+            # get the binary string with the largest count
+            binary_string = sorted(state_vector.items(), key=lambda kv: kv[1])[-1][0]
+            x = np.asarray([int(y) for y in reversed(list(binary_string))])
+            return x
+        elif isinstance(state_vector, StateFn):
+            binary_string = list(state_vector.sample().keys())[0]
+            x = np.asarray([int(y) for y in reversed(list(binary_string))])
+            return x
+        else:
+            n = int(np.log2(state_vector.shape[0]))
+            k = np.argmax(np.abs(state_vector))
+            x = np.zeros(n)
+            for i in range(n):
+                x[i] = k % 2
+                k >>= 1
+            return x
