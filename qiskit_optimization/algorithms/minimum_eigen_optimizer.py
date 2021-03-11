@@ -16,7 +16,7 @@ from typing import Optional, Any, Union, List, cast
 import numpy as np
 
 from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
-from qiskit.opflow import StateFn, DictStateFn, OperatorBase
+from qiskit.opflow import OperatorBase
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
                                      OptimizationResult, SolutionSample)
 from .. import QiskitOptimizationError
@@ -39,7 +39,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
             variables: the list of variables of the optimization problem.
             status: the termination status of the optimization algorithm.
             min_eigen_solver_result: the result obtained from the underlying algorithm.
-            samples: the x value, the objective function value of the original problem,
+            samples: the x values, the objective function value of the original problem,
                 the probability, and the status of sampling.
             raw_samples: the x values of the QUBO, the objective function value of the QUBO,
                 and the probability of sampling.
@@ -184,17 +184,13 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
             # approximate ground state of operator using min eigen solver
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
-
             # analyze results
-            # backend = getattr(self._min_eigen_solver, 'quantum_instance', None)
             fval = None
             x = None
             raw_samples = None
             if eigen_result.eigenstate is not None:
-                raw_samples = _eigenvector_to_solutions(eigen_result.eigenstate, converted_problem)
-                # print(offset, samples)
-                # samples = [(res[0], problem_.objective.sense.value * (res[1] + offset), res[2])
-                #    for res in samples]
+                raw_samples = self._eigenvector_to_solutions(
+                    eigen_result.eigenstate, converted_problem)
                 raw_samples.sort(key=lambda x: converted_problem.objective.sense.value * x.fval)
                 x = raw_samples[0].x
                 fval = raw_samples[0].fval
@@ -214,101 +210,9 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                                                   samples=None, raw_samples=None,
                                                   min_eigen_solver_result=eigen_result)
         # translate result back to integers
-        samples = self._interpret_samples(original_problem, raw_samples)
+        samples = self._interpret_samples(original_problem, raw_samples, self._converters)
         return cast(MinimumEigenOptimizationResult,
                     self._interpret(x=x, converters=self._converters, problem=original_problem,
                                     result_class=MinimumEigenOptimizationResult,
                                     samples=samples, raw_samples=raw_samples,
                                     min_eigen_solver_result=eigen_result))
-
-    def _interpret_samples(self, problem: QuadraticProgram, raw_samples: List[SolutionSample]) \
-            -> List[SolutionSample]:
-        prob = {}  # type: dict
-        array = {}
-        for sample in raw_samples:
-            x = sample.x
-            for converter in self._converters[::-1]:
-                x = converter.interpret(x)
-            key = tuple(x)
-            prob[key] = prob.get(key, 0.0) + sample.probability
-            array[key] = x
-
-        samples = []
-        for key, x in array.items():
-            probability = prob[key]
-            fval = problem.objective.evaluate(x)
-            status = self._get_feasibility_status(problem, x)
-            samples.append(SolutionSample(x, fval, probability, status))
-
-        return sorted(samples,
-                      key=lambda v: (v.status.value, problem.objective.sense.value * v.fval))
-
-
-def _eigenvector_to_solutions(eigenvector: Union[dict, np.ndarray, StateFn],
-                              qubo: QuadraticProgram,
-                              min_probability: float = 1e-6,
-                              ) -> List[SolutionSample]:
-    """Convert the eigenvector to the bitstrings and corresponding eigenvalues.
-
-    Args:
-        eigenvector: The eigenvector from which the solution states are extracted.
-        qubo: The QUBO to evaluate at the bitstring.
-        min_probability: Only consider states where the amplitude exceeds this threshold.
-
-    Returns:
-        For each computational basis state contained in the eigenvector, return the basis
-        state as bitstring along with the QUBO evaluated at that bitstring and the
-        probability of sampling this bitstring from the eigenvector.
-
-    Examples:
-        >>> op = MatrixOp(numpy.array([[1, 1], [1, -1]]) / numpy.sqrt(2))
-        >>> eigenvectors = {'0': 12, '1': 1}
-        >>> print(eigenvector_to_solutions(eigenvectors, op))
-        [('0', 0.7071067811865475, 0.9230769230769231),
-        ('1', -0.7071067811865475, 0.07692307692307693)]
-
-        >>> op = MatrixOp(numpy.array([[1, 1], [1, -1]]) / numpy.sqrt(2))
-        >>> eigenvectors = numpy.array([1, 1] / numpy.sqrt(2), dtype=complex)
-        >>> print(eigenvector_to_solutions(eigenvectors, op))
-        [('0', 0.7071067811865475, 0.4999999999999999),
-        ('1', -0.7071067811865475, 0.4999999999999999)]
-
-    Raises:
-        TypeError: If the type of eigenvector is not supported.
-    """
-    if isinstance(eigenvector, DictStateFn):
-        eigenvector = {bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()}
-    elif isinstance(eigenvector, StateFn):
-        eigenvector = eigenvector.to_matrix()
-
-    def generate_solution(bitstr, qubo, probability):
-        x = np.fromiter(list(bitstr), dtype=int)
-        fval = qubo.objective.evaluate(x)
-        return SolutionSample(x=x, fval=fval, probability=probability,
-                              status=OptimizationResultStatus.SUCCESS)
-
-    solutions = []
-    if isinstance(eigenvector, dict):
-        all_counts = sum(eigenvector.values())
-        # iterate over all samples
-        for bitstr, count in eigenvector.items():
-            sampling_probability = count / all_counts
-            # add the bitstring, if the sampling probability exceeds the threshold
-            if sampling_probability >= min_probability:
-                solutions.append(generate_solution(bitstr, qubo, sampling_probability))
-
-    elif isinstance(eigenvector, np.ndarray):
-        num_qubits = int(np.log2(eigenvector.size))
-        probabilities = np.abs(eigenvector * eigenvector.conj())
-
-        # iterate over all states and their sampling probabilities
-        for i, sampling_probability in enumerate(probabilities):
-            # add the i-th state if the sampling probability exceeds the threshold
-            if sampling_probability >= min_probability:
-                bitstr = '{:b}'.format(i).rjust(num_qubits, '0')[::-1]
-                solutions.append(generate_solution(bitstr, qubo, sampling_probability))
-
-    else:
-        raise TypeError('Unsupported format of eigenvector. Provide a dict or numpy.ndarray.')
-
-    return solutions

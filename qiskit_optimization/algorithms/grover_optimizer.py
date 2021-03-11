@@ -18,15 +18,16 @@ from copy import deepcopy
 from typing import Optional, Dict, Union, List, cast
 
 import numpy as np
+
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.algorithms import AmplificationProblem
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
 from qiskit.providers import Backend, BaseBackend
-
+from qiskit.quantum_info import partial_trace
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
-                                     OptimizationResult)
+                                     OptimizationResult, SolutionSample)
 from ..converters.quadratic_program_to_qubo import QuadraticProgramToQubo, QuadraticProgramConverter
 from ..problems import Variable
 from ..problems.quadratic_program import QuadraticProgram
@@ -61,6 +62,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._num_key_qubits = None
         self._n_iterations = num_iterations
         self._quantum_instance = None
+        self._circuit_results = {}  # type: ignore
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
@@ -226,7 +228,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                 int_v = self._bin_to_int(v, n_value) + threshold
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
-
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
                 if int_v < optimum_value:
                     optimum_key = k
@@ -250,6 +251,19 @@ class GroverOptimizer(OptimizationAlgorithm):
                         improvement_found = True
                         optimum_found = True
 
+                # trace out work qubits
+                if self._quantum_instance.is_statevector:  # type: ignore
+                    indices = list(range(n_key, len(outcome)))
+                    rho = partial_trace(self._circuit_results, indices)
+                    self._circuit_results = np.diag(rho.data) ** 0.5
+                else:
+                    self._circuit_results = {i[0:n_key]: v for i,
+                                             v in self._circuit_results.items()}
+
+                raw_samples = self._eigenvector_to_solutions(self._circuit_results, problem_init)
+                raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
+                samples = self._interpret_samples(problem, raw_samples, self._converters)
+
                 # Track the operation count.
                 operations = circuit.count_ops()
                 operation_count[iteration] = operations
@@ -261,7 +275,6 @@ class GroverOptimizer(OptimizationAlgorithm):
             optimum_key = 0
 
         opt_x = np.array([1 if s == '1' else 0 for s in ('{0:%sb}' % n_key).format(optimum_key)])
-
         # Compute function value
         fval = problem_init.objective.evaluate(opt_x)
 
@@ -269,6 +282,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         return cast(GroverOptimizationResult,
                     self._interpret(x=opt_x, converters=self._converters, problem=problem,
                                     result_class=GroverOptimizationResult,
+                                    samples=samples, raw_samples=raw_samples,
                                     operation_counts=operation_count, n_input_qubits=n_key,
                                     n_output_qubits=n_value, intermediate_fval=fval,
                                     threshold=threshold))
@@ -278,10 +292,8 @@ class GroverOptimizer(OptimizationAlgorithm):
         probs = self._get_probs(circuit)
         freq = sorted(probs.items(), key=lambda x: x[1], reverse=True)
         # Pick a random outcome.
-        freq[-1] = (freq[-1][0], 1.0 - sum(x[1] for x in freq[0:len(freq) - 1]))
         idx = algorithm_globals.random.choice(len(freq), 1, p=[x[1] for x in freq])[0]
         logger.info('Frequencies: %s', freq)
-
         return freq[idx][0]
 
     def _get_probs(self, qc: QuantumCircuit) -> Dict[str, float]:
@@ -289,18 +301,19 @@ class GroverOptimizer(OptimizationAlgorithm):
         # Execute job and filter results.
         result = self.quantum_instance.execute(qc)
         if self.quantum_instance.is_statevector:
-            state = np.round(result.get_statevector(qc), 5)
+            state = result.get_statevector(qc)
             keys = [bin(i)[2::].rjust(int(np.log2(len(state))), '0')[::-1]
                     for i in range(0, len(state))]
-            probs = [np.round(abs(a) * abs(a), 5) for a in state]
-            hist = dict(zip(keys, probs))
+            probs = [abs(a) ** 2 for a in state]
+            total = math.fsum(probs)
+            probs = [p / total for p in probs]
+            hist = {key: prob for key, prob in zip(keys, probs) if prob > 0}
+            self._circuit_results = state
         else:
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
-            hist = {}
-            for key in state:
-                hist[key[::-1]] = state[key] / shots
-        hist = dict(filter(lambda p: p[1] > 0, hist.items()))
+            hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
+            self._circuit_results = {b[::-1]: (v / shots) ** 0.5 for (b, v) in state.items()}
         return hist
 
     @staticmethod
@@ -320,7 +333,8 @@ class GroverOptimizationResult(OptimizationResult):
     def __init__(self, x: Union[List[float], np.ndarray], fval: float, variables: List[Variable],
                  operation_counts: Dict[int, Dict[str, int]], n_input_qubits: int,
                  n_output_qubits: int, intermediate_fval: float, threshold: float,
-                 status: OptimizationResultStatus) -> None:
+                 status: OptimizationResultStatus, samples: Optional[List[SolutionSample]] = None,
+                 raw_samples: Optional[List[SolutionSample]] = None) -> None:
         """
         Constructs a result object with the specific Grover properties.
 
@@ -335,8 +349,14 @@ class GroverOptimizationResult(OptimizationResult):
                 that is expected to be identical with ``fval``.
             threshold: The threshold of Grover algorithm.
             status: the termination status of the optimization algorithm.
+            samples: the x values, the objective function value of the original problem,
+                the probability, and the status of sampling.
+            raw_samples: the x values of the QUBO, the objective function value of the QUBO,
+                and the probability of sampling.
         """
-        super().__init__(x, fval, variables, status, None)
+        super().__init__(x=x, fval=fval, variables=variables, status=status, raw_results=None,
+                         samples=samples)
+        self._raw_samples = raw_samples
         self._operation_counts = operation_counts
         self._n_input_qubits = n_input_qubits
         self._n_output_qubits = n_output_qubits
@@ -387,3 +407,12 @@ class GroverOptimizationResult(OptimizationResult):
             The threshold of Grover algorithm.
         """
         return self._threshold
+
+    @property
+    def raw_samples(self) -> Optional[List[SolutionSample]]:
+        """Returns the list of raw solution samples of ``GroverOptimizer``.
+
+        Returns:
+            The list of raw solution samples of ``GroverOptimizer``.
+        """
+        return self._raw_samples
