@@ -850,7 +850,7 @@ class QuadraticProgram:
                 x_new = self.integer_var(x.lb, x.ub, x.VarName)
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.name, x.vartype))
+                    "Unsupported variable type: {} {}".format(x.VarName, x.vtype))
             var_names[x] = x_new.name
 
         # objective sense
@@ -890,14 +890,13 @@ class QuadraticProgram:
         else:
             self.maximize(constant, linear, quadratic)
 
+        # check whether there are any general constraints
+        if model.NumSOS > 0 or model.NumGenConstrs > 0:
+            raise QiskitOptimizationError(
+                'Unsupported constraint: SOS or General Constraint')
+
         # get linear constraints
         for constraint in model.getConstrs():
-            if not isinstance(constraint, gp.Constr):
-                # This check comes from the "from_docplex" implementation,
-                # however is not really needed for gurobipy.
-                # Feel free to remove if tested as it should never be triggered
-                raise QiskitOptimizationError(
-                    'Unsupported constraint: {}'.format(constraint))
             name = constraint.ConstrName
             sense = constraint.Sense
 
@@ -1279,6 +1278,7 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
+
         return self.to_docplex().export_as_lp_string()
 
     def pprint_as_string(self) -> str:

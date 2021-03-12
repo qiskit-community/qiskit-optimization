@@ -47,6 +47,7 @@ Algorithms and results
    GoemansWilliamsonOptimizationResult
    GroverOptimizationResult
    GroverOptimizer
+   GurobiOptimizer
    IntermediateResult
    MeanAggregator
    MinimumEigenOptimizationResult
@@ -68,6 +69,7 @@ from .cplex_optimizer import CplexOptimizer
 from .goemans_williamson_optimizer import (GoemansWilliamsonOptimizer,
                                            GoemansWilliamsonOptimizationResult)
 from .grover_optimizer import GroverOptimizer, GroverOptimizationResult
+from .gurobi_optimizer import GurobiOptimizer
 from .minimum_eigen_optimizer import (MinimumEigenOptimizer, MinimumEigenOptimizationResult)
 from .multistart_optimizer import MultiStartOptimizer
 from .optimization_algorithm import (OptimizationAlgorithm, OptimizationResult,
@@ -83,7 +85,7 @@ from .warm_start_qaoa_optimizer import (BaseAggregator, MeanAggregator, WarmStar
 __all__ = ["ADMMOptimizer", "OptimizationAlgorithm", "OptimizationResult", "BaseAggregator",
            "CplexOptimizer", "CobylaOptimizer", "GoemansWilliamsonOptimizer",
            "GoemansWilliamsonOptimizationResult", "GroverOptimizer", "GroverOptimizationResult",
-           "MeanAggregator",
+           "GurobiOptimizer", "MeanAggregator",
            "MinimumEigenOptimizer", "MinimumEigenOptimizationResult",
            "RecursiveMinimumEigenOptimizer", "RecursiveMinimumEigenOptimizationResult",
            "IntermediateResult", "SlsqpOptimizer", "SlsqpOptimizationResult", "SolutionSample",
