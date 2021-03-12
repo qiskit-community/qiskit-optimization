@@ -18,9 +18,9 @@ import numpy as np
 from docplex.mp.model import Model
 
 from qiskit.utils import algorithm_globals
-from qiskit_optimization.algorithms import OptimizationResult
-from qiskit_optimization.exceptions import QiskitOptimizationError
-from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from ..algorithms import OptimizationResult
+from ..exceptions import QiskitOptimizationError
+from ..problems.quadratic_program import QuadraticProgram
 from .graph_optimization_application import GraphOptimizationApplication
 
 
