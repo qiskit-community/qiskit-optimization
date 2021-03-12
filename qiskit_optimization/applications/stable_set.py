@@ -68,20 +68,16 @@ class StableSet(GraphOptimizationApplication):
                 stable_set.append(i)
         return stable_set
 
-    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
-             pos: Optional[Dict[int, np.ndarray]] = None) -> None:
-        """Draw a graph with the result. When the result is None, draw an original graph without
-        colors.
+    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
+                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+        """Draw the result with colors
 
         Args:
             result : The calculated result for the problem
             pos: The positions of nodes
         """
-        if result is None:
-            nx.draw(self._graph, pos=pos, with_labels=True)
-        else:
-            x = self._result_to_x(result)
-            nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
+        x = self._result_to_x(result)
+        nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
     def _node_colors(self, x: np.ndarray):
         # Return a list of strings for draw.

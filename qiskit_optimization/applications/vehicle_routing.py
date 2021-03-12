@@ -133,26 +133,22 @@ class VehicleRouting(GraphOptimizationApplication):
 
         return route_list
 
-    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
-             pos: Optional[Dict[int, np.ndarray]] = None) -> None:
-        """Draw a graph with the result. When the result is None, draw an original graph without
-        colors.
+    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
+                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+        """Draw the result with colors
 
         Args:
             result: The calculated result for the problem
             pos: The positions of nodes
         """
-        if result is None:
-            nx.draw(self._graph, pos=pos, with_labels=True)
-        else:
-            route_list = self.interpret(result)
-            nx.draw(self._graph, with_labels=True, pos=pos)
-            nx.draw_networkx_edges(
-                self._graph,
-                pos,
-                edgelist=self._edgelist(route_list),
-                width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
-                )
+        route_list = self.interpret(result)
+        nx.draw(self._graph, with_labels=True, pos=pos)
+        nx.draw_networkx_edges(
+            self._graph,
+            pos,
+            edgelist=self._edgelist(route_list),
+            width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
+            )
 
     def _edgelist(self, route_list: List[List[List[int]]]):
         # Arrange route_list and return the list of the edges for the edge list of

@@ -36,13 +36,27 @@ class GraphOptimizationApplication(OptimizationApplication):
         # The view of the graph is stored which means the graph can not be changed.
         self._graph = nx.Graph(graph).copy(as_view=True)
 
-    @abstractmethod
     def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
              pos: Optional[Dict[int, np.ndarray]] = None) -> None:
-        """An abstract method to draw the graph based on the result.
+        """Draw a graph with the result. When the result is None, draw an original graph without
+        colors.
 
         Args:
             result: The calculated result for the problem
+            pos: The positions of nodes
+        """
+        if result is None:
+            nx.draw(self._graph, pos=pos, with_labels=True)
+        else:
+            self._draw_result(result, pos)
+
+    @abstractmethod
+    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
+                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+        """Draw the result with colors
+
+        Args:
+            result : The calculated result for the problem
             pos: The positions of nodes
         """
         pass
