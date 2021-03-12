@@ -95,17 +95,23 @@ def max_cut_qp(adjacency_matrix: np.ndarray, optimizer: str = "cplex") -> Quadra
     size = len(adjacency_matrix)
 
     if optimizer == "cplex":
-        mdl = solve_max_cut_qp_with_cplex(size, adjacency_matrix)
+        q_p = solve_max_cut_qp_with_cplex(size, adjacency_matrix)
     if optimizer == "gurobi":
-        mdl = solve_max_cut_qp_with_gurobi(size, adjacency_matrix)
-
-    q_p = QuadraticProgram()
-    q_p.from_docplex(mdl)
+        q_p = solve_max_cut_qp_with_gurobi(size, adjacency_matrix)
 
     return q_p
 
 
 def solve_max_cut_qp_with_cplex(size, adjacency_matrix):
+    """Solving the max cut problem with cplex.
+
+    Args:
+        size (int) : Size of the adjacency_matrix.
+        adjacency_matrix (numpy.ndarray) : The adjacency matrix for the max cut problem.
+
+    Returns:
+        QuadraticProgram: The quadratic program which contains the solution to the problem.
+    """
     mdl = Model()
     x = [mdl.binary_var('x%s' % i) for i in range(size)]
 
@@ -119,8 +125,22 @@ def solve_max_cut_qp_with_cplex(size, adjacency_matrix):
     objective = mdl.sum(objective_terms)
     mdl.maximize(objective)
 
+    q_p = QuadraticProgram()
+    q_p.from_docplex(mdl)
+    return q_p
+
 
 def solve_max_cut_qp_with_gurobi(size, adjacency_matrix):
+    """Solving the max cut problem with gurobi.
+
+    Args:
+        size (int) : Size of the adjacency_matrix.
+        adjacency_matrix (numpy.ndarray) : The adjacency matrix for the max cut problem.
+
+    Returns:
+        QuadraticProgram: The quadratic program which contains the solution to the problem.
+    """
+
     mdl = gp.Model()
     x = mdl.addVars(size, name='x')
 
@@ -132,3 +152,7 @@ def solve_max_cut_qp_with_gurobi(size, adjacency_matrix):
 
     mdl.setObjective(objective_terms, sense=gp.GRB.MAXIMIZE)
     mdl.optimize()
+
+    q_p = QuadraticProgram()
+    q_p.from_gurobipy(mdl)
+    return q_p
