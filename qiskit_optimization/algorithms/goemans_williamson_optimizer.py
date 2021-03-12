@@ -22,7 +22,6 @@ from qiskit.exceptions import MissingOptionalLibraryError
 
 from .optimization_algorithm import OptimizationResult, OptimizationResultStatus, \
     OptimizationAlgorithm, SolutionSample
-from ..applications.ising.max_cut import max_cut_value
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
 
@@ -42,6 +41,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
     Contains results of the Goemans-Williamson algorithm. The properties ``x`` and ``fval`` contain
     values of just one solution. Explore ``samples`` for all possible solutions.
     """
+
     def __init__(self, x: Optional[Union[List[float], np.ndarray]], fval: float,
                  variables: List[Variable], status: OptimizationResultStatus,
                  samples: Optional[List[SolutionSample]],
@@ -144,7 +144,8 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
         numeric_solutions = [(cuts[i, :],
-                              max_cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)]
+                              self.max_cut_value(cuts[i, :], adj_matrix))
+                             for i in range(self._num_cuts)]
 
         if self._sort_cuts:
             numeric_solutions.sort(key=lambda x: -x[1])
@@ -259,3 +260,17 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         r = np.random.normal(size=(self._num_cuts, num_vertices))
 
         return (np.dot(r, x) > 0) + 0
+
+    @staticmethod
+    def max_cut_value(x: np.ndarray, adj_matrix: np.ndarray):
+        """Compute the value of a cut from an adjacency matrix and a list of binary values.
+
+        Args:
+            x: a list of binary value in numpy array.
+            adj_matrix: adjacency matrix.
+
+        Returns:
+            float: value of the cut.
+        """
+        cut_matrix = np.outer(x, (1 - x))
+        return np.sum(adj_matrix * cut_matrix)

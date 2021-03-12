@@ -18,7 +18,7 @@ from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization.algorithms.goemans_williamson_optimizer \
     import (GoemansWilliamsonOptimizer, GoemansWilliamsonOptimizationResult)
-from qiskit_optimization.applications.ising.max_cut import max_cut_qp
+from qiskit_optimization.applications.max_cut import Maxcut
 
 
 class TestGoemansWilliamson(QiskitOptimizationTestCase):
@@ -33,7 +33,7 @@ class TestGoemansWilliamson(QiskitOptimizationTestCase):
 
             optimizer = GoemansWilliamsonOptimizer(num_cuts=10, seed=0)
 
-            problem = max_cut_qp(graph)
+            problem = Maxcut(graph).to_quadratic_program()
             self.assertIsNotNone(problem)
 
             results = optimizer.solve(problem)
