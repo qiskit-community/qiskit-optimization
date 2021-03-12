@@ -21,7 +21,7 @@ from warnings import warn
 import numpy as np
 
 from qiskit.opflow import StateFn, DictStateFn
-from .. import QiskitOptimizationError
+from ..exceptions import QiskitOptimizationError
 from ..converters.quadratic_program_to_qubo import (QuadraticProgramToQubo,
                                                     QuadraticProgramConverter)
 from ..problems.quadratic_program import QuadraticProgram, Variable

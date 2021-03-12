@@ -19,7 +19,7 @@ from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
 from qiskit.opflow import OperatorBase
 from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
                                      OptimizationResult, SolutionSample)
-from .. import QiskitOptimizationError
+from ..exceptions import QiskitOptimizationError
 from ..converters.quadratic_program_to_qubo import QuadraticProgramToQubo, QuadraticProgramConverter
 from ..problems.quadratic_program import QuadraticProgram, Variable
 
