@@ -506,6 +506,29 @@ class TestConverters(QiskitOptimizationTestCase):
         )
         self.assertIn(warning, log.output)
 
+    def test_penalty_recalculation_when_reusing(self):
+        """ Test the penalty retrieval and recalculation of LinearEqualityToPenalty"""
+        op = QuadraticProgram()
+        op.binary_var('x')
+        op.binary_var('y')
+        op.binary_var('z')
+        op.minimize(constant=3, linear={'x': 1}, quadratic={('x', 'y'): 2})
+        op.linear_constraint(linear={'x': 1, 'y': 1, 'z': 1}, sense='EQ', rhs=2, name='xyz_eq')
+        # First, create a converter with no penalty
+        lineq2penalty = LinearEqualityToPenalty()
+        self.assertIsNone(lineq2penalty.penalty)
+        # Then converter must calculate the penalty for the problem (should be 4.0)
+        lineq2penalty.convert(op)
+        self.assertEqual(4, lineq2penalty.penalty)
+        # Re-use the converter with a newly defined penalty
+        lineq2penalty.penalty = 3
+        lineq2penalty.convert(op)
+        self.assertEqual(3, lineq2penalty.penalty)
+        # Re-use the converter letting the penalty be calculated again
+        lineq2penalty.penalty = None
+        lineq2penalty.convert(op)
+        self.assertEqual(4, lineq2penalty.penalty)
+
     def test_linear_equality_to_penalty_decode(self):
         """ Test decode func of LinearEqualityToPenalty"""
         qprog = QuadraticProgram()
