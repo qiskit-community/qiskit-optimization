@@ -1,5 +1,6 @@
-recursive-include qiskit_optimization
+recursive-include qiskit_optimization *.txt
 graft test
 prune docs
 prune tools
+prune tutorials
 global-exclude *.py[co] .DS_Store

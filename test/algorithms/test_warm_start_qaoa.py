@@ -25,7 +25,7 @@ from qiskit_optimization.algorithms import SlsqpOptimizer
 from qiskit_optimization.algorithms.goemans_williamson_optimizer import GoemansWilliamsonOptimizer
 from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import MeanAggregator, \
     WarmStartQAOAOptimizer
-from qiskit_optimization.applications.ising.max_cut import max_cut_qp
+from qiskit_optimization.applications.max_cut import Maxcut
 
 
 class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
@@ -40,7 +40,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
                               [0., 0., 1., 0.]])
 
             presolver = GoemansWilliamsonOptimizer(num_cuts=10)
-            problem = max_cut_qp(graph)
+            problem = Maxcut(graph).to_quadratic_program()
 
             backend = BasicAer.get_backend("statevector_simulator")
             qaoa = QAOA(quantum_instance=backend, reps=1)

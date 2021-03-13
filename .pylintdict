@@ -75,6 +75,7 @@ maxiter
 mdl
 minimizer
 minimumeigenoptimizationresult
+networkx
 ndarray
 ndarrays
 nosignatures
@@ -90,6 +91,7 @@ paulis
 peleato
 penality
 pooya
+pos
 pre
 preprint
 presolver
