@@ -77,12 +77,14 @@ maxiter
 mdl
 minimizer
 minimumeigenoptimizationresult
+networkx
 ndarray
 ndarrays
 nosignatures
 np
 num
 numpy
+optimizationresult
 optimizers
 params
 parikh
@@ -91,6 +93,7 @@ paulis
 peleato
 penality
 pooya
+pos
 pre
 preprint
 presolver
@@ -129,6 +132,7 @@ subgraph
 submodules
 th
 toctree
+todo
 todok
 tol
 unittest

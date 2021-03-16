@@ -37,7 +37,8 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         """
         Args:
             penalty: Penalty factor to scale equality constraints that are added to objective.
-                If None is passed, penalty factor will be automatically calculated.
+                If None is passed, a penalty factor will be automatically calculated on every
+                conversion.
         """
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
@@ -163,6 +164,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
 
         Args:
             penalty: The new penalty factor.
-                     If None is passed, penalty factor will be automatically calculated.
+                     If None is passed, a penalty factor will be automatically calculated on every
+                     conversion.
         """
         self._penalize_lin_eq_constraints.penalty = penalty

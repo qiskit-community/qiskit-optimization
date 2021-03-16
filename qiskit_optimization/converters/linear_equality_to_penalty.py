@@ -36,11 +36,12 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         """
         Args:
             penalty: Penalty factor to scale equality constraints that are added to objective.
-                     If None is passed, penalty factor will be automatically calculated.
+                     If None is passed, a penalty factor will be automatically calculated on
+                     every conversion.
         """
         self._src = None  # type: Optional[QuadraticProgram]
         self._dst = None  # type: Optional[QuadraticProgram]
-        self._penalty = penalty  # type: Optional[float]
+        self.penalty = penalty  # type: Optional[float]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Convert a problem with equality constraints into an unconstrained problem.
@@ -59,8 +60,8 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         self._src = copy.deepcopy(problem)
         self._dst = QuadraticProgram(name=problem.name)
 
-        # If penalty is None, set the penalty coefficient by _auto_define_penalty()
-        if self._penalty is None:
+        # If no penalty was given, set the penalty coefficient by _auto_define_penalty()
+        if self._should_define_penalty:
             penalty = self._auto_define_penalty()
         else:
             penalty = self._penalty
@@ -119,6 +120,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             self._dst.minimize(offset, linear, quadratic)
         else:
             self._dst.maximize(offset, linear, quadratic)
+
+        # Update the penalty to the one just used
+        self._penalty = penalty  # type: float
 
         return self._dst
 
@@ -194,6 +198,8 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
         Args:
             penalty: The new penalty factor.
-                     If None is passed, penalty factor will be automatically calculated.
+                     If None is passed, a penalty factor will be automatically calculated
+                     on every conversion.
         """
         self._penalty = penalty
+        self._should_define_penalty = penalty is None  # type: bool

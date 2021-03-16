@@ -27,7 +27,7 @@ requirements = [
     "docplex==2.15.194; sys_platform == 'darwin'",
     "gurobipy>=9.0.0",
     "setuptools>=40.1.0",
-    "retworkx>=0.5.0",
+    "retworkx>=0.7.0",
     "dataclasses; python_version < '3.7'"
 ]
 
@@ -66,7 +66,7 @@ setuptools.setup(
         "Topic :: Scientific/Engineering"
     ),
     keywords='qiskit sdk quantum optimization',
-    packages=setuptools.find_namespace_packages(include=['qiskit_optimization.*']),
+    packages=setuptools.find_namespace_packages(include=['qiskit_optimization', 'qiskit_optimization.*']),
     install_requires=requirements,
     include_package_data=True,
     python_requires=">=3.6",
