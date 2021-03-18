@@ -65,7 +65,7 @@ setuptools.setup(
         "Topic :: Scientific/Engineering"
     ),
     keywords='qiskit sdk quantum optimization',
-    packages=setuptools.find_namespace_packages(include=['qiskit_optimization', 'qiskit_optimization.*']),
+    packages=setuptools.find_packages(include=['qiskit_optimization', 'qiskit_optimization.*']),
     install_requires=requirements,
     include_package_data=True,
     python_requires=">=3.6",
