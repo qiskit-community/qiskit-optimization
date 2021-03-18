@@ -145,7 +145,7 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), 12)
-        c012=[-1,0,2]
+        c012 = [-1, 0, 2]
         for i in range(3):
             j = c012[i]
             self.assertEqual(lin[i].sense, Constraint.Sense.EQ)
@@ -181,7 +181,7 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
 
     def test_interpret_d2(self):
         """Test interpret for depot=2"""
-        vehicle_routing = VehicleRouting(self.graph,depot=2)
+        vehicle_routing = VehicleRouting(self.graph, depot=2)
         self.assertEqual(vehicle_routing.interpret(self.result_d2),
                          [[[2, 0], [0, 1], [1, 2]], [[2, 3], [3, 2]]])
 
