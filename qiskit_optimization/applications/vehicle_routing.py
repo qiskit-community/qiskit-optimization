@@ -118,7 +118,7 @@ class VehicleRouting(GraphOptimizationApplication):
             route_list.append([])
             while i < len(edge_list):
                 if edge_list[i][0] == start:
-                    if edge_list[i][1] == 0:
+                    if edge_list[i][1] == self.depot:
                         # If a loop is completed
                         route_list[k].append(edge_list.pop(i))
                         break
