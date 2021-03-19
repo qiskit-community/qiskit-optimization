@@ -18,7 +18,6 @@ from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import DOcplexException, Model
-import gurobipy as gp
 
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
@@ -806,6 +805,11 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
     def test_gurobipy(self):
         """test from_gurobipy and to_gurobipy"""
+        try:
+            import gurobipy as gp
+        except ImportError as ex:
+            self.skipTest("gurobipy not installed: {}".format(str(ex)))
+            return
         q_p = QuadraticProgram('test')
         q_p.binary_var(name='x')
         q_p.integer_var(name='y', lowerbound=-2, upperbound=4)

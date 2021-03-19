@@ -18,7 +18,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
 from math import fsum, isclose
-from typing import Dict, List, Optional, Tuple, Union, cast
+from typing import Dict, List, Optional, Tuple, Union, cast, Any
 
 import numpy as np
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
@@ -35,8 +35,6 @@ from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
-
-import gurobipy as gp
 
 from numpy import ndarray, zeros
 from scipy.sparse import spmatrix
@@ -814,7 +812,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self, constant, linear, quadratic,
                                              QuadraticObjective.Sense.MAXIMIZE)
 
-    def from_gurobipy(self, model: gp.Model) -> None:
+    def from_gurobipy(self, model: Any) -> None:
         """Loads this quadratic program from a gurobipy model.
 
         Note that this supports only basic functions of gurobipy as follows:
@@ -826,8 +824,16 @@ class QuadraticProgram:
             model: The gurobipy model to be loaded.
 
         Raises:
+            MissingOptionalLibraryError: gurobipy not installed
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+        try:
+            import gurobipy as gp
+        except ImportError as ex:
+            raise MissingOptionalLibraryError(
+                libname='GUROBI',
+                name='GurobiOptimizer',
+                pip_install="pip install -i https://pypi.gurobi.com gurobipy") from ex
 
         # clear current problem
         self.clear()
@@ -1104,15 +1110,23 @@ class QuadraticProgram:
                 raise QiskitOptimizationError(
                     "Unsupported constraint sense: {}".format(constraint))
 
-    def to_gurobipy(self) -> gp.Model:
+    def to_gurobipy(self) -> Any:
         """Returns a gurobipy model corresponding to this quadratic program
 
         Returns:
             The gurobipy model corresponding to this quadratic program.
 
         Raises:
+            MissingOptionalLibraryError: gurobipy not installed
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
+        try:
+            import gurobipy as gp
+        except ImportError as ex:
+            raise MissingOptionalLibraryError(
+                libname='GUROBI',
+                name='GurobiOptimizer',
+                pip_install="pip install -i https://pypi.gurobi.com gurobipy") from ex
 
         # initialize model
         mdl = gp.Model(self.name)
