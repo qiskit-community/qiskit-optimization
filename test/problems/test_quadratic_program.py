@@ -828,7 +828,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         mod.addConstr(2 * x - z + 3 * y * z == 1, name='q0')
 
         # Here I am unsure what to do, let's come back to it later
-        #self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
+        # self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
 
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()

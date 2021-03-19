@@ -17,6 +17,8 @@ runs:
   using: "composite"
   steps: 
     - run : |
+        # install requirements here because of gurobipy
+        pip install -U -r requirements.txt
         pip install -e .[cplex,cvx]
         pip install -U -c constraints.txt -r requirements-dev.txt
       shell: bash
