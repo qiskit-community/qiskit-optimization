@@ -40,7 +40,13 @@ class GurobiOptimizer(OptimizationAlgorithm):
         >>> problem = QuadraticProgram()
         >>> # specify problem here, if gurobi is installed
         >>> optimizer = GurobiOptimizer() if GurobiOptimizer.is_gurobi_installed() else None
-        >>> if optimizer: result = optimizer.solve(problem)
+        >>> # Suppress gurobipy print info to stdout
+        >>> import sys
+        >>> class DevNull:
+        ...     def noop(*args, **kwargs): pass
+        ...     close = write = flush = writelines = noop
+        >>> sys.stdout = DevNull()
+        >>> result = optimizer.solve(problem)
     """
 
     def __init__(self, disp: bool = False) -> None:

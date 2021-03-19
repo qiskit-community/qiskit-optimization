@@ -38,21 +38,24 @@ class TestGurobiOptimizer(QiskitOptimizationTestCase):
     )
     def test_gurobi_optimizer(self, config):
         """ Gurobi Optimizer Test """
-        # unpack configuration
-        filename, x, fval = config
+        try:
+            # unpack configuration
+            filename, x, fval = config
 
-        # load optimization problem
-        problem = QuadraticProgram()
-        lp_file = self.get_resource_path(filename, 'algorithms/resources')
-        problem.read_from_lp_file(lp_file)
+            # load optimization problem
+            problem = QuadraticProgram()
+            lp_file = self.get_resource_path(filename, 'algorithms/resources')
+            problem.read_from_lp_file(lp_file)
 
-        # solve problem with gurobi
-        result = self.gurobi_optimizer.solve(problem)
+            # solve problem with gurobi
+            result = self.gurobi_optimizer.solve(problem)
 
-        # analyze results
-        self.assertAlmostEqual(result.fval, fval)
-        for i in range(problem.get_num_vars()):
-            self.assertAlmostEqual(result.x[i], x[i])
+            # analyze results
+            self.assertAlmostEqual(result.fval, fval)
+            for i in range(problem.get_num_vars()):
+                self.assertAlmostEqual(result.x[i], x[i])
+        except MissingOptionalLibraryError as ex:
+            self.skipTest(str(ex))
 
 
 if __name__ == '__main__':
