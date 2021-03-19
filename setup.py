@@ -26,6 +26,7 @@ requirements = [
     "docplex==2.15.194; sys_platform == 'darwin'",
     "setuptools>=40.1.0",
     "networkx>=2.2",
+    "matplotlib",
     "dataclasses; python_version < '3.7'"
 ]
 
