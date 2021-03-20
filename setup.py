@@ -22,11 +22,10 @@ requirements = [
     "qiskit-terra>=0.17.0",
     "scipy>=1.4",
     "numpy>=1.17",
-    "psutil>=5",
     "docplex; sys_platform != 'darwin'",
     "docplex==2.15.194; sys_platform == 'darwin'",
     "setuptools>=40.1.0",
-    "retworkx>=0.7.0",
+    "networkx>=2.2",
     "dataclasses; python_version < '3.7'"
 ]
 
