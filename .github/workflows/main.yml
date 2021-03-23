@@ -27,7 +27,7 @@ on:
 
 jobs:
   Checks:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.7]
@@ -65,9 +65,6 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
       - name: Run make html
-        env:
-          QISKIT_PARALLEL: False
-          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run:  |
           make html SPHINXOPTS=-W
           cd docs/_build/html
