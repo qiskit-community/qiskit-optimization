@@ -1,4 +1,3 @@
-include LICENSE.txt
 include requirements.txt
 recursive-include qiskit_optimization *.txt
 graft test
