@@ -175,14 +175,13 @@ jobs:
       - name: Run Qiskit Optimization Tutorials
         env:
           QISKIT_PARALLEL: False
+          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run: |
           make html SPHINXOPTS=-W
           cd docs/_build/html
           mkdir artifacts
           tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
         shell: bash
-        env:
-          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
       - name: Run upload tutorials
         uses: actions/upload-artifact@v2
         with:
