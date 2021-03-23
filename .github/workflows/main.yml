@@ -193,7 +193,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: tutorials${{ matrix.python-version }}
-          path: ./tutorials/_build/html/artifacts/tutorials.tar.gz
+          path: docs/_build/html/artifacts/tutorials.tar.gz
   Deprecation_Messages_and_Coverage:
     needs: [Checks, Lint, Optimization, Tutorials]
     runs-on: ubuntu-latest
