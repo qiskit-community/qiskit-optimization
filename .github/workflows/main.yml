@@ -65,6 +65,9 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
       - name: Run make html
+        env:
+          QISKIT_PARALLEL: False
+          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run:  |
           make html SPHINXOPTS=-W
           cd docs/_build/html
