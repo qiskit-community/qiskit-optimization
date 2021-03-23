@@ -176,12 +176,13 @@ jobs:
         env:
           QISKIT_PARALLEL: False
         run: |
-          cd tutorials
-          sphinx-build -b html . _build/html
-          cd _build/html
+          make html SPHINXOPTS=-W
+          cd docs/_build/html
           mkdir artifacts
           tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
         shell: bash
+        env:
+          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
       - name: Run upload tutorials
         uses: actions/upload-artifact@v2
         with:
