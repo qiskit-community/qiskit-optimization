@@ -12,14 +12,22 @@
 
 """An abstract class for graph optimization application classes."""
 
-from typing import Union, Optional, Dict, List
 from abc import abstractmethod
+from typing import Union, Optional, Dict, List
 
 import networkx as nx
 import numpy as np
+from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization.algorithms import OptimizationResult
 from .optimization_application import OptimizationApplication
+
+try:
+    import matplotlib as _
+
+    _HAS_MATPLOTLIB = True
+except ImportError:
+    _HAS_MATPLOTLIB = False
 
 
 class GraphOptimizationApplication(OptimizationApplication):
@@ -45,6 +53,12 @@ class GraphOptimizationApplication(OptimizationApplication):
             result: The calculated result for the problem
             pos: The positions of nodes
         """
+        if not _HAS_MATPLOTLIB:
+            raise MissingOptionalLibraryError(
+                libname="matplotlib",
+                name="GraphOptimizationApplication",
+                pip_install="pip install 'qiskit-optimization[matplotlib]'")
+
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
