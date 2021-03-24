@@ -52,6 +52,8 @@ class GraphOptimizationApplication(OptimizationApplication):
         Args:
             result: The calculated result for the problem
             pos: The positions of nodes
+        Raises:
+            MissingOptionalLibraryError: if matplotlib is not installed.
         """
         if not _HAS_MATPLOTLIB:
             raise MissingOptionalLibraryError(
