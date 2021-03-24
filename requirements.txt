@@ -6,5 +6,3 @@ docplex==2.15.194; sys_platform == 'darwin'
 setuptools>=40.1.0
 networkx>=2.2
 dataclasses; python_version < '3.7'
---extra-index-url https://pypi.gurobi.com
-gurobipy>=9.0.0
