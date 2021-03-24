@@ -18,16 +18,8 @@ import os
 long_description = """Qiskit Optimization is a open-source library of quantum computing optimizations.
  """
 
-requirements = [
-    "qiskit-terra>=0.17.0",
-    "scipy>=1.4",
-    "numpy>=1.17",
-    "docplex; sys_platform != 'darwin'",
-    "docplex==2.15.194; sys_platform == 'darwin'",
-    "setuptools>=40.1.0",
-    "networkx>=2.2",
-    "dataclasses; python_version < '3.7'"
-]
+with open('requirements.txt') as f:
+    REQUIREMENTS = f.read().splitlines()
 
 if not hasattr(setuptools, 'find_namespace_packages') or not inspect.ismethod(setuptools.find_namespace_packages):
     print("Your setuptools version:'{}' does not support PEP 420 (find_namespace_packages). "
@@ -65,7 +57,7 @@ setuptools.setup(
     ),
     keywords='qiskit sdk quantum optimization',
     packages=setuptools.find_packages(include=['qiskit_optimization', 'qiskit_optimization.*']),
-    install_requires=requirements,
+    install_requires=REQUIREMENTS,
     include_package_data=True,
     python_requires=">=3.6",
     extras_require={
