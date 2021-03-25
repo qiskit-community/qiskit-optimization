@@ -20,9 +20,6 @@ sudo apt-get install -y ./rclone.deb
 
 RCLONE_CONFIG_PATH=$(rclone config file | tail -1)
 
-# Build the documentation.
-tox -edocs -- -D content_prefix=documentation -j auto
-
 echo "show current dir: "
 pwd
 
