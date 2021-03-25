@@ -79,22 +79,16 @@ nbsphinx_execute = os.getenv('QISKIT_DOCS_BUILD_TUTORIALS', 'never')
 nbsphinx_widgets_path = ''
 exclude_patterns = ['_build', '**.ipynb_checkpoints']
 nbsphinx_thumbnails = {
-    'tutorials/1_quadratic_program':
+    'tutorials/01_quadratic_program':
     '_static/1_quadratic_program.png',
-    'tutorials/2_converters_for_quadratic_programs':
-    '_static//2_converters.png',
-    'tutorials/3_minimum_eigen_optimizer':
+    'tutorials/02_converters_for_quadratic_programs':
+    '_static/2_converters.png',
+    'tutorials/03_minimum_eigen_optimizer':
     '_static/3_min_eig_opt.png',
-    'tutorials/4_grover_optimizer':
+    'tutorials/04_grover_optimizer':
     '_static/4_grover.png',
-    'tutorials/5_admm_optimizer':
+    'tutorials/05_admm_optimizer':
     '_static/5_ADMM.png',
-    'tutorials/6_examples_max_cut_and_tsp':
-    '_static/6_examples_max_cut_and_tsp.png',
-    'tutorials/7_examples_vehicle_routing':
-    '_static/7_examples_vehicle_routing.png',
-    'tutorials/8_cvar_optimization':
-    '_static/8_cvar_optimization.png',
 }
 
 nbsphinx_prolog = """
@@ -196,4 +190,3 @@ html_theme_options = {
     'includehidden': True,
     'titles_only': False,
 }
-autoclass_content = 'both'
