@@ -68,7 +68,8 @@ extensions = [
     'sphinx_autodoc_typehints',
     'reno.sphinxext',
     'sphinx.ext.doctest',
-    'nbsphinx'
+    'nbsphinx',
+    'sphinxcontrib.spelling'
 ]
 html_static_path = ['_static']
 templates_path = ['theme/']
@@ -107,6 +108,8 @@ nbsphinx_prolog = """
     __ https://github.com/Qiskit/qiskit-optimization/blob/master/docs/{{ docname }}
 
 """
+
+spelling_word_list_filename=['spelling_wordlist.txt', '../.pylintdict']
 
 # -----------------------------------------------------------------------------
 # Autosummary
