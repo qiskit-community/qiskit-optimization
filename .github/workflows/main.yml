@@ -145,9 +145,9 @@ jobs:
         with:
           name: optimization${{ matrix.python-version }}
           path: ./o${{ matrix.python-version }}/*
-      - name: Optimization Unit Tests without cplex/cvxpy/gurobipy under Python ${{ matrix.python-version }}
+      - name: Optimization Unit Tests without cplex/cvxpy/matplotlib/gurobipy under Python ${{ matrix.python-version }}
         run: |
-          pip uninstall -y cplex cvxpy gurobipy
+          pip uninstall -y cplex cvxpy matplotlib gurobipy
           if [ "${{ github.event_name }}" == "schedule" ]; then
               export QISKIT_TESTS="run_slow"
           fi

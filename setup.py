@@ -63,6 +63,7 @@ setuptools.setup(
     extras_require={
         'cplex': ["cplex; python_version < '3.9'"],
         'cvx': ['cvxpy'],
+        'matplotlib': ['matplotlib'],
     },
     zip_safe=False
 )

@@ -81,8 +81,8 @@ from .slsqp_optimizer import SlsqpOptimizer, SlsqpOptimizationResult
 from .warm_start_qaoa_optimizer import (BaseAggregator, MeanAggregator, WarmStartQAOAFactory,
                                         WarmStartQAOAOptimizer)
 
-
-__all__ = ["ADMMOptimizer", "OptimizationAlgorithm", "OptimizationResult", "BaseAggregator",
+__all__ = ["ADMMOptimizer", "OptimizationAlgorithm", "OptimizationResult",
+           "OptimizationResultStatus", "BaseAggregator",
            "CplexOptimizer", "CobylaOptimizer", "GoemansWilliamsonOptimizer",
            "GoemansWilliamsonOptimizationResult", "GroverOptimizer", "GroverOptimizationResult",
            "GurobiOptimizer", "MeanAggregator",

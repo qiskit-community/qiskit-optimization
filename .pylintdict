@@ -71,6 +71,7 @@ lin
 linearconstraint
 lowerbound
 lp
+matplotlib
 maxcut
 maxfun
 maxiter
