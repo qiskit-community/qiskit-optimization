@@ -16,7 +16,6 @@ import itertools
 import random
 from typing import List, Dict, Union, Optional
 
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
@@ -141,6 +140,8 @@ class VehicleRouting(GraphOptimizationApplication):
             result: The calculated result for the problem
             pos: The positions of nodes
         """
+        import matplotlib.pyplot as plt
+
         route_list = self.interpret(result)
         nx.draw(self._graph, with_labels=True, pos=pos)
         nx.draw_networkx_edges(
