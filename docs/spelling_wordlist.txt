@@ -32,6 +32,7 @@ MinimumEigenOptimizer
 MultiStartOptimizer
 Neven
 NumberPartition
+Optimality
 OptimizationAlgorithm
 OptimizationApplication
 OptimizationResult
@@ -40,6 +41,7 @@ QiskitOptimizationError
 QuadraticConstraint
 QuadraticExpression
 QuadraticObjective
+QuadraticProgram
 QuadraticProgramConverter
 QuadraticProgramElement
 QuadraticProgramToQubo
@@ -60,8 +62,10 @@ WarmStartQAOAOptimizer
 Wecker
 Zemlin
 adaptively
+arXiv
 arxiv
 behaviour
+combinatorial
 doi
 dok
 entangler
@@ -78,3 +82,5 @@ subproblem
 summands
 traceback
 tradeoff
+undirected
+wavefunction
