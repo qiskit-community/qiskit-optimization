@@ -68,8 +68,7 @@ extensions = [
     'sphinx_autodoc_typehints',
     'reno.sphinxext',
     'sphinx.ext.doctest',
-    'nbsphinx',
-    'sphinxcontrib.spelling'
+    'nbsphinx'
 ]
 html_static_path = ['_static']
 templates_path = ['theme/']
