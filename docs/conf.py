@@ -92,6 +92,8 @@ nbsphinx_thumbnails = {
     '_static/5_ADMM.png',
 }
 
+spelling_word_list_filename = ['spelling_wordlist.txt', '../.pylintdict']
+
 # -----------------------------------------------------------------------------
 # Autosummary
 # -----------------------------------------------------------------------------

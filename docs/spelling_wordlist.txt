@@ -61,13 +61,13 @@ Wecker
 Zemlin
 adaptively
 arxiv
+behaviour
 doi
 dok
 entangler
 exponentiated
 fmin
 multiset
-nbsphinx
 optimality
 param
 rtype
