@@ -5,4 +5,5 @@ docplex; sys_platform != 'darwin'
 docplex==2.15.194; sys_platform == 'darwin'
 setuptools>=40.1.0
 networkx>=2.2
+decorator<5.0
 dataclasses; python_version < '3.7'
