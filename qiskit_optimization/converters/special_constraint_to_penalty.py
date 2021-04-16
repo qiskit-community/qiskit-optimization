@@ -13,6 +13,7 @@
 """Converter to convert a problem with equality constraints to unconstrained with penalty terms."""
 
 import copy
+import itertools
 import logging
 from math import fsum
 from typing import Optional, cast, Union, Tuple, List
@@ -21,19 +22,17 @@ import numpy as np
 
 from .quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
-from ..problems.constraint import Constraint
+from ..problems.constraint import Constraint, ConstraintSense
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
-from ..problems.special_constraint import SpecialConstraint
 from ..problems.variable import Variable
 
 logger = logging.getLogger(__name__)
 
 
 class SpecialConstraintToPenalty(QuadraticProgramConverter):
-    """Convert a problem with only equality constraints to unconstrained with penalty terms."""
+    """Convert a problem of special constraints to unconstrained with penalty terms."""
 
-    #SPECIAL_CONSTRAINTS = (("s1",([1, 1], 'LE', 1),(""))
     def __init__(self, penalty: Optional[float] = None) -> None:
         """
         Args:
@@ -45,25 +44,17 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
         self._dst = None  # type: Optional[QuadraticProgram]
         self.penalty = penalty  # type: Optional[float]
 
-        self._qb = QuadraticProgram()
-        self._qb.binary_var()
-        self._qb.binary_var()
-        self._qb.binary_var()
-        self._special_constraints = (SpecialConstraint(self._qb, [1,1,0], '<=', 1, 1,[0,0,0], [[0, 1, 0],[0, 0, 0],[0, 0, 0]]), 
-                                    SpecialConstraint(self._qb, [1,1,0], '>=', 1, 1,[-1,-1,0], [[0, 1, 0],[0, 0, 0],[0, 0, 0]]))
-
-
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem with equality constraints into an unconstrained problem.
+        """Convert a problem of special constraints into an unconstrained problem.
 
         Args:
             problem: The problem to be solved, that does not contain inequality constraints.
 
         Returns:
-            The converted problem, that is an unconstrained problem.
+            The converted problem
 
         Raises:
-            QiskitOptimizationError: If an inequality constraint exists.
+            QiskitOptimizationError: 
         """
 
         # create empty QuadraticProgram model
@@ -95,33 +86,37 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
 
         # convert linear constraints into penalty terms
         for constraint in self._src.linear_constraints:
-            for special_constraint in self._special_constraints:
-                if special_constraint.is_special_constraint(constraint):
-                    print("***Special!***")
-                    print (constraint._linear.to_dict())
-                    # add constant penalty
-                    offset += sense * penalty * special_constraint.penalty_constant
 
-                    # add linear penalty
-                    row = special_constraint.penalty_linear_expression.to_dict()                    
-                    for j, coef in row.items():
-                        linear[j] = linear.get(j, 0.0) + sense * penalty * coef
+            # [TODO] put special contraint check function here
+            if self._is_special_constraint(constraint) == False:
+                self._dst.linear_constraints.append(constraint)
+                continue
+            # 
 
-                    # add quadratic penalty
-                    row = special_constraint.penalty_quadratic_expression.to_dict()
-                    for j, coef in row.items():
-                        quadratic[j] = quadratic.get(j, 0.0) + sense * penalty * coef
+            conv_matrix = self._conversion_matrix(constraint)
+            rowlist = list(constraint.linear.to_dict().items())
 
-                    break
-            else:
-                print("+++ Not Special +++")
-                print(constraint._linear.to_dict())
-                self._dst.linear_constraint(constraint._linear.to_dict(), constraint._sense, constraint._rhs, constraint._name)
+            # constant part
+            if conv_matrix[0][0] != 0:
+              offset += sense*penalty*conv_matrix[0][0]
 
-        # convert quadratic constraints into penalty terms
-        for constraint in self._src.quadratic_constraints:
-            # T.B.I.
-            self._dst.quadratic_constraint(constraint._linear.to_dict(), constraint._quadratic.to_dict(), constraint._sense, constraint._rhs, constraint._name)
+            # linear parts of penalty
+            for j in range(len(rowlist)):
+                # if j already exists in the linear terms dic, add a penalty term
+                # into existing value else create new key and value in the linear_term dict
+                if conv_matrix[0][j+1] != 0:
+                  linear[rowlist[j][0]] = linear.get(rowlist[j][0], 0.0) + sense*penalty*conv_matrix[0][j+1]
+
+            # quadratic parts of penalty
+            for j in range(len(rowlist)):
+                for k in range(j, len(rowlist)):
+                    # if j and k already exist in the quadratic terms dict,
+                    # add a penalty term into existing value
+                    # else create new key and value in the quadratic term dict
+
+                    if conv_matrix[j+1][k+1] != 0:
+                      tup = cast(Union[Tuple[int, int], Tuple[str, str]], (rowlist[j][0], rowlist[k][0]))
+                      quadratic[tup] = quadratic.get(tup, 0.0) + sense*penalty * conv_matrix[j+1][k+1]
 
         if self._src.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             self._dst.minimize(offset, linear, quadratic)
@@ -132,6 +127,73 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
         self._penalty = penalty  # type: float
 
         return self._dst
+
+    def _conversion_matrix(self, constraint) -> np.ndarray:
+        """ Construct conversion matrix for special constraint.
+
+        Returns:
+            Return conversion matrix which is used to construct
+            penalty term in main function.
+
+        """
+        vars_dict = constraint.linear.to_dict(use_name=True)
+        vars = list(vars_dict.items())
+        rhs = constraint.rhs
+        sense = constraint.sense
+
+        num_vars = len(vars)
+        combinations = list(itertools.combinations(np.arange(num_vars), 2))
+
+        # conversion matrix
+        conv_matrix = np.zeros((num_vars+1,num_vars+1), dtype=int)
+
+        for combination in combinations:
+            index1 = combination[0]+1
+            index2 = combination[1]+1
+
+            if rhs == 1:
+                conv_matrix[0][0] = 1 if sense != ConstraintSense.LE else 0
+                conv_matrix[0][index1] = -1 if sense != ConstraintSense.LE else 0
+                conv_matrix[0][index2] = -1 if sense != ConstraintSense.LE else 0
+                conv_matrix[index1][index2] = 2 if sense == ConstraintSense.EQ else 1
+            elif rhs == 0:
+                conv_matrix[0][0] = 0
+                if sense == ConstraintSense.EQ:
+                    conv_matrix[0][index1] = 1
+                    conv_matrix[0][index2] = 1
+                elif vars[index1-1][1] > 0.0:
+                    conv_matrix[0][index1] = 1
+                elif vars[index2-1][1] > 0.0:
+                    conv_matrix[0][index2] = 1
+                conv_matrix[index1][index2] = -2 if sense == ConstraintSense.EQ else -1
+
+        return conv_matrix
+
+    def _is_special_constraint(self, constraint) -> bool:
+        """Determine if constraint is special or not.
+
+        Returns:
+          True: when constraint is special
+          False: when constraint is not special
+        """
+        vars = constraint.linear.to_dict()
+        rhs = constraint.rhs
+
+        cofflist = np.array(list(vars.values()))
+
+        # number of variables in special condition must be over 2 
+        if len(vars) == 1:
+          return False
+
+        if rhs == 1:
+          return np.all(cofflist == 1.0)
+
+
+        if rhs == 0:
+          return cofflist.min() == -1.0 and cofflist.max() == 1.0
+
+
+        return False
 
     def _auto_define_penalty(self) -> float:
         """Automatically define the penalty coefficient.
