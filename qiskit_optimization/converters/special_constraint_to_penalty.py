@@ -173,26 +173,35 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
         """Determine if constraint is special or not.
 
         Returns:
-          True: when constraint is special
-          False: when constraint is not special
+            True: when constraint is special
+            False: when constraint is not special
         """
-        vars = constraint.linear.to_dict()
+        params = constraint.linear.to_dict()
         rhs = constraint.rhs
+        sense = constraint.sense
+        coeff_array = np.array(list(params.values()))
 
-        cofflist = np.array(list(vars.values()))
+        # Binary parameter?
+        if not all([self._src.variables[i].vartype == Variable.Type.BINARY for i in params.keys()]):
+            return False
 
-        # number of variables in special condition must be over 2 
-        if len(vars) == 1:
-          return False
-
-        if rhs == 1:
-          return np.all(cofflist == 1.0)
-
-
-        if rhs == 0:
-          return cofflist.min() == -1.0 and cofflist.max() == 1.0
-
-
+        if len(params) == 2:
+            if rhs == 1:
+                if all( i == 1 for i in params.values() ):
+                    #x+y<=1
+                    #x+y>=1
+                    #x+y>=1
+                    return True
+            if rhs == 0:
+                # x-y<=0
+                # x-y=0
+                return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
+        elif len(params) == 3:
+            if rhs == 1:
+                if all( i == 1 for i in params.values() ):
+                    if sense == Constraint.Sense.LE:
+                        # x+y+z<=1
+                        return True
         return False
 
     def _auto_define_penalty(self) -> float:
