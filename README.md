@@ -83,9 +83,9 @@ problem.maximize(linear=linear, quadratic=quadratic)
 problem.linear_constraint([1, 0, 0, 0], '==', 1)
 
 # Run quantum algorithm QAOA on qasm simulator
-spsa = SPSA(max_trials=250)
+spsa = SPSA(maxiter=250)
 backend = BasicAer.get_backend('qasm_simulator')
-qaoa = QAOA(optimizer=spsa, p=5, quantum_instance=backend)
+qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=backend)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result)  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
