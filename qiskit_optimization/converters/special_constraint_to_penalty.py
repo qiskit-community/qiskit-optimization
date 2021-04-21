@@ -193,9 +193,10 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
                     #x+y>=1
                     return True
             if rhs == 0:
-                # x-y<=0
-                # x-y=0
-                return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
+                if sense == Constraint.Sense.LE or sense == Constraint.Sense.EQ:
+                    # x-y<=0
+                    # x-y=0
+                    return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
         elif len(params) == 3:
             if rhs == 1:
                 if all( i == 1 for i in params.values() ):
