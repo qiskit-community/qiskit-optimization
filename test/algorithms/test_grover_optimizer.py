@@ -177,7 +177,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         model.minimize(-x_0+2*x_1-3*x_2-2*x_0*x_2-1*x_1*x_2)
         op = QuadraticProgram()
         op.from_docplex(model)
-        success = OptimizationResultStatus.SUCCESS
 
         # Get the optimum key and value.
         n_iter = 10
