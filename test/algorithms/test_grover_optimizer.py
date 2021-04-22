@@ -22,8 +22,7 @@ from qiskit import Aer
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.algorithms import (GroverOptimizer,
-                                            MinimumEigenOptimizer,
-                                            OptimizationResultStatus)
+                                            MinimumEigenOptimizer)
 from qiskit_optimization.converters import (InequalityToEquality,
                                             IntegerToBinary,
                                             LinearEqualityToPenalty,
