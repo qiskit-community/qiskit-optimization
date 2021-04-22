@@ -508,7 +508,7 @@ class OptimizationAlgorithm(ABC):
             eigenvector = eigenvector.to_matrix()
 
         def generate_solution(bitstr, qubo, probability):
-            x = np.fromiter(list(bitstr), dtype=int)
+            x = np.fromiter(list(bitstr[::-1]), dtype=int)
             fval = qubo.objective.evaluate(x)
             return SolutionSample(x=x, fval=fval, probability=probability,
                                   status=OptimizationResultStatus.SUCCESS)
