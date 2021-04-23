@@ -271,6 +271,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         result = vqe.solve(qp)
         self.assertEqual(result.fval, -2)
         self.assertListEqual(result.x.tolist(), [0, 1])
+        result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        self.assertListEqual(result.raw_samples[0].x.tolist(), [0, 1])
 
 
 if __name__ == '__main__':
