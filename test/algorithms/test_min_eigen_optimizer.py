@@ -270,9 +270,9 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         vqe = MinimumEigenOptimizer(vqe_mes)
         result = vqe.solve(op)
         self.assertEqual(result.fval, -2)
-        self.assertListEqual(result.x.tolist(), [0, 1])
+        np.testing.assert_array_almost_equal(result.x, [0, 1])
         result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
-        self.assertListEqual(result.raw_samples[0].x.tolist(), [0, 1])
+        np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x[0:2])
 
 
 if __name__ == '__main__':
