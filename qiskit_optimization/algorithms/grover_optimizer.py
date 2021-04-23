@@ -237,12 +237,13 @@ class GroverOptimizer(OptimizationAlgorithm):
                     threshold = optimum_value
 
                     # trace out work qubits and store samples
+                    # pylint: disable=invalid-unary-operand-type
                     if self._quantum_instance.is_statevector:  # type: ignore
                         indices = list(range(n_key, len(outcome)))
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
-                        self._circuit_results = {i[-n_key:]: v for i,  # pylint: disable=E1130
+                        self._circuit_results = {i[-n_key:]: v for i,  # type: ignore
                                                  v in self._circuit_results.items()}
 
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
