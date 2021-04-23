@@ -161,8 +161,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         problem_init = deepcopy(problem_)
 
         # convert to minimization problem
-        sense = problem_.objective.sense
-        if sense == problem_.objective.Sense.MAXIMIZE:
+        if problem_.objective.sense == problem_.objective.Sense.MAXIMIZE:
             problem_.objective.sense = problem_.objective.Sense.MINIMIZE
             problem_.objective.constant = -problem_.objective.constant
             for i, val in problem_.objective.linear.to_dict().items():
@@ -176,7 +175,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         optimum_key = math.inf
         optimum_value = math.inf
         threshold = 0
-        n_key = len(problem_.variables)
+        n_key = self._num_key_qubits
         n_value = self._num_value_qubits
 
         # Variables for tracking the solutions encountered.
@@ -236,6 +235,20 @@ class GroverOptimizer(OptimizationAlgorithm):
                     logger.info('Current Optimum Value: %s', optimum_value)
                     improvement_found = True
                     threshold = optimum_value
+
+                    # trace out work qubits and store samples
+                    if self._quantum_instance.is_statevector:  # type: ignore
+                        indices = list(range(n_key, len(outcome)))
+                        rho = partial_trace(self._circuit_results, indices)
+                        self._circuit_results = np.diag(rho.data) ** 0.5
+                    else:
+                        self._circuit_results = {i[-n_key:]: v for i,  # pylint: disable=E1130
+                                                 v in self._circuit_results.items()}
+
+                    raw_samples = self._eigenvector_to_solutions(self._circuit_results,
+                                                                 problem_init)
+                    raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
+                    samples = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
@@ -250,19 +263,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                             len(keys_measured) == num_solutions or rotations >= max_rotations:
                         improvement_found = True
                         optimum_found = True
-
-                # trace out work qubits
-                if self._quantum_instance.is_statevector:  # type: ignore
-                    indices = list(range(n_key, len(outcome)))
-                    rho = partial_trace(self._circuit_results, indices)
-                    self._circuit_results = np.diag(rho.data) ** 0.5
-                else:
-                    self._circuit_results = {i[0:n_key]: v for i,
-                                             v in self._circuit_results.items()}
-
-                raw_samples = self._eigenvector_to_solutions(self._circuit_results, problem_init)
-                raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
-                samples = self._interpret_samples(problem, raw_samples, self._converters)
 
                 # Track the operation count.
                 operations = circuit.count_ops()
@@ -313,7 +313,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {b[::-1]: (v / shots) ** 0.5 for (b, v) in state.items()}
+            self._circuit_results = {b: np.sqrt(v / shots) for (b, v) in state.items()}
         return hist
 
     @staticmethod
