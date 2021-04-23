@@ -26,7 +26,6 @@ from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgor
 from .slsqp_optimizer import SlsqpOptimizer
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
-from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import VarType, Variable
 
@@ -290,7 +289,9 @@ class ADMMOptimizer(OptimizationAlgorithm):
         problem = int2bin.convert(problem)
 
         # we deal with minimization in the optimizer, so turn the problem to minimization
-        problem, sense = self._turn_to_minimization(problem)
+        from ..converters.maximize_to_minimize import MaximizeToMinimize
+        max2min = MaximizeToMinimize()
+        problem = max2min.convert(problem)
 
         # create our computation state.
         self._state = ADMMState(problem, self._params.rho_initial)
@@ -373,40 +374,16 @@ class ADMMOptimizer(OptimizationAlgorithm):
         binary_vars, continuous_vars, objective_value = self._get_best_merit_solution()
         solution = self._revert_solution_indexes(binary_vars, continuous_vars)
 
-        # flip the objective sign again if required
-        objective_value = objective_value * sense
-
         self._log.debug("solution=%s, objective=%s at iteration=%s",
                         solution, objective_value, iteration)
 
-        # convert back integer to binary
+        # convert back integer to binary and eventually minimization to maximization
         # `state` is our internal state of computations.
         return cast(ADMMOptimizationResult,
-                    self._interpret(x=solution, converters=int2bin, problem=original_problem,
+                    self._interpret(x=solution, converters=[int2bin, max2min],
+                                    problem=original_problem,
                                     result_class=ADMMOptimizationResult,
                                     state=self._state))
-
-    @staticmethod
-    def _turn_to_minimization(problem: QuadraticProgram) -> Tuple[QuadraticProgram, float]:
-        """
-        Turns the problem to `ObjSense.MINIMIZE` by flipping the sign of the objective function
-        if initially it is `ObjSense.MAXIMIZE`. Otherwise returns the original problem.
-
-        Args:
-            problem: a problem to turn to minimization.
-
-        Returns:
-            A copy of the problem if sign flip is required, otherwise the original problem and
-            the original sense of the problem in the numerical representation.
-        """
-        sense = problem.objective.sense.value
-        if problem.objective.sense == QuadraticObjective.Sense.MAXIMIZE:
-            problem = copy.deepcopy(problem)
-            problem.objective.sense = QuadraticObjective.Sense.MINIMIZE
-            problem.objective.constant = (-1) * problem.objective.constant
-            problem.objective.linear = (-1) * problem.objective.linear.coefficients
-            problem.objective.quadratic = (-1) * problem.objective.quadratic.coefficients
-        return problem, sense
 
     @staticmethod
     def _get_variable_indices(op: QuadraticProgram, var_type: VarType) -> List[int]:

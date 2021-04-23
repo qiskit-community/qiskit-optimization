@@ -31,6 +31,7 @@ class SlsqpOptimizationResult(OptimizationResult):
     """
     SLSQP optimization result, defines additional properties that may be returned by the optimizer.
     """
+
     def __init__(self, x: Union[List[float], np.ndarray], fval: float, variables: List[Variable],
                  status: OptimizationResultStatus, fx: Optional[np.ndarray] = None,
                  its: Optional[int] = None, imode: Optional[int] = None,
@@ -168,13 +169,18 @@ class SlsqpOptimizer(MultiStartOptimizer):
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
         self._verify_compatibility(problem)
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        from ..converters.maximize_to_minimize import MaximizeToMinimize
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = max2min.convert(problem)
 
         # construct quadratic objective function
         def _objective(x):
-            return problem.objective.sense.value * problem.objective.evaluate(x)
+            return problem.objective.evaluate(x)
 
         def _objective_gradient(x):
-            return problem.objective.sense.value * problem.objective.evaluate_gradient(x)
+            return problem.objective.evaluate_gradient(x)
 
         # initialize constraints and bounds
         slsqp_bounds = []
@@ -217,6 +223,9 @@ class SlsqpOptimizer(MultiStartOptimizer):
 
         # actual optimization goes here
         result = self.multi_start_solve(_minimize, problem)
+        # eventually convert back minimization to maximization
+        result = self._interpret(x=result.x, problem=original_problem,
+                                 converters=max2min, raw_results=result.raw_results)
 
         if self._full_output:
             return SlsqpOptimizationResult(x=result.x, fval=result.fval, variables=result.variables,

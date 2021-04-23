@@ -163,7 +163,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         """
         self._verify_compatibility(problem)
 
-        # convert problem to QUBO
+        # convert problem to QUBO minimization problem
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
@@ -191,7 +191,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
                     eigen_result.eigenstate, converted_problem)
-                raw_samples.sort(key=lambda x: converted_problem.objective.sense.value * x.fval)
+                raw_samples.sort(key=lambda x: x.fval)
                 x = raw_samples[0].x
                 fval = raw_samples[0].fval
 
@@ -209,7 +209,8 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                                                   status=OptimizationResultStatus.FAILURE,
                                                   samples=None, raw_samples=None,
                                                   min_eigen_solver_result=eigen_result)
-        # translate result back to integers
+
+        # translate result back to integers and eventually maximization
         samples = self._interpret_samples(original_problem, raw_samples, self._converters)
         return cast(MinimumEigenOptimizationResult,
                     self._interpret(x=x, converters=self._converters, problem=original_problem,

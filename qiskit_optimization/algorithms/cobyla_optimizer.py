@@ -110,9 +110,15 @@ class CobylaOptimizer(MultiStartOptimizer):
         """
         self._verify_compatibility(problem)
 
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        from ..converters.maximize_to_minimize import MaximizeToMinimize
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = max2min.convert(problem)
+
         # construct quadratic objective function
         def objective(x):
-            return problem.objective.sense.value * problem.objective.evaluate(x)
+            return problem.objective.evaluate(x)
 
         # initialize constraints list
         constraints = []
@@ -156,4 +162,7 @@ class CobylaOptimizer(MultiStartOptimizer):
                             catol=self._catol)
             return x, None
 
-        return self.multi_start_solve(_minimize, problem)
+        result = self.multi_start_solve(_minimize, problem)
+        # eventually convert back minimization to maximization
+        return self._interpret(x=result.x, problem=original_problem,
+                               converters=max2min, raw_results=result.raw_results)

@@ -66,9 +66,12 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         Returns:
             The result of the multi start algorithm applied to the problem.
         """
-        fval_sol = INFINITY
-        x_sol: Optional[np.ndarray] = None
-        rest_sol: Optional[Tuple] = None
+
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        from ..converters.maximize_to_minimize import MaximizeToMinimize
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = max2min.convert(problem)
 
         # Implementation of multi-start optimizer
         for trial in range(self._trials):
@@ -83,18 +86,9 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             x, rest = minimize(x_0)
             logger.debug("minimize done in: %s seconds", str(time.time() - t_0))
 
-            # we minimize, to get actual objective value we must multiply by the sense value
-            fval = problem.objective.evaluate(x) * problem.objective.sense.value
-            # we minimize the objective
-            if fval < fval_sol:
-                # here we get back to the original sense of the problem
-                fval_sol = fval * problem.objective.sense.value
-                x_sol = x
-                rest_sol = rest
-
-        return OptimizationResult(x=x_sol, fval=fval_sol, variables=problem.variables,
-                                  status=self._get_feasibility_status(problem, x_sol),
-                                  raw_results=rest_sol)
+        # eventually convert back minimization to maximization
+        return self._interpret(x, problem=original_problem, converters=max2min,
+                               raw_results=rest)
 
     @property
     def trials(self) -> int:
