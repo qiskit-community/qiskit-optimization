@@ -210,7 +210,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                 # Determine the number of rotations.
                 loops_with_no_improvement += 1
                 rotation_count = int(np.ceil(algorithm_globals.random.uniform(0, m - 1)))
-                #rotation_count = 7
                 rotations += rotation_count
                 # Apply Grover's Algorithm to find values below the threshold.
                 # TODO: Utilize Grover's incremental feature - requires changes to Grover.
@@ -220,6 +219,8 @@ class GroverOptimizer(OptimizationAlgorithm):
                 grover = Grover()
                 circuit = grover.construct_circuit(problem=amp_problem,
                                                    power=rotation_count, measurement=measurement)
+
+                # Get the next outcome.
                 outcome = self._measure(circuit)
                 k = int(outcome[0:n_key], 2)
                 v = outcome[n_key:n_key + n_value]
