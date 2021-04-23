@@ -243,9 +243,10 @@ class GroverOptimizer(OptimizationAlgorithm):
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
                         self._circuit_results = {i[0:n_key]: v for i,
-                                                v in self._circuit_results.items()}
+                                                 v in self._circuit_results.items()}
 
-                    raw_samples = self._eigenvector_to_solutions(self._circuit_results, problem_init)
+                    raw_samples = self._eigenvector_to_solutions(self._circuit_results,
+                                                                 problem_init)
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
