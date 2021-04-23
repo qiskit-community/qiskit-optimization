@@ -272,7 +272,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.fval, -2)
         np.testing.assert_array_almost_equal(result.x, [0, 1])
         result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
-        np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x[0:2])
+        np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x)
 
 
 if __name__ == '__main__':
