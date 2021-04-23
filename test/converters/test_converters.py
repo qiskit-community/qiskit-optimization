@@ -24,7 +24,7 @@ from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
 from qiskit_optimization.algorithms import MinimumEigenOptimizer, CplexOptimizer, ADMMOptimizer
 from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
 from qiskit_optimization.converters import (InequalityToEquality, IntegerToBinary,
-                                            LinearEqualityToPenalty)
+                                            LinearEqualityToPenalty, MaximizeToMinimize)
 from qiskit_optimization.problems import Constraint, Variable
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,8 @@ class TestConverters(QiskitOptimizationTestCase):
         conv = IntegerToBinary()
         op = conv.convert(op)
         conv = LinearEqualityToPenalty()
+        op = conv.convert(op)
+        conv = MaximizeToMinimize()
         op = conv.convert(op)
         _, shift = op.to_ising()
         self.assertEqual(shift, 0.0)
@@ -320,6 +322,21 @@ class TestConverters(QiskitOptimizationTestCase):
 
         new_x = conv.interpret([0, 1, -1])
         np.testing.assert_array_almost_equal(new_x, [0, 1, -1])
+
+    def test_maximize_to_minize(self):
+        """ Test maximization to minimization conversion """
+        op = QuadraticProgram()
+        for i in range(2):
+            op.binary_var(name='x{}'.format(i))
+        op.integer_var(name='x{}'.format(2), lowerbound=-3, upperbound=3)
+        op.maximize(constant=3, linear={'x0': 1}, quadratic={('x1', 'x2'): 2})
+        conv = MaximizeToMinimize()
+        op_min = conv.convert(op)
+        self.assertEqual(op_min.objective.sense, op.objective.Sense.MINIMIZE)
+        x = [0, 1, 2]
+        fval_min = op_min.objective.evaluate(conv.interpret(x))
+        self.assertAlmostEqual(fval_min, -7)
+        self.assertAlmostEqual(op.objective.evaluate(x), -fval_min)
 
     def test_integer_to_binary(self):
         """ Test integer to binary """
