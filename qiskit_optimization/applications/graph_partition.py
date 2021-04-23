@@ -84,4 +84,4 @@ class GraphPartition(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ['r' if value else 'b' for value in x]
+        return ['r' if x[node] else 'b' for node in self._graph.nodes]

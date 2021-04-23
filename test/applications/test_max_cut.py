@@ -15,6 +15,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import networkx as nx
 
+from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import (OptimizationResult,
                                             OptimizationResultStatus)
@@ -65,3 +66,14 @@ class TestMaxcut(QiskitOptimizationTestCase):
         """Test _node_color"""
         maxcut = Maxcut(self.graph)
         self.assertEqual(maxcut._node_color(self.result), ['b', 'b', 'r', 'r'])
+
+    def test_draw(self):
+        """Test whether draw raises an error if matplotlib is not installed"""
+        maxcut = Maxcut(self.graph)
+        try:
+            import matplotlib as _
+            maxcut.draw()
+
+        except ImportError:
+            with self.assertRaises(MissingOptionalLibraryError):
+                maxcut.draw()

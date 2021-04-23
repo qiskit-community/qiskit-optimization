@@ -12,14 +12,22 @@
 
 """An abstract class for graph optimization application classes."""
 
-from typing import Union, Optional, Dict, List
 from abc import abstractmethod
+from typing import Union, Optional, Dict, List
 
 import networkx as nx
 import numpy as np
+from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization.algorithms import OptimizationResult
 from .optimization_application import OptimizationApplication
+
+try:
+    import matplotlib as _
+
+    _HAS_MATPLOTLIB = True
+except ImportError:
+    _HAS_MATPLOTLIB = False
 
 
 class GraphOptimizationApplication(OptimizationApplication):
@@ -44,7 +52,15 @@ class GraphOptimizationApplication(OptimizationApplication):
         Args:
             result: The calculated result for the problem
             pos: The positions of nodes
+        Raises:
+            MissingOptionalLibraryError: if matplotlib is not installed.
         """
+        if not _HAS_MATPLOTLIB:
+            raise MissingOptionalLibraryError(
+                libname="matplotlib",
+                name="GraphOptimizationApplication",
+                pip_install="pip install 'qiskit-optimization[matplotlib]'")
+
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:
@@ -84,46 +100,3 @@ class GraphOptimizationApplication(OptimizationApplication):
         """
         graph = nx.gnm_random_graph(num_nodes, num_edges, seed)
         return graph
-
-    @staticmethod
-    def parse_gset_format(filename: str) -> np.ndarray:
-        """Read graph in Gset format from file.
-
-        Args:
-            filename: the name of the file.
-
-        Returns:
-            An adjacency matrix as a 2D numpy array.
-        """
-        n = -1
-        with open(filename) as infile:
-            header = True
-            m = -1
-            count = 0
-            for line in infile:
-                v = map(lambda e: int(e), line.split())  # pylint: disable=unnecessary-lambda
-                if header:
-                    n, m = v
-                    w = np.zeros((n, n))
-                    header = False
-                else:
-                    s__, t__, _ = v
-                    s__ -= 1  # adjust 1-index
-                    t__ -= 1  # ditto
-                    w[s__, t__] = t__
-                    count += 1
-            assert m == count
-        w += w.T
-        return w
-
-    @staticmethod
-    def get_gset_result(x: np.ndarray) -> Dict[int, int]:
-        """Get graph solution in Gset format from binary string.
-
-        Args:
-            x: binary string as numpy array.
-
-        Returns:
-            A graph solution in Gset format.
-        """
-        return {i + 1: 1 - x[i] for i in range(len(x))}
