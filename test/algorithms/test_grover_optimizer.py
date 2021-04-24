@@ -179,7 +179,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         success = OptimizationResultStatus.SUCCESS
         algorithm_globals.random_seed = 1
         grover_optimizer = GroverOptimizer(
-            5, num_iterations=2, quantum_instance=self.qasm_simulator)
+            8, num_iterations=5, quantum_instance=self.qasm_simulator)
         result = grover_optimizer.solve(op)
         self.assertEqual(len(result.samples), 8)
         self.assertEqual(len(result.raw_samples), 32)
@@ -190,9 +190,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
             self.assertEqual(sample.status, success)
-        np.testing.assert_array_almost_equal(result.x, result.samples[0].x)
-        self.assertAlmostEqual(result.fval, result.samples[0].fval)
-        self.assertEqual(result.status, result.samples[0].status)
+        np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x[0:2])
+        self.assertAlmostEqual(result.fval, result.raw_samples[0].fval)
+        self.assertEqual(result.status, result.raw_samples[0].status)
 
 
 if __name__ == '__main__':
