@@ -313,7 +313,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {b: np.sqrt(v / shots) for (b, v) in state.items()}
+            self._circuit_results = {b[::-1]: np.sqrt(v / shots) for (b, v) in state.items()}
         return hist
 
     @staticmethod
