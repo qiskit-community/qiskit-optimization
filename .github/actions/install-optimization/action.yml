@@ -17,8 +17,6 @@ runs:
   using: "composite"
   steps: 
     - run : |
-        # install gurobipy
-        pip install -i https://pypi.gurobi.com gurobipy
         pip install -e .[cplex,cvx,matplotlib]
         pip install -U -c constraints.txt -r requirements-dev.txt
       shell: bash
