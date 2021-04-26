@@ -11,10 +11,9 @@
 # that they have been altered from the originals.
 
 """ Test Goemans-Williamson optimizer. """
-from test import QiskitOptimizationTestCase
+from test import QiskitOptimizationTestCase, requires_extra_library
 
 import numpy as np
-from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization.algorithms.goemans_williamson_optimizer \
     import (GoemansWilliamsonOptimizer, GoemansWilliamsonOptimizationResult)
@@ -23,30 +22,29 @@ from qiskit_optimization.applications.max_cut import Maxcut
 
 class TestGoemansWilliamson(QiskitOptimizationTestCase):
     """Test Goemans-Williamson optimizer."""
+
+    @requires_extra_library
     def test_all_cuts(self):
         """Basic test of the Goemans-Williamson optimizer."""
-        try:
-            graph = np.array([[0., 1., 2., 0.],
-                              [1., 0., 1., 0.],
-                              [2., 1., 0., 1.],
-                              [0., 0., 1., 0.]])
+        graph = np.array([[0., 1., 2., 0.],
+                          [1., 0., 1., 0.],
+                          [2., 1., 0., 1.],
+                          [0., 0., 1., 0.]])
 
-            optimizer = GoemansWilliamsonOptimizer(num_cuts=10, seed=0)
+        optimizer = GoemansWilliamsonOptimizer(num_cuts=10, seed=0)
 
-            problem = Maxcut(graph).to_quadratic_program()
-            self.assertIsNotNone(problem)
+        problem = Maxcut(graph).to_quadratic_program()
+        self.assertIsNotNone(problem)
 
-            results = optimizer.solve(problem)
-            self.assertIsNotNone(results)
-            self.assertIsInstance(results, GoemansWilliamsonOptimizationResult)
+        results = optimizer.solve(problem)
+        self.assertIsNotNone(results)
+        self.assertIsInstance(results, GoemansWilliamsonOptimizationResult)
 
-            self.assertIsNotNone(results.x)
-            np.testing.assert_almost_equal([0, 1, 1, 0], results.x, 3)
+        self.assertIsNotNone(results.x)
+        np.testing.assert_almost_equal([0, 1, 1, 0], results.x, 3)
 
-            self.assertIsNotNone(results.fval)
-            np.testing.assert_almost_equal(4, results.fval, 3)
+        self.assertIsNotNone(results.fval)
+        np.testing.assert_almost_equal(4, results.fval, 3)
 
-            self.assertIsNotNone(results.samples)
-            self.assertEqual(3, len(results.samples))
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
+        self.assertIsNotNone(results.samples)
+        self.assertEqual(3, len(results.samples))
