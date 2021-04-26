@@ -197,6 +197,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.fval, result.raw_samples[0].fval)
         self.assertEqual(result.status, result.raw_samples[0].status)
 
+        grover_optimizer = GroverOptimizer(
+            8, num_iterations=5, quantum_instance=self.sv_simulator)
+        result = grover_optimizer.solve(op)
+
 
 if __name__ == '__main__':
     unittest.main()

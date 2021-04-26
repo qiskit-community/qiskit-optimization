@@ -24,7 +24,6 @@ from qiskit.algorithms import QAOA, VQE, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.providers.aer import QasmSimulator, StatevectorSimulator
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit_optimization.algorithms import (CplexOptimizer,
                                             MinimumEigenOptimizer)
@@ -259,17 +258,16 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         y = mdl.binary_var('y')
         mdl.minimize(x-2*y)
         seed = 1234
-        algorithm_globals = seed
+        algorithm_globals.random_seed = seed
         op = QuadraticProgram()
         op.from_docplex(mdl)
-        qasm = QasmSimulator()
-        state_vector = StatevectorSimulator()
-        qasm_simulator = QuantumInstance(QasmSimulator(), seed_simulator=seed, seed_transpiler=seed)
-        sv_simulator = QuantumInstance(
-            StatevectorSimulator(), seed_simulator=seed, seed_transpiler=seed)
+        qasm = BasicAer.get_backend("qasm_simulator")
+        state_vector = BasicAer.get_backend("qasm_simulator")
+        qasm_simulator = QuantumInstance(qasm, seed_simulator=seed, seed_transpiler=seed)
+        sv_simulator = QuantumInstance(state_vector, seed_simulator=seed, seed_transpiler=seed)
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(2, 'ry', 'cz', reps=3, entanglement='full')
-        # Test for a qasm somulator.
+        # Test for a qasm simulator.
         vqe_mes_qasm = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=qasm_simulator)
         vqe_qasm = MinimumEigenOptimizer(vqe_mes_qasm)
         result_qasm = vqe_qasm.solve(op)
@@ -277,7 +275,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(result_qasm.x, [0, 1])
         result_qasm.raw_samples.sort(key=lambda x: x.probability, reverse=True)
         np.testing.assert_array_almost_equal(result_qasm.x, result_qasm.raw_samples[0].x)
-        # Test for a statevector somulator.
+        # Test for a statevector simulator.
         vqe_mes_sv = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=sv_simulator)
         vqe_sv = MinimumEigenOptimizer(vqe_mes_sv)
         result_sv = vqe_sv.solve(op)
