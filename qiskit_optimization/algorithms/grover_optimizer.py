@@ -203,7 +203,6 @@ class GroverOptimizer(OptimizationAlgorithm):
             # Get oracle O and the state preparation operator A for the current threshold.
             problem_.objective.constant = orig_constant - threshold
             a_operator = self._get_a_operator(qr_key_value, problem_)
-
             # Iterate until we measure a negative.
             loops_with_no_improvement = 0
             while not improvement_found:
@@ -237,12 +236,13 @@ class GroverOptimizer(OptimizationAlgorithm):
                     threshold = optimum_value
 
                     # trace out work qubits and store samples
+                    # pylint: disable=invalid-unary-operand-type
                     if self._quantum_instance.is_statevector:  # type: ignore
                         indices = list(range(n_key, len(outcome)))
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
-                        self._circuit_results = {i[0:n_key]: v for i,
+                        self._circuit_results = {i[-n_key:]: v for i,  # type: ignore
                                                  v in self._circuit_results.items()}
 
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
@@ -313,7 +313,8 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {b[::-1]: np.sqrt(v / shots) for (b, v) in state.items()}
+            self._circuit_results = {b: np.sqrt(v / shots) for (b, v) in state.items()}
+
         return hist
 
     @staticmethod

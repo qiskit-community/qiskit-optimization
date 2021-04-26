@@ -502,17 +502,17 @@ class OptimizationAlgorithm(ABC):
         Raises:
             TypeError: If the type of eigenvector is not supported.
         """
+
         if isinstance(eigenvector, DictStateFn):
             eigenvector = {bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()}
         elif isinstance(eigenvector, StateFn):
             eigenvector = eigenvector.to_matrix()
 
         def generate_solution(bitstr, qubo, probability):
-            x = np.fromiter(list(bitstr), dtype=int)
+            x = np.fromiter(list(bitstr[::-1]), dtype=int)
             fval = qubo.objective.evaluate(x)
             return SolutionSample(x=x, fval=fval, probability=probability,
                                   status=OptimizationResultStatus.SUCCESS)
-
         solutions = []
         if isinstance(eigenvector, dict):
             all_counts = sum(eigenvector.values())
@@ -531,7 +531,7 @@ class OptimizationAlgorithm(ABC):
             for i, sampling_probability in enumerate(probabilities):
                 # add the i-th state if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-                    bitstr = '{:b}'.format(i).rjust(num_qubits, '0')[::-1]
+                    bitstr = '{:b}'.format(i).rjust(num_qubits, '0')
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:

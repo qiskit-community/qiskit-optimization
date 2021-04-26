@@ -17,16 +17,23 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt
+from docplex.mp.model import Model
 
 from qiskit import BasicAer
+from qiskit.algorithms import QAOA, VQE, NumPyMinimumEigensolver
+from qiskit.algorithms.optimizers import COBYLA, SPSA
+from qiskit.circuit.library import TwoLocal
 from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.providers.aer import QasmSimulator, StatevectorSimulator
 from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit.algorithms import QAOA, NumPyMinimumEigensolver
-from qiskit.algorithms.optimizers import COBYLA
-from qiskit_optimization.algorithms import (CplexOptimizer, MinimumEigenOptimizer)
-from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
-from qiskit_optimization.converters import (InequalityToEquality, IntegerToBinary,
-                                            LinearEqualityToPenalty, QuadraticProgramToQubo)
+from qiskit_optimization.algorithms import (CplexOptimizer,
+                                            MinimumEigenOptimizer)
+from qiskit_optimization.algorithms.optimization_algorithm import \
+    OptimizationResultStatus
+from qiskit_optimization.converters import (InequalityToEquality,
+                                            IntegerToBinary,
+                                            LinearEqualityToPenalty,
+                                            QuadraticProgramToQubo)
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -244,6 +251,40 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(result.x, result.samples[0].x)
         self.assertAlmostEqual(result.fval, result.samples[0].fval)
         self.assertEqual(result.status, result.samples[0].status)
+
+    def test_bit_ordering(self):
+        """Test bit ordering"""
+        mdl = Model("docplex model")
+        x = mdl.binary_var('x')
+        y = mdl.binary_var('y')
+        mdl.minimize(x-2*y)
+        seed = 1234
+        algorithm_globals = seed
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        qasm = QasmSimulator()
+        state_vector = StatevectorSimulator()
+        qasm_simulator = QuantumInstance(QasmSimulator(), seed_simulator=seed, seed_transpiler=seed)
+        sv_simulator = QuantumInstance(
+            StatevectorSimulator(), seed_simulator=seed, seed_transpiler=seed)
+        optimizer = SPSA(maxiter=100)
+        ry_ansatz = TwoLocal(2, 'ry', 'cz', reps=3, entanglement='full')
+        # Test for a qasm somulator.
+        vqe_mes_qasm = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=qasm_simulator)
+        vqe_qasm = MinimumEigenOptimizer(vqe_mes_qasm)
+        result_qasm = vqe_qasm.solve(op)
+        self.assertEqual(result_qasm.fval, -2)
+        np.testing.assert_array_almost_equal(result_qasm.x, [0, 1])
+        result_qasm.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        np.testing.assert_array_almost_equal(result_qasm.x, result_qasm.raw_samples[0].x)
+        # Test for a statevector somulator.
+        vqe_mes_sv = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=sv_simulator)
+        vqe_sv = MinimumEigenOptimizer(vqe_mes_sv)
+        result_sv = vqe_sv.solve(op)
+        self.assertEqual(result_sv.fval, -2)
+        np.testing.assert_array_almost_equal(result_sv.x, [0, 1])
+        result_sv.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        np.testing.assert_array_almost_equal(result_sv.x, result_sv.raw_samples[0].x)
 
 
 if __name__ == '__main__':
