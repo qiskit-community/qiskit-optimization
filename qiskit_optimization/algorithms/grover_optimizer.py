@@ -251,8 +251,12 @@ class GroverOptimizer(OptimizationAlgorithm):
                                                                  problem_init)
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
-                    print(raw_samples)
-                    print(samples)
+                    print("raw_samples_____")
+                    for i in raw_samples:
+                        print(i)
+                    print("samples____")
+                    for i in samples:
+                        print(i)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
