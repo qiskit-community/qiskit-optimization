@@ -15,11 +15,10 @@
 import tempfile
 import unittest
 from os import path
-from test.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 from docplex.mp.model import DOcplexException, Model
 
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
 
@@ -602,6 +601,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertListEqual(obj.quadratic.to_array(symmetric=True).tolist(),
                              [[0, 0, 0.5], [0, 1, 0], [0.5, 0, 0]])
 
+    @requires_extra_library
     def test_read_from_lp_file(self):
         """test read lp file"""
         try:
@@ -674,8 +674,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                                  {('x', 'x'): 1, ('y', 'z'): -1, ('z', 'z'): 2})
             self.assertEqual(cst[2].sense, Constraint.Sense.GE)
             self.assertEqual(cst[2].rhs, 1)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
         except RuntimeError as ex:
             self.fail(str(ex))
 
