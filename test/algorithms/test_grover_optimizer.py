@@ -41,7 +41,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.sv_simulator = QuantumInstance(Aer.get_backend('statevector_simulator'),
                                             seed_simulator=921, seed_transpiler=200)
         self.qasm_simulator = QuantumInstance(Aer.get_backend('qasm_simulator'),
-                                              seed_simulator=123, seed_transpiler=123)
+                                              seed_simulator=12345, seed_transpiler=12345)
 
     def validate_results(self, problem, results):
         """Validate the results object returned by GroverOptimizer."""
@@ -177,7 +177,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
-        algorithm_globals.random_seed = 1
+        algorithm_globals.random_seed = 123
         grover_optimizer = GroverOptimizer(
             8, num_iterations=5, quantum_instance=self.qasm_simulator)
         result = grover_optimizer.solve(op)
@@ -193,11 +193,11 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.fval, 1)
         np.testing.assert_array_almost_equal(result.x, [1, 0])
         result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        print("raw_samples_____")
         for i in result.raw_samples:
-            print("raw_samples")
             print(i)
+        print("samples____")
         for i in result.samples:
-            print("samples")
             print(i)
 
 

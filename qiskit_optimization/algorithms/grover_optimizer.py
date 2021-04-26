@@ -226,6 +226,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                 int_v = self._bin_to_int(v, n_value) + threshold
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
+                print("rt", rotation_count)
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
                 if int_v < optimum_value:
                     optimum_key = k
