@@ -193,13 +193,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.fval, 1)
         np.testing.assert_array_almost_equal(result.x, [1, 0])
         result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        print(result.raw_samples[0])
         np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x[0:2])
         self.assertAlmostEqual(result.fval, result.raw_samples[0].fval)
         self.assertEqual(result.status, result.raw_samples[0].status)
-
-        grover_optimizer = GroverOptimizer(
-            8, num_iterations=5, quantum_instance=self.sv_simulator)
-        result = grover_optimizer.solve(op)
 
 
 if __name__ == '__main__':
