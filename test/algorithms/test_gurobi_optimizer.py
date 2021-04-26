@@ -13,9 +13,8 @@
 """ Test Gurobi Optimizer """
 
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 from ddt import ddt, data
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization.algorithms import GurobiOptimizer
 from qiskit_optimization.problems import QuadraticProgram
 
@@ -24,38 +23,30 @@ from qiskit_optimization.problems import QuadraticProgram
 class TestGurobiOptimizer(QiskitOptimizationTestCase):
     """Gurobi Optimizer Tests."""
 
-    def setUp(self):
-        super().setUp()
-        try:
-            self.gurobi_optimizer = GurobiOptimizer(disp=False)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
-
     @data(
         ('op_ip1.lp', [0, 2], 6),
         ('op_mip1.lp', [1, 1, 0], 6),
         ('op_lp1.lp', [0.25, 1.75], 5.8750)
     )
+    @requires_extra_library
     def test_gurobi_optimizer(self, config):
         """ Gurobi Optimizer Test """
-        try:
-            # unpack configuration
-            filename, x, fval = config
+        # unpack configuration
+        gurobi_optimizer = GurobiOptimizer(disp=False)
+        filename, x, fval = config
 
-            # load optimization problem
-            problem = QuadraticProgram()
-            lp_file = self.get_resource_path(filename, 'algorithms/resources')
-            problem.read_from_lp_file(lp_file)
+        # load optimization problem
+        problem = QuadraticProgram()
+        lp_file = self.get_resource_path(filename, 'algorithms/resources')
+        problem.read_from_lp_file(lp_file)
 
-            # solve problem with gurobi
-            result = self.gurobi_optimizer.solve(problem)
+        # solve problem with gurobi
+        result = gurobi_optimizer.solve(problem)
 
-            # analyze results
-            self.assertAlmostEqual(result.fval, fval)
-            for i in range(problem.get_num_vars()):
-                self.assertAlmostEqual(result.x[i], x[i])
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
+        # analyze results
+        self.assertAlmostEqual(result.fval, fval)
+        for i in range(problem.get_num_vars()):
+            self.assertAlmostEqual(result.x[i], x[i])
 
 
 if __name__ == '__main__':
