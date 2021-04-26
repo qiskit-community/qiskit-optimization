@@ -14,11 +14,10 @@
 
 import logging
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit.opflow import Z, I
 from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
@@ -443,30 +442,28 @@ class TestConverters(QiskitOptimizationTestCase):
             quadratic.objective.quadratic.coefficients.toarray(), quadratic_matrix
         )
 
+    @requires_extra_library
     def test_continuous_variable_decode(self):
         """ Test decode func of IntegerToBinaryConverter for continuous variables"""
-        try:
-            mdl = Model('test_continuous_varable_decode')
-            c = mdl.continuous_var(lb=0, ub=10.9, name='c')
-            x = mdl.binary_var(name='x')
-            mdl.maximize(c + x * x)
-            op = QuadraticProgram()
-            op.from_docplex(mdl)
-            converter = IntegerToBinary()
-            op = converter.convert(op)
-            admm_params = ADMMParameters()
-            qubo_optimizer = MinimumEigenOptimizer(NumPyMinimumEigensolver())
-            continuous_optimizer = CplexOptimizer()
-            solver = ADMMOptimizer(
-                qubo_optimizer=qubo_optimizer,
-                continuous_optimizer=continuous_optimizer,
-                params=admm_params,
-            )
-            result = solver.solve(op)
-            new_x = converter.interpret(result.x)
-            self.assertEqual(new_x[0], 10.9)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
+        mdl = Model('test_continuous_varable_decode')
+        c = mdl.continuous_var(lb=0, ub=10.9, name='c')
+        x = mdl.binary_var(name='x')
+        mdl.maximize(c + x * x)
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        converter = IntegerToBinary()
+        op = converter.convert(op)
+        admm_params = ADMMParameters()
+        qubo_optimizer = MinimumEigenOptimizer(NumPyMinimumEigensolver())
+        continuous_optimizer = CplexOptimizer()
+        solver = ADMMOptimizer(
+            qubo_optimizer=qubo_optimizer,
+            continuous_optimizer=continuous_optimizer,
+            params=admm_params,
+        )
+        result = solver.solve(op)
+        new_x = converter.interpret(result.x)
+        self.assertEqual(new_x[0], 10.9)
 
     def test_auto_penalty(self):
         """ Test auto penalty function"""
