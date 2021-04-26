@@ -227,6 +227,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
                 print("rt", rotation_count)
+                print("int_v", int_v)
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
                 if int_v < optimum_value:
                     optimum_key = k
@@ -250,6 +251,8 @@ class GroverOptimizer(OptimizationAlgorithm):
                                                                  problem_init)
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
+                    print(raw_samples)
+                    print(samples)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
