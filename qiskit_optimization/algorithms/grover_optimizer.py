@@ -226,8 +226,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                 int_v = self._bin_to_int(v, n_value) + threshold
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
-                print("rt", rotation_count)
-                print("int_v", int_v)
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
                 if int_v < optimum_value:
                     optimum_key = k
@@ -244,25 +242,13 @@ class GroverOptimizer(OptimizationAlgorithm):
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
-                        print("circuit_results____")
-                        for i,v in self._circuit_results.items():
-                            print(i, v)
                         self._circuit_results = {i[-n_key:]: v for i,  # type: ignore
                                                  v in self._circuit_results.items()}
 
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
                                                                  problem_init)
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
-                    print("raw_samples_")
-                    for i in raw_samples:
-                        print(i)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
-                    # print("raw_samples_____")
-                    # for i in raw_samples:
-                    #     print(i)
-                    # print("samples____")
-                    # for i in samples:
-                    #     print(i)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
@@ -327,11 +313,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            print("hist____")
-            for i,v in hist.items():
-                print(i, v)
             self._circuit_results = {b: v / shots for (b, v) in state.items()}
-
         return hist
 
     @staticmethod

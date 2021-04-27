@@ -151,7 +151,11 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator,
                               converters=qp2qubo)
         results = gmf.solve(op)
+        print("raw_samples_____")
+        for i in results.raw_samples:
+            print(i)
         self.validate_results(op, results)
+        print("===================")
         # a list of converters
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
