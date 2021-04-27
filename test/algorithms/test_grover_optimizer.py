@@ -18,7 +18,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from ddt import data, ddt
 from docplex.mp.model import Model
-from qiskit import BasicAer
+from qiskit import Aer
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.algorithms import (GroverOptimizer,
@@ -38,9 +38,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 1
-        self.sv_simulator = QuantumInstance(BasicAer.get_backend('statevector_simulator'),
+        self.sv_simulator = QuantumInstance(Aer.get_backend('statevector_simulator'),
                                             seed_simulator=921, seed_transpiler=200)
-        self.qasm_simulator = QuantumInstance(BasicAer.get_backend('qasm_simulator'),
+        self.qasm_simulator = QuantumInstance(Aer.get_backend('qasm_simulator'),
                                               seed_simulator=12345, seed_transpiler=12345)
 
     def validate_results(self, problem, results):
