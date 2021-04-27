@@ -148,6 +148,8 @@ jobs:
           name: optimization${{ matrix.python-version }}
           path: ./o${{ matrix.python-version }}/*
       - name: Optimization Unit Tests without cplex/cvxpy/matplotlib/gurobipy under Python ${{ matrix.python-version }}
+        env:
+          PYTHONWARNINGS: default
         run: |
           pip uninstall -y cplex cvxpy matplotlib gurobipy
           if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}" == "true" ]; then
