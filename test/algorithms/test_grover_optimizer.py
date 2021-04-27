@@ -206,7 +206,5 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
