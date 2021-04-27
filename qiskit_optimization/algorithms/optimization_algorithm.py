@@ -515,19 +515,13 @@ class OptimizationAlgorithm(ABC):
                                   status=OptimizationResultStatus.SUCCESS)
         solutions = []
         if isinstance(eigenvector, dict):
-            print("eigen_vector")
-            for i,v in eigenvector.items():
-                print(i, v)
             all_counts = sum(eigenvector.values())
             # iterate over all samples
             for bitstr, count in eigenvector.items():
-                print(all_counts)
                 sampling_probability = count / all_counts
                 # add the bitstring, if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
-                print("sampling_probability")
-                print(bitstr, count, sampling_probability)
 
         elif isinstance(eigenvector, np.ndarray):
             num_qubits = int(np.log2(eigenvector.size))

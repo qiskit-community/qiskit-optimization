@@ -170,6 +170,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
     def test_samples_and_raw_samples(self):
         """Test samples and raw_samples"""
+        print("test_samples_and_raw_samples")
         op = QuadraticProgram()
         op.integer_var(0, 3, 'x')
         op.binary_var('y')
