@@ -269,6 +269,8 @@ class GroverOptimizer(OptimizationAlgorithm):
                 operation_count[iteration] = operations
                 iteration += 1
                 logger.info('Operation Count: %s\n', operations)
+                print(rotation_count, int_v)
+                print(operations)
 
         # If the constant is 0 and we didn't find a negative, the answer is likely 0.
         if optimum_value >= 0 and orig_constant == 0:
