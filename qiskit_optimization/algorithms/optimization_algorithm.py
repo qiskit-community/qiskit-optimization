@@ -514,10 +514,10 @@ class OptimizationAlgorithm(ABC):
             return SolutionSample(x=x, fval=fval, probability=probability,
                                   status=OptimizationResultStatus.SUCCESS)
         solutions = []
-        print("eigen_vector")
-        for i,v in eigenvector.items():
-            print(i, v)
         if isinstance(eigenvector, dict):
+            print("eigen_vector")
+            for i,v in eigenvector.items():
+                print(i, v)
             all_counts = sum(eigenvector.values())
             # iterate over all samples
             for bitstr, count in eigenvector.items():
