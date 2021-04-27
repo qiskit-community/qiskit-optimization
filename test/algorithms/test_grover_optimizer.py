@@ -177,7 +177,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
-        algorithm_globals.random_seed = 123
+        algorithm_globals.random_seed = 12345
         grover_optimizer = GroverOptimizer(
             8, num_iterations=5, quantum_instance=self.qasm_simulator)
         result = grover_optimizer.solve(op)
