@@ -199,6 +199,11 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         print("samples____")
         for i in result.samples:
             print(i)
+        a = 0
+        for i in result.raw_samples:
+            a+= i.probability
+        print(a)
+
 
 
 if __name__ == '__main__':

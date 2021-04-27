@@ -237,6 +237,9 @@ class GroverOptimizer(OptimizationAlgorithm):
                     improvement_found = True
                     threshold = optimum_value
 
+                    print("circuit_results____")
+                    for i,v in self._circuit_results.items():
+                        print(i, v)
                     # trace out work qubits and store samples
                     # pylint: disable=invalid-unary-operand-type
                     if self._quantum_instance.is_statevector:  # type: ignore
@@ -250,13 +253,16 @@ class GroverOptimizer(OptimizationAlgorithm):
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
                                                                  problem_init)
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
-                    samples = self._interpret_samples(problem, raw_samples, self._converters)
-                    print("raw_samples_____")
+                    print("raw_samples_")
                     for i in raw_samples:
                         print(i)
-                    print("samples____")
-                    for i in samples:
-                        print(i)
+                    samples = self._interpret_samples(problem, raw_samples, self._converters)
+                    # print("raw_samples_____")
+                    # for i in raw_samples:
+                    #     print(i)
+                    # print("samples____")
+                    # for i in samples:
+                    #     print(i)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
@@ -321,7 +327,10 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {b: np.sqrt(v / shots) for (b, v) in state.items()}
+            print("hist____")
+            for i,v in hist.items():
+                print(i, v)
+            self._circuit_results = {b: v / shots for (b, v) in state.items()}
 
         return hist
 
