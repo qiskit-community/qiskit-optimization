@@ -52,7 +52,8 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
                 with the ``-clip`` or ``clip`` values correspondingly for the initial guesses.
         """
         super().__init__()
-        self._trials = trials
+        
+        self._trials = trials if trials > 0 else 1
         self._clip = clip
 
     def multi_start_solve(self, minimize: Callable[[np.ndarray], Tuple[np.ndarray, Any]],
@@ -112,7 +113,8 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         Args:
             trials: The number of trials to set.
         """
-        self._trials = trials
+        if trials > 0:
+            self._trials = trials
 
     @property
     def clip(self) -> float:
