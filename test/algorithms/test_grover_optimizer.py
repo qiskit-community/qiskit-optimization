@@ -152,8 +152,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                               converters=qp2qubo)
         results = gmf.solve(op)
         self.validate_results(op, results)
-        print(results.raw_samples)
-        print("---------")
 
         # a list of converters
         ineq2eq = InequalityToEquality()
@@ -173,38 +171,16 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
     def test_samples_and_raw_samples(self):
         """Test samples and raw_samples"""
-
         op = QuadraticProgram()
         op.integer_var(0, 3, 'x')
         op.binary_var('y')
         op.minimize(linear={'x': 1, 'y': 2})
         op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
-        opt_sol = 1
-        success = OptimizationResultStatus.SUCCESS
-        algorithm_globals.random_seed = 12345
+        algorithm_globals.random_seed = 1234567
         grover_optimizer = GroverOptimizer(
-            8, num_iterations=5, quantum_instance=self.qasm_simulator)
-        result = grover_optimizer.solve(op)
-        print("raw_samples")
-        for i in result.raw_samples:
-            print(i)
-        print("samples")
-        for i in result.samples:
-            print(i)
-
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 32)
-        self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
-        self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
-        self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
-        self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
-        for sample in result.raw_samples:
-            self.assertEqual(sample.status, success)
-        self.assertEqual(result.fval, 1)
-        np.testing.assert_array_almost_equal(result.x, [1, 0])
-        result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
-
+            8, num_iterations=10, quantum_instance=self.qasm_simulator)
+        results = grover_optimizer.solve(op)
+        self.validate_results(op, results)
 
 
 if __name__ == '__main__':

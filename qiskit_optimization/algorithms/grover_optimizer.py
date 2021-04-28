@@ -196,7 +196,6 @@ class GroverOptimizer(OptimizationAlgorithm):
         measurement = not self.quantum_instance.is_statevector
         oracle, is_good_state = self._get_oracle(qr_key_value)
 
-        flag = True
         while not optimum_found:
             m = 1
             improvement_found = False
@@ -227,9 +226,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                 int_v = self._bin_to_int(v, n_value) + threshold
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
-
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
-                print(rotation_count, int_v)
                 if int_v < optimum_value:
                     optimum_key = k
                     optimum_value = int_v
@@ -252,22 +249,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
 
-                    if self._quantum_instance.is_statevector:  # type: ignore
-                        print("sv simulator")
-                        print("raw_samples_sv")
-                        for i in raw_samples:
-                            print(i)
-                        print("samples_sv")
-                        for i in samples:
-                            print(i)
-                    else:
-                        print("qasm simulator")
-                        print("raw_samples_qasm")
-                        for i in raw_samples:
-                            print(i)
-                        print("samples_qasm")
-                        for i in samples:
-                            print(i)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
