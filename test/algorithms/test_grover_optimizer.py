@@ -21,9 +21,7 @@ from docplex.mp.model import Model
 from qiskit import Aer
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import NumPyMinimumEigensolver
-from qiskit_optimization.algorithms import (GroverOptimizer,
-                                            MinimumEigenOptimizer,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import GroverOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.converters import (InequalityToEquality,
                                             IntegerToBinary,
                                             LinearEqualityToPenalty,
