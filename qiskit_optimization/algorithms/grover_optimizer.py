@@ -260,14 +260,14 @@ class GroverOptimizer(OptimizationAlgorithm):
                         print("samples_sv")
                         for i in samples:
                             print(i)
-                    # else:
-                    #     print("qasm simulator")
-                    #     print("raw_samples_qasm")
-                    #     for i in raw_samples:
-                    #         print(i)
-                    #     print("samples_qasm")
-                    #     for i in samples:
-                    #         print(i)
+                    else:
+                        print("qasm simulator")
+                        print("raw_samples_qasm")
+                        for i in raw_samples:
+                            print(i)
+                        print("samples_qasm")
+                        for i in samples:
+                            print(i)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
