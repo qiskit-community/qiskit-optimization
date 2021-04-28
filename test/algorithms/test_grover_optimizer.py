@@ -48,7 +48,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         # Get expected value.
         solver = MinimumEigenOptimizer(NumPyMinimumEigensolver())
         comp_result = solver.solve(problem)
-
         # Validate results.
         np.testing.assert_array_almost_equal(comp_result.x, results.x)
         self.assertEqual(comp_result.fval, results.fval)
@@ -137,6 +136,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     def test_converter_list(self):
         """Test converters list"""
         # Input.
+
         model = Model()
         x_0 = model.binary_var(name='x0')
         x_1 = model.binary_var(name='x1')
@@ -151,11 +151,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator,
                               converters=qp2qubo)
         results = gmf.solve(op)
-        print("raw_samples_____")
-        for i in results.raw_samples:
-            print(i)
         self.validate_results(op, results)
-        print("===================")
         # a list of converters
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
@@ -174,7 +170,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
     def test_samples_and_raw_samples(self):
         """Test samples and raw_samples"""
-        print("test_samples_and_raw_samples")
+
         op = QuadraticProgram()
         op.integer_var(0, 3, 'x')
         op.binary_var('y')
@@ -182,16 +178,11 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
-        algorithm_globals.random_seed = 12345
+        algorithm_globals.random_seed = 1234555
         grover_optimizer = GroverOptimizer(
             8, num_iterations=5, quantum_instance=self.qasm_simulator)
         result = grover_optimizer.solve(op)
-        print("raw_samples_____")
-        for i in result.raw_samples:
-            print(i)
-        print("samples____")
-        for i in result.samples:
-            print(i)
+
         self.assertEqual(len(result.samples), 8)
         self.assertEqual(len(result.raw_samples), 32)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)

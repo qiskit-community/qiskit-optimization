@@ -227,6 +227,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
+                print(rotation_count, int_v)
                 if int_v < optimum_value:
                     optimum_key = k
                     optimum_value = int_v
@@ -244,11 +245,27 @@ class GroverOptimizer(OptimizationAlgorithm):
                     else:
                         self._circuit_results = {i[-n_key:]: v for i,  # type: ignore
                                                  v in self._circuit_results.items()}
-
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
                                                                  problem_init)
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
+                    if self._quantum_instance.is_statevector:
+                        print("sv_sim")
+                        print("raw_samples_sv")
+                        for i in raw_samples:
+                            print(i)
+                        print("samples_sv")
+                        for i in samples:
+                            print(i)
+                    else:
+                        print("qasm_sim")
+                        print("raw_samples_qasm")
+                        for i in raw_samples:
+                            print(i)
+                        print("samples_qasm")
+                        for i in samples:
+                            print(i)
+
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
@@ -269,7 +286,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                 operation_count[iteration] = operations
                 iteration += 1
                 logger.info('Operation Count: %s\n', operations)
-                print(rotation_count, int_v)
                 print(operations)
 
         # If the constant is 0 and we didn't find a negative, the answer is likely 0.
