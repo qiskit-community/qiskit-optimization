@@ -152,6 +152,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                               converters=qp2qubo)
         results = gmf.solve(op)
         self.validate_results(op, results)
+        print(results.raw_samples)
+        print("---------")
+
         # a list of converters
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()

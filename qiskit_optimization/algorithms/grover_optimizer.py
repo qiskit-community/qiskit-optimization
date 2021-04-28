@@ -228,9 +228,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                 logger.info('Outcome: %s', outcome)
                 logger.info('Value Q(x): %s', int_v)
 
-                if flag:
-                    int_v = 7
-                    flag = False
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
                 print(rotation_count, int_v)
                 if int_v < optimum_value:
@@ -263,14 +260,14 @@ class GroverOptimizer(OptimizationAlgorithm):
                         print("samples_sv")
                         for i in samples:
                             print(i)
-                    else:
-                        print("qasm simulator")
-                        print("raw_samples_qasm")
-                        for i in raw_samples:
-                            print(i)
-                        print("samples_qasm")
-                        for i in samples:
-                            print(i)
+                    # else:
+                    #     print("qasm simulator")
+                    #     print("raw_samples_qasm")
+                    #     for i in raw_samples:
+                    #         print(i)
+                    #     print("samples_qasm")
+                    #     for i in samples:
+                    #         print(i)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
