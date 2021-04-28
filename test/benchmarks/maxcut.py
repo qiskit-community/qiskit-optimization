@@ -26,7 +26,7 @@ from qiskit_optimization.converters import QuadraticProgramToQubo
 
 
 class MaxcutBenchmarks:
-    params = ([2, 4, 8, 12, 16, 20], [3, 5, 7, 9])
+    params = ([2, 4, 8, 12], [3, 5, 7, 9])
     param_names = ['number of nodes', 'degree']
 
     def setup(self, n, d):
@@ -56,14 +56,14 @@ class MaxcutBenchmarks:
             return
         self._generate_qubo(self._maxcut)
 
-    def _time_qaoa(self, _, __):
+    def time_qaoa(self, _, __):
         if self._skip:
             return
         meo = MinimumEigenOptimizer(
             min_eigen_solver=QAOA(optimizer=COBYLA(maxiter=1), quantum_instance=self._qins))
         meo.solve(self._qp)
 
-    def _time_vqe(self, _, __):
+    def time_vqe(self, _, __):
         if self._skip:
             return
         meo = MinimumEigenOptimizer(
@@ -74,8 +74,8 @@ class MaxcutBenchmarks:
     def time_grover(self, _, __):
         if self._skip:
             return
-        meo = GroverOptimizer(num_value_qubits=2, num_iterations=1,
-                              quantum_instance=self._qins)
+        meo = GroverOptimizer(num_value_qubits=self._qp.get_num_vars() // 2,
+                              num_iterations=1, quantum_instance=self._qins)
         meo.solve(self._qp)
 
 
