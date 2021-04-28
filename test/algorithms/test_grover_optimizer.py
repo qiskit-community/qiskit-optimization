@@ -195,6 +195,12 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.fval, 1)
         np.testing.assert_array_almost_equal(result.x, [1, 0])
         result.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        print("raw_samples")
+        for i in result.raw_samples:
+            print(i)
+        print("samples")
+        for i in result.samples:
+            print(i)
 
 
 if __name__ == '__main__':
