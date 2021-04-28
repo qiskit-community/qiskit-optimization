@@ -13,9 +13,8 @@
 """ Test Cplex Optimizer """
 
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 from ddt import ddt, data
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization.algorithms import CplexOptimizer
 from qiskit_optimization.problems import QuadraticProgram
 
@@ -24,20 +23,15 @@ from qiskit_optimization.problems import QuadraticProgram
 class TestCplexOptimizer(QiskitOptimizationTestCase):
     """Cplex Optimizer Tests."""
 
-    def setUp(self):
-        super().setUp()
-        try:
-            self.cplex_optimizer = CplexOptimizer(disp=False)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
-
     @data(
         ('op_ip1.lp', [0, 2], 6),
         ('op_mip1.lp', [1, 1, 0], 6),
         ('op_lp1.lp', [0.25, 1.75], 5.8750)
     )
+    @requires_extra_library
     def test_cplex_optimizer(self, config):
         """ Cplex Optimizer Test """
+        cplex_optimizer = CplexOptimizer(disp=False)
         # unpack configuration
         filename, x, fval = config
 
@@ -47,7 +41,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
         problem.read_from_lp_file(lp_file)
 
         # solve problem with cplex
-        result = self.cplex_optimizer.solve(problem)
+        result = cplex_optimizer.solve(problem)
 
         # analyze results
         self.assertAlmostEqual(result.fval, fval)
