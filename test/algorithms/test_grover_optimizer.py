@@ -21,7 +21,9 @@ from docplex.mp.model import Model
 from qiskit import Aer
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import NumPyMinimumEigensolver
-from qiskit_optimization.algorithms import GroverOptimizer, MinimumEigenOptimizer
+from qiskit_optimization.algorithms import (GroverOptimizer,
+                                            MinimumEigenOptimizer,
+                                            OptimizationResultStatus)
 from qiskit_optimization.converters import (InequalityToEquality,
                                             IntegerToBinary,
                                             LinearEqualityToPenalty,
@@ -39,7 +41,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.sv_simulator = QuantumInstance(Aer.get_backend('statevector_simulator'),
                                             seed_simulator=921, seed_transpiler=200)
         self.qasm_simulator = QuantumInstance(Aer.get_backend('qasm_simulator'),
-                                              seed_simulator=12345, seed_transpiler=12345)
+                                              seed_simulator=123, seed_transpiler=123)
 
     def validate_results(self, problem, results):
         """Validate the results object returned by GroverOptimizer."""
@@ -167,18 +169,36 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                             quantum_instance=self.sv_simulator,
                             converters=invalid)
 
-    def test_samples_and_raw_samples(self):
+    @data('sv', 'qasm')
+    def test_samples_and_raw_samples(self, simulator):
         """Test samples and raw_samples"""
         op = QuadraticProgram()
         op.integer_var(0, 3, 'x')
         op.binary_var('y')
         op.minimize(linear={'x': 1, 'y': 2})
         op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
-        algorithm_globals.random_seed = 1234567
+        algorithm_globals.random_seed = 1
+        q_instance = self.sv_simulator if simulator == 'sv' else self.qasm_simulator
         grover_optimizer = GroverOptimizer(
-            8, num_iterations=10, quantum_instance=self.qasm_simulator)
+            8, num_iterations=10, quantum_instance=q_instance)
+        opt_sol = 1
+        success = OptimizationResultStatus.SUCCESS
         results = grover_optimizer.solve(op)
-        self.validate_results(op, results)
+        self.assertEqual(len(results.samples), 8)
+        self.assertEqual(len(results.raw_samples), 32)
+        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1)
+        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1)
+        self.assertAlmostEqual(min(s.fval for s in results.samples), 0)
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+        for sample in results.raw_samples:
+            self.assertEqual(sample.status, success)
+        np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
+        self.assertAlmostEqual(results.fval, results.samples[0].fval)
+        self.assertEqual(results.status, results.samples[0].status)
+        self.assertAlmostEqual(results.fval, results.raw_samples[0].fval)
+        self.assertEqual(results.status, results.raw_samples[0].status)
+        np.testing.assert_array_almost_equal([1, 0, 0, 0, 0], results.raw_samples[0].x)
 
 
 if __name__ == '__main__':
