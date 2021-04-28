@@ -126,3 +126,7 @@ venv.bak/
 
 # stestr repostiory
 .stestr/
+
+# asv venvs and resulsts
+.asv/
+html/
