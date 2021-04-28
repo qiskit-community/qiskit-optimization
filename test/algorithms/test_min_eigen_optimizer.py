@@ -13,13 +13,12 @@
 """ Test Min Eigen Optimizer """
 
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 import numpy as np
 from ddt import data, ddt
 
 from qiskit import BasicAer
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import QAOA, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA
@@ -52,6 +51,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ('qaoa', 'statevector_simulator', 'op_ip1.lp'),
         ('qaoa', 'qasm_simulator', 'op_ip1.lp')
     )
+    @requires_extra_library
     def test_min_eigen_optimizer(self, config):
         """ Min Eigen Optimizer Test """
         try:
@@ -84,8 +84,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # check that eigensolver result is present
             self.assertIsNotNone(result.min_eigen_solver_result)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
         except RuntimeError as ex:
             self.fail(str(ex))
 
@@ -93,6 +91,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ('op_ip1.lp', -470, 12, OptimizationResultStatus.SUCCESS),
         ('op_ip1.lp', np.inf, None, OptimizationResultStatus.FAILURE),
     )
+    @requires_extra_library
     def test_min_eigen_optimizer_with_filter(self, config):
         """ Min Eigen Optimizer Test """
         try:
@@ -127,8 +126,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # check that eigensolver result is present
             self.assertIsNotNone(result.min_eigen_solver_result)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
         except RuntimeError as ex:
             self.fail(str(ex))
 
