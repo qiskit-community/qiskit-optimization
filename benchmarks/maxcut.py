@@ -33,7 +33,6 @@ class MaxcutBenchmarks:
         seed = 123
         algorithm_globals.random_seed = seed
         qasm_sim = Aer.get_backend('qasm_simulator')
-        sv_sim = Aer.get_backend('statevector_simulator')
         self._qins = QuantumInstance(backend=qasm_sim, shots=1, seed_simulator=seed,
                                      seed_transpiler=seed)
         if n >= d:
