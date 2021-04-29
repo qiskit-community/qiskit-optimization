@@ -196,6 +196,26 @@ class OptimizationResult:
                         correlations[i, j] -= prob
         return correlations
 
+    def get_probabilities(self, status=None) -> Dict[str, float]:
+        """
+        Returns samples, and function values that are successful.
+
+        Returns:
+            A dictionary with sample names, and function values.
+        """
+        sample_results = {}
+        if status is None:
+            for sample in self.samples:
+                sample_results.update({f"{''.join(map(str, map(int, sample.x)))}": \
+                    sample.probability})
+        else:
+            for sample in self.samples:
+                if sample.status.name in status:
+                    sample_results.update({f"{''.join(map(str, map(int, sample.x)))}": \
+                        sample.probability})
+
+        return sample_results
+
     @property
     def x(self) -> Optional[np.ndarray]:
         """Returns the optimal value found in the optimization or None in case of FAILURE.
