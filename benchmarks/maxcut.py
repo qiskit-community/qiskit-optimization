@@ -40,9 +40,8 @@ class MaxcutBenchmarks:
             graph = nx.random_regular_graph(n=n, d=d)
             self._maxcut = Maxcut(graph=graph)
             self._qp = self._maxcut.to_quadratic_program()
-            self._skip = False
         else:
-            self._skip = True
+            raise NotImplementedError
 
     @staticmethod
     def _generate_qubo(maxcut: Maxcut):
@@ -52,28 +51,20 @@ class MaxcutBenchmarks:
         return qubo
 
     def time_generate_qubo(self, _, __):
-        if self._skip:
-            return
         self._generate_qubo(self._maxcut)
 
     def time_qaoa(self, _, __):
-        if self._skip:
-            return
         meo = MinimumEigenOptimizer(
             min_eigen_solver=QAOA(optimizer=COBYLA(maxiter=1), quantum_instance=self._qins))
         meo.solve(self._qp)
 
     def time_vqe(self, _, __):
-        if self._skip:
-            return
         meo = MinimumEigenOptimizer(
             min_eigen_solver=VQE(optimizer=COBYLA(maxiter=1), ansatz=EfficientSU2(),
                                  quantum_instance=self._qins))
         meo.solve(self._qp)
 
     def time_grover(self, _, __):
-        if self._skip:
-            return
         meo = GroverOptimizer(num_value_qubits=self._qp.get_num_vars() // 2,
                               num_iterations=1, quantum_instance=self._qins)
         meo.solve(self._qp)
@@ -84,7 +75,10 @@ if __name__ == '__main__':
         if n < d:
             continue
         bench = MaxcutBenchmarks()
-        bench.setup(n=n, d=d)
+        try:
+            bench.setup(n=n, d=d)
+        except NotImplementedError:
+            continue
         for method in set(dir(MaxcutBenchmarks)):
             if method.startswith('time_'):
                 elapsed = timeit(f'bench.{method}(None, None)', number=10, globals=globals())
