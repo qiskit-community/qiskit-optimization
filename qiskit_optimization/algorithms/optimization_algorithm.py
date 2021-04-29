@@ -206,13 +206,11 @@ class OptimizationResult:
         sample_results = {}
         if status is None:
             for sample in self.samples:
-                sample_results.update({f"{''.join(map(str, map(int, sample.x)))}": \
-                    sample.probability})
+                sample_results.update({f"{''.join(map(str, map(int, sample.x)))}": sample.probability})
         else:
             for sample in self.samples:
                 if sample.status.name in status:
-                    sample_results.update({f"{''.join(map(str, map(int, sample.x)))}": \
-                        sample.probability})
+                    sample_results.update({f"{''.join(map(str, map(int, sample.x)))}": sample.probability})
 
         return sample_results
 
