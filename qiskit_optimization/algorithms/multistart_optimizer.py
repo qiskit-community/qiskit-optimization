@@ -53,7 +53,10 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         """
         super().__init__()
         
-        self._trials = trials if trials > 0 else 1
+        if trials <= 0:
+            raise ValueError('Number of trials should be positive')
+        
+        self._trials = trials
         self._clip = clip
 
     def multi_start_solve(self, minimize: Callable[[np.ndarray], Tuple[np.ndarray, Any]],
@@ -113,8 +116,10 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         Args:
             trials: The number of trials to set.
         """
-        if trials > 0:
-            self._trials = trials
+        if trials <= 0:
+            raise ValueError('Number of trials should be positive')
+            
+        self._trials = trials
 
     @property
     def clip(self) -> float:
