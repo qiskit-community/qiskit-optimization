@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Model translator between QuadraticProgram and Docplex"""
+"""Model translators between QuadraticProgram and Docplex"""
 
 from typing import cast
 

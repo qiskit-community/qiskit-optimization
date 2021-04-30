@@ -18,7 +18,7 @@ from qiskit.exceptions import MissingOptionalLibraryError
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
-from ..translator.gurobipy import GurobipyTranslator
+from ..translators.gurobipy import GurobipyTranslator
 
 logger = logging.getLogger(__name__)
 

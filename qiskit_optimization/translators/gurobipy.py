@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Model translator between QuadraticProgram and Docplex"""
+"""Model translators between QuadraticProgram and Gurobipy"""
 
 from typing import cast
 
@@ -30,6 +30,12 @@ try:
     _HAS_GUROBI = True
 except ImportError:
     _HAS_GUROBI = False
+
+    class GurobiModel:  # type: ignore
+        """ Empty GurobiModel class
+            Replacement if gurobipy.Model is not present.
+        """
+        pass
 
 
 class GurobipyTranslator(ModelTranslator[GurobiModel]):

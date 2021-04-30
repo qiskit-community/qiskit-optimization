@@ -803,7 +803,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         """test from_model and to_model with GurobipyTranslator"""
         try:
             import gurobipy as gp
-            from qiskit_optimization.translator.gurobipy import GurobipyTranslator
+            from qiskit_optimization.translators.gurobipy import GurobipyTranslator
             translator = GurobipyTranslator()
         except ImportError as ex:
             self.skipTest("gurobipy not installed: {}".format(str(ex)))

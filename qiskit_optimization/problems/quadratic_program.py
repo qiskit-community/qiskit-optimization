@@ -40,7 +40,7 @@ from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 
 if TYPE_CHECKING:
-    from ..translator.model_translator import ModelTranslator
+    from ..translators.model_translator import ModelTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -811,13 +811,13 @@ class QuadraticProgram:
 
         Args:
             model: The optimization model to be loaded.
-            translator: The model translator
+            translator: The model translators
 
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
         if translator is None:
-            from qiskit_optimization.translator.docplex import DocplexTranslator
+            from qiskit_optimization.translators.docplex import DocplexTranslator
             translator = DocplexTranslator()
         translator.model_to_qp(model, self)
 
@@ -831,7 +831,7 @@ class QuadraticProgram:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
         if translator is None:
-            from qiskit_optimization.translator.docplex import DocplexTranslator
+            from qiskit_optimization.translators.docplex import DocplexTranslator
             translator = DocplexTranslator()
         return translator.qp_to_model(self)
 
