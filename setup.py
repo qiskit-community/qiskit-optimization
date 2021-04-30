@@ -64,6 +64,7 @@ setuptools.setup(
         'cplex': ["cplex; python_version < '3.9'"],
         'cvx': ['cvxpy'],
         'matplotlib': ['matplotlib'],
+        'gurobipy': ['gurobipy'],
     },
     zip_safe=False
 )

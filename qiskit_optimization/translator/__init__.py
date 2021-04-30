@@ -39,6 +39,7 @@ Applications
    GurobiTranslator
 """
 
-from .docplex import DocplexTranslator
+# from .model_translator import ModelTranslator
+# from .docplex import DocplexTranslator
 
-_all__ = ["DocplexTranslator"]
+# _all = ["ModelTranslator", "DocplexTranslator"]

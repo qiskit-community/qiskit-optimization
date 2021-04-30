@@ -18,6 +18,7 @@ from qiskit.exceptions import MissingOptionalLibraryError
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
+from ..translator.gurobipy import GurobipyTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
         """
 
         # convert to Gurobi problem
-        model = problem.to_gurobipy()
+        model = problem.to_model(translator=GurobipyTranslator())
 
         # Enable non-convex
         model.Params.NonConvex = 2

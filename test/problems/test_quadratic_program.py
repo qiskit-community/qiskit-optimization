@@ -800,9 +800,11 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(c.sense, senses[i])
 
     def test_gurobipy(self):
-        """test from_gurobipy and to_gurobipy"""
+        """test from_model and to_model with GurobipyTranslator"""
         try:
             import gurobipy as gp
+            from qiskit_optimization.translator.gurobipy import GurobipyTranslator
+            translator = GurobipyTranslator()
         except ImportError as ex:
             self.skipTest("gurobipy not installed: {}".format(str(ex)))
             return
@@ -815,7 +817,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.linear_constraint({'x': 2, 'z': -1}, '==', 1)
         q_p.quadratic_constraint({'x': 2, 'z': -1}, {('y', 'z'): 3}, '==', 1)
         q_p2 = QuadraticProgram()
-        q_p2.from_gurobipy(q_p.to_gurobipy())
+        q_p2.from_model(q_p.to_model(translator=translator), translator=translator)
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = gp.Model('test')
@@ -833,14 +835,14 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()
             mod.addVar(vtype=gp.GRB.SEMIINT, lb=1, name='x')
-            q_p.from_gurobipy(mod)
+            q_p.from_model(mod, translator=translator)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()
             x = mod.addVar(vtype=gp.GRB.BINARY, name='x')
             y = mod.addVar(vtype=gp.GRB.BINARY, name='y')
             mod.addConstr((x == 1) >> (x + y <= 1))
-            q_p.from_gurobipy(mod)
+            q_p.from_model(mod, translator=translator)
 
         # test from_gurobipy without explicit variable names
         mod = gp.Model()
@@ -856,7 +858,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         mod.addConstr(x * y >= z)  # quadratic GE
         mod.addConstr(x * y <= z)  # quadratic LE
         q_p = QuadraticProgram()
-        q_p.from_gurobipy(mod)
+        q_p.from_model(mod, translator=translator)
         var_names = [v.name for v in q_p.variables]
         self.assertListEqual(var_names, ['C0', 'C1', 'C2'])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
