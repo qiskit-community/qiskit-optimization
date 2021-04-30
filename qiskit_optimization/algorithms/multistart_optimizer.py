@@ -50,6 +50,9 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             clip: Clipping parameter for the initial guesses in the multi-start method.
                 If a variable is unbounded then the lower bound and/or upper bound are replaced
                 with the ``-clip`` or ``clip`` values correspondingly for the initial guesses.
+        
+        Raises:
+            ValueError: if the variable trials have a value smaller than 1.
         """
         super().__init__()
         if trials <= 0:
@@ -113,9 +116,12 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
 
         Args:
             trials: The number of trials to set.
+            
+        Raises:
+            ValueError: if the variable trials have a value smaller than 1.
         """
         if trials <= 0:
-            raise ValueError(f'Number of trials should be 1 or higher, but was {trials}')     
+            raise ValueError(f'Number of trials should be 1 or higher, but was {trials}')
         self._trials = trials
 
     @property
