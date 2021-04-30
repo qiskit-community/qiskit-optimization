@@ -16,7 +16,7 @@ Optimization model translators (:mod:`qiskit_optimization.translators`)
 
 .. currentmodule:: qiskit_optimization.translators
 
-Translators of optimization models
+Translators between an optimization model and a quadratic program
 
 Base classes for applications
 =======================================
@@ -39,7 +39,8 @@ Applications
    GurobiTranslator
 """
 
-# from .model_translator import ModelTranslator
-# from .docplex import DocplexTranslator
+from .model_translator import ModelTranslator
+from .docplex import DocplexTranslator
+from .gurobipy import GurobipyTranslator
 
-# _all = ["ModelTranslator", "DocplexTranslator"]
+_all = ["ModelTranslator", "DocplexTranslator", "GurobipyTranslator"]

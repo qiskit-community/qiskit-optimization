@@ -12,7 +12,7 @@
 
 """Model translators between QuadraticProgram and Docplex"""
 
-from typing import cast
+from typing import cast, Any
 
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
@@ -28,19 +28,18 @@ except ImportError:
     # old location until docplex 2.15.194
     from docplex.mp.linear import Var
 
-from qiskit_optimization import QiskitOptimizationError
-from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-from qiskit_optimization.problems.variable import Variable
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
+from qiskit_optimization.problems.variable import Variable
 from .model_translator import ModelTranslator
 
 
-class DocplexTranslator(ModelTranslator[Model]):
+class DocplexTranslator(ModelTranslator):
     """Translator between a Docplex model and a quadratic program
     """
 
-    def qp_to_model(self, quadratic_program: QuadraticProgram) -> Model:
+    def qp_to_model(self, quadratic_program: Any) -> Any:
         """Returns a docplex model corresponding to a quadratic program.
 
         Args:
@@ -52,6 +51,8 @@ class DocplexTranslator(ModelTranslator[Model]):
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
+        # from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+        # quadratic_program = cast(QuadraticProgram, quadratic_program)
 
         # initialize model
         mdl = Model(quadratic_program.name)
@@ -123,9 +124,10 @@ class DocplexTranslator(ModelTranslator[Model]):
             else:
                 # should never happen
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+
         return mdl
 
-    def model_to_qp(self, model: Model, quadratic_program: QuadraticProgram):
+    def model_to_qp(self, model: Model, quadratic_program: Any):
         """Translate a docplex model into a quadratic program.
 
         Note that this supports only basic functions of docplex as follows:
@@ -140,6 +142,8 @@ class DocplexTranslator(ModelTranslator[Model]):
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+        # from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+        # quadratic_program = cast(QuadraticProgram, quadratic_program)
 
         # clear current problem
         quadratic_program.clear()

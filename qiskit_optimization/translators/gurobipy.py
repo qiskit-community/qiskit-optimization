@@ -12,14 +12,13 @@
 
 """Model translators between QuadraticProgram and Gurobipy"""
 
-from typing import cast
+from typing import cast, Any
 
 from qiskit.exceptions import MissingOptionalLibraryError
 
-from qiskit_optimization import QiskitOptimizationError
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
-from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.problems.variable import Variable
 from .model_translator import ModelTranslator
 
@@ -38,11 +37,11 @@ except ImportError:
         pass
 
 
-class GurobipyTranslator(ModelTranslator[GurobiModel]):
+class GurobipyTranslator(ModelTranslator):
     """Translator between a gurobipy model and a quadratic program
     """
 
-    def qp_to_model(self, quadratic_program: QuadraticProgram) -> GurobiModel:
+    def qp_to_model(self, quadratic_program: Any) -> GurobiModel:
         """Returns a gurobipy model corresponding to a quadratic program
 
         Returns:
@@ -57,6 +56,9 @@ class GurobipyTranslator(ModelTranslator[GurobiModel]):
                 libname='GUROBI',
                 name='GurobiOptimizer',
                 pip_install="pip install gurobipy")
+
+        from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+        quadratic_program = cast(QuadraticProgram, quadratic_program)
 
         # initialize model
         mdl = gp.Model(quadratic_program.name)
@@ -133,7 +135,7 @@ class GurobipyTranslator(ModelTranslator[GurobiModel]):
 
         return mdl
 
-    def model_to_qp(self, model: GurobiModel, quadratic_program: QuadraticProgram):
+    def model_to_qp(self, model: GurobiModel, quadratic_program: Any):
         """Translate a gurobipy model into a quadratic program.
 
         Note that this supports only basic functions of gurobipy as follows:
@@ -154,6 +156,9 @@ class GurobipyTranslator(ModelTranslator[GurobiModel]):
                 libname='GUROBI',
                 name='GurobiOptimizer',
                 pip_install="pip install gurobipy")
+
+        from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+        quadratic_program = cast(QuadraticProgram, quadratic_program)
 
         # clear current problem
         quadratic_program.clear()

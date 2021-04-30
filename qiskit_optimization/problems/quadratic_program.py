@@ -18,7 +18,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
 from math import fsum, isclose
-from typing import Dict, List, Optional, Tuple, Union, cast, TYPE_CHECKING
+from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from docplex.mp.model import Model
@@ -38,9 +38,7 @@ from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
-
-if TYPE_CHECKING:
-    from ..translators.model_translator import ModelTranslator
+from ..translators.model_translator import ModelTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -801,7 +799,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self, constant, linear, quadratic,
                                              QuadraticObjective.Sense.MAXIMIZE)
 
-    def from_model(self, model: Model, translator: Optional['ModelTranslator'] = None) -> None:
+    def from_model(self, model: Model, translator: Optional[ModelTranslator] = None) -> None:
         """Loads this quadratic program from an optimization model.
 
         Note that this supports only basic functions of docplex as follows:
@@ -821,7 +819,7 @@ class QuadraticProgram:
             translator = DocplexTranslator()
         translator.model_to_qp(model, self)
 
-    def to_model(self, translator: Optional['ModelTranslator'] = None) -> Model:
+    def to_model(self, translator: Optional[ModelTranslator] = None) -> Model:
         """Returns an optimization model corresponding to this quadratic program.
 
         Returns:

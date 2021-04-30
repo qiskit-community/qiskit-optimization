@@ -13,22 +13,15 @@
 """Abstract class for optimization model translators"""
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-
-Model = TypeVar('Model')
+from typing import Any
 
 
-class ModelTranslator(ABC, Generic[Model]):
+class ModelTranslator(ABC):
     """Translator between an optimization model and a quadratic program
     """
 
     @abstractmethod
-    def qp_to_model(self, quadratic_program: 'QuadraticProgram') -> Model:
+    def qp_to_model(self, quadratic_program: Any) -> Any:
         """Returns an optimization model corresponding to a quadratic program.
 
         Args:
@@ -40,7 +33,7 @@ class ModelTranslator(ABC, Generic[Model]):
         pass
 
     @abstractmethod
-    def model_to_qp(self, model: Model, quadratic_program: 'QuadraticProgram') -> None:
+    def model_to_qp(self, model: Any, quadratic_program: Any) -> None:
         """Translate an optimization model into a quadratic program.
 
         Args:
