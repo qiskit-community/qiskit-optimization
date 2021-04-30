@@ -34,6 +34,7 @@ from qiskit_optimization.converters import (InequalityToEquality,
                                             QuadraticProgramToQubo)
 from qiskit_optimization.problems import QuadraticProgram
 
+
 @ddt
 class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     """Min Eigen Optimizer Tests."""
@@ -186,18 +187,18 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
         result = min_eigen_optimizer.solve(self.op_minimize)
         opt_sol = 1
-        SUCCESS = OptimizationResultStatus.SUCCESS
+        success = OptimizationResultStatus.SUCCESS
         self.assertEqual(result.fval, opt_sol)
         self.assertEqual(len(result.samples), 1)
         np.testing.assert_array_almost_equal(result.samples[0].x, [1, 0])
         self.assertAlmostEqual(result.samples[0].fval, opt_sol)
         self.assertAlmostEqual(result.samples[0].probability, 1.0)
-        self.assertEqual(result.samples[0].status, SUCCESS)
+        self.assertEqual(result.samples[0].status, success)
         self.assertEqual(len(result.raw_samples), 1)
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [1, 0, 0, 0, 0])
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
-        self.assertEqual(result.raw_samples[0].status, SUCCESS)
+        self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -208,12 +209,12 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(result.samples[0].x, [0, 1])
         self.assertAlmostEqual(result.samples[0].fval, opt_sol)
         self.assertAlmostEqual(result.samples[0].probability, 1.0)
-        self.assertEqual(result.samples[0].status, SUCCESS)
+        self.assertEqual(result.samples[0].status, success)
         self.assertEqual(len(result.raw_samples), 1)
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [0, 0, 1, 0])
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
-        self.assertEqual(result.raw_samples[0].status, SUCCESS)
+        self.assertEqual(result.raw_samples[0].status, success)
 
     @data('sv', 'qasm')
     def test_samples_qaoa(self, simulator):
@@ -225,25 +226,25 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
-        SUCCESS = OptimizationResultStatus.SUCCESS
+        success = OptimizationResultStatus.SUCCESS
         opt_sol = 1
         self.assertEqual(len(result.samples), 8)
         self.assertEqual(len(result.raw_samples), 32)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == SUCCESS), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
-            self.assertEqual(sample.status, SUCCESS)
+            self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(result.x, [1, 0])
         self.assertAlmostEqual(result.fval, result.samples[0].fval)
         self.assertEqual(result.status, result.samples[0].status)
         self.assertAlmostEqual(result.samples[0].fval, opt_sol)
-        self.assertEqual(result.samples[0].status, SUCCESS)
+        self.assertEqual(result.samples[0].status, success)
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [1, 0, 0, 0, 0])
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
-        self.assertEqual(result.raw_samples[0].status, SUCCESS)
+        self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         opt_sol = 2
         qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
@@ -254,19 +255,19 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(max(s.fval for s in result.samples), 5)
-        self.assertAlmostEqual(max(s.fval for s in result.samples if s.status == SUCCESS), opt_sol)
+        self.assertAlmostEqual(max(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(max(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
-            self.assertEqual(sample.status, SUCCESS)
+            self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(result.x, [0, 1])
         self.assertEqual(result.fval, opt_sol)
-        self.assertEqual(result.status, SUCCESS)
+        self.assertEqual(result.status, success)
         np.testing.assert_array_almost_equal(result.samples[0].x, [0, 1])
         self.assertAlmostEqual(result.samples[0].fval, opt_sol)
-        self.assertEqual(result.samples[0].status, SUCCESS)
+        self.assertEqual(result.samples[0].status, success)
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [0, 0, 1, 0])
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
-        self.assertEqual(result.raw_samples[0].status, SUCCESS)
+        self.assertEqual(result.raw_samples[0].status, success)
 
     @data('sv', 'qasm')
     def test_samples_vqe(self, simulator):
@@ -282,7 +283,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         op = QuadraticProgram()
         op.from_docplex(mdl)
         opt_sol = -2
-        SUCCESS = OptimizationResultStatus.SUCCESS
+        success = OptimizationResultStatus.SUCCESS
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, 'ry', 'cz', reps=3, entanglement='full')
         # Test for a qasm simulator.
@@ -296,19 +297,19 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in results.samples), 1, delta=1e-5)
         self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1, delta=1e-5)
         self.assertAlmostEqual(min(s.fval for s in results.samples), -2)
-        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == SUCCESS), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
-            self.assertEqual(sample.status, SUCCESS)
+            self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(results.x, [0, 1])
         self.assertEqual(results.fval, opt_sol)
-        self.assertEqual(results.status, SUCCESS)
+        self.assertEqual(results.status, success)
         np.testing.assert_array_almost_equal(results.samples[0].x, [0, 1])
         self.assertAlmostEqual(results.samples[0].fval, opt_sol)
-        self.assertEqual(results.samples[0].status, SUCCESS)
+        self.assertEqual(results.samples[0].status, success)
         np.testing.assert_array_almost_equal(results.raw_samples[0].x, [0, 1])
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
-        self.assertEqual(results.raw_samples[0].status, SUCCESS)
+        self.assertEqual(results.raw_samples[0].status, success)
 
 
 if __name__ == '__main__':
