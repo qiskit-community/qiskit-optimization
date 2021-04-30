@@ -515,10 +515,9 @@ class OptimizationAlgorithm(ABC):
                                   status=OptimizationResultStatus.SUCCESS)
         solutions = []
         if isinstance(eigenvector, dict):
-            all_counts = sum(eigenvector.values())
+            eigenvector = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
-            for bitstr, count in eigenvector.items():
-                sampling_probability = count / all_counts
+            for bitstr, sampling_probability in eigenvector.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))

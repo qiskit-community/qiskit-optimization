@@ -177,7 +177,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.binary_var('y')
         op.minimize(linear={'x': 1, 'y': 2})
         op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
-        algorithm_globals.random_seed = 1
         q_instance = self.sv_simulator if simulator == 'sv' else self.qasm_simulator
         grover_optimizer = GroverOptimizer(
             8, num_iterations=10, quantum_instance=q_instance)
