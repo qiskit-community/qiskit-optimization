@@ -26,5 +26,5 @@ class ModelTranslator(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def model_to_qp(self, model: T) -> QuadraticProgram:
+    def model_to_qp(self, model: T, prog: QuadraticProgram) -> None:
         pass

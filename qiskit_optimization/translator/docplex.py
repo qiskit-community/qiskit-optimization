@@ -120,7 +120,7 @@ class DocplexTranslator(ModelTranslator[Model]):
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
         return mdl
 
-    def model_to_qp(self, model: Model) -> QuadraticProgram:
+    def model_to_qp(self, model: Model, prog: QuadraticProgram):
         """Loads this quadratic program from a docplex model.
 
         Note that this supports only basic functions of docplex as follows:
@@ -136,7 +136,7 @@ class DocplexTranslator(ModelTranslator[Model]):
         """
 
         # clear current problem
-        prog = QuadraticProgram()
+        prog.clear()
 
         # get name
         prog.name = model.name
