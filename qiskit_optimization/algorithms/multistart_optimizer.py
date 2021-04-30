@@ -52,10 +52,8 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
                 with the ``-clip`` or ``clip`` values correspondingly for the initial guesses.
         """
         super().__init__()
-        
         if trials <= 0:
-            raise ValueError('Number of trials should be positive')
-        
+            raise ValueError(f'Number of trials should be 1 or higher, but was {trials}')
         self._trials = trials
         self._clip = clip
 
@@ -117,8 +115,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             trials: The number of trials to set.
         """
         if trials <= 0:
-            raise ValueError('Number of trials should be positive')
-            
+            raise ValueError(f'Number of trials should be 1 or higher, but was {trials}')     
         self._trials = trials
 
     @property
