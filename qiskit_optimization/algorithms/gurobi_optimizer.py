@@ -47,7 +47,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
         ...     def noop(*args, **kwargs): pass
         ...     close = write = flush = writelines = noop
         >>> sys.stdout = DevNull()
-        >>> result = optimizer.solve(problem)
+        >>> result = optimizer.solve(problem) if GurobiOptimizer.is_gurobi_installed() else None
     """
 
     def __init__(self, disp: bool = False) -> None:
