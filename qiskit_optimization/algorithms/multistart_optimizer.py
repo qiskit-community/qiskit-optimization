@@ -17,7 +17,7 @@ better results. This implementation is suitable for local optimizers."""
 import logging
 import time
 from abc import ABC
-from typing import Callable, Tuple, Any
+from typing import Callable, Tuple, Any, Optional
 
 import numpy as np
 from scipy.stats import uniform
@@ -68,6 +68,10 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             The result of the multi start algorithm applied to the problem.
         """
 
+        fval_sol = INFINITY
+        x_sol: Optional[np.ndarray] = None
+        rest_sol: Optional[Tuple] = None
+
         # we deal with minimization in the optimizer, so turn the problem to minimization
         max2min = MaximizeToMinimize()
         original_problem = problem
@@ -86,9 +90,15 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             x, rest = minimize(x_0)
             logger.debug("minimize done in: %s seconds", str(time.time() - t_0))
 
+            fval = problem.objective.evaluate(x)
+            # we minimize the objective
+            if fval < fval_sol:
+                fval_sol = fval
+                x_sol = x
+                rest_sol = rest
         # eventually convert back minimization to maximization
-        return self._interpret(x, problem=original_problem, converters=max2min,
-                               raw_results=rest)
+        return self._interpret(x_sol, problem=original_problem, converters=max2min,
+                               raw_results=rest_sol)
 
     @property
     def trials(self) -> int:
