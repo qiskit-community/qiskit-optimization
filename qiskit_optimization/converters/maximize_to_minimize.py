@@ -13,8 +13,7 @@
 """Converter to convert a maximization problem to minimization problem."""
 
 import copy
-import logging
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, List
 
 import numpy as np
 
@@ -22,8 +21,6 @@ from .quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
-
-logger = logging.getLogger(__name__)
 
 
 class MaximizeToMinimize(QuadraticProgramConverter):
