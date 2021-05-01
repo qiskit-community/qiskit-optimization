@@ -23,6 +23,7 @@ from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from ..problems.constraint import Constraint
 from ..problems.quadratic_program import QuadraticProgram
+from ..converters import MaximizeToMinimize
 
 
 class CobylaOptimizer(MultiStartOptimizer):
@@ -111,7 +112,6 @@ class CobylaOptimizer(MultiStartOptimizer):
         self._verify_compatibility(problem)
 
         # we deal with minimization in the optimizer, so turn the problem to minimization
-        from ..converters.maximize_to_minimize import MaximizeToMinimize
         max2min = MaximizeToMinimize()
         original_problem = problem
         problem = max2min.convert(problem)

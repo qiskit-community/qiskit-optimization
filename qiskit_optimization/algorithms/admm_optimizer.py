@@ -28,6 +28,7 @@ from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import VarType, Variable
+from ..converters import MaximizeToMinimize
 
 UPDATE_RHO_BY_TEN_PERCENT = 0
 UPDATE_RHO_BY_RESIDUALS = 1
@@ -289,7 +290,6 @@ class ADMMOptimizer(OptimizationAlgorithm):
         problem = int2bin.convert(problem)
 
         # we deal with minimization in the optimizer, so turn the problem to minimization
-        from ..converters.maximize_to_minimize import MaximizeToMinimize
         max2min = MaximizeToMinimize()
         problem = max2min.convert(problem)
 

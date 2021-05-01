@@ -17,7 +17,7 @@ better results. This implementation is suitable for local optimizers."""
 import logging
 import time
 from abc import ABC
-from typing import Optional, Callable, Tuple, Any
+from typing import Callable, Tuple, Any
 
 import numpy as np
 from scipy.stats import uniform
@@ -25,6 +25,7 @@ from scipy.stats import uniform
 from ..problems.quadratic_program import QuadraticProgram
 from ..infinity import INFINITY
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
+from ..converters import MaximizeToMinimize
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,6 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         """
 
         # we deal with minimization in the optimizer, so turn the problem to minimization
-        from ..converters.maximize_to_minimize import MaximizeToMinimize
         max2min = MaximizeToMinimize()
         original_problem = problem
         problem = max2min.convert(problem)
