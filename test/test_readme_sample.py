@@ -27,9 +27,8 @@ class TestReadmeSample(QiskitOptimizationTestCase):
     """Test sample code from readme"""
 
     def _sample_code(self):
-
         def print(*args):
-            """ overloads print to log values """
+            """overloads print to log values"""
             if args:
                 self.log.debug(args[0], *args[1:])
 
@@ -57,17 +56,19 @@ class TestReadmeSample(QiskitOptimizationTestCase):
 
         # Formulate the problem as quadratic program
         problem = QuadraticProgram()
-        _ = [problem.binary_var('x{}'.format(i)) for i in range(n)]  # create n binary variables
+        _ = [
+            problem.binary_var("x{}".format(i)) for i in range(n)
+        ]  # create n binary variables
         linear = w.dot(np.ones(n))
         quadratic = -w
         problem.maximize(linear=linear, quadratic=quadratic)
 
         # Fix node 0 to be 1 to break the symmetry of the max-cut solution
-        problem.linear_constraint([1, 0, 0, 0], '==', 1)
+        problem.linear_constraint([1, 0, 0, 0], "==", 1)
 
         # Run quantum algorithm QAOA on qasm simulator
         spsa = SPSA(maxiter=250)
-        backend = BasicAer.get_backend('qasm_simulator')
+        backend = BasicAer.get_backend("qasm_simulator")
         qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=backend)
         algorithm = MinimumEigenOptimizer(qaoa)
         result = algorithm.solve(problem)
@@ -77,15 +78,16 @@ class TestReadmeSample(QiskitOptimizationTestCase):
         return result
 
     def test_readme_sample(self):
-        """ readme sample test """
+        """readme sample test"""
 
-        print('')
+        print("")
         import numpy as np
+
         # for now do this until test is fixed
         msg = None
         for idx in range(3):
             try:
-                print(f'Trial number {idx+1}')
+                print(f"Trial number {idx+1}")
                 # Fix the random seed of SPSA (Optional)
                 algorithm_globals.random_seed = 123
                 result = self._sample_code()
@@ -100,5 +102,5 @@ class TestReadmeSample(QiskitOptimizationTestCase):
             self.skipTest(msg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

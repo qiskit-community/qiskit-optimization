@@ -45,15 +45,22 @@ class NumberPartition(OptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the number partitioning problem instance.
         """
-        mdl = Model(name='Number partitioning')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._number_set))}
-        mdl.add_constraint(mdl.sum(num * (-2 * x[i] + 1)
-                                   for i, num in enumerate(self._number_set)) == 0)
+        mdl = Model(name="Number partitioning")
+        x = {
+            i: mdl.binary_var(name="x_{0}".format(i))
+            for i in range(len(self._number_set))
+        }
+        mdl.add_constraint(
+            mdl.sum(num * (-2 * x[i] + 1) for i, num in enumerate(self._number_set))
+            == 0
+        )
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(
+        self, result: Union[OptimizationResult, np.ndarray]
+    ) -> List[List[int]]:
         """Interpret a result as a list of subsets
 
         Args:

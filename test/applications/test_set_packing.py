@@ -14,14 +14,13 @@
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.set_packing import SetPacking
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestSetPacking(QiskitOptimizationTestCase):
-    """ Test SetPacking class"""
+    """Test SetPacking class"""
 
     def setUp(self):
         super().setUp()
@@ -31,8 +30,11 @@ class TestSetPacking(QiskitOptimizationTestCase):
         for _ in range(5):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 0, 1, 1, 1], fval=3, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[0, 0, 1, 1, 1],
+            fval=3,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -56,9 +58,14 @@ class TestSetPacking(QiskitOptimizationTestCase):
         for i, lin in enumerate(lin):
             self.assertEqual(lin.sense, Constraint.Sense.LE)
             self.assertEqual(lin.rhs, 1)
-            self.assertEqual(lin.linear.to_dict(), {
-                             j: 1 for j, subset in enumerate(self.list_of_subsets)
-                             if i+1 in subset})
+            self.assertEqual(
+                lin.linear.to_dict(),
+                {
+                    j: 1
+                    for j, subset in enumerate(self.list_of_subsets)
+                    if i + 1 in subset
+                },
+            )
 
     def test_interpret(self):
         """Test interpret"""
