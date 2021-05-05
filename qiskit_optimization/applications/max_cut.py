@@ -39,21 +39,28 @@ class Maxcut(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the Max-cut problem instance.
         """
-        mdl = Model(name='Max-cut')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i))
-             for i in range(self._graph.number_of_nodes())}
+        mdl = Model(name="Max-cut")
+        x = {
+            i: mdl.binary_var(name="x_{0}".format(i))
+            for i in range(self._graph.number_of_nodes())
+        }
         for w, v in self._graph.edges:
-            self._graph.edges[w, v].setdefault('weight', 1)
-        objective = mdl.sum(self._graph.edges[i, j]['weight'] * x[i]
-                            * (1 - x[j]) + self._graph.edges[i, j]['weight'] * x[j]
-                            * (1 - x[i]) for i, j in self._graph.edges)
+            self._graph.edges[w, v].setdefault("weight", 1)
+        objective = mdl.sum(
+            self._graph.edges[i, j]["weight"] * x[i] * (1 - x[j])
+            + self._graph.edges[i, j]["weight"] * x[j] * (1 - x[i])
+            for i, j in self._graph.edges
+        )
         mdl.maximize(objective)
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:
@@ -63,7 +70,9 @@ class Maxcut(GraphOptimizationApplication):
         x = self._result_to_x(result)
         nx.draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(
+        self, result: Union[OptimizationResult, np.ndarray]
+    ) -> List[List[int]]:
         """Interpret a result as two lists of node indices
 
         Args:
@@ -85,7 +94,7 @@ class Maxcut(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ['r' if value == 0 else 'b' for value in x]
+        return ["r" if value == 0 else "b" for value in x]
 
     @staticmethod
     def parse_gset_format(filename: str) -> np.ndarray:
@@ -103,7 +112,8 @@ class Maxcut(GraphOptimizationApplication):
             m = -1
             count = 0
             for line in infile:
-                v = map(lambda e: int(e), line.split())  # pylint: disable=unnecessary-lambda
+                # pylint: disable=unnecessary-lambda
+                v = map(lambda e: int(e), line.split())
                 if header:
                     n, m = v
                     w = np.zeros((n, n))

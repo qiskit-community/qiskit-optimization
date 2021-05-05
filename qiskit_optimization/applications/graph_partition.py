@@ -38,20 +38,24 @@ class GraphPartition(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the graph partition instance.
         """
-        mdl = Model(name='Graph partition')
+        mdl = Model(name="Graph partition")
         n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
         for w, v in self._graph.edges:
-            self._graph.edges[w, v].setdefault('weight', 1)
-        objective = mdl.sum(self._graph.edges[i, j]['weight'] *
-                            (x[i] + x[j] - 2*x[i]*x[j]) for i, j in self._graph.edges)
+            self._graph.edges[w, v].setdefault("weight", 1)
+        objective = mdl.sum(
+            self._graph.edges[i, j]["weight"] * (x[i] + x[j] - 2 * x[i] * x[j])
+            for i, j in self._graph.edges
+        )
         mdl.minimize(objective)
-        mdl.add_constraint(mdl.sum([x[i] for i in x]) == n//2)
+        mdl.add_constraint(mdl.sum([x[i] for i in x]) == n // 2)
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(
+        self, result: Union[OptimizationResult, np.ndarray]
+    ) -> List[List[int]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -69,8 +73,11 @@ class GraphPartition(GraphOptimizationApplication):
                 partition[1].append(i)
         return partition
 
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:
@@ -84,4 +91,4 @@ class GraphPartition(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ['r' if x[node] else 'b' for node in self._graph.nodes]
+        return ["r" if x[node] else "b" for node in self._graph.nodes]
