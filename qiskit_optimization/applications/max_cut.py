@@ -112,9 +112,8 @@ class Maxcut(GraphOptimizationApplication):
             m = -1
             count = 0
             for line in infile:
-                v = map(
-                    lambda e: int(e), line.split()
-                )  # pylint: disable=unnecessary-lambda
+                # pylint: disable=unnecessary-lambda
+                v = map(lambda e: int(e), line.split())
                 if header:
                     n, m = v
                     w = np.zeros((n, n))
