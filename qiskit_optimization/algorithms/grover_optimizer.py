@@ -136,7 +136,9 @@ class GroverOptimizer(OptimizationAlgorithm):
     def _get_oracle(self, qr_key_value):
         # Build negative value oracle O.
         if qr_key_value is None:
-            qr_key_value = QuantumRegister(self._num_key_qubits + self._num_value_qubits)
+            qr_key_value = QuantumRegister(
+                self._num_key_qubits + self._num_value_qubits
+            )
 
         oracle_bit = QuantumRegister(1, "oracle")
         oracle = QuantumCircuit(qr_key_value, oracle_bit)
@@ -224,7 +226,9 @@ class GroverOptimizer(OptimizationAlgorithm):
             while not improvement_found:
                 # Determine the number of rotations.
                 loops_with_no_improvement += 1
-                rotation_count = int(np.ceil(algorithm_globals.random.uniform(0, m - 1)))
+                rotation_count = int(
+                    np.ceil(algorithm_globals.random.uniform(0, m - 1))
+                )
                 rotations += rotation_count
                 # Apply Grover's Algorithm to find values below the threshold.
                 # TODO: Utilize Grover's incremental feature - requires changes to Grover.
@@ -267,8 +271,12 @@ class GroverOptimizer(OptimizationAlgorithm):
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
-                    raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
-                    samples = self._interpret_samples(problem, raw_samples, self._converters)
+                    raw_samples.sort(
+                        key=lambda x: problem_.objective.sense.value * x.fval
+                    )
+                    samples = self._interpret_samples(
+                        problem, raw_samples, self._converters
+                    )
 
                 else:
                     # Using Durr and Hoyer method, increase m.
@@ -298,7 +306,9 @@ class GroverOptimizer(OptimizationAlgorithm):
         if optimum_value >= 0 and orig_constant == 0:
             optimum_key = 0
 
-        opt_x = np.array([1 if s == "1" else 0 for s in ("{0:%sb}" % n_key).format(optimum_key)])
+        opt_x = np.array(
+            [1 if s == "1" else 0 for s in ("{0:%sb}" % n_key).format(optimum_key)]
+        )
         # Compute function value
         fval = problem_init.objective.evaluate(opt_x)
 

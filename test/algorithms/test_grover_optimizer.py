@@ -92,7 +92,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
         # Get the optimum key and value.
         n_iter = 8
-        gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator)
+        gmf = GroverOptimizer(
+            4, num_iterations=n_iter, quantum_instance=self.sv_simulator
+        )
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -113,7 +115,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
         # Get the optimum key and value.
         n_iter = 8
-        gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator)
+        gmf = GroverOptimizer(
+            4, num_iterations=n_iter, quantum_instance=self.sv_simulator
+        )
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -197,7 +201,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.minimize(linear={"x": 1, "y": 2})
         op.linear_constraint(linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy")
         q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        grover_optimizer = GroverOptimizer(8, num_iterations=10, quantum_instance=q_instance)
+        grover_optimizer = GroverOptimizer(
+            8, num_iterations=10, quantum_instance=q_instance
+        )
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
         results = grover_optimizer.solve(op)
@@ -206,7 +212,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in results.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in results.samples), 0)
-        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(
+            min(s.fval for s in results.samples if s.status == success), opt_sol
+        )
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
             self.assertEqual(sample.status, success)
@@ -231,16 +239,24 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
         opt_sol = -2
         success = OptimizationResultStatus.SUCCESS
-        grover_optimizer = GroverOptimizer(3, num_iterations=10, quantum_instance=q_instance)
+        grover_optimizer = GroverOptimizer(
+            3, num_iterations=10, quantum_instance=q_instance
+        )
         results = grover_optimizer.solve(op)
         self.assertEqual(results.fval, opt_sol)
         np.testing.assert_array_almost_equal(results.x, [0, 1])
         self.assertEqual(results.status, success)
         results.raw_samples.sort(key=lambda x: x.probability, reverse=True)
-        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1, delta=1e-5)
-        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1, delta=1e-5)
+        self.assertAlmostEqual(
+            sum(s.probability for s in results.samples), 1, delta=1e-5
+        )
+        self.assertAlmostEqual(
+            sum(s.probability for s in results.raw_samples), 1, delta=1e-5
+        )
         self.assertAlmostEqual(min(s.fval for s in results.samples), -2)
-        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(
+            min(s.fval for s in results.samples if s.status == success), opt_sol
+        )
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
             self.assertEqual(sample.status, success)
