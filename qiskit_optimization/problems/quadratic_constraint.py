@@ -23,19 +23,25 @@ from .quadratic_expression import QuadraticExpression
 
 
 class QuadraticConstraint(Constraint):
-    """ Representation of a quadratic constraint."""
+    """Representation of a quadratic constraint."""
 
     # Note: added, duplicating in effect that in Constraint, to avoid issues with Sphinx
     Sense = ConstraintSense
 
-    def __init__(self,
-                 quadratic_program: Any, name: str,
-                 linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
-                 quadratic: Union[ndarray, spmatrix, List[List[float]],
-                                  Dict[Tuple[Union[int, str], Union[int, str]], float]],
-                 sense: ConstraintSense,
-                 rhs: float
-                 ) -> None:
+    def __init__(
+        self,
+        quadratic_program: Any,
+        name: str,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+        quadratic: Union[
+            ndarray,
+            spmatrix,
+            List[List[float]],
+            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        ],
+        sense: ConstraintSense,
+        rhs: float,
+    ) -> None:
         """Constructs a quadratic constraint, consisting of a linear and a quadratic term.
 
         Args:
@@ -60,8 +66,10 @@ class QuadraticConstraint(Constraint):
         return self._linear
 
     @linear.setter
-    def linear(self, linear: Union[ndarray, spmatrix, List[float],
-                                   Dict[Union[str, int], float]]) -> None:
+    def linear(
+        self,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+    ) -> None:
         """Sets the linear expression corresponding to the left-hand-side of the constraint.
         The coefficients can either be given by an array, a (sparse) 1d matrix, a list or a
         dictionary.
@@ -82,9 +90,15 @@ class QuadraticConstraint(Constraint):
         return self._quadratic
 
     @quadratic.setter
-    def quadratic(self, quadratic: Union[ndarray, spmatrix, List[List[float]],
-                                         Dict[Tuple[Union[int, str], Union[int, str]], float]]) \
-            -> None:
+    def quadratic(
+        self,
+        quadratic: Union[
+            ndarray,
+            spmatrix,
+            List[List[float]],
+            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        ],
+    ) -> None:
         """Sets the quadratic expression corresponding to the left-hand-side of the constraint.
         The coefficients can either be given by an array, a (sparse) matrix, a list or a
         dictionary.

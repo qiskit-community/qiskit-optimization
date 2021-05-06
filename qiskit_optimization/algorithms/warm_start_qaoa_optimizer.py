@@ -21,8 +21,15 @@ from qiskit import QuantumCircuit
 from qiskit.algorithms import QAOA
 from qiskit.circuit import Parameter
 
-from .minimum_eigen_optimizer import MinimumEigenOptimizer, MinimumEigenOptimizationResult
-from .optimization_algorithm import OptimizationAlgorithm, OptimizationResultStatus, SolutionSample
+from .minimum_eigen_optimizer import (
+    MinimumEigenOptimizer,
+    MinimumEigenOptimizationResult,
+)
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResultStatus,
+    SolutionSample,
+)
 from ..converters.quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
@@ -33,8 +40,9 @@ class BaseAggregator(ABC):
     """A base abstract class for aggregates results"""
 
     @abstractmethod
-    def aggregate(self, results: List[MinimumEigenOptimizationResult]) \
-            -> List[SolutionSample]:
+    def aggregate(
+        self, results: List[MinimumEigenOptimizationResult]
+    ) -> List[SolutionSample]:
         """
         Aggregates the results.
 
@@ -50,8 +58,9 @@ class BaseAggregator(ABC):
 class MeanAggregator(BaseAggregator):
     """Aggregates the results by averaging the probability of each sample."""
 
-    def aggregate(self, results: List[MinimumEigenOptimizationResult]) \
-            -> List[SolutionSample]:
+    def aggregate(
+        self, results: List[MinimumEigenOptimizationResult]
+    ) -> List[SolutionSample]:
         """
         Args:
             results: List of result objects that need to be combined.
@@ -74,7 +83,11 @@ class MeanAggregator(BaseAggregator):
         for result in results:
             for sample in result.samples:
                 # state, fval, prob = sample[0], sample[1], sample[2]
-                state, fval, prob = _to_string(sample.x), sample.fval, sample.probability
+                state, fval, prob = (
+                    _to_string(sample.x),
+                    sample.fval,
+                    sample.probability,
+                )
                 if state in dict_samples:
                     dict_samples[state] = (fval, dict_samples[state][1] + prob)
                 else:
@@ -85,10 +98,12 @@ class MeanAggregator(BaseAggregator):
         num_results = len(results)
         for state in dict_samples:
             # sample = (state, dict_samples[state][0], dict_samples[state][1] / num_results)
-            sample = SolutionSample(x=_from_string(state),
-                                    fval=dict_samples[state][0],
-                                    probability=dict_samples[state][1] / num_results,
-                                    status=OptimizationResultStatus.SUCCESS)
+            sample = SolutionSample(
+                x=_from_string(state),
+                fval=dict_samples[state][0],
+                probability=dict_samples[state][1] / num_results,
+                status=OptimizationResultStatus.SUCCESS,
+            )
             aggregated_samples.append(sample)
 
         return aggregated_samples
@@ -113,10 +128,11 @@ class WarmStartQAOAFactory:
         Raises:
             QiskitOptimizationError: if ``epsilon`` is not in the range [0, 0.5].
         """
-        if epsilon < 0. or epsilon > 0.5:
+        if epsilon < 0.0 or epsilon > 0.5:
             raise QiskitOptimizationError(
                 f"Epsilon for warm-start QAOA needs to be between 0 and 0.5, "
-                f"actual value: {epsilon}")
+                f"actual value: {epsilon}"
+            )
         self._epsilon = epsilon
 
     def create_initial_variables(self, solution: np.ndarray) -> List[float]:
@@ -134,8 +150,8 @@ class WarmStartQAOAFactory:
         for variable in solution:
             if variable < self._epsilon:
                 initial_variables.append(self._epsilon)
-            elif variable > 1. - self._epsilon:
-                initial_variables.append(1. - self._epsilon)
+            elif variable > 1.0 - self._epsilon:
+                initial_variables.append(1.0 - self._epsilon)
             else:
                 initial_variables.append(variable)
 
@@ -193,19 +209,21 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
 
     """
 
-    def __init__(self,
-                 pre_solver: OptimizationAlgorithm,
-                 relax_for_pre_solver: bool,
-                 qaoa: QAOA,
-                 epsilon: float = 0.25,
-                 num_initial_solutions: int = 1,
-                 warm_start_factory: Optional[WarmStartQAOAFactory] = None,
-                 aggregator: Optional[BaseAggregator] = None,
-                 penalty: Optional[float] = None,
-                 converters: Optional[Union[QuadraticProgramConverter,
-                                            List[QuadraticProgramConverter]]] = None
-                 ) -> None:
-        """ Initializes the optimizer. For correct initialization either
+    def __init__(
+        self,
+        pre_solver: OptimizationAlgorithm,
+        relax_for_pre_solver: bool,
+        qaoa: QAOA,
+        epsilon: float = 0.25,
+        num_initial_solutions: int = 1,
+        warm_start_factory: Optional[WarmStartQAOAFactory] = None,
+        aggregator: Optional[BaseAggregator] = None,
+        penalty: Optional[float] = None,
+        converters: Optional[
+            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
+        ] = None,
+    ) -> None:
+        """Initializes the optimizer. For correct initialization either
             ``epsilon`` or ``circuit_factory`` must be passed. If only ``epsilon`` is specified
             (either an explicit value or the default one), then an instance of
             :class:`~qiskit.optimization.algorithms.WarmStartQAOACircuitFactory` is created.
@@ -240,10 +258,11 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         Raises:
             QiskitOptimizationError: if ``epsilon`` is not in the range [0, 0.5].
         """
-        if epsilon < 0. or epsilon > 0.5:
+        if epsilon < 0.0 or epsilon > 0.5:
             raise QiskitOptimizationError(
                 f"Epsilon for warm-start QAOA needs to be between 0 and 0.5, "
-                f"actual value: {epsilon}")
+                f"actual value: {epsilon}"
+            )
 
         self._pre_solver = pre_solver
         self._relax_for_pre_solver = relax_for_pre_solver
@@ -293,8 +312,10 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
 
         opt_result = self._pre_solver.solve(pre_solver_problem)
         if opt_result.status != OptimizationResultStatus.SUCCESS:
-            raise QiskitOptimizationError(f"Presolver returned status {opt_result.status}, "
-                                          f"the problem can't be solved")
+            raise QiskitOptimizationError(
+                f"Presolver returned status {opt_result.status}, "
+                f"the problem can't be solved"
+            )
 
         # we pick only a certain number of the pre-solved solutions.
         num_pre_solutions = min(self._num_initial_solutions, len(opt_result.samples))
@@ -306,28 +327,39 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         results: List[MinimumEigenOptimizationResult] = []
         for pre_solution in pre_solutions:
             # Set the solver using the result of the pre-solver.
-            initial_variables = self._warm_start_factory.create_initial_variables(pre_solution.x)
-            self._qaoa.initial_state = \
-                self._warm_start_factory.create_initial_state(initial_variables)
+            initial_variables = self._warm_start_factory.create_initial_variables(
+                pre_solution.x
+            )
+            self._qaoa.initial_state = self._warm_start_factory.create_initial_state(
+                initial_variables
+            )
             self._qaoa.mixer = self._warm_start_factory.create_mixer(initial_variables)
 
             # approximate ground state of operator using min eigen solver.
-            results.append(self._solve_internal(operator, offset, converted_problem, problem))
+            results.append(
+                self._solve_internal(operator, offset, converted_problem, problem)
+            )
 
         if len(results) == 1:
             # there's no need to call _interpret, it is already done by MinimumEigenOptimizer
             return results[0]
         else:
             samples = self._aggregator.aggregate(results)
-            samples.sort(key=lambda sample: converted_problem.objective.sense.value * sample.fval)
+            samples.sort(
+                key=lambda sample: converted_problem.objective.sense.value * sample.fval
+            )
 
             # translate result back to the original variables
-            return cast(MinimumEigenOptimizationResult,
-                        self._interpret(x=samples[0].x,
-                                        problem=problem,
-                                        converters=self._converters,
-                                        result_class=MinimumEigenOptimizationResult,
-                                        samples=samples))
+            return cast(
+                MinimumEigenOptimizationResult,
+                self._interpret(
+                    x=samples[0].x,
+                    problem=problem,
+                    converters=self._converters,
+                    result_class=MinimumEigenOptimizationResult,
+                    samples=samples,
+                ),
+            )
 
     @staticmethod
     def _relax_problem(problem: QuadraticProgram) -> QuadraticProgram:

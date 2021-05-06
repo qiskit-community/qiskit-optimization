@@ -13,7 +13,10 @@
 """ Test Cplex Optimizer """
 
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import (
+    QiskitOptimizationTestCase,
+    requires_extra_library,
+)
 from ddt import ddt, data
 from qiskit_optimization.algorithms import CplexOptimizer
 from qiskit_optimization.problems import QuadraticProgram
@@ -24,20 +27,20 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
     """Cplex Optimizer Tests."""
 
     @data(
-        ('op_ip1.lp', [0, 2], 6),
-        ('op_mip1.lp', [1, 1, 0], 6),
-        ('op_lp1.lp', [0.25, 1.75], 5.8750)
+        ("op_ip1.lp", [0, 2], 6),
+        ("op_mip1.lp", [1, 1, 0], 6),
+        ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
     @requires_extra_library
     def test_cplex_optimizer(self, config):
-        """ Cplex Optimizer Test """
+        """Cplex Optimizer Test"""
         cplex_optimizer = CplexOptimizer(disp=False)
         # unpack configuration
         filename, x, fval = config
 
         # load optimization problem
         problem = QuadraticProgram()
-        lp_file = self.get_resource_path(filename, 'algorithms/resources')
+        lp_file = self.get_resource_path(filename, "algorithms/resources")
         problem.read_from_lp_file(lp_file)
 
         # solve problem with cplex
@@ -49,5 +52,5 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
             self.assertAlmostEqual(result.x[i], x[i])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

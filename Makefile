@@ -46,7 +46,10 @@ mypy:
 	mypy qiskit_optimization test tools
 
 style:
-	pycodestyle qiskit_optimization test tools
+	black --check qiskit_optimization test tools
+
+black:
+	black qiskit_optimization test tools
 
 test:
 	python -m unittest discover -v test

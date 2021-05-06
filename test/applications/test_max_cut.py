@@ -17,14 +17,13 @@ import networkx as nx
 
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.max_cut import Maxcut
 from qiskit_optimization.problems import QuadraticObjective, VarType
 
 
 class TestMaxcut(QiskitOptimizationTestCase):
-    """ Test Maxcut class"""
+    """Test Maxcut class"""
 
     def setUp(self):
         super().setUp()
@@ -33,8 +32,11 @@ class TestMaxcut(QiskitOptimizationTestCase):
         for _ in range(4):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 1, 0, 0], fval=4, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[1, 1, 0, 0],
+            fval=4,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -51,8 +53,17 @@ class TestMaxcut(QiskitOptimizationTestCase):
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MAXIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {0: 3.0, 1: 3.0, 2: 3.0, 3: 3.0})
-        self.assertDictEqual(obj.quadratic.to_dict(), {(0, 1): -2.0, (0, 2): -2.0, (1, 2): -2.0,
-                                                       (0, 3): -2.0, (1, 3): -2.0, (2, 3): -2.0})
+        self.assertDictEqual(
+            obj.quadratic.to_dict(),
+            {
+                (0, 1): -2.0,
+                (0, 2): -2.0,
+                (1, 2): -2.0,
+                (0, 3): -2.0,
+                (1, 3): -2.0,
+                (2, 3): -2.0,
+            },
+        )
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), 0)
@@ -65,13 +76,14 @@ class TestMaxcut(QiskitOptimizationTestCase):
     def test_node_color(self):
         """Test _node_color"""
         maxcut = Maxcut(self.graph)
-        self.assertEqual(maxcut._node_color(self.result), ['b', 'b', 'r', 'r'])
+        self.assertEqual(maxcut._node_color(self.result), ["b", "b", "r", "r"])
 
     def test_draw(self):
         """Test whether draw raises an error if matplotlib is not installed"""
         maxcut = Maxcut(self.graph)
         try:
             import matplotlib as _
+
             maxcut.draw()
 
         except ImportError:
