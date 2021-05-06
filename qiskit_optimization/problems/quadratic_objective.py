@@ -25,6 +25,7 @@ from .quadratic_program_element import QuadraticProgramElement
 
 class ObjSense(Enum):
     """Objective Sense Type."""
+
     MINIMIZE = 1
     MAXIMIZE = -1
 
@@ -36,13 +37,21 @@ class QuadraticObjective(QuadraticProgramElement):
 
     Sense = ObjSense
 
-    def __init__(self, quadratic_program: Any,
-                 constant: float = 0.0,
-                 linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
-                 quadratic: Union[ndarray, spmatrix, List[List[float]],
-                                  Dict[Tuple[Union[int, str], Union[int, str]], float]] = None,
-                 sense: ObjSense = ObjSense.MINIMIZE
-                 ) -> None:
+    def __init__(
+        self,
+        quadratic_program: Any,
+        constant: float = 0.0,
+        linear: Union[
+            ndarray, spmatrix, List[float], Dict[Union[str, int], float]
+        ] = None,
+        quadratic: Union[
+            ndarray,
+            spmatrix,
+            List[List[float]],
+            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        ] = None,
+        sense: ObjSense = ObjSense.MINIMIZE,
+    ) -> None:
         """Constructs a quadratic objective function.
 
         Args:
@@ -90,8 +99,10 @@ class QuadraticObjective(QuadraticProgramElement):
         return self._linear
 
     @linear.setter
-    def linear(self, linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]]
-               ) -> None:
+    def linear(
+        self,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+    ) -> None:
         """Sets the coefficients of the linear part of the objective function.
 
         Args:
@@ -110,9 +121,15 @@ class QuadraticObjective(QuadraticProgramElement):
         return self._quadratic
 
     @quadratic.setter
-    def quadratic(self, quadratic: Union[ndarray, spmatrix, List[List[float]],
-                                         Dict[Tuple[Union[int, str], Union[int, str]], float]]
-                  ) -> None:
+    def quadratic(
+        self,
+        quadratic: Union[
+            ndarray,
+            spmatrix,
+            List[List[float]],
+            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        ],
+    ) -> None:
         """Sets the coefficients of the quadratic part of the objective function.
 
         Args:
@@ -150,7 +167,9 @@ class QuadraticObjective(QuadraticProgramElement):
         """
         return self.constant + self.linear.evaluate(x) + self.quadratic.evaluate(x)
 
-    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
+    def evaluate_gradient(
+        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
+    ) -> ndarray:
         """Evaluate the gradient of the quadratic objective for given variable values.
 
         Args:

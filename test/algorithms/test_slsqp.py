@@ -23,15 +23,15 @@ from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestSlsqpOptimizer(QiskitOptimizationTestCase):
-    """SLSQP Optimizer Tests. """
+    """SLSQP Optimizer Tests."""
 
     def test_slsqp_optimizer(self):
-        """ Generic SLSQP Optimizer Test. """
+        """Generic SLSQP Optimizer Test."""
 
         problem = QuadraticProgram()
         problem.continuous_var(upperbound=4)
         problem.continuous_var(upperbound=4)
-        problem.linear_constraint(linear=[1, 1], sense='=', rhs=2)
+        problem.linear_constraint(linear=[1, 1], sense="=", rhs=2)
         problem.minimize(linear=[2, 2], quadratic=[[2, 0.25], [0.25, 0.5]])
 
         # solve problem with SLSQP
@@ -41,12 +41,12 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.fval, 5.8750)
 
     def test_slsqp_optimizer_full_output(self):
-        """ Generic SLSQP Optimizer Test. """
+        """Generic SLSQP Optimizer Test."""
 
         problem = QuadraticProgram()
         problem.continuous_var(upperbound=4)
         problem.continuous_var(upperbound=4)
-        problem.linear_constraint(linear=[1, 1], sense='=', rhs=2)
+        problem.linear_constraint(linear=[1, 1], sense="=", rhs=2)
         problem.minimize(linear=[2, 2], quadratic=[[2, 0.25], [0.25, 0.5]])
 
         # solve problem with SLSQP
@@ -77,9 +77,9 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(solution)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([2., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([2.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2., solution.fval, 3)
+        np.testing.assert_almost_equal(2.0, solution.fval, 3)
 
     def test_slsqp_unbounded_with_trials(self):
         """Unbounded test for optimization"""
@@ -93,9 +93,9 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(solution)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([2., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([2.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2., solution.fval, 3)
+        np.testing.assert_almost_equal(2.0, solution.fval, 3)
 
     def test_slsqp_bounded(self):
         """Same as above, but a bounded test"""
@@ -118,7 +118,7 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
         problem = QuadraticProgram()
         problem.continuous_var(name="x")
         problem.continuous_var(name="y")
-        problem.linear_constraint(linear=[1, -1], sense='=', rhs=0)
+        problem.linear_constraint(linear=[1, -1], sense="=", rhs=0)
         problem.maximize(linear=[2, 0], quadratic=[[-1, 2], [0, -2]])
 
         slsqp = SlsqpOptimizer()
@@ -126,16 +126,16 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(solution)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([1.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(1., solution.fval, 3)
+        np.testing.assert_almost_equal(1.0, solution.fval, 3)
 
     def test_slsqp_inequality(self):
         """A test with inequality constraint"""
         problem = QuadraticProgram()
         problem.continuous_var(name="x")
         problem.continuous_var(name="y")
-        problem.linear_constraint(linear=[1, -1], sense='>=', rhs=1)
+        problem.linear_constraint(linear=[1, -1], sense=">=", rhs=1)
         problem.maximize(linear=[2, 0], quadratic=[[-1, 2], [0, -2]])
 
         slsqp = SlsqpOptimizer()
@@ -143,9 +143,9 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(solution)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([2., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([2.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2., solution.fval, 3)
+        np.testing.assert_almost_equal(2.0, solution.fval, 3)
 
     def test_slsqp_optimizer_with_quadratic_constraint(self):
         """A test with equality constraint"""
@@ -166,7 +166,7 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution.x)
         np.testing.assert_almost_equal([0.5, 0.5], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(1., solution.fval, 3)
+        np.testing.assert_almost_equal(1.0, solution.fval, 3)
 
     def test_multistart_properties(self):
         """
@@ -174,19 +174,19 @@ class TestSlsqpOptimizer(QiskitOptimizationTestCase):
         Since it is an abstract class, the test is here.
         """
         trials = 5
-        clip = 200.
+        clip = 200.0
 
         slsqp = SlsqpOptimizer(trials=trials, clip=clip)
         self.assertEqual(trials, slsqp.trials)
         self.assertAlmostEqual(clip, slsqp.clip)
 
         trials = 6
-        clip = 300.
+        clip = 300.0
         slsqp.trials = trials
         slsqp.clip = clip
         self.assertEqual(trials, slsqp.trials)
         self.assertAlmostEqual(clip, slsqp.clip)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

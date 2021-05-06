@@ -30,8 +30,9 @@ class Clique(GraphOptimizationApplication):
         https://en.wikipedia.org/wiki/Clique_(graph_theory)
     """
 
-    def __init__(self, graph: Union[nx.Graph, np.ndarray, List],
-                 size: Optional[int] = None) -> None:
+    def __init__(
+        self, graph: Union[nx.Graph, np.ndarray, List], size: Optional[int] = None
+    ) -> None:
         """
         Args:
             graph: A graph representing a clique problem. It can be specified directly as a
@@ -54,9 +55,9 @@ class Clique(GraphOptimizationApplication):
         """
         complement_g = nx.complement(self._graph)
 
-        mdl = Model(name='Clique')
+        mdl = Model(name="Clique")
         n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
         for w, v in complement_g.edges:
             mdl.add_constraint(x[w] + x[v] <= 1)
         if self.size is None:
@@ -83,8 +84,11 @@ class Clique(GraphOptimizationApplication):
                 clique.append(i)
         return clique
 
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:
@@ -98,7 +102,7 @@ class Clique(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with dark gray.
-        return ['r' if x[node] else 'darkgrey' for node in self._graph.nodes]
+        return ["r" if x[node] else "darkgrey" for node in self._graph.nodes]
 
     @property
     def size(self) -> int:

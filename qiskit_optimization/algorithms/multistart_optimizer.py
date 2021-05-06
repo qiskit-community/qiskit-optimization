@@ -38,7 +38,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
     other optimizers.
     """
 
-    def __init__(self, trials: int = 1, clip: float = 100.) -> None:
+    def __init__(self, trials: int = 1, clip: float = 100.0) -> None:
         """
         Constructs an instance of this optimizer.
 
@@ -55,8 +55,11 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         self._trials = trials
         self._clip = clip
 
-    def multi_start_solve(self, minimize: Callable[[np.ndarray], Tuple[np.ndarray, Any]],
-                          problem: QuadraticProgram) -> OptimizationResult:
+    def multi_start_solve(
+        self,
+        minimize: Callable[[np.ndarray], Tuple[np.ndarray, Any]],
+        problem: QuadraticProgram,
+    ) -> OptimizationResult:
         """Applies a multi start method given a local optimizer.
 
         Args:
@@ -75,8 +78,12 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             x_0 = np.zeros(problem.get_num_vars())
             if trial > 0:
                 for i, var in enumerate(problem.variables):
-                    lowerbound = var.lowerbound if var.lowerbound > -INFINITY else -self._clip
-                    upperbound = var.upperbound if var.upperbound < INFINITY else self._clip
+                    lowerbound = (
+                        var.lowerbound if var.lowerbound > -INFINITY else -self._clip
+                    )
+                    upperbound = (
+                        var.upperbound if var.upperbound < INFINITY else self._clip
+                    )
                     x_0[i] = uniform.rvs(lowerbound, (upperbound - lowerbound))
             # run optimization
             t_0 = time.time()
@@ -92,13 +99,17 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
                 x_sol = x
                 rest_sol = rest
 
-        return OptimizationResult(x=x_sol, fval=fval_sol, variables=problem.variables,
-                                  status=self._get_feasibility_status(problem, x_sol),
-                                  raw_results=rest_sol)
+        return OptimizationResult(
+            x=x_sol,
+            fval=fval_sol,
+            variables=problem.variables,
+            status=self._get_feasibility_status(problem, x_sol),
+            raw_results=rest_sol,
+        )
 
     @property
     def trials(self) -> int:
-        """ Returns the number of trials for this optimizer.
+        """Returns the number of trials for this optimizer.
 
         Returns:
             The number of trials.
@@ -116,7 +127,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
 
     @property
     def clip(self) -> float:
-        """ Returns the clip value for this optimizer.
+        """Returns the clip value for this optimizer.
 
         Returns:
             The clip value.
