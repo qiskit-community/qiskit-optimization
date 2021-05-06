@@ -41,9 +41,7 @@ class QuadraticObjective(QuadraticProgramElement):
         self,
         quadratic_program: Any,
         constant: float = 0.0,
-        linear: Union[
-            ndarray, spmatrix, List[float], Dict[Union[str, int], float]
-        ] = None,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
         quadratic: Union[
             ndarray,
             spmatrix,
@@ -167,9 +165,7 @@ class QuadraticObjective(QuadraticProgramElement):
         """
         return self.constant + self.linear.evaluate(x) + self.quadratic.evaluate(x)
 
-    def evaluate_gradient(
-        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
-    ) -> ndarray:
+    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
         """Evaluate the gradient of the quadratic objective for given variable values.
 
         Args:

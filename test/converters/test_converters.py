@@ -362,12 +362,8 @@ class TestConverters(QiskitOptimizationTestCase):
         conv = IntegerToBinary()
         op2 = conv.convert(op)
         self.assertEqual(op2.get_num_vars(), 5)
-        self.assertListEqual(
-            [x.vartype for x in op2.variables], [Variable.Type.BINARY] * 5
-        )
-        self.assertListEqual(
-            [x.name for x in op2.variables], ["x0", "x1", "x2@0", "x2@1", "x2@2"]
-        )
+        self.assertListEqual([x.vartype for x in op2.variables], [Variable.Type.BINARY] * 5)
+        self.assertListEqual([x.name for x in op2.variables], ["x0", "x1", "x2@0", "x2@1", "x2@2"])
         dct = op2.objective.linear.to_dict()
         self.assertEqual(dct[2], 3)
         self.assertEqual(dct[3], 6)
@@ -504,9 +500,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.binary_var("y")
         op.binary_var("z")
         op.minimize(constant=3, linear={"x": 1}, quadratic={("x", "y"): 2})
-        op.linear_constraint(
-            linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq"
-        )
+        op.linear_constraint(linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq")
         lineq2penalty = LinearEqualityToPenalty(penalty=1e5)
         lineq2penalty_auto = LinearEqualityToPenalty()
         qubo = lineq2penalty.convert(op)
@@ -525,9 +519,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.binary_var("y")
         op.binary_var("z")
         op.minimize(linear={"x": 1, "y": 2})
-        op.linear_constraint(
-            linear={"x": 0.5, "y": 0.5, "z": 0.5}, sense="EQ", rhs=1, name="xyz"
-        )
+        op.linear_constraint(linear={"x": 0.5, "y": 0.5, "z": 0.5}, sense="EQ", rhs=1, name="xyz")
         with self.assertLogs("qiskit_optimization", level="WARNING") as log:
             lineq2penalty = LinearEqualityToPenalty()
             _ = lineq2penalty.convert(op)
@@ -546,9 +538,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.binary_var("y")
         op.binary_var("z")
         op.minimize(constant=3, linear={"x": 1}, quadratic={("x", "y"): 2})
-        op.linear_constraint(
-            linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq"
-        )
+        op.linear_constraint(linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq")
         # First, create a converter with no penalty
         lineq2penalty = LinearEqualityToPenalty()
         self.assertIsNone(lineq2penalty.penalty)
@@ -571,9 +561,7 @@ class TestConverters(QiskitOptimizationTestCase):
         qprog.binary_var("y")
         qprog.binary_var("z")
         qprog.maximize(linear={"x": 3, "y": 1, "z": 1})
-        qprog.linear_constraint(
-            linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq"
-        )
+        qprog.linear_constraint(linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq")
         lineq2penalty = LinearEqualityToPenalty()
         qubo = lineq2penalty.convert(qprog)
         exact_mes = NumPyMinimumEigensolver()
@@ -592,26 +580,16 @@ class TestConverters(QiskitOptimizationTestCase):
         op.binary_var("y")
         op.linear_constraint(linear={"x": 1, "y": 1}, sense="LE", rhs=0, name="xy_leq1")
         op.linear_constraint(linear={"x": 1, "y": 1}, sense="GE", rhs=2, name="xy_geq1")
-        op.quadratic_constraint(
-            quadratic={("x", "x"): 1}, sense="LE", rhs=0, name="xy_leq2"
-        )
-        op.quadratic_constraint(
-            quadratic={("x", "y"): 1}, sense="GE", rhs=1, name="xy_geq2"
-        )
+        op.quadratic_constraint(quadratic={("x", "x"): 1}, sense="LE", rhs=0, name="xy_leq2")
+        op.quadratic_constraint(quadratic={("x", "y"): 1}, sense="GE", rhs=1, name="xy_geq2")
         ineq2eq = InequalityToEquality()
         new_op = ineq2eq.convert(op)
         self.assertEqual(new_op.get_num_vars(), 2)
         self.assertTrue(
-            all(
-                l_const.sense == Constraint.Sense.EQ
-                for l_const in new_op.linear_constraints
-            )
+            all(l_const.sense == Constraint.Sense.EQ for l_const in new_op.linear_constraints)
         )
         self.assertTrue(
-            all(
-                q_const.sense == Constraint.Sense.EQ
-                for q_const in new_op.quadratic_constraints
-            )
+            all(q_const.sense == Constraint.Sense.EQ for q_const in new_op.quadratic_constraints)
         )
 
     def test_integer_to_binary2(self):
@@ -626,20 +604,12 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertListEqual(
             [e.name + "@0" for e in mod.variables], [e.name for e in mod2.variables]
         )
-        self.assertDictEqual(
-            mod.objective.linear.to_dict(), mod2.objective.linear.to_dict()
-        )
-        self.assertDictEqual(
-            mod.objective.quadratic.to_dict(), mod2.objective.quadratic.to_dict()
-        )
-        self.assertEqual(
-            mod.get_num_linear_constraints(), mod2.get_num_linear_constraints()
-        )
+        self.assertDictEqual(mod.objective.linear.to_dict(), mod2.objective.linear.to_dict())
+        self.assertDictEqual(mod.objective.quadratic.to_dict(), mod2.objective.quadratic.to_dict())
+        self.assertEqual(mod.get_num_linear_constraints(), mod2.get_num_linear_constraints())
         for cst, cst2 in zip(mod.linear_constraints, mod2.linear_constraints):
             self.assertDictEqual(cst.linear.to_dict(), cst2.linear.to_dict())
-        self.assertEqual(
-            mod.get_num_quadratic_constraints(), mod2.get_num_quadratic_constraints()
-        )
+        self.assertEqual(mod.get_num_quadratic_constraints(), mod2.get_num_quadratic_constraints())
         for cst, cst2 in zip(mod.quadratic_constraints, mod2.quadratic_constraints):
             self.assertDictEqual(cst.linear.to_dict(), cst2.linear.to_dict())
             self.assertDictEqual(cst.quadratic.to_dict(), cst2.quadratic.to_dict())

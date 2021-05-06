@@ -41,8 +41,7 @@ class Maxcut(GraphOptimizationApplication):
         """
         mdl = Model(name="Max-cut")
         x = {
-            i: mdl.binary_var(name="x_{0}".format(i))
-            for i in range(self._graph.number_of_nodes())
+            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(self._graph.number_of_nodes())
         }
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault("weight", 1)
@@ -70,9 +69,7 @@ class Maxcut(GraphOptimizationApplication):
         x = self._result_to_x(result)
         nx.draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
 
-    def interpret(
-        self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as two lists of node indices
 
         Args:

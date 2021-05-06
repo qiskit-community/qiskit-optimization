@@ -40,8 +40,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         coefficients_dok = dok_matrix(coefficients_list)
         coefficients_dict_int = {(i, j): v for (i, j), v in coefficients_dok.items()}
         coefficients_dict_str = {
-            ("x{}".format(i), "x{}".format(j)): v
-            for (i, j), v in coefficients_dok.items()
+            ("x{}".format(i), "x{}".format(j)): v for (i, j), v in coefficients_dok.items()
         }
 
         for coeffs in [
@@ -54,12 +53,8 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             quadratic = QuadraticExpression(quadratic_program, coeffs)
             self.assertEqual((quadratic.coefficients != coefficients_dok).nnz, 0)
             self.assertTrue((quadratic.to_array() == coefficients_list).all())
-            self.assertDictEqual(
-                quadratic.to_dict(use_name=False), coefficients_dict_int
-            )
-            self.assertDictEqual(
-                quadratic.to_dict(use_name=True), coefficients_dict_str
-            )
+            self.assertDictEqual(quadratic.to_dict(use_name=False), coefficients_dict_int)
+            self.assertDictEqual(quadratic.to_dict(use_name=True), coefficients_dict_str)
 
     def test_get_item(self):
         """test get_item."""
@@ -78,9 +73,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
                 if i == j:
                     self.assertEqual(quadratic[i, j], coefficients[i][j])
                 else:
-                    self.assertEqual(
-                        quadratic[i, j], coefficients[i][j] + coefficients[j][i]
-                    )
+                    self.assertEqual(quadratic[i, j], coefficients[i][j] + coefficients[j][i])
 
     def test_setters(self):
         """test setters."""
@@ -101,8 +94,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         coefficients_dok = dok_matrix(coefficients_list)
         coefficients_dict_int = {(i, j): v for (i, j), v in coefficients_dok.items()}
         coefficients_dict_str = {
-            ("x{}".format(i), "x{}".format(j)): v
-            for (i, j), v in coefficients_dok.items()
+            ("x{}".format(i), "x{}".format(j)): v for (i, j), v in coefficients_dok.items()
         }
 
         for coeffs in [
@@ -115,12 +107,8 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             quadratic.coefficients = coeffs
             self.assertEqual((quadratic.coefficients != coefficients_dok).nnz, 0)
             self.assertTrue((quadratic.to_array() == coefficients_list).all())
-            self.assertDictEqual(
-                quadratic.to_dict(use_name=False), coefficients_dict_int
-            )
-            self.assertDictEqual(
-                quadratic.to_dict(use_name=True), coefficients_dict_str
-            )
+            self.assertDictEqual(quadratic.to_dict(use_name=False), coefficients_dict_int)
+            self.assertDictEqual(quadratic.to_dict(use_name=True), coefficients_dict_str)
 
     def test_evaluate(self):
         """test evaluate."""
@@ -161,9 +149,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
 
         grad_values = [0.0, 60.0, 120.0, 180.0, 240.0]
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
-            np.testing.assert_almost_equal(
-                quadratic.evaluate_gradient(values), grad_values
-            )
+            np.testing.assert_almost_equal(quadratic.evaluate_gradient(values), grad_values)
 
     def test_symmetric_set(self):
         """test symmetric set"""
@@ -172,9 +158,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         q_p.binary_var("y")
         q_p.binary_var("z")
         quad = QuadraticExpression(q_p, {("x", "y"): -1, ("y", "x"): 2, ("z", "x"): 3})
-        self.assertDictEqual(
-            quad.to_dict(use_name=True), {("x", "y"): 1, ("x", "z"): 3}
-        )
+        self.assertDictEqual(quad.to_dict(use_name=True), {("x", "y"): 1, ("x", "z"): 3})
         self.assertDictEqual(
             quad.to_dict(symmetric=True, use_name=True),
             {("x", "y"): 0.5, ("y", "x"): 0.5, ("x", "z"): 1.5, ("z", "x"): 1.5},

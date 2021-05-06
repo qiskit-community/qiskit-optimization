@@ -189,9 +189,7 @@ class SlsqpOptimizer(MultiStartOptimizer):
             return problem.objective.sense.value * problem.objective.evaluate(x)
 
         def _objective_gradient(x):
-            return problem.objective.sense.value * problem.objective.evaluate_gradient(
-                x
-            )
+            return problem.objective.sense.value * problem.objective.evaluate_gradient(x)
 
         # initialize constraints and bounds
         slsqp_bounds = []
@@ -213,17 +211,11 @@ class SlsqpOptimizer(MultiStartOptimizer):
             sense = constraint.sense
 
             if sense == Constraint.Sense.EQ:
-                slsqp_eq_constraints += [
-                    lambda x, rhs=rhs, c=constraint: rhs - c.evaluate(x)
-                ]
+                slsqp_eq_constraints += [lambda x, rhs=rhs, c=constraint: rhs - c.evaluate(x)]
             elif sense == Constraint.Sense.LE:
-                slsqp_ineq_constraints += [
-                    lambda x, rhs=rhs, c=constraint: rhs - c.evaluate(x)
-                ]
+                slsqp_ineq_constraints += [lambda x, rhs=rhs, c=constraint: rhs - c.evaluate(x)]
             elif sense == Constraint.Sense.GE:
-                slsqp_ineq_constraints += [
-                    lambda x, rhs=rhs, c=constraint: c.evaluate(x) - rhs
-                ]
+                slsqp_ineq_constraints += [lambda x, rhs=rhs, c=constraint: c.evaluate(x) - rhs]
             else:
                 raise QiskitOptimizationError("Unsupported constraint type!")
 

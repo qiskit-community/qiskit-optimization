@@ -186,9 +186,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
         if min_num_vars_optimizer:
             self._min_num_vars_optimizer = min_num_vars_optimizer
         else:
-            self._min_num_vars_optimizer = MinimumEigenOptimizer(
-                NumPyMinimumEigensolver()
-            )
+            self._min_num_vars_optimizer = MinimumEigenOptimizer(NumPyMinimumEigensolver())
         self._penalty = penalty
         self._history = history
 
@@ -249,9 +247,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
                 # set x_i = x_j
                 problem_ = problem_.substitute_variables(variables={i: (j, 1)})
                 if problem_.status == QuadraticProgram.Status.INFEASIBLE:
-                    raise QiskitOptimizationError(
-                        "Infeasible due to variable substitution"
-                    )
+                    raise QiskitOptimizationError("Infeasible due to variable substitution")
                 replacements[x_i] = (x_j, 1)
             else:
                 # set x_i = 1 - x_j, this is done in two steps:
@@ -281,9 +277,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
                 # 2. replace x_i by -x_j
                 problem_ = problem_.substitute_variables(variables={i: (j, -1)})
                 if problem_.status == QuadraticProgram.Status.INFEASIBLE:
-                    raise QiskitOptimizationError(
-                        "Infeasible due to variable substitution"
-                    )
+                    raise QiskitOptimizationError("Infeasible due to variable substitution")
                 replacements[x_i] = (x_j, -1)
 
         # solve remaining problem

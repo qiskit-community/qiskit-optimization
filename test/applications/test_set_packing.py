@@ -60,11 +60,7 @@ class TestSetPacking(QiskitOptimizationTestCase):
             self.assertEqual(lin.rhs, 1)
             self.assertEqual(
                 lin.linear.to_dict(),
-                {
-                    j: 1
-                    for j, subset in enumerate(self.list_of_subsets)
-                    if i + 1 in subset
-                },
+                {j: 1 for j, subset in enumerate(self.list_of_subsets) if i + 1 in subset},
             )
 
     def test_interpret(self):
