@@ -16,15 +16,13 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import networkx as nx
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.vertex_cover import VertexCover
-from qiskit_optimization.problems import (Constraint, QuadraticObjective,
-                                          VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestVertexCover(QiskitOptimizationTestCase):
-    """ Test VertexCover class"""
+    """Test VertexCover class"""
 
     def setUp(self):
         """set up the test class"""
@@ -34,8 +32,11 @@ class TestVertexCover(QiskitOptimizationTestCase):
         for _ in range(5):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 0, 0, 0, 1], fval=1, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[0, 0, 0, 0, 1],
+            fval=1,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -69,9 +70,11 @@ class TestVertexCover(QiskitOptimizationTestCase):
     def test_node_colors(self):
         """Test _node_colors"""
         vertex_cover = VertexCover(self.graph)
-        self.assertEqual(vertex_cover._node_colors(self.result),
-                         ['darkgrey', 'darkgrey', 'darkgrey', 'darkgrey', 'r'])
+        self.assertEqual(
+            vertex_cover._node_colors(self.result),
+            ["darkgrey", "darkgrey", "darkgrey", "darkgrey", "r"],
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

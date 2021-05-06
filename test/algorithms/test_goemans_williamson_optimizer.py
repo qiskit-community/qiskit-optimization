@@ -15,8 +15,10 @@ from test import QiskitOptimizationTestCase, requires_extra_library
 
 import numpy as np
 
-from qiskit_optimization.algorithms.goemans_williamson_optimizer \
-    import (GoemansWilliamsonOptimizer, GoemansWilliamsonOptimizationResult)
+from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
+    GoemansWilliamsonOptimizer,
+    GoemansWilliamsonOptimizationResult,
+)
 from qiskit_optimization.applications.max_cut import Maxcut
 
 
@@ -26,10 +28,14 @@ class TestGoemansWilliamson(QiskitOptimizationTestCase):
     @requires_extra_library
     def test_all_cuts(self):
         """Basic test of the Goemans-Williamson optimizer."""
-        graph = np.array([[0., 1., 2., 0.],
-                          [1., 0., 1., 0.],
-                          [2., 1., 0., 1.],
-                          [0., 0., 1., 0.]])
+        graph = np.array(
+            [
+                [0.0, 1.0, 2.0, 0.0],
+                [1.0, 0.0, 1.0, 0.0],
+                [2.0, 1.0, 0.0, 1.0],
+                [0.0, 0.0, 1.0, 0.0],
+            ]
+        )
 
         optimizer = GoemansWilliamsonOptimizer(num_cuts=10, seed=0)
 

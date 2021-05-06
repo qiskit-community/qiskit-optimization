@@ -61,6 +61,17 @@ from .tsp import Tsp
 from .vehicle_routing import VehicleRouting
 from .vertex_cover import VertexCover
 
-_all__ = ["Clique", "ExactCover", "GraphOptimizationApplication", "Knapsack",
-          "Maxcut", "NumberPartition", "OptimizationApplication", "SetPacking", "StableSet",
-          "Tsp", "VehicleRouting", "VertexCover"]
+_all__ = [
+    "Clique",
+    "ExactCover",
+    "GraphOptimizationApplication",
+    "Knapsack",
+    "Maxcut",
+    "NumberPartition",
+    "OptimizationApplication",
+    "SetPacking",
+    "StableSet",
+    "Tsp",
+    "VehicleRouting",
+    "VertexCover",
+]

@@ -34,5 +34,5 @@ class QuadraticProgramConverter(ABC):
 
     @abstractmethod
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
-        """ Interpret a result into another form using the information of conversion"""
+        """Interpret a result into another form using the information of conversion"""
         raise NotImplementedError
