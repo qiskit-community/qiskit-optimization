@@ -36,8 +36,7 @@ from .model_translator import ModelTranslator
 
 
 class DocplexTranslator(ModelTranslator):
-    """Translator between a Docplex model and a quadratic program
-    """
+    """Translator between a Docplex model and a quadratic program"""
 
     def qp_to_model(self, quadratic_program: Any) -> Any:
         """Returns a docplex model corresponding to a quadratic program.
@@ -61,14 +60,20 @@ class DocplexTranslator(ModelTranslator):
         var = {}
         for idx, x in enumerate(quadratic_program.variables):
             if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.continuous_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
+                var[idx] = mdl.continuous_var(
+                    lb=x.lowerbound, ub=x.upperbound, name=x.name
+                )
             elif x.vartype == Variable.Type.BINARY:
                 var[idx] = mdl.binary_var(name=x.name)
             elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
+                var[idx] = mdl.integer_var(
+                    lb=x.lowerbound, ub=x.upperbound, name=x.name
+                )
             else:
                 # should never happen
-                raise QiskitOptimizationError('Unsupported variable type: {}'.format(x.vartype))
+                raise QiskitOptimizationError(
+                    "Unsupported variable type: {}".format(x.vartype)
+                )
 
         # add objective
         objective = quadratic_program.objective.constant
@@ -99,15 +104,19 @@ class DocplexTranslator(ModelTranslator):
                 mdl.add_constraint(linear_expr <= rhs, ctname=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(
+                    "Unsupported constraint sense: {}".format(sense)
+                )
 
         # add quadratic constraints
         for i, q_constraint in enumerate(quadratic_program.quadratic_constraints):
             name = q_constraint.name
             rhs = q_constraint.rhs
-            if rhs == 0 \
-                    and q_constraint.linear.coefficients.nnz == 0 \
-                    and q_constraint.quadratic.coefficients.nnz == 0:
+            if (
+                rhs == 0
+                and q_constraint.linear.coefficients.nnz == 0
+                and q_constraint.quadratic.coefficients.nnz == 0
+            ):
                 continue
             quadratic_expr = 0
             for j, v in q_constraint.linear.to_dict().items():
@@ -123,7 +132,9 @@ class DocplexTranslator(ModelTranslator):
                 mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(
+                    "Unsupported constraint sense: {}".format(sense)
+                )
 
         return mdl
 
@@ -163,7 +174,8 @@ class DocplexTranslator(ModelTranslator):
                 x_new = quadratic_program.integer_var(x.lb, x.ub, x.name)
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.name, x.vartype))
+                    "Unsupported variable type: {} {}".format(x.name, x.vartype)
+                )
             var_names[x] = x_new.name
 
         # objective sense
@@ -202,13 +214,15 @@ class DocplexTranslator(ModelTranslator):
             if isinstance(constraint, DocplexQuadraticConstraint):
                 # ignore quadratic constraints here and process them later
                 continue
-            if not isinstance(constraint, DocplexLinearConstraint) or \
-                    isinstance(constraint, NotEqualConstraint):
+            if not isinstance(constraint, DocplexLinearConstraint) or isinstance(
+                constraint, NotEqualConstraint
+            ):
                 # If any constraint is not linear/quadratic constraints, it raises an error.
                 # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
                 # but it cannot be handled by optimization.
                 raise QiskitOptimizationError(
-                    'Unsupported constraint: {}'.format(constraint))
+                    "Unsupported constraint: {}".format(constraint)
+                )
             name = constraint.name
             sense = constraint.sense
 
@@ -230,14 +244,15 @@ class DocplexTranslator(ModelTranslator):
                 lhs[var_names[x]] = lhs.get(var_names[x], 0.0) - right_expr.get_coef(x)
 
             if sense == sense.EQ:
-                quadratic_program.linear_constraint(lhs, '==', rhs, name)
+                quadratic_program.linear_constraint(lhs, "==", rhs, name)
             elif sense == sense.GE:
-                quadratic_program.linear_constraint(lhs, '>=', rhs, name)
+                quadratic_program.linear_constraint(lhs, ">=", rhs, name)
             elif sense == sense.LE:
-                quadratic_program.linear_constraint(lhs, '<=', rhs, name)
+                quadratic_program.linear_constraint(lhs, "<=", rhs, name)
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(constraint))
+                    "Unsupported constraint sense: {}".format(constraint)
+                )
 
         # get quadratic constraints
         for constraint in model.iter_quadratic_constraints():
@@ -265,8 +280,9 @@ class DocplexTranslator(ModelTranslator):
 
             if right_expr.is_quad_expr():
                 for x in right_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = linear.get(var_names[x], 0.0) - \
-                                           right_expr.linear_part.get_coef(x)
+                    linear[var_names[x]] = linear.get(
+                        var_names[x], 0.0
+                    ) - right_expr.linear_part.get_coef(x)
                 for quad_triplet in right_expr.iter_quad_triplets():
                     i = var_names[quad_triplet[0]]
                     j = var_names[quad_triplet[1]]
@@ -274,15 +290,23 @@ class DocplexTranslator(ModelTranslator):
                     quadratic[i, j] = quadratic.get((i, j), 0.0) - v
             else:
                 for x in right_expr.iter_variables():
-                    linear[var_names[x]] = linear.get(var_names[x], 0.0) - right_expr.get_coef(
-                        x)
+                    linear[var_names[x]] = linear.get(
+                        var_names[x], 0.0
+                    ) - right_expr.get_coef(x)
 
             if sense == sense.EQ:
-                quadratic_program.quadratic_constraint(linear, quadratic, '==', rhs, name)
+                quadratic_program.quadratic_constraint(
+                    linear, quadratic, "==", rhs, name
+                )
             elif sense == sense.GE:
-                quadratic_program.quadratic_constraint(linear, quadratic, '>=', rhs, name)
+                quadratic_program.quadratic_constraint(
+                    linear, quadratic, ">=", rhs, name
+                )
             elif sense == sense.LE:
-                quadratic_program.quadratic_constraint(linear, quadratic, '<=', rhs, name)
+                quadratic_program.quadratic_constraint(
+                    linear, quadratic, "<=", rhs, name
+                )
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(constraint))
+                    "Unsupported constraint sense: {}".format(constraint)
+                )

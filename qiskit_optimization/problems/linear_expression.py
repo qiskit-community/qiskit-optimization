@@ -22,11 +22,15 @@ from ..exceptions import QiskitOptimizationError
 
 
 class LinearExpression(QuadraticProgramElement):
-    """ Representation of a linear expression by its coefficients."""
+    """Representation of a linear expression by its coefficients."""
 
-    def __init__(self, quadratic_program: Any,
-                 coefficients: Union[ndarray, spmatrix, List[float],
-                                     Dict[Union[int, str], float]]) -> None:
+    def __init__(
+        self,
+        quadratic_program: Any,
+        coefficients: Union[
+            ndarray, spmatrix, List[float], Dict[Union[int, str], float]
+        ],
+    ) -> None:
         """Creates a new linear expression.
 
         The linear expression can be defined via an array, a list, a sparse matrix, or a dictionary
@@ -59,10 +63,9 @@ class LinearExpression(QuadraticProgramElement):
             i = self.quadratic_program.variables_index[i]
         self._coefficients[0, i] = value
 
-    def _coeffs_to_dok_matrix(self,
-                              coefficients: Union[ndarray, spmatrix,
-                                                  List, Dict[Union[int, str], float]]
-                              ) -> dok_matrix:
+    def _coeffs_to_dok_matrix(
+        self, coefficients: Union[ndarray, spmatrix, List, Dict[Union[int, str], float]]
+    ) -> dok_matrix:
         """Maps given 1d-coefficients to a dok_matrix.
 
         Args:
@@ -74,8 +77,11 @@ class LinearExpression(QuadraticProgramElement):
         Raises:
             QiskitOptimizationError: if coefficients are given in unsupported format.
         """
-        if isinstance(coefficients, list) or \
-                isinstance(coefficients, ndarray) and len(coefficients.shape) == 1:
+        if (
+            isinstance(coefficients, list)
+            or isinstance(coefficients, ndarray)
+            and len(coefficients.shape) == 1
+        ):
             coefficients = dok_matrix([coefficients])
         elif isinstance(coefficients, spmatrix):
             coefficients = dok_matrix(coefficients)
@@ -92,7 +98,7 @@ class LinearExpression(QuadraticProgramElement):
 
     @property
     def coefficients(self) -> dok_matrix:
-        """ Returns the coefficients of the linear expression.
+        """Returns the coefficients of the linear expression.
 
         Returns:
             The coefficients of the linear expression.
@@ -100,10 +106,12 @@ class LinearExpression(QuadraticProgramElement):
         return self._coefficients
 
     @coefficients.setter
-    def coefficients(self,
-                     coefficients: Union[ndarray, spmatrix,
-                                         List[float], Dict[Union[str, int], float]]
-                     ) -> None:
+    def coefficients(
+        self,
+        coefficients: Union[
+            ndarray, spmatrix, List[float], Dict[Union[str, int], float]
+        ],
+    ) -> None:
         """Sets the coefficients of the linear expression.
 
         Args:
@@ -130,8 +138,10 @@ class LinearExpression(QuadraticProgramElement):
             An dictionary with the coefficients corresponding to the linear expression.
         """
         if use_name:
-            return {self.quadratic_program.variables[k].name: v
-                    for (_, k), v in self._coefficients.items()}
+            return {
+                self.quadratic_program.variables[k].name: v
+                for (_, k), v in self._coefficients.items()
+            }
         else:
             return {k: v for (_, k), v in self._coefficients.items()}
 
@@ -154,7 +164,9 @@ class LinearExpression(QuadraticProgramElement):
         return val
 
     # pylint: disable=unused-argument
-    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
+    def evaluate_gradient(
+        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
+    ) -> ndarray:
         """Evaluate the gradient of the linear expression for given variables.
 
         Args:

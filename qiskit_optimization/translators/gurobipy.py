@@ -31,15 +31,15 @@ except ImportError:
     _HAS_GUROBI = False
 
     class GurobiModel:  # type: ignore
-        """ Empty GurobiModel class
-            Replacement if gurobipy.Model is not present.
+        """Empty GurobiModel class
+        Replacement if gurobipy.Model is not present.
         """
+
         pass
 
 
 class GurobipyTranslator(ModelTranslator):
-    """Translator between a gurobipy model and a quadratic program
-    """
+    """Translator between a gurobipy model and a quadratic program"""
 
     def qp_to_model(self, quadratic_program: Any) -> GurobiModel:
         """Returns a gurobipy model corresponding to a quadratic program
@@ -53,11 +53,13 @@ class GurobipyTranslator(ModelTranslator):
         """
         if not _HAS_GUROBI:
             raise MissingOptionalLibraryError(
-                libname='GUROBI',
-                name='GurobiOptimizer',
-                pip_install="pip install gurobipy")
+                libname="GUROBI",
+                name="GurobiOptimizer",
+                pip_install="pip install gurobipy",
+            )
 
         from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
         quadratic_program = cast(QuadraticProgram, quadratic_program)
 
         # initialize model
@@ -67,16 +69,23 @@ class GurobipyTranslator(ModelTranslator):
         var = {}
         for idx, x in enumerate(quadratic_program.variables):
             if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.addVar(vtype=gp.GRB.CONTINUOUS, lb=x.lowerbound, ub=x.upperbound,
-                                      name=x.name)
+                var[idx] = mdl.addVar(
+                    vtype=gp.GRB.CONTINUOUS,
+                    lb=x.lowerbound,
+                    ub=x.upperbound,
+                    name=x.name,
+                )
             elif x.vartype == Variable.Type.BINARY:
                 var[idx] = mdl.addVar(vtype=gp.GRB.BINARY, name=x.name)
             elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.addVar(vtype=gp.GRB.INTEGER, lb=x.lowerbound, ub=x.upperbound,
-                                      name=x.name)
+                var[idx] = mdl.addVar(
+                    vtype=gp.GRB.INTEGER, lb=x.lowerbound, ub=x.upperbound, name=x.name
+                )
             else:
                 # should never happen
-                raise QiskitOptimizationError('Unsupported variable type: {}'.format(x.vartype))
+                raise QiskitOptimizationError(
+                    "Unsupported variable type: {}".format(x.vartype)
+                )
 
         # add objective
         objective = quadratic_program.objective.constant
@@ -107,15 +116,19 @@ class GurobipyTranslator(ModelTranslator):
                 mdl.addConstr(linear_expr <= rhs, name=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(
+                    "Unsupported constraint sense: {}".format(sense)
+                )
 
         # add quadratic constraints
         for i, q_constraint in enumerate(quadratic_program.quadratic_constraints):
             name = q_constraint.name
             rhs = q_constraint.rhs
-            if rhs == 0 \
-                    and q_constraint.linear.coefficients.nnz == 0 \
-                    and q_constraint.quadratic.coefficients.nnz == 0:
+            if (
+                rhs == 0
+                and q_constraint.linear.coefficients.nnz == 0
+                and q_constraint.quadratic.coefficients.nnz == 0
+            ):
                 continue
             quadratic_expr = 0
             for j, v in q_constraint.linear.to_dict().items():
@@ -131,7 +144,9 @@ class GurobipyTranslator(ModelTranslator):
                 mdl.addConstr(quadratic_expr <= rhs, name=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(
+                    "Unsupported constraint sense: {}".format(sense)
+                )
 
         return mdl
 
@@ -153,11 +168,13 @@ class GurobipyTranslator(ModelTranslator):
         """
         if not _HAS_GUROBI:
             raise MissingOptionalLibraryError(
-                libname='GUROBI',
-                name='GurobiOptimizer',
-                pip_install="pip install gurobipy")
+                libname="GUROBI",
+                name="GurobiOptimizer",
+                pip_install="pip install gurobipy",
+            )
 
         from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
         quadratic_program = cast(QuadraticProgram, quadratic_program)
 
         # clear current problem
@@ -181,7 +198,8 @@ class GurobipyTranslator(ModelTranslator):
                 x_new = quadratic_program.integer_var(x.lb, x.ub, x.VarName)
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.VarName, x.vtype))
+                    "Unsupported variable type: {} {}".format(x.VarName, x.vtype)
+                )
             var_names[x] = x_new.name
 
         # objective sense
@@ -224,7 +242,8 @@ class GurobipyTranslator(ModelTranslator):
         # check whether there are any general constraints
         if model.NumSOS > 0 or model.NumGenConstrs > 0:
             raise QiskitOptimizationError(
-                'Unsupported constraint: SOS or General Constraint')
+                "Unsupported constraint: SOS or General Constraint"
+            )
 
         # get linear constraints
         for constraint in model.getConstrs():
@@ -239,14 +258,15 @@ class GurobipyTranslator(ModelTranslator):
                 lhs[var_names[left_expr.getVar(i)]] = left_expr.getCoeff(i)
 
             if sense == gp.GRB.EQUAL:
-                quadratic_program.linear_constraint(lhs, '==', rhs, name)
+                quadratic_program.linear_constraint(lhs, "==", rhs, name)
             elif sense == gp.GRB.GREATER_EQUAL:
-                quadratic_program.linear_constraint(lhs, '>=', rhs, name)
+                quadratic_program.linear_constraint(lhs, ">=", rhs, name)
             elif sense == gp.GRB.LESS_EQUAL:
-                quadratic_program.linear_constraint(lhs, '<=', rhs, name)
+                quadratic_program.linear_constraint(lhs, "<=", rhs, name)
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(constraint))
+                    "Unsupported constraint sense: {}".format(constraint)
+                )
 
         # get quadratic constraints
         for constraint in model.getQConstrs():
@@ -270,11 +290,18 @@ class GurobipyTranslator(ModelTranslator):
                 quadratic[x, y] = v
 
             if sense == gp.GRB.EQUAL:
-                quadratic_program.quadratic_constraint(linear, quadratic, '==', rhs, name)
+                quadratic_program.quadratic_constraint(
+                    linear, quadratic, "==", rhs, name
+                )
             elif sense == gp.GRB.GREATER_EQUAL:
-                quadratic_program.quadratic_constraint(linear, quadratic, '>=', rhs, name)
+                quadratic_program.quadratic_constraint(
+                    linear, quadratic, ">=", rhs, name
+                )
             elif sense == gp.GRB.LESS_EQUAL:
-                quadratic_program.quadratic_constraint(linear, quadratic, '<=', rhs, name)
+                quadratic_program.quadratic_constraint(
+                    linear, quadratic, "<=", rhs, name
+                )
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(constraint))
+                    "Unsupported constraint sense: {}".format(constraint)
+                )

@@ -49,17 +49,23 @@ class SetPacking(OptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the set packing instance.
         """
-        mdl = Model(name='Set packing')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._subsets))}
+        mdl = Model(name="Set packing")
+        x = {
+            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))
+        }
         mdl.maximize(mdl.sum(x[i] for i in x))
         for element in self._set:
-            mdl.add_constraint(mdl.sum(x[i] for i, sub in enumerate(self._subsets)
-                                       if element in sub) <= 1)
+            mdl.add_constraint(
+                mdl.sum(x[i] for i, sub in enumerate(self._subsets) if element in sub)
+                <= 1
+            )
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(
+        self, result: Union[OptimizationResult, np.ndarray]
+    ) -> List[List[int]]:
         """Interpret a result as a list of subsets
 
         Args:

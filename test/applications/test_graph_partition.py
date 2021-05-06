@@ -15,14 +15,13 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import networkx as nx
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.graph_partition import GraphPartition
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestGraphPartition(QiskitOptimizationTestCase):
-    """ Test GraphPartitioning class"""
+    """Test GraphPartitioning class"""
 
     def setUp(self):
         """Set up for the tests"""
@@ -32,8 +31,11 @@ class TestGraphPartition(QiskitOptimizationTestCase):
         for _ in range(4):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 1, 1, 0], fval=2, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[0, 1, 1, 0],
+            fval=2,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -50,8 +52,10 @@ class TestGraphPartition(QiskitOptimizationTestCase):
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {0: 3.0, 2: 2.0, 3: 1.0, 1: 2.0})
-        self.assertDictEqual(obj.quadratic.to_dict(), {
-                             (0, 1): -2.0, (0, 2): -2.0, (1, 2): -2.0, (0, 3): -2.0})
+        self.assertDictEqual(
+            obj.quadratic.to_dict(),
+            {(0, 1): -2.0, (0, 2): -2.0, (1, 2): -2.0, (0, 3): -2.0},
+        )
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), 1)
@@ -67,4 +71,6 @@ class TestGraphPartition(QiskitOptimizationTestCase):
     def test_node_colors(self):
         """Test _node_colors"""
         graph_partitioning = GraphPartition(self.graph)
-        self.assertEqual(graph_partitioning._node_colors(self.result), ['b', 'r', 'r', 'b'])
+        self.assertEqual(
+            graph_partitioning._node_colors(self.result), ["b", "r", "r", "b"]
+        )

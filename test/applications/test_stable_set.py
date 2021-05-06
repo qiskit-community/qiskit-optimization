@@ -16,14 +16,13 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import networkx as nx
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.stable_set import StableSet
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestStableSet(QiskitOptimizationTestCase):
-    """ Test StableSet class"""
+    """Test StableSet class"""
 
     def setUp(self):
         super().setUp()
@@ -32,8 +31,11 @@ class TestStableSet(QiskitOptimizationTestCase):
         for _ in range(5):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 1, 1, 1, 0], fval=4, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[1, 1, 1, 1, 0],
+            fval=4,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -49,7 +51,9 @@ class TestStableSet(QiskitOptimizationTestCase):
         obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MAXIMIZE)
         self.assertEqual(obj.constant, 0)
-        self.assertDictEqual(obj.linear.to_dict(), {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0})
+        self.assertDictEqual(
+            obj.linear.to_dict(), {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0}
+        )
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), len(self.graph.edges))
@@ -66,4 +70,6 @@ class TestStableSet(QiskitOptimizationTestCase):
     def test_node_colors(self):
         """Test node_colors"""
         stable_set = StableSet(self.graph)
-        self.assertEqual(stable_set._node_colors(self.result), ['r', 'r', 'r', 'r', 'darkgrey'])
+        self.assertEqual(
+            stable_set._node_colors(self.result), ["r", "r", "r", "r", "darkgrey"]
+        )

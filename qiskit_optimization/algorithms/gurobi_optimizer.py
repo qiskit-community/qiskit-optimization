@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import gurobipy as gp
+
     _HAS_GUROBI = True
 except ImportError:
     _HAS_GUROBI = False
@@ -61,15 +62,16 @@ class GurobiOptimizer(OptimizationAlgorithm):
         """
         if not _HAS_GUROBI:
             raise MissingOptionalLibraryError(
-                libname='GUROBI',
-                name='GurobiOptimizer',
-                pip_install="pip install -i https://pypi.gurobi.com gurobipy")
+                libname="GUROBI",
+                name="GurobiOptimizer",
+                pip_install="pip install -i https://pypi.gurobi.com gurobipy",
+            )
 
         self._disp = disp
 
     @staticmethod
     def is_gurobi_installed():
-        """ Returns True if gurobi is installed """
+        """Returns True if gurobi is installed"""
         return _HAS_GUROBI
 
     @property
@@ -102,7 +104,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
         Returns:
             An empty string.
         """
-        return ''
+        return ""
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
         """Tries to solves the given problem using the optimizer.
@@ -138,10 +140,13 @@ class GurobiOptimizer(OptimizationAlgorithm):
             raise QiskitOptimizationError(str(ex)) from ex
 
         # create results
-        result = OptimizationResult(x=model.X, fval=model.ObjVal,
-                                    variables=problem.variables,
-                                    status=self._get_feasibility_status(problem, model.X),
-                                    raw_results=model)
+        result = OptimizationResult(
+            x=model.X,
+            fval=model.ObjVal,
+            variables=problem.variables,
+            status=self._get_feasibility_status(problem, model.X),
+            raw_results=model,
+        )
 
         # return solution
         return result

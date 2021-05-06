@@ -87,8 +87,4 @@ from .infinity import INFINITY  # must be at the top of the file
 from .exceptions import QiskitOptimizationError
 from .problems.quadratic_program import QuadraticProgram
 
-__all__ = ['__version__',
-           'QuadraticProgram',
-           'QiskitOptimizationError',
-           'INFINITY'
-           ]
+__all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError", "INFINITY"]

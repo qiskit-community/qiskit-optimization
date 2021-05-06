@@ -17,8 +17,7 @@ from typing import Any
 
 
 class ModelTranslator(ABC):
-    """Translator between an optimization model and a quadratic program
-    """
+    """Translator between an optimization model and a quadratic program"""
 
     @abstractmethod
     def qp_to_model(self, quadratic_program: Any) -> Any:

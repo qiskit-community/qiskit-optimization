@@ -38,9 +38,9 @@ class VertexCover(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the vertex cover instance.
         """
-        mdl = Model(name='Vertex cover')
+        mdl = Model(name="Vertex cover")
         n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(n)}
+        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
         objective = mdl.sum(x[i] for i in x)
         for w, v in self._graph.edges:
             mdl.add_constraint(x[w] + x[v] >= 1)
@@ -65,8 +65,11 @@ class VertexCover(GraphOptimizationApplication):
                 vertex_cover.append(i)
         return vertex_cover
 
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:
@@ -80,4 +83,4 @@ class VertexCover(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with dark gray.
-        return ['r' if x[node] else 'darkgrey' for node in self._graph.nodes]
+        return ["r" if x[node] else "darkgrey" for node in self._graph.nodes]
