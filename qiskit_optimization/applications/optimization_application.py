@@ -52,8 +52,10 @@ class OptimizationApplication(ABC):
         elif isinstance(result, np.ndarray):
             x = result
         else:
-            raise TypeError("Unsupported format of result. Provide an　OptimizationResult or a",
-                            "binary array using np.ndarray instead of {}".format(type(result)))
+            raise TypeError(
+                "Unsupported format of result. Provide an　OptimizationResult or a",
+                "binary array using np.ndarray instead of {}".format(type(result)),
+            )
         return x
 
     @staticmethod

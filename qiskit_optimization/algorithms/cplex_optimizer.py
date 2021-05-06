@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from cplex.exceptions import CplexSolverError
+
     _HAS_CPLEX = True
 except ImportError:
     _HAS_CPLEX = False
@@ -54,15 +55,16 @@ class CplexOptimizer(OptimizationAlgorithm):
         """
         if not _HAS_CPLEX:
             raise MissingOptionalLibraryError(
-                libname='CPLEX',
-                name='CplexOptimizer',
-                pip_install="pip install 'qiskit-optimization[cplex]'")
+                libname="CPLEX",
+                name="CplexOptimizer",
+                pip_install="pip install 'qiskit-optimization[cplex]'",
+            )
 
         self._disp = disp
 
     @staticmethod
     def is_cplex_installed():
-        """ Returns True if cplex is installed """
+        """Returns True if cplex is installed"""
         return _HAS_CPLEX
 
     @property
@@ -96,7 +98,7 @@ class CplexOptimizer(OptimizationAlgorithm):
         Returns:
             An empty string.
         """
-        return ''
+        return ""
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
         """Tries to solves the given problem using the optimizer.
@@ -134,10 +136,13 @@ class CplexOptimizer(OptimizationAlgorithm):
         sol = cplex.solution
 
         # create results
-        result = OptimizationResult(x=sol.get_values(), fval=sol.get_objective_value(),
-                                    variables=problem.variables,
-                                    status=self._get_feasibility_status(problem, sol.get_values()),
-                                    raw_results=sol)
+        result = OptimizationResult(
+            x=sol.get_values(),
+            fval=sol.get_objective_value(),
+            variables=problem.variables,
+            status=self._get_feasibility_status(problem, sol.get_values()),
+            raw_results=sol,
+        )
 
         # return solution
         return result

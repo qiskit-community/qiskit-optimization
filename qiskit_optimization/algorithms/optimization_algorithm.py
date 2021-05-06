@@ -22,8 +22,10 @@ import numpy as np
 
 from qiskit.opflow import StateFn, DictStateFn
 from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import (QuadraticProgramToQubo,
-                                                    QuadraticProgramConverter)
+from ..converters.quadratic_program_to_qubo import (
+    QuadraticProgramToQubo,
+    QuadraticProgramConverter,
+)
 from ..problems.quadratic_program import QuadraticProgram, Variable
 
 
@@ -50,6 +52,7 @@ class SolutionSample:
         probability: the probability of this sample
         status: the status of this sample
     """
+
     x: np.ndarray
     fval: float
     probability: float
@@ -96,11 +99,15 @@ class OptimizationResult:
         should maintain the order when generating a new ``OptimizationResult`` object.
     """
 
-    def __init__(self, x: Optional[Union[List[float], np.ndarray]], fval: float,
-                 variables: List[Variable],
-                 status: OptimizationResultStatus,
-                 raw_results: Optional[Any] = None,
-                 samples: Optional[List[SolutionSample]] = None) -> None:
+    def __init__(
+        self,
+        x: Optional[Union[List[float], np.ndarray]],
+        fval: float,
+        variables: List[Variable],
+        status: OptimizationResultStatus,
+        raw_results: Optional[Any] = None,
+        samples: Optional[List[SolutionSample]] = None,
+    ) -> None:
         """
         Args:
             x: the optimal value found in the optimization, or possibly None in case of FAILURE.
@@ -122,9 +129,11 @@ class OptimizationResult:
         else:
             if len(x) != len(variables):
                 raise QiskitOptimizationError(
-                    'Inconsistent size of optimal value and variables. x: size {} {}, '
-                    'variables: size {} {}'.format(len(x), x, len(variables),
-                                                   [v.name for v in variables]))
+                    "Inconsistent size of optimal value and variables. x: size {} {}, "
+                    "variables: size {} {}".format(
+                        len(x), x, len(variables), [v.name for v in variables]
+                    )
+                )
             self._x = np.asarray(x)
             self._variables_dict = dict(zip(self._variable_names, self._x))
 
@@ -134,16 +143,25 @@ class OptimizationResult:
         if samples:
             sum_prob = np.sum([e.probability for e in samples])
             if not np.isclose(sum_prob, 1.0):
-                warn('The sum of probability of samples is not close to 1: {}'.format(sum_prob))
+                warn(
+                    "The sum of probability of samples is not close to 1: {}".format(
+                        sum_prob
+                    )
+                )
             self._samples = samples
         else:
             self._samples = [
-                SolutionSample(x=cast(np.ndarray, x), fval=fval, status=status, probability=1.0)]
+                SolutionSample(
+                    x=cast(np.ndarray, x), fval=fval, status=status, probability=1.0
+                )
+            ]
 
     def __repr__(self) -> str:
-        return 'optimal function value: {}\n' \
-               'optimal value: {}\n' \
-               'status: {}'.format(self._fval, self._x, self._status.name)
+        return (
+            "optimal function value: {}\n"
+            "optimal value: {}\n"
+            "status: {}".format(self._fval, self._x, self._status.name)
+        )
 
     def __getitem__(self, key: Union[int, str]) -> float:
         """Returns the value of the variable whose index or name is equal to ``key``.
@@ -171,7 +189,8 @@ class OptimizationResult:
             return self._variables_dict[key]
         raise TypeError(
             "Integer or string key required,"
-            "instead {}({}) provided.".format(type(key), key))
+            "instead {}({}) provided.".format(type(key), key)
+        )
 
     def get_correlations(self) -> np.ndarray:
         """
@@ -297,7 +316,7 @@ class OptimizationAlgorithm(ABC):
         return len(self.get_compatibility_msg(problem)) == 0
 
     @abstractmethod
-    def solve(self, problem: QuadraticProgram) -> 'OptimizationResult':
+    def solve(self, problem: QuadraticProgram) -> "OptimizationResult":
         """Tries to solves the given problem using the optimizer.
 
         Runs the optimizer to try to solve the optimization problem.
@@ -331,11 +350,12 @@ class OptimizationAlgorithm(ABC):
         # check compatibility and raise exception if incompatible
         msg = self.get_compatibility_msg(problem)
         if msg:
-            raise QiskitOptimizationError('Incompatible problem: {}'.format(msg))
+            raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
 
     @staticmethod
-    def _get_feasibility_status(problem: QuadraticProgram,
-                                x: Union[List[float], np.ndarray]) -> OptimizationResultStatus:
+    def _get_feasibility_status(
+        problem: QuadraticProgram, x: Union[List[float], np.ndarray]
+    ) -> OptimizationResultStatus:
         """Returns whether the input result is feasible or not for the given problem.
 
         Args:
@@ -347,13 +367,19 @@ class OptimizationAlgorithm(ABC):
         """
         is_feasible = problem.is_feasible(x)
 
-        return OptimizationResultStatus.SUCCESS if is_feasible \
+        return (
+            OptimizationResultStatus.SUCCESS
+            if is_feasible
             else OptimizationResultStatus.INFEASIBLE
+        )
 
     @staticmethod
-    def _prepare_converters(converters: Optional[Union[QuadraticProgramConverter,
-                                                       List[QuadraticProgramConverter]]],
-                            penalty: Optional[float] = None) -> List[QuadraticProgramConverter]:
+    def _prepare_converters(
+        converters: Optional[
+            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
+        ],
+        penalty: Optional[float] = None,
+    ) -> List[QuadraticProgramConverter]:
         """Prepare a list of converters from the input.
 
         Args:
@@ -374,16 +400,20 @@ class OptimizationAlgorithm(ABC):
             return [QuadraticProgramToQubo(penalty=penalty)]
         elif isinstance(converters, QuadraticProgramConverter):
             return [converters]
-        elif isinstance(converters, list) and \
-                all(isinstance(converter, QuadraticProgramConverter) for converter in converters):
+        elif isinstance(converters, list) and all(
+            isinstance(converter, QuadraticProgramConverter) for converter in converters
+        ):
             return converters
         else:
-            raise TypeError('`converters` must all be of the QuadraticProgramConverter type')
+            raise TypeError(
+                "`converters` must all be of the QuadraticProgramConverter type"
+            )
 
     @staticmethod
-    def _convert(problem: QuadraticProgram,
-                 converters: Union[QuadraticProgramConverter,
-                                   List[QuadraticProgramConverter]]) -> QuadraticProgram:
+    def _convert(
+        problem: QuadraticProgram,
+        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]],
+    ) -> QuadraticProgram:
         """Convert the problem with the converters
 
         Args:
@@ -404,12 +434,16 @@ class OptimizationAlgorithm(ABC):
         return problem_
 
     @classmethod
-    def _interpret(cls, x: np.ndarray,
-                   problem: QuadraticProgram,
-                   converters: Optional[Union[QuadraticProgramConverter,
-                                              List[QuadraticProgramConverter]]] = None,
-                   result_class: Type[OptimizationResult] = OptimizationResult,
-                   **kwargs) -> OptimizationResult:
+    def _interpret(
+        cls,
+        x: np.ndarray,
+        problem: QuadraticProgram,
+        converters: Optional[
+            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
+        ] = None,
+        result_class: Type[OptimizationResult] = OptimizationResult,
+        **kwargs
+    ) -> OptimizationResult:
         """Convert back the result of the converted problem to the result of the original problem.
 
         Args:
@@ -430,25 +464,33 @@ class OptimizationAlgorithm(ABC):
         """
         if not issubclass(result_class, OptimizationResult):
             raise QiskitOptimizationError(
-                'Invalid result class, not derived from OptimizationResult: '
-                '{}'.format(result_class))
+                "Invalid result class, not derived from OptimizationResult: "
+                "{}".format(result_class)
+            )
         if converters is None:
             converters = []
         if not isinstance(converters, list):
             converters = [converters]
         if not all(isinstance(conv, QuadraticProgramConverter) for conv in converters):
-            raise TypeError('Invalid object of converters: {}'.format(converters))
+            raise TypeError("Invalid object of converters: {}".format(converters))
 
         for converter in converters[::-1]:
             x = converter.interpret(x)
-        return result_class(x=x, fval=problem.objective.evaluate(x),
-                            variables=problem.variables,
-                            status=cls._get_feasibility_status(problem, x),
-                            **kwargs)
+        return result_class(
+            x=x,
+            fval=problem.objective.evaluate(x),
+            variables=problem.variables,
+            status=cls._get_feasibility_status(problem, x),
+            **kwargs
+        )
 
     @classmethod
-    def _interpret_samples(cls, problem: QuadraticProgram, raw_samples: List[SolutionSample],
-                           converters: List[QuadraticProgramConverter]) -> List[SolutionSample]:
+    def _interpret_samples(
+        cls,
+        problem: QuadraticProgram,
+        raw_samples: List[SolutionSample],
+        converters: List[QuadraticProgramConverter],
+    ) -> List[SolutionSample]:
         prob = {}  # type: dict
         array = {}
         for sample in raw_samples:
@@ -466,14 +508,17 @@ class OptimizationAlgorithm(ABC):
             status = cls._get_feasibility_status(problem, x)
             samples.append(SolutionSample(x, fval, probability, status))
 
-        return sorted(samples,
-                      key=lambda v: (v.status.value, problem.objective.sense.value * v.fval))
+        return sorted(
+            samples,
+            key=lambda v: (v.status.value, problem.objective.sense.value * v.fval),
+        )
 
     @staticmethod
-    def _eigenvector_to_solutions(eigenvector: Union[dict, np.ndarray, StateFn],
-                                  qubo: QuadraticProgram,
-                                  min_probability: float = 1e-6,
-                                  ) -> List[SolutionSample]:
+    def _eigenvector_to_solutions(
+        eigenvector: Union[dict, np.ndarray, StateFn],
+        qubo: QuadraticProgram,
+        min_probability: float = 1e-6,
+    ) -> List[SolutionSample]:
         """Convert the eigenvector to the bitstrings and corresponding eigenvalues.
 
         Args:
@@ -504,7 +549,9 @@ class OptimizationAlgorithm(ABC):
         """
 
         if isinstance(eigenvector, DictStateFn):
-            eigenvector = {bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()}
+            eigenvector = {
+                bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()
+            }
         elif isinstance(eigenvector, StateFn):
             eigenvector = eigenvector.to_matrix()
 
@@ -520,7 +567,9 @@ class OptimizationAlgorithm(ABC):
             for bitstr, sampling_probability in eigenvector.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
+                    solutions.append(
+                        generate_solution(bitstr, qubo, sampling_probability)
+                    )
 
         elif isinstance(eigenvector, np.ndarray):
             num_qubits = int(np.log2(eigenvector.size))
@@ -534,6 +583,8 @@ class OptimizationAlgorithm(ABC):
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:
-            raise TypeError('Unsupported format of eigenvector. Provide a dict or numpy.ndarray.')
+            raise TypeError(
+                "Unsupported format of eigenvector. Provide a dict or numpy.ndarray."
+            )
 
         return solutions

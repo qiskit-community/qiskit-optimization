@@ -21,9 +21,13 @@ from qiskit.algorithms import QAOA
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import SlsqpOptimizer
-from qiskit_optimization.algorithms.goemans_williamson_optimizer import GoemansWilliamsonOptimizer
-from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import MeanAggregator, \
-    WarmStartQAOAOptimizer
+from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
+    GoemansWilliamsonOptimizer,
+)
+from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (
+    MeanAggregator,
+    WarmStartQAOAOptimizer,
+)
 from qiskit_optimization.applications.max_cut import Maxcut
 
 
@@ -33,10 +37,14 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
     @requires_extra_library
     def test_max_cut(self):
         """Basic test on the max cut problem."""
-        graph = np.array([[0., 1., 2., 0.],
-                          [1., 0., 1., 0.],
-                          [2., 1., 0., 1.],
-                          [0., 0., 1., 0.]])
+        graph = np.array(
+            [
+                [0.0, 1.0, 2.0, 0.0],
+                [1.0, 0.0, 1.0, 0.0],
+                [2.0, 1.0, 0.0, 1.0],
+                [0.0, 0.0, 1.0, 0.0],
+            ]
+        )
 
         presolver = GoemansWilliamsonOptimizer(num_cuts=10)
         problem = Maxcut(graph).to_quadratic_program()
@@ -44,9 +52,14 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
-        optimizer = WarmStartQAOAOptimizer(pre_solver=presolver, relax_for_pre_solver=False,
-                                           qaoa=qaoa, epsilon=0.25, num_initial_solutions=10,
-                                           aggregator=aggregator)
+        optimizer = WarmStartQAOAOptimizer(
+            pre_solver=presolver,
+            relax_for_pre_solver=False,
+            qaoa=qaoa,
+            epsilon=0.25,
+            num_initial_solutions=10,
+            aggregator=aggregator,
+        )
         result_warm = optimizer.solve(problem)
 
         self.assertIsNotNone(result_warm)
@@ -73,8 +86,13 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
-        optimizer = WarmStartQAOAOptimizer(pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True,
-                                           qaoa=qaoa, epsilon=0.25, aggregator=aggregator)
+        optimizer = WarmStartQAOAOptimizer(
+            pre_solver=SlsqpOptimizer(),
+            relax_for_pre_solver=True,
+            qaoa=qaoa,
+            epsilon=0.25,
+            aggregator=aggregator,
+        )
         result_warm = optimizer.solve(problem)
 
         self.assertIsNotNone(result_warm)
@@ -96,8 +114,12 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)
-        optimizer = WarmStartQAOAOptimizer(pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True,
-                                           qaoa=qaoa, epsilon=0.25)
+        optimizer = WarmStartQAOAOptimizer(
+            pre_solver=SlsqpOptimizer(),
+            relax_for_pre_solver=True,
+            qaoa=qaoa,
+            epsilon=0.25,
+        )
         result_warm = optimizer.solve(problem)
 
         self.assertIsNotNone(result_warm)

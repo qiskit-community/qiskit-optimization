@@ -31,7 +31,7 @@ class ConstraintSense(Enum):
     EQ = 2
 
     @staticmethod
-    def convert(sense: Union[str, 'ConstraintSense']) -> 'ConstraintSense':
+    def convert(sense: Union[str, "ConstraintSense"]) -> "ConstraintSense":
         """Convert a string into a corresponding sense of constraints
 
         Args:
@@ -46,11 +46,24 @@ class ConstraintSense(Enum):
         if isinstance(sense, ConstraintSense):
             return sense
         sense = sense.upper()
-        if sense not in ['E', 'L', 'G', 'EQ', 'LE', 'GE', '=', '==', '<=', '<', '>=', '>']:
-            raise QiskitOptimizationError('Invalid sense: {}'.format(sense))
-        if sense in ['E', 'EQ', '=', '==']:
+        if sense not in [
+            "E",
+            "L",
+            "G",
+            "EQ",
+            "LE",
+            "GE",
+            "=",
+            "==",
+            "<=",
+            "<",
+            ">=",
+            ">",
+        ]:
+            raise QiskitOptimizationError("Invalid sense: {}".format(sense))
+        if sense in ["E", "EQ", "=", "=="]:
             return ConstraintSense.EQ
-        elif sense in ['L', 'LE', '<=', '<']:
+        elif sense in ["L", "LE", "<=", "<"]:
             return ConstraintSense.LE
         else:
             return ConstraintSense.GE
@@ -61,9 +74,10 @@ class Constraint(QuadraticProgramElement):
 
     Sense = ConstraintSense
 
-    def __init__(self, quadratic_program: Any, name: str, sense: ConstraintSense,
-                 rhs: float) -> None:
-        """ Initializes the constraint.
+    def __init__(
+        self, quadratic_program: Any, name: str, sense: ConstraintSense, rhs: float
+    ) -> None:
+        """Initializes the constraint.
 
         Args:
             quadratic_program: The parent QuadraticProgram.
