@@ -38,12 +38,8 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
         quadratic_program.linear_constraint(sense="==")
         self.assertEqual(quadratic_program.get_num_linear_constraints(), 1)
         self.assertEqual(quadratic_program.linear_constraints[0].name, "c0")
-        self.assertEqual(
-            len(quadratic_program.linear_constraints[0].linear.to_dict()), 0
-        )
-        self.assertEqual(
-            quadratic_program.linear_constraints[0].sense, Constraint.Sense.EQ
-        )
+        self.assertEqual(len(quadratic_program.linear_constraints[0].linear.to_dict()), 0)
+        self.assertEqual(quadratic_program.linear_constraints[0].sense, Constraint.Sense.EQ)
         self.assertEqual(quadratic_program.linear_constraints[0].rhs, 0.0)
         self.assertEqual(
             quadratic_program.linear_constraints[0],
@@ -61,14 +57,9 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
         self.assertEqual(quadratic_program.get_num_linear_constraints(), 2)
         self.assertEqual(quadratic_program.linear_constraints[1].name, "c1")
         self.assertTrue(
-            (
-                quadratic_program.linear_constraints[1].linear.to_array()
-                == coefficients
-            ).all()
+            (quadratic_program.linear_constraints[1].linear.to_array() == coefficients).all()
         )
-        self.assertEqual(
-            quadratic_program.linear_constraints[1].sense, Constraint.Sense.EQ
-        )
+        self.assertEqual(quadratic_program.linear_constraints[1].sense, Constraint.Sense.EQ)
         self.assertEqual(quadratic_program.linear_constraints[1].rhs, 1.0)
         self.assertEqual(
             quadratic_program.linear_constraints[1],
@@ -83,12 +74,8 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
         quadratic_program.linear_constraint(sense=">=")
         self.assertEqual(quadratic_program.get_num_linear_constraints(), 3)
         self.assertEqual(quadratic_program.linear_constraints[2].name, "c2")
-        self.assertEqual(
-            len(quadratic_program.linear_constraints[2].linear.to_dict()), 0
-        )
-        self.assertEqual(
-            quadratic_program.linear_constraints[2].sense, Constraint.Sense.GE
-        )
+        self.assertEqual(len(quadratic_program.linear_constraints[2].linear.to_dict()), 0)
+        self.assertEqual(quadratic_program.linear_constraints[2].sense, Constraint.Sense.GE)
         self.assertEqual(quadratic_program.linear_constraints[2].rhs, 0.0)
         self.assertEqual(
             quadratic_program.linear_constraints[2],
@@ -106,14 +93,9 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
         self.assertEqual(quadratic_program.get_num_linear_constraints(), 4)
         self.assertEqual(quadratic_program.linear_constraints[3].name, "c3")
         self.assertTrue(
-            (
-                quadratic_program.linear_constraints[3].linear.to_array()
-                == coefficients
-            ).all()
+            (quadratic_program.linear_constraints[3].linear.to_array() == coefficients).all()
         )
-        self.assertEqual(
-            quadratic_program.linear_constraints[3].sense, Constraint.Sense.GE
-        )
+        self.assertEqual(quadratic_program.linear_constraints[3].sense, Constraint.Sense.GE)
         self.assertEqual(quadratic_program.linear_constraints[3].rhs, 1.0)
         self.assertEqual(
             quadratic_program.linear_constraints[3],
@@ -128,12 +110,8 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
         quadratic_program.linear_constraint(sense="<=")
         self.assertEqual(quadratic_program.get_num_linear_constraints(), 5)
         self.assertEqual(quadratic_program.linear_constraints[4].name, "c4")
-        self.assertEqual(
-            len(quadratic_program.linear_constraints[4].linear.to_dict()), 0
-        )
-        self.assertEqual(
-            quadratic_program.linear_constraints[4].sense, Constraint.Sense.LE
-        )
+        self.assertEqual(len(quadratic_program.linear_constraints[4].linear.to_dict()), 0)
+        self.assertEqual(quadratic_program.linear_constraints[4].sense, Constraint.Sense.LE)
         self.assertEqual(quadratic_program.linear_constraints[4].rhs, 0.0)
         self.assertEqual(
             quadratic_program.linear_constraints[4],
@@ -151,14 +129,9 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
         self.assertEqual(quadratic_program.get_num_linear_constraints(), 6)
         self.assertEqual(quadratic_program.linear_constraints[5].name, "c5")
         self.assertTrue(
-            (
-                quadratic_program.linear_constraints[5].linear.to_array()
-                == coefficients
-            ).all()
+            (quadratic_program.linear_constraints[5].linear.to_array() == coefficients).all()
         )
-        self.assertEqual(
-            quadratic_program.linear_constraints[5].sense, Constraint.Sense.LE
-        )
+        self.assertEqual(quadratic_program.linear_constraints[5].sense, Constraint.Sense.LE)
         self.assertEqual(quadratic_program.linear_constraints[5].rhs, 1.0)
         self.assertEqual(
             quadratic_program.linear_constraints[5],

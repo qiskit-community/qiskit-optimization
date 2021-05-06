@@ -124,9 +124,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         values_dict_str = {"x{}".format(i): i for i in range(len(x))}
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
-            np.testing.assert_almost_equal(
-                linear.evaluate_gradient(values), coefficients_list
-            )
+            np.testing.assert_almost_equal(linear.evaluate_gradient(values), coefficients_list)
 
 
 if __name__ == "__main__":

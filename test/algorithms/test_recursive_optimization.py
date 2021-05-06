@@ -137,9 +137,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True, qaoa=qaoa
         )
 
-        recursive_min_eigen_optimizer = RecursiveMinimumEigenOptimizer(
-            warm_qaoa, min_num_vars=4
-        )
+        recursive_min_eigen_optimizer = RecursiveMinimumEigenOptimizer(warm_qaoa, min_num_vars=4)
 
         # load optimization problem
         problem = QuadraticProgram()
@@ -189,9 +187,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         # invalid converters
         with self.assertRaises(TypeError):
             invalid = [qp2qubo, "invalid converter"]
-            RecursiveMinimumEigenOptimizer(
-                min_eigen_optimizer, min_num_vars=2, converters=invalid
-            )
+            RecursiveMinimumEigenOptimizer(min_eigen_optimizer, min_num_vars=2, converters=invalid)
 
 
 if __name__ == "__main__":

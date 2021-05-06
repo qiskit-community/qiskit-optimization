@@ -40,9 +40,7 @@ class BaseAggregator(ABC):
     """A base abstract class for aggregates results"""
 
     @abstractmethod
-    def aggregate(
-        self, results: List[MinimumEigenOptimizationResult]
-    ) -> List[SolutionSample]:
+    def aggregate(self, results: List[MinimumEigenOptimizationResult]) -> List[SolutionSample]:
         """
         Aggregates the results.
 
@@ -58,9 +56,7 @@ class BaseAggregator(ABC):
 class MeanAggregator(BaseAggregator):
     """Aggregates the results by averaging the probability of each sample."""
 
-    def aggregate(
-        self, results: List[MinimumEigenOptimizationResult]
-    ) -> List[SolutionSample]:
+    def aggregate(self, results: List[MinimumEigenOptimizationResult]) -> List[SolutionSample]:
         """
         Args:
             results: List of result objects that need to be combined.
@@ -313,8 +309,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         opt_result = self._pre_solver.solve(pre_solver_problem)
         if opt_result.status != OptimizationResultStatus.SUCCESS:
             raise QiskitOptimizationError(
-                f"Presolver returned status {opt_result.status}, "
-                f"the problem can't be solved"
+                f"Presolver returned status {opt_result.status}, " f"the problem can't be solved"
             )
 
         # we pick only a certain number of the pre-solved solutions.
@@ -327,27 +322,21 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         results: List[MinimumEigenOptimizationResult] = []
         for pre_solution in pre_solutions:
             # Set the solver using the result of the pre-solver.
-            initial_variables = self._warm_start_factory.create_initial_variables(
-                pre_solution.x
-            )
+            initial_variables = self._warm_start_factory.create_initial_variables(pre_solution.x)
             self._qaoa.initial_state = self._warm_start_factory.create_initial_state(
                 initial_variables
             )
             self._qaoa.mixer = self._warm_start_factory.create_mixer(initial_variables)
 
             # approximate ground state of operator using min eigen solver.
-            results.append(
-                self._solve_internal(operator, offset, converted_problem, problem)
-            )
+            results.append(self._solve_internal(operator, offset, converted_problem, problem))
 
         if len(results) == 1:
             # there's no need to call _interpret, it is already done by MinimumEigenOptimizer
             return results[0]
         else:
             samples = self._aggregator.aggregate(results)
-            samples.sort(
-                key=lambda sample: converted_problem.objective.sense.value * sample.fval
-            )
+            samples.sort(key=lambda sample: converted_problem.objective.sense.value * sample.fval)
 
             # translate result back to the original variables
             return cast(

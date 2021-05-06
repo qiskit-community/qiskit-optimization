@@ -49,22 +49,17 @@ class ExactCover(OptimizationApplication):
             from the exact cover instance.
         """
         mdl = Model(name="Exact cover")
-        x = {
-            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))
-        }
+        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))}
         mdl.minimize(mdl.sum(x[i] for i in x))
         for element in self._set:
             mdl.add_constraint(
-                mdl.sum(x[i] for i, sub in enumerate(self._subsets) if element in sub)
-                == 1
+                mdl.sum(x[i] for i, sub in enumerate(self._subsets) if element in sub) == 1
             )
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def interpret(
-        self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as a list of subsets
 
         Args:
