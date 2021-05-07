@@ -69,7 +69,7 @@ class MaximizeToMinimize(QuadraticProgramConverter):
         """
         if len(x) != self._src.get_num_vars():
             raise QiskitOptimizationError(
-                'The number of variables in the passed result differs from '
-                'that of the original problem.'
+                "The number of variables in the passed result differs from "
+                "that of the original problem."
             )
         return np.asarray(x)

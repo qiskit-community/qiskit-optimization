@@ -61,8 +61,9 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(comp_result.x, results.x)
         self.assertEqual(comp_result.fval, results.fval)
         # optimizer internally deals with minimization problem
-        self.assertAlmostEqual(results.fval, problem.objective.sense.value *
-                               results.intermediate_fval)
+        self.assertAlmostEqual(
+            results.fval, problem.objective.sense.value * results.intermediate_fval
+        )
 
     def test_qubo_gas_int_zero(self):
         """Test for when the answer is zero."""

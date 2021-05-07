@@ -183,5 +183,6 @@ class CobylaOptimizer(MultiStartOptimizer):
 
         result = self.multi_start_solve(_minimize, problem)
         # eventually convert back minimization to maximization
-        return self._interpret(x=result.x, problem=original_problem,
-                               converters=max2min, raw_results=result.raw_results)
+        return self._interpret(
+            x=result.x, problem=original_problem, converters=max2min, raw_results=result.raw_results
+        )
