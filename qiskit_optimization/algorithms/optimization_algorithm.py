@@ -536,7 +536,7 @@ class OptimizationAlgorithm(ABC):
         """
 
         if isinstance(eigenvector, DictStateFn):
-            eigenvector = {bitstr: val for (bitstr, val) in eigenvector.primitive.items()}
+            eigenvector = eigenvector.primitive
         elif isinstance(eigenvector, StateFn):
             eigenvector = eigenvector.to_matrix()
 
