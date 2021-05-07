@@ -27,9 +27,7 @@ class LinearExpression(QuadraticProgramElement):
     def __init__(
         self,
         quadratic_program: Any,
-        coefficients: Union[
-            ndarray, spmatrix, List[float], Dict[Union[int, str], float]
-        ],
+        coefficients: Union[ndarray, spmatrix, List[float], Dict[Union[int, str], float]],
     ) -> None:
         """Creates a new linear expression.
 
@@ -108,9 +106,7 @@ class LinearExpression(QuadraticProgramElement):
     @coefficients.setter
     def coefficients(
         self,
-        coefficients: Union[
-            ndarray, spmatrix, List[float], Dict[Union[str, int], float]
-        ],
+        coefficients: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
     ) -> None:
         """Sets the coefficients of the linear expression.
 
@@ -164,9 +160,7 @@ class LinearExpression(QuadraticProgramElement):
         return val
 
     # pylint: disable=unused-argument
-    def evaluate_gradient(
-        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
-    ) -> ndarray:
+    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
         """Evaluate the gradient of the linear expression for given variables.
 
         Args:

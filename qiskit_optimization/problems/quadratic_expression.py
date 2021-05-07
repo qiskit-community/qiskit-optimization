@@ -66,9 +66,7 @@ class QuadraticExpression(QuadraticProgramElement):
             j = self.quadratic_program.variables_index[j]
         return self.coefficients[min(i, j), max(i, j)]
 
-    def __setitem__(
-        self, key: Tuple[Union[int, str], Union[int, str]], value: float
-    ) -> None:
+    def __setitem__(self, key: Tuple[Union[int, str], Union[int, str]], value: float) -> None:
         """Sets the coefficient where i, j can be a variable names or indices.
 
         Args:
@@ -167,11 +165,7 @@ class QuadraticExpression(QuadraticProgramElement):
         Returns:
             An array with the coefficients corresponding to the quadratic expression.
         """
-        coeffs = (
-            self._symmetric_matrix(self._coefficients)
-            if symmetric
-            else self._coefficients
-        )
+        coeffs = self._symmetric_matrix(self._coefficients) if symmetric else self._coefficients
         return coeffs.toarray()
 
     def to_dict(
@@ -187,11 +181,7 @@ class QuadraticExpression(QuadraticProgramElement):
         Returns:
             An dictionary with the coefficients corresponding to the quadratic expression.
         """
-        coeffs = (
-            self._symmetric_matrix(self._coefficients)
-            if symmetric
-            else self._coefficients
-        )
+        coeffs = self._symmetric_matrix(self._coefficients) if symmetric else self._coefficients
         if use_name:
             return {
                 (
@@ -220,9 +210,7 @@ class QuadraticExpression(QuadraticProgramElement):
         # return the result
         return val
 
-    def evaluate_gradient(
-        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
-    ) -> ndarray:
+    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
         """Evaluate the gradient of the quadratic expression for given variables.
 
         Args:

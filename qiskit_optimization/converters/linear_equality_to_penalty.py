@@ -75,9 +75,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             elif x.vartype == Variable.Type.INTEGER:
                 self._dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
-                raise QiskitOptimizationError(
-                    "Unsupported vartype: {}".format(x.vartype)
-                )
+                raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
 
         # get original objective terms
         offset = self._src.objective.constant
@@ -116,9 +114,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
                     # according to implementation of quadratic terms in OptimizationModel,
                     # don't need to multiply by 2, since loops run over (x, y) and (y, x).
                     tup = cast(Union[Tuple[int, int], Tuple[str, str]], (j, k))
-                    quadratic[tup] = (
-                        quadratic.get(tup, 0.0) + sense * penalty * coef_1 * coef_2
-                    )
+                    quadratic[tup] = quadratic.get(tup, 0.0) + sense * penalty * coef_1 * coef_2
 
         if self._src.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             self._dst.minimize(offset, linear, quadratic)
@@ -161,13 +157,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
         penalties = [1.0]
         # add linear terms of the object function.
-        penalties.extend(
-            abs(coef) for coef in self._src.objective.linear.to_dict().values()
-        )
+        penalties.extend(abs(coef) for coef in self._src.objective.linear.to_dict().values())
         # add quadratic terms of the object function.
-        penalties.extend(
-            abs(coef) for coef in self._src.objective.quadratic.to_dict().values()
-        )
+        penalties.extend(abs(coef) for coef in self._src.objective.quadratic.to_dict().values())
 
         return fsum(penalties)
 

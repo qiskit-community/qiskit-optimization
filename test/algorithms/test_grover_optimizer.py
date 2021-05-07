@@ -93,9 +93,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
         # Get the optimum key and value.
         n_iter = 8
-        gmf = GroverOptimizer(
-            4, num_iterations=n_iter, quantum_instance=self.sv_simulator
-        )
+        gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator)
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -116,9 +114,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
 
         # Get the optimum key and value.
         n_iter = 8
-        gmf = GroverOptimizer(
-            4, num_iterations=n_iter, quantum_instance=self.sv_simulator
-        )
+        gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator)
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -210,9 +206,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(
-            min(s.fval for s in result.samples if s.status == success), opt_sol
-        )
+        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
             self.assertEqual(sample.status, success)

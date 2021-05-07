@@ -60,20 +60,14 @@ class DocplexTranslator(ModelTranslator):
         var = {}
         for idx, x in enumerate(quadratic_program.variables):
             if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.continuous_var(
-                    lb=x.lowerbound, ub=x.upperbound, name=x.name
-                )
+                var[idx] = mdl.continuous_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
             elif x.vartype == Variable.Type.BINARY:
                 var[idx] = mdl.binary_var(name=x.name)
             elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.integer_var(
-                    lb=x.lowerbound, ub=x.upperbound, name=x.name
-                )
+                var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
             else:
                 # should never happen
-                raise QiskitOptimizationError(
-                    "Unsupported variable type: {}".format(x.vartype)
-                )
+                raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
 
         # add objective
         objective = quadratic_program.objective.constant
@@ -104,9 +98,7 @@ class DocplexTranslator(ModelTranslator):
                 mdl.add_constraint(linear_expr <= rhs, ctname=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(sense)
-                )
+                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
 
         # add quadratic constraints
         for i, q_constraint in enumerate(quadratic_program.quadratic_constraints):
@@ -132,9 +124,7 @@ class DocplexTranslator(ModelTranslator):
                 mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(sense)
-                )
+                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
 
         return mdl
 
@@ -220,9 +210,7 @@ class DocplexTranslator(ModelTranslator):
                 # If any constraint is not linear/quadratic constraints, it raises an error.
                 # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
                 # but it cannot be handled by optimization.
-                raise QiskitOptimizationError(
-                    "Unsupported constraint: {}".format(constraint)
-                )
+                raise QiskitOptimizationError("Unsupported constraint: {}".format(constraint))
             name = constraint.name
             sense = constraint.sense
 
@@ -250,9 +238,7 @@ class DocplexTranslator(ModelTranslator):
             elif sense == sense.LE:
                 quadratic_program.linear_constraint(lhs, "<=", rhs, name)
             else:
-                raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(constraint)
-                )
+                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
 
         # get quadratic constraints
         for constraint in model.iter_quadratic_constraints():
@@ -290,23 +276,13 @@ class DocplexTranslator(ModelTranslator):
                     quadratic[i, j] = quadratic.get((i, j), 0.0) - v
             else:
                 for x in right_expr.iter_variables():
-                    linear[var_names[x]] = linear.get(
-                        var_names[x], 0.0
-                    ) - right_expr.get_coef(x)
+                    linear[var_names[x]] = linear.get(var_names[x], 0.0) - right_expr.get_coef(x)
 
             if sense == sense.EQ:
-                quadratic_program.quadratic_constraint(
-                    linear, quadratic, "==", rhs, name
-                )
+                quadratic_program.quadratic_constraint(linear, quadratic, "==", rhs, name)
             elif sense == sense.GE:
-                quadratic_program.quadratic_constraint(
-                    linear, quadratic, ">=", rhs, name
-                )
+                quadratic_program.quadratic_constraint(linear, quadratic, ">=", rhs, name)
             elif sense == sense.LE:
-                quadratic_program.quadratic_constraint(
-                    linear, quadratic, "<=", rhs, name
-                )
+                quadratic_program.quadratic_constraint(linear, quadratic, "<=", rhs, name)
             else:
-                raise QiskitOptimizationError(
-                    "Unsupported constraint sense: {}".format(constraint)
-                )
+                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))

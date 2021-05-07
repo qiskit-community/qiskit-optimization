@@ -78,12 +78,8 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             x_0 = np.zeros(problem.get_num_vars())
             if trial > 0:
                 for i, var in enumerate(problem.variables):
-                    lowerbound = (
-                        var.lowerbound if var.lowerbound > -INFINITY else -self._clip
-                    )
-                    upperbound = (
-                        var.upperbound if var.upperbound < INFINITY else self._clip
-                    )
+                    lowerbound = var.lowerbound if var.lowerbound > -INFINITY else -self._clip
+                    upperbound = var.upperbound if var.upperbound < INFINITY else self._clip
                     x_0[i] = uniform.rvs(lowerbound, (upperbound - lowerbound))
             # run optimization
             t_0 = time.time()
