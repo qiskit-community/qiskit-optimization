@@ -72,18 +72,14 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.op_minimize.integer_var(0, 3, "x")
         self.op_minimize.binary_var("y")
         self.op_minimize.minimize(linear={"x": 1, "y": 2})
-        self.op_minimize.linear_constraint(
-            linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy"
-        )
+        self.op_minimize.linear_constraint(linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy")
 
         # test maximize
         self.op_maximize = QuadraticProgram()
         self.op_maximize.integer_var(0, 3, "x")
         self.op_maximize.binary_var("y")
         self.op_maximize.maximize(linear={"x": 1, "y": 2})
-        self.op_maximize.linear_constraint(
-            linear={"x": 1, "y": 1}, sense="<=", rhs=1, name="xy"
-        )
+        self.op_maximize.linear_constraint(linear={"x": 1, "y": 1}, sense="<=", rhs=1, name="xy")
 
     @data(
         ("exact", None, "op_ip1.lp"),
@@ -235,9 +231,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test samples for QAOA"""
         # test minimize
         algorithm_globals.random_seed = 1
-        quantum_instance = (
-            self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        )
+        quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
         qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
@@ -248,9 +242,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(
-            min(s.fval for s in result.samples if s.status == success), opt_sol
-        )
+        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
             self.assertEqual(sample.status, success)
@@ -272,9 +264,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(max(s.fval for s in result.samples), 5)
-        self.assertAlmostEqual(
-            max(s.fval for s in result.samples if s.status == success), opt_sol
-        )
+        self.assertAlmostEqual(max(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(max(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
             self.assertEqual(sample.status, success)
@@ -293,9 +283,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test samples for VQE"""
         # test minimize
         algorithm_globals.random_seed = 1
-        quantum_instance = (
-            self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        )
+        quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
         mdl = Model("docplex model")
         x = mdl.binary_var("x")
         y = mdl.binary_var("y")
@@ -314,16 +302,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(results.status, success)
         results.raw_samples.sort(key=lambda x: x.probability, reverse=True)
         np.testing.assert_array_almost_equal(results.x, results.raw_samples[0].x)
-        self.assertAlmostEqual(
-            sum(s.probability for s in results.samples), 1, delta=1e-5
-        )
-        self.assertAlmostEqual(
-            sum(s.probability for s in results.raw_samples), 1, delta=1e-5
-        )
+        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1, delta=1e-5)
+        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1, delta=1e-5)
         self.assertAlmostEqual(min(s.fval for s in results.samples), -2)
-        self.assertAlmostEqual(
-            min(s.fval for s in results.samples if s.status == success), opt_sol
-        )
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
             self.assertEqual(sample.status, success)

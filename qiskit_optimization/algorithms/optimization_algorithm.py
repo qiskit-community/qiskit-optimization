@@ -568,9 +568,7 @@ class OptimizationAlgorithm(ABC):
                 # add the i-th state if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
                     bitstr = "{:b}".format(i).rjust(num_qubits, "0")
-                    solutions.append(
-                        generate_solution(bitstr, qubo, sampling_probability)
-                    )
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:
             raise TypeError("Unsupported format of eigenvector. Provide a dict or numpy.ndarray.")

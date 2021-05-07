@@ -267,12 +267,8 @@ class GroverOptimizer(OptimizationAlgorithm):
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
-                    raw_samples.sort(
-                        key=lambda x: problem_.objective.sense.value * x.fval
-                    )
-                    samples = self._interpret_samples(
-                        problem, raw_samples, self._converters
-                    )
+                    raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
+                    samples = self._interpret_samples(problem, raw_samples, self._converters)
 
                 else:
                     # Using Durr and Hoyer method, increase m.
