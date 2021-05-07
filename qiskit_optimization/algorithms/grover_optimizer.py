@@ -136,9 +136,7 @@ class GroverOptimizer(OptimizationAlgorithm):
     def _get_oracle(self, qr_key_value):
         # Build negative value oracle O.
         if qr_key_value is None:
-            qr_key_value = QuantumRegister(
-                self._num_key_qubits + self._num_value_qubits
-            )
+            qr_key_value = QuantumRegister(self._num_key_qubits + self._num_value_qubits)
 
         oracle_bit = QuantumRegister(1, "oracle")
         oracle = QuantumCircuit(qr_key_value, oracle_bit)
@@ -227,9 +225,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             while not improvement_found:
                 # Determine the number of rotations.
                 loops_with_no_improvement += 1
-                rotation_count = int(
-                    np.ceil(algorithm_globals.random.uniform(0, m - 1))
-                )
+                rotation_count = int(np.ceil(algorithm_globals.random.uniform(0, m - 1)))
                 rotations += rotation_count
                 # Apply Grover's Algorithm to find values below the threshold.
                 # TODO: Utilize Grover's incremental feature - requires changes to Grover.
@@ -272,12 +268,8 @@ class GroverOptimizer(OptimizationAlgorithm):
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
-                    raw_samples.sort(
-                        key=lambda x: problem_.objective.sense.value * x.fval
-                    )
-                    samples = self._interpret_samples(
-                        problem, raw_samples, self._converters
-                    )
+                    raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
+                    samples = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
@@ -306,9 +298,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         if optimum_value >= 0 and orig_constant == 0:
             optimum_key = 0
 
-        opt_x = np.array(
-            [1 if s == "1" else 0 for s in ("{0:%sb}" % n_key).format(optimum_key)]
-        )
+        opt_x = np.array([1 if s == "1" else 0 for s in ("{0:%sb}" % n_key).format(optimum_key)])
         # Compute function value
         fval = problem_init.objective.evaluate(opt_x)
 
@@ -346,8 +336,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         if self.quantum_instance.is_statevector:
             state = result.get_statevector(qc)
             keys = [
-                bin(i)[2::].rjust(int(np.log2(len(state))), "0")[::-1]
-                for i in range(0, len(state))
+                bin(i)[2::].rjust(int(np.log2(len(state))), "0")[::-1] for i in range(0, len(state))
             ]
             probs = [abs(a) ** 2 for a in state]
             total = math.fsum(probs)
@@ -358,9 +347,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {
-                b[::-1]: np.sqrt(v / shots) for (b, v) in state.items()
-            }
+            self._circuit_results = {b[::-1]: np.sqrt(v / shots) for (b, v) in state.items()}
         return hist
 
     @staticmethod

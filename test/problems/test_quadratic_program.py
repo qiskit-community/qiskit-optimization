@@ -105,9 +105,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(var.vartype, VarType.BINARY)
             self.assertTupleEqual(var.as_tuple(), d_1[var.name].as_tuple())
 
-        d_2 = q_p.integer_var_dict(
-            keys=1, key_format="-{}", lowerbound=-4, upperbound=10
-        )
+        d_2 = q_p.integer_var_dict(keys=1, key_format="-{}", lowerbound=-4, upperbound=10)
         self.assertSetEqual(set(d_2.keys()), {"x-8"})
         self.assertSetEqual(
             {var.name for var in q_p.variables},
@@ -259,9 +257,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(var.vartype, VarType.BINARY)
             self.assertTupleEqual(var.as_tuple(), d_1[i].as_tuple())
 
-        d_2 = q_p.integer_var_list(
-            keys=1, key_format="-{}", lowerbound=-4, upperbound=10
-        )
+        d_2 = q_p.integer_var_list(keys=1, key_format="-{}", lowerbound=-4, upperbound=10)
         names = ["x-8"]
         self.assertSetEqual(
             {var.name for var in q_p.variables},
@@ -480,9 +476,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             z = quadratic_program.get_variable(x.name)
             self.assertEqual(x.name, y.name)
             self.assertEqual(x.name, z.name)
-        self.assertDictEqual(
-            quadratic_program.variables_index, {"x" + str(i): i for i in range(6)}
-        )
+        self.assertDictEqual(quadratic_program.variables_index, {"x" + str(i): i for i in range(6)})
 
     def test_linear_constraints_handling(self):
         """test linear constraints handling"""
@@ -590,9 +584,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertDictEqual(quad[0].linear.to_dict(use_name=True), {"x": 1})
         self.assertListEqual(quad[0].linear.to_array().tolist(), [1, 0, 0])
         self.assertDictEqual(quad[0].quadratic.to_dict(), {(0, 1): 1})
-        self.assertDictEqual(
-            quad[0].quadratic.to_dict(symmetric=True), {(0, 1): 0.5, (1, 0): 0.5}
-        )
+        self.assertDictEqual(quad[0].quadratic.to_dict(symmetric=True), {(0, 1): 0.5, (1, 0): 0.5})
         self.assertDictEqual(quad[0].quadratic.to_dict(use_name=True), {("x", "y"): 1})
         self.assertDictEqual(
             quad[0].quadratic.to_dict(use_name=True, symmetric=True),
@@ -615,9 +607,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertDictEqual(quad[1].linear.to_dict(use_name=True), {"y": 1})
         self.assertListEqual(quad[1].linear.to_array().tolist(), [0, 1, 0])
         self.assertDictEqual(quad[1].quadratic.to_dict(), {(1, 2): 1})
-        self.assertDictEqual(
-            quad[1].quadratic.to_dict(symmetric=True), {(1, 2): 0.5, (2, 1): 0.5}
-        )
+        self.assertDictEqual(quad[1].quadratic.to_dict(symmetric=True), {(1, 2): 0.5, (2, 1): 0.5})
         self.assertDictEqual(quad[1].quadratic.to_dict(use_name=True), {("y", "z"): 1})
         self.assertDictEqual(
             quad[1].quadratic.to_dict(use_name=True, symmetric=True),
@@ -640,9 +630,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertDictEqual(quad[2].linear.to_dict(use_name=True), {"z": 1})
         self.assertListEqual(quad[2].linear.to_array().tolist(), [0, 0, 1])
         self.assertDictEqual(quad[2].quadratic.to_dict(), {(0, 2): 1})
-        self.assertDictEqual(
-            quad[2].quadratic.to_dict(symmetric=True), {(0, 2): 0.5, (2, 0): 0.5}
-        )
+        self.assertDictEqual(quad[2].quadratic.to_dict(symmetric=True), {(0, 2): 0.5, (2, 0): 0.5})
         self.assertDictEqual(quad[2].quadratic.to_dict(use_name=True), {("x", "z"): 1})
         self.assertDictEqual(
             quad[2].quadratic.to_dict(use_name=True, symmetric=True),
@@ -679,9 +667,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertDictEqual(quad[1].linear.to_dict(use_name=True), {"z": 1})
         self.assertListEqual(quad[1].linear.to_array().tolist(), [0, 0, 1])
         self.assertDictEqual(quad[1].quadratic.to_dict(), {(0, 2): 1})
-        self.assertDictEqual(
-            quad[1].quadratic.to_dict(symmetric=True), {(0, 2): 0.5, (2, 0): 0.5}
-        )
+        self.assertDictEqual(quad[1].quadratic.to_dict(symmetric=True), {(0, 2): 0.5, (2, 0): 0.5})
         self.assertDictEqual(quad[1].quadratic.to_dict(use_name=True), {("x", "z"): 1})
         self.assertDictEqual(
             quad[1].quadratic.to_dict(use_name=True, symmetric=True),
@@ -728,16 +714,12 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertDictEqual(
             obj.quadratic.to_dict(symmetric=True), {(0, 2): 0.5, (2, 0): 0.5, (1, 1): 1}
         )
-        self.assertDictEqual(
-            obj.quadratic.to_dict(use_name=True), {("x", "z"): 1, ("y", "y"): 1}
-        )
+        self.assertDictEqual(obj.quadratic.to_dict(use_name=True), {("x", "z"): 1, ("y", "y"): 1})
         self.assertDictEqual(
             obj.quadratic.to_dict(use_name=True, symmetric=True),
             {("x", "z"): 0.5, ("z", "x"): 0.5, ("y", "y"): 1},
         )
-        self.assertListEqual(
-            obj.quadratic.to_array().tolist(), [[0, 0, 1], [0, 1, 0], [0, 0, 0]]
-        )
+        self.assertListEqual(obj.quadratic.to_array().tolist(), [[0, 0, 1], [0, 1, 0], [0, 0, 0]])
         self.assertListEqual(
             obj.quadratic.to_array(symmetric=True).tolist(),
             [[0, 0, 0.5], [0, 1, 0], [0.5, 0, 0]],
@@ -752,9 +734,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 q_p.read_from_lp_file("")
             with self.assertRaises(FileNotFoundError):
                 q_p.read_from_lp_file("no_file.txt")
-            lp_file = self.get_resource_path(
-                "test_quadratic_program.lp", "problems/resources"
-            )
+            lp_file = self.get_resource_path("test_quadratic_program.lp", "problems/resources")
             q_p.read_from_lp_file(lp_file)
             self.assertEqual(q_p.name, "my problem")
             self.assertEqual(q_p.get_num_vars(), 3)
@@ -962,9 +942,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertListEqual(var_names, ["x0", "x1", "x2"])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
         for i, c in enumerate(q_p.linear_constraints):
-            self.assertDictEqual(
-                c.linear.to_dict(use_name=True), {"x0": 1, "x1": 1, "x2": -1}
-            )
+            self.assertDictEqual(c.linear.to_dict(use_name=True), {"x0": 1, "x1": 1, "x2": -1})
             self.assertEqual(c.rhs, 0)
             self.assertEqual(c.sense, senses[i])
         for i, c in enumerate(q_p.quadratic_constraints):
@@ -999,9 +977,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p2 = q_p.substitute_variables(constants={"x": 0})
         self.assertEqual(q_p2.status, QuadraticProgram.Status.VALID)
         self.assertDictEqual(q_p2.objective.linear.to_dict(use_name=True), {"y": 2})
-        self.assertDictEqual(
-            q_p2.objective.quadratic.to_dict(use_name=True), {("z", "z"): 2}
-        )
+        self.assertDictEqual(q_p2.objective.quadratic.to_dict(use_name=True), {("z", "z"): 2})
         self.assertEqual(q_p2.objective.constant, 1)
         self.assertEqual(len(q_p2.linear_constraints), 1)
         self.assertEqual(len(q_p2.quadratic_constraints), 1)
@@ -1019,12 +995,8 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         q_p2 = q_p.substitute_variables(constants={"z": -1})
         self.assertEqual(q_p2.status, QuadraticProgram.Status.VALID)
-        self.assertDictEqual(
-            q_p2.objective.linear.to_dict(use_name=True), {"x": 1, "y": 2}
-        )
-        self.assertDictEqual(
-            q_p2.objective.quadratic.to_dict(use_name=True), {("x", "y"): -1}
-        )
+        self.assertDictEqual(q_p2.objective.linear.to_dict(use_name=True), {"x": 1, "y": 2})
+        self.assertDictEqual(q_p2.objective.quadratic.to_dict(use_name=True), {("x", "y"): -1})
         self.assertEqual(q_p2.objective.constant, 3)
         self.assertEqual(len(q_p2.linear_constraints), 2)
         self.assertEqual(len(q_p2.quadratic_constraints), 0)

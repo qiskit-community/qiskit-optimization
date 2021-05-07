@@ -108,9 +108,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         bounded_coef = var_range - (2 ** power - 1)
 
         coeffs = [2 ** i for i in range(power)] + [bounded_coef]
-        return [
-            (name + self._delimiter + str(i), coef) for i, coef in enumerate(coeffs)
-        ]
+        return [(name + self._delimiter + str(i), coef) for i, coef in enumerate(coeffs)]
 
     def _convert_linear_coefficients_dict(
         self, coefficients: Dict[str, float]
@@ -229,10 +227,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         new_x = np.zeros(self._src.get_num_vars())
         for i, var in enumerate(self._src.variables):
             if var in self._conv:
-                new_x[i] = (
-                    sum(sol[aux] * coef for aux, coef in self._conv[var])
-                    + var.lowerbound
-                )
+                new_x[i] = sum(sol[aux] * coef for aux, coef in self._conv[var]) + var.lowerbound
             else:
                 new_x[i] = sol[var.name]
         return np.array(new_x)
