@@ -429,7 +429,7 @@ class OptimizationAlgorithm(ABC):
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
         ] = None,
         result_class: Type[OptimizationResult] = OptimizationResult,
-        **kwargs
+        **kwargs,
     ) -> OptimizationResult:
         """Convert back the result of the converted problem to the result of the original problem.
 
@@ -468,7 +468,7 @@ class OptimizationAlgorithm(ABC):
             fval=problem.objective.evaluate(x),
             variables=problem.variables,
             status=cls._get_feasibility_status(problem, x),
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
