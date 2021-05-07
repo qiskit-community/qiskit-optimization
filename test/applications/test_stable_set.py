@@ -51,9 +51,7 @@ class TestStableSet(QiskitOptimizationTestCase):
         obj = op.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MAXIMIZE)
         self.assertEqual(obj.constant, 0)
-        self.assertDictEqual(
-            obj.linear.to_dict(), {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0}
-        )
+        self.assertDictEqual(obj.linear.to_dict(), {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0})
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), len(self.graph.edges))
@@ -70,6 +68,4 @@ class TestStableSet(QiskitOptimizationTestCase):
     def test_node_colors(self):
         """Test node_colors"""
         stable_set = StableSet(self.graph)
-        self.assertEqual(
-            stable_set._node_colors(self.result), ["r", "r", "r", "r", "darkgrey"]
-        )
+        self.assertEqual(stable_set._node_colors(self.result), ["r", "r", "r", "r", "darkgrey"])

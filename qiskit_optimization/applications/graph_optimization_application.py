@@ -94,9 +94,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         return self._graph
 
     @staticmethod
-    def random_graph(
-        num_nodes: int, num_edges: int, seed: Optional[int] = None
-    ) -> nx.Graph:
+    def random_graph(num_nodes: int, num_edges: int, seed: Optional[int] = None) -> nx.Graph:
         """
 
         Args:

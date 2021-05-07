@@ -179,9 +179,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         min_eigen_solver = NumPyMinimumEigensolver()
         # a single converter
         qp2qubo = QuadraticProgramToQubo()
-        min_eigen_optimizer = MinimumEigenOptimizer(
-            min_eigen_solver, converters=qp2qubo
-        )
+        min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=qp2qubo)
         result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         # a list of converters
@@ -189,9 +187,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         int2bin = IntegerToBinary()
         penalize = LinearEqualityToPenalty()
         converters = [ineq2eq, int2bin, penalize]
-        min_eigen_optimizer = MinimumEigenOptimizer(
-            min_eigen_solver, converters=converters
-        )
+        min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=converters)
         result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         with self.assertRaises(TypeError):

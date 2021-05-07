@@ -166,8 +166,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
         numeric_solutions = [
-            (cuts[i, :], self.max_cut_value(cuts[i, :], adj_matrix))
-            for i in range(self._num_cuts)
+            (cuts[i, :], self.max_cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)
         ]
 
         if self._sort_cuts:
@@ -263,9 +262,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             constraints.append(x[i, i] == 1)
 
         # objective function
-        expr = cvx.sum(
-            cvx.multiply(adj_matrix, (np.ones((num_vertices, num_vertices)) - x))
-        )
+        expr = cvx.sum(cvx.multiply(adj_matrix, (np.ones((num_vertices, num_vertices)) - x)))
 
         # solve
         problem = cvx.Problem(cvx.Maximize(expr), constraints)

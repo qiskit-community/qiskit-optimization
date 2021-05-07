@@ -53,9 +53,7 @@ class GraphPartition(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(
-        self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[List[int]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as a list of node indices
 
         Args:
