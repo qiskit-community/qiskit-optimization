@@ -43,9 +43,16 @@ class CobylaOptimizer(MultiStartOptimizer):
         >>> result = optimizer.solve(problem)
     """
 
-    def __init__(self, rhobeg: float = 1.0, rhoend: float = 1e-4, maxfun: int = 1000,
-                 disp: Optional[int] = None, catol: float = 2e-4, trials: int = 1,
-                 clip: float = 100.) -> None:
+    def __init__(
+        self,
+        rhobeg: float = 1.0,
+        rhoend: float = 1e-4,
+        maxfun: int = 1000,
+        disp: Optional[int] = None,
+        catol: float = 2e-4,
+        trials: int = 1,
+        clip: float = 100.0,
+    ) -> None:
         """Initializes the CobylaOptimizer.
 
         This initializer takes the algorithmic parameters of COBYLA and stores them for later use
@@ -91,9 +98,9 @@ class CobylaOptimizer(MultiStartOptimizer):
         """
         # check whether there are variables of type other than continuous
         if len(problem.variables) > problem.get_num_continuous_vars():
-            return 'The COBYLA optimizer supports only continuous variables'
+            return "The COBYLA optimizer supports only continuous variables"
 
-        return ''
+        return ""
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
         """Tries to solves the given problem using the optimizer.
@@ -128,38 +135,50 @@ class CobylaOptimizer(MultiStartOptimizer):
             lowerbound = variable.lowerbound
             upperbound = variable.upperbound
             if lowerbound > -INFINITY:
+
                 def lb_constraint(x, l_b=lowerbound, j=i):
                     return x[j] - l_b
+
                 constraints += [lb_constraint]
             if upperbound < INFINITY:
+
                 def ub_constraint(x, u_b=upperbound, j=i):
                     return u_b - x[j]
+
                 constraints += [ub_constraint]
 
         # pylint: disable=no-member
         # add linear and quadratic constraints
-        for constraint in cast(List[Constraint], problem.linear_constraints) +\
-                cast(List[Constraint], problem.quadratic_constraints):
+        for constraint in cast(List[Constraint], problem.linear_constraints) + cast(
+            List[Constraint], problem.quadratic_constraints
+        ):
             rhs = constraint.rhs
             sense = constraint.sense
 
             if sense == Constraint.Sense.EQ:
                 constraints += [
                     lambda x, rhs=rhs, c=constraint: rhs - c.evaluate(x),
-                    lambda x, rhs=rhs, c=constraint: c.evaluate(x) - rhs
+                    lambda x, rhs=rhs, c=constraint: c.evaluate(x) - rhs,
                 ]
             elif sense == Constraint.Sense.LE:
                 constraints += [lambda x, rhs=rhs, c=constraint: rhs - c.evaluate(x)]
             elif sense == Constraint.Sense.GE:
                 constraints += [lambda x, rhs=rhs, c=constraint: c.evaluate(x) - rhs]
             else:
-                raise QiskitOptimizationError('Unsupported constraint type!')
+                raise QiskitOptimizationError("Unsupported constraint type!")
 
         # actual minimization function to be called by multi_start_solve
         def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
-            x = fmin_cobyla(objective, x_0, constraints, rhobeg=self._rhobeg,
-                            rhoend=self._rhoend, maxfun=self._maxfun, disp=self._disp,
-                            catol=self._catol)
+            x = fmin_cobyla(
+                objective,
+                x_0,
+                constraints,
+                rhobeg=self._rhobeg,
+                rhoend=self._rhoend,
+                maxfun=self._maxfun,
+                disp=self._disp,
+                catol=self._catol,
+            )
             return x, None
 
         result = self.multi_start_solve(_minimize, problem)

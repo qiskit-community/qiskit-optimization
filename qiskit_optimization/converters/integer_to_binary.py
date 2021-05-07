@@ -46,7 +46,7 @@ class IntegerToBinary(QuadraticProgramConverter):
             Annealers. arxiv.org:1706.01945.
     """
 
-    _delimiter = '@'  # users are supposed not to use this character in variable names
+    _delimiter = "@"  # users are supposed not to use this character in variable names
 
     def __init__(self) -> None:
         self._src = None  # type: Optional[QuadraticProgram]
@@ -101,7 +101,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         return self._dst
 
     def _convert_var(
-            self, name: str, lowerbound: float, upperbound: float
+        self, name: str, lowerbound: float, upperbound: float
     ) -> List[Tuple[str, int]]:
         var_range = upperbound - lowerbound
         power = int(np.log2(var_range))
@@ -111,7 +111,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         return [(name + self._delimiter + str(i), coef) for i, coef in enumerate(coeffs)]
 
     def _convert_linear_coefficients_dict(
-            self, coefficients: Dict[str, float]
+        self, coefficients: Dict[str, float]
     ) -> Tuple[Dict[str, float], float]:
         constant = 0.0
         linear = {}  # type: Dict[str, float]
@@ -127,7 +127,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         return linear, constant
 
     def _convert_quadratic_coefficients_dict(
-            self, coefficients: Dict[Tuple[str, str], float]
+        self, coefficients: Dict[Tuple[str, str], float]
     ) -> Tuple[Dict[Tuple[str, str], float], Dict[str, float], float]:
         constant = 0.0
         linear = {}  # type: Dict[str, float]
@@ -185,7 +185,8 @@ class IntegerToBinary(QuadraticProgramConverter):
         # set linear constraints
         for constraint in self._src.linear_constraints:
             linear, constant = self._convert_linear_coefficients_dict(
-                constraint.linear.to_dict(use_name=True))
+                constraint.linear.to_dict(use_name=True)
+            )
             self._dst.linear_constraint(
                 linear, constraint.sense, constraint.rhs - constant, constraint.name
             )
@@ -204,7 +205,11 @@ class IntegerToBinary(QuadraticProgramConverter):
                 linear[i] = linear.get(i, 0) + v
 
             self._dst.quadratic_constraint(
-                linear, quadratic, constraint.sense, constraint.rhs - constant, constraint.name
+                linear,
+                quadratic,
+                constraint.sense,
+                constraint.rhs - constant,
+                constraint.name,
             )
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:

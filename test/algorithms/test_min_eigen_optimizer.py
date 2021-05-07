@@ -13,7 +13,10 @@
 """ Test Min Eigen Optimizer """
 
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import (
+    QiskitOptimizationTestCase,
+    requires_extra_library,
+)
 
 import numpy as np
 from ddt import data, ddt
@@ -22,10 +25,16 @@ from qiskit import BasicAer
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms import QAOA, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA
-from qiskit_optimization.algorithms import (CplexOptimizer, MinimumEigenOptimizer)
-from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
-from qiskit_optimization.converters import (InequalityToEquality, IntegerToBinary,
-                                            LinearEqualityToPenalty, QuadraticProgramToQubo)
+from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
+from qiskit_optimization.algorithms.optimization_algorithm import (
+    OptimizationResultStatus,
+)
+from qiskit_optimization.converters import (
+    InequalityToEquality,
+    IntegerToBinary,
+    LinearEqualityToPenalty,
+    QuadraticProgramToQubo,
+)
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -40,20 +49,20 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.min_eigen_solvers = {}
 
         # exact eigen solver
-        self.min_eigen_solvers['exact'] = NumPyMinimumEigensolver()
+        self.min_eigen_solvers["exact"] = NumPyMinimumEigensolver()
 
         # QAOA
         optimizer = COBYLA()
-        self.min_eigen_solvers['qaoa'] = QAOA(optimizer=optimizer)
+        self.min_eigen_solvers["qaoa"] = QAOA(optimizer=optimizer)
 
     @data(
-        ('exact', None, 'op_ip1.lp'),
-        ('qaoa', 'statevector_simulator', 'op_ip1.lp'),
-        ('qaoa', 'qasm_simulator', 'op_ip1.lp')
+        ("exact", None, "op_ip1.lp"),
+        ("qaoa", "statevector_simulator", "op_ip1.lp"),
+        ("qaoa", "qasm_simulator", "op_ip1.lp"),
     )
     @requires_extra_library
     def test_min_eigen_optimizer(self, config):
-        """ Min Eigen Optimizer Test """
+        """Min Eigen Optimizer Test"""
         try:
             # unpack configuration
             min_eigen_solver_name, backend, filename = config
@@ -68,7 +77,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(filename, 'algorithms/resources')
+            lp_file = self.get_resource_path(filename, "algorithms/resources")
             problem.read_from_lp_file(lp_file)
 
             # solve problem with cplex
@@ -88,12 +97,12 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             self.fail(str(ex))
 
     @data(
-        ('op_ip1.lp', -470, 12, OptimizationResultStatus.SUCCESS),
-        ('op_ip1.lp', np.inf, None, OptimizationResultStatus.FAILURE),
+        ("op_ip1.lp", -470, 12, OptimizationResultStatus.SUCCESS),
+        ("op_ip1.lp", np.inf, None, OptimizationResultStatus.FAILURE),
     )
     @requires_extra_library
     def test_min_eigen_optimizer_with_filter(self, config):
-        """ Min Eigen Optimizer Test """
+        """Min Eigen Optimizer Test"""
         try:
             # unpack configuration
             filename, lowerbound, fval, status = config
@@ -113,7 +122,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
             # load optimization problem
             problem = QuadraticProgram()
-            lp_file = self.get_resource_path(filename, 'algorithms/resources')
+            lp_file = self.get_resource_path(filename, "algorithms/resources")
             problem.read_from_lp_file(lp_file)
 
             # solve problem
@@ -133,10 +142,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test converter list"""
         op = QuadraticProgram()
         op.integer_var(0, 3, "x")
-        op.binary_var('y')
+        op.binary_var("y")
 
-        op.maximize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='LE', rhs=3, name='xy_leq')
+        op.maximize(linear={"x": 1, "y": 2})
+        op.linear_constraint(linear={"x": 1, "y": 1}, sense="LE", rhs=3, name="xy_leq")
         min_eigen_solver = NumPyMinimumEigensolver()
         # a single converter
         qp2qubo = QuadraticProgramToQubo()
@@ -153,23 +162,25 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.fval, 4)
         with self.assertRaises(TypeError):
             invalid = [qp2qubo, "invalid converter"]
-            MinimumEigenOptimizer(min_eigen_solver,
-                                  converters=invalid)
+            MinimumEigenOptimizer(min_eigen_solver, converters=invalid)
 
     def test_samples(self):
         """Test samples"""
         SUCCESS = OptimizationResultStatus.SUCCESS  # pylint: disable=invalid-name
         algorithm_globals.random_seed = 123
-        quantum_instance = QuantumInstance(backend=BasicAer.get_backend('qasm_simulator'),
-                                           seed_simulator=123, seed_transpiler=123,
-                                           shots=1000)
+        quantum_instance = QuantumInstance(
+            backend=BasicAer.get_backend("qasm_simulator"),
+            seed_simulator=123,
+            seed_transpiler=123,
+            shots=1000,
+        )
 
         # test minimize
         op = QuadraticProgram()
-        op.integer_var(0, 3, 'x')
-        op.binary_var('y')
-        op.minimize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
+        op.integer_var(0, 3, "x")
+        op.binary_var("y")
+        op.minimize(linear={"x": 1, "y": 2})
+        op.linear_constraint(linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy")
 
         min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -205,10 +216,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         # test maximize
         op = QuadraticProgram()
-        op.integer_var(0, 3, 'x')
-        op.binary_var('y')
-        op.maximize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='<=', rhs=1, name='xy')
+        op.integer_var(0, 3, "x")
+        op.binary_var("y")
+        op.maximize(linear={"x": 1, "y": 2})
+        op.linear_constraint(linear={"x": 1, "y": 1}, sense="<=", rhs=1, name="xy")
 
         min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -246,5 +257,5 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.status, result.samples[0].status)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

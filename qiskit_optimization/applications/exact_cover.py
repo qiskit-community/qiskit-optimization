@@ -48,12 +48,13 @@ class ExactCover(OptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the exact cover instance.
         """
-        mdl = Model(name='Exact cover')
-        x = {i: mdl.binary_var(name='x_{0}'.format(i)) for i in range(len(self._subsets))}
+        mdl = Model(name="Exact cover")
+        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))}
         mdl.minimize(mdl.sum(x[i] for i in x))
         for element in self._set:
-            mdl.add_constraint(mdl.sum(x[i] for i, sub in enumerate(self._subsets)
-                                       if element in sub) == 1)
+            mdl.add_constraint(
+                mdl.sum(x[i] for i, sub in enumerate(self._subsets) if element in sub) == 1
+            )
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op

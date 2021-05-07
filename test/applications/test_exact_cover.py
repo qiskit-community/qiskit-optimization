@@ -14,14 +14,13 @@
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.exact_cover import ExactCover
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestExactCover(QiskitOptimizationTestCase):
-    """ Test ExactCover class"""
+    """Test ExactCover class"""
 
     def setUp(self):
         """Set up for the tests"""
@@ -32,8 +31,11 @@ class TestExactCover(QiskitOptimizationTestCase):
         for _ in range(4):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 1, 1, 0], fval=2, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[0, 1, 1, 0],
+            fval=2,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -57,9 +59,10 @@ class TestExactCover(QiskitOptimizationTestCase):
         for i, lin in enumerate(lin):
             self.assertEqual(lin.sense, Constraint.Sense.EQ)
             self.assertEqual(lin.rhs, 1)
-            self.assertEqual(lin.linear.to_dict(), {
-                             j: 1 for j, subset in enumerate(self.list_of_subsets)
-                             if i+1 in subset})
+            self.assertEqual(
+                lin.linear.to_dict(),
+                {j: 1 for j, subset in enumerate(self.list_of_subsets) if i + 1 in subset},
+            )
 
     def test_interpret(self):
         """Test interpret"""
