@@ -294,7 +294,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
     @data("sv", "qasm")
     def test_samples_vqe(self, simulator):
-        """Test bit ordering"""
+        """Test samples for VQE"""
         # test minimize
         algorithm_globals.random_seed = 1
         quantum_instance = (
