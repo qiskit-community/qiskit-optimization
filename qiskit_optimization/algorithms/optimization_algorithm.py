@@ -536,7 +536,7 @@ class OptimizationAlgorithm(ABC):
         """
 
         if isinstance(eigenvector, DictStateFn):
-            eigenvector = {bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()}
+            eigenvector = {bitstr: val for (bitstr, val) in eigenvector.primitive.items()}
         elif isinstance(eigenvector, StateFn):
             eigenvector = eigenvector.to_matrix()
 
@@ -552,7 +552,9 @@ class OptimizationAlgorithm(ABC):
 
         solutions = []
         if isinstance(eigenvector, dict):
-            probabilities = {bitstr: val ** 2 for (bitstr, val) in probabilities.items()}
+            # When eigenvector is a dict, square the values since the values are normalized.
+            # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
+            probabilities = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
             for bitstr, sampling_probability in probabilities.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
