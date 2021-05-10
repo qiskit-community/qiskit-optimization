@@ -18,7 +18,7 @@ Optimization model translators (:mod:`qiskit_optimization.translators`)
 
 Translators between an optimization model and a quadratic program
 
-Base classes for applications
+Base class for translators
 =======================================
 
 .. autosummary::
@@ -26,17 +26,15 @@ Base classes for applications
    :nosignatures:
 
    ModelTranslator
-   DocplexTranslator
-   GurobiTranslator
 
-Applications
+Translators
 ======================
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
 
    DocplexTranslator
-   GurobiTranslator
+   load_model
 """
 
 from .model_translator import ModelTranslator
