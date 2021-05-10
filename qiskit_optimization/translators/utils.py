@@ -12,15 +12,19 @@
 
 """Utilities for optimization model translators"""
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from .docplex import DocplexMpTranslator
 
+if TYPE_CHECKING:
+    # pylint: disable=cyclic-import
+    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
 translators = [DocplexMpTranslator()]
 
 
-def load_model(model: Any) -> Any:
+def load_model(model: Any) -> "QuadraticProgram":
     """Returns a quadratic program corresponding to the model.
 
     Args:

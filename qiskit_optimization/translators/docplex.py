@@ -12,7 +12,7 @@
 
 """Model translators between QuadraticProgram and Docplex"""
 
-from typing import cast, Any
+from typing import cast, Any, TYPE_CHECKING
 
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
@@ -34,6 +34,10 @@ from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
 from .model_translator import ModelTranslator
 
+if TYPE_CHECKING:
+    # pylint: disable=cyclic-import
+    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
 
 class DocplexMpTranslator(ModelTranslator):
     """Translator between a Docplex model and a quadratic program"""
@@ -49,7 +53,7 @@ class DocplexMpTranslator(ModelTranslator):
         """
         return isinstance(model, Model)
 
-    def qp_to_model(self, quadratic_program: Any) -> Any:
+    def qp_to_model(self, quadratic_program: "QuadraticProgram") -> Model:
         """Returns a docplex model corresponding to a quadratic program.
 
         Args:
@@ -116,9 +120,9 @@ class DocplexMpTranslator(ModelTranslator):
             name = q_constraint.name
             rhs = q_constraint.rhs
             if (
-                    rhs == 0
-                    and q_constraint.linear.coefficients.nnz == 0
-                    and q_constraint.quadratic.coefficients.nnz == 0
+                rhs == 0
+                and q_constraint.linear.coefficients.nnz == 0
+                and q_constraint.quadratic.coefficients.nnz == 0
             ):
                 continue
             quadratic_expr = 0
@@ -139,7 +143,7 @@ class DocplexMpTranslator(ModelTranslator):
 
         return mdl
 
-    def model_to_qp(self, model: Model) -> Any:
+    def model_to_qp(self, model: Model) -> "QuadraticProgram":
         """Translate a docplex model into a quadratic program.
 
         Note that this supports only basic functions of docplex as follows:
@@ -156,8 +160,8 @@ class DocplexMpTranslator(ModelTranslator):
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
-        from qiskit_optimization.problems.quadratic_program import \
-            QuadraticProgram  # pylint: disable=cyclic-import
+        # pylint: disable=cyclic-import
+        from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
         quadratic_program = QuadraticProgram()
         # get name
@@ -216,7 +220,7 @@ class DocplexMpTranslator(ModelTranslator):
                 # ignore quadratic constraints here and process them later
                 continue
             if not isinstance(constraint, DocplexLinearConstraint) or isinstance(
-                    constraint, NotEqualConstraint
+                constraint, NotEqualConstraint
             ):
                 # If any constraint is not linear/quadratic constraints, it raises an error.
                 # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
