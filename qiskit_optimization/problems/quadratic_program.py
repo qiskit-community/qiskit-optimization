@@ -924,6 +924,7 @@ class QuadraticProgram:
         #               "removed in a future release. Instead use the"
         #               "to_model() method", DeprecationWarning)
 
+        # clear current problem
         self.clear()
 
         # get name
