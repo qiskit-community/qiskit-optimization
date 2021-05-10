@@ -18,7 +18,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
 from math import fsum, isclose
-from typing import Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
@@ -35,15 +35,13 @@ from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
-from numpy import ndarray, zeros
-from scipy.sparse import spmatrix
 
+from numpy import ndarray, zeros
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
+from scipy.sparse import spmatrix
 
-from ..exceptions import QiskitOptimizationError
-from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -51,6 +49,10 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
+from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
+from ..translators.model_translator import ModelTranslator
+from ..translators.utils import load_model
 
 logger = logging.getLogger(__name__)
 
@@ -869,6 +871,40 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
+    def load(self, model: Any) -> "QuadraticProgram":
+        """Loads this quadratic program from an optimization model.
+
+        Note that this supports only basic functions of docplex as follows:
+        - quadratic objective function
+        - linear / quadratic constraints
+        - binary / integer / continuous variables
+
+        Args:
+            model: The optimization model to be loaded.
+
+        Returns:
+            the quadratic program corresponding to the model.
+
+        Raises:
+            QiskitOptimizationError: if the model contains unsupported elements.
+        """
+        return load_model(model)
+
+    def save(self, translator: Optional[ModelTranslator] = None) -> Any:
+        """Returns an optimization model corresponding to this quadratic program.
+
+        Returns:
+            The optimization model corresponding to this quadratic program.
+
+        Raises:
+            QiskitOptimizationError: if non-supported elements (should never happen).
+        """
+        if translator is None:
+            from qiskit_optimization.translators.docplex import DocplexMpTranslator
+
+            translator = DocplexMpTranslator()
+        return translator.qp_to_model(self)
+
     def from_docplex(self, model: Model) -> None:
         """Loads this quadratic program from a docplex model.
 
@@ -884,7 +920,10 @@ class QuadraticProgram:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
 
-        # clear current problem
+        # warnings.warn("The to_docplex method is deprecated and will be "
+        #               "removed in a future release. Instead use the"
+        #               "to_model() method", DeprecationWarning)
+
         self.clear()
 
         # get name
@@ -1034,81 +1073,10 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
-
-        # initialize model
-        mdl = Model(self.name)
-
-        # add variables
-        var = {}
-        for idx, x in enumerate(self.variables):
-            if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.continuous_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
-            elif x.vartype == Variable.Type.BINARY:
-                var[idx] = mdl.binary_var(name=x.name)
-            elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
-
-        # add objective
-        objective = self.objective.constant
-        for i, v in self.objective.linear.to_dict().items():
-            objective += v * var[cast(int, i)]
-        for (i, j), v in self.objective.quadratic.to_dict().items():
-            objective += v * var[cast(int, i)] * var[cast(int, j)]
-        if self.objective.sense == QuadraticObjective.Sense.MINIMIZE:
-            mdl.minimize(objective)
-        else:
-            mdl.maximize(objective)
-
-        # add linear constraints
-        for i, l_constraint in enumerate(self.linear_constraints):
-            name = l_constraint.name
-            rhs = l_constraint.rhs
-            if rhs == 0 and l_constraint.linear.coefficients.nnz == 0:
-                continue
-            linear_expr = 0
-            for j, v in l_constraint.linear.to_dict().items():
-                linear_expr += v * var[cast(int, j)]
-            sense = l_constraint.sense
-            if sense == Constraint.Sense.EQ:
-                mdl.add_constraint(linear_expr == rhs, ctname=name)
-            elif sense == Constraint.Sense.GE:
-                mdl.add_constraint(linear_expr >= rhs, ctname=name)
-            elif sense == Constraint.Sense.LE:
-                mdl.add_constraint(linear_expr <= rhs, ctname=name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
-
-        # add quadratic constraints
-        for i, q_constraint in enumerate(self.quadratic_constraints):
-            name = q_constraint.name
-            rhs = q_constraint.rhs
-            if (
-                rhs == 0
-                and q_constraint.linear.coefficients.nnz == 0
-                and q_constraint.quadratic.coefficients.nnz == 0
-            ):
-                continue
-            quadratic_expr = 0
-            for j, v in q_constraint.linear.to_dict().items():
-                quadratic_expr += v * var[cast(int, j)]
-            for (j, k), v in q_constraint.quadratic.to_dict().items():
-                quadratic_expr += v * var[cast(int, j)] * var[cast(int, k)]
-            sense = q_constraint.sense
-            if sense == Constraint.Sense.EQ:
-                mdl.add_constraint(quadratic_expr == rhs, ctname=name)
-            elif sense == Constraint.Sense.GE:
-                mdl.add_constraint(quadratic_expr >= rhs, ctname=name)
-            elif sense == Constraint.Sense.LE:
-                mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
-
-        return mdl
+        # warnings.warn("The to_docplex method is deprecated and will be "
+        #               "removed in a future release. Instead use the"
+        #               "to_model() method", DeprecationWarning)
+        return self.save()
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
