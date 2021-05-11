@@ -73,9 +73,9 @@
     // followed by the pip installed packages).
     //
     "matrix": {
-        "networkx": "2.5",
-        "qiskit-terra": "0.17.1",
-        "qiskit-aer": "0.8.1"
+        "networkx": "2.5.1",
+        "qiskit-terra": "0.17.3",
+        "qiskit-aer": "0.8.2"
     },
     //     "numpy": ["1.6", "1.7"],
     //     "six": ["", null],        // test with and without six installed
