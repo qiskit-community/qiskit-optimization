@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 translators = [DocplexMpTranslator()]
 
 
-def load_model(model: Any) -> "QuadraticProgram":
+def _load_model(model: Any) -> "QuadraticProgram":
     """Returns a quadratic program corresponding to the model.
 
     Args:

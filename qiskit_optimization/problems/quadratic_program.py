@@ -52,7 +52,7 @@ from .variable import Variable, VarType
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from ..translators.model_translator import ModelTranslator
-from ..translators.utils import load_model
+from ..translators.utils import _load_model
 
 logger = logging.getLogger(__name__)
 
@@ -871,7 +871,8 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
-    def load(self, model: Any) -> "QuadraticProgram":
+    @staticmethod
+    def load(model: Any) -> "QuadraticProgram":
         """Loads this quadratic program from an optimization model.
 
         Note that this supports only basic functions of docplex as follows:
@@ -888,7 +889,7 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
-        return load_model(model)
+        return _load_model(model)
 
     def save(self, translator: Optional[ModelTranslator] = None) -> Any:
         """Returns an optimization model corresponding to this quadratic program.

@@ -34,11 +34,9 @@ Translators
    :nosignatures:
 
    DocplexTranslator
-   load_model
 """
 
 from .model_translator import ModelTranslator
 from .docplex import DocplexMpTranslator
-from .utils import load_model
 
-_all = ["ModelTranslator", "DocplexTranslator", "load_model"]
+_all = ["ModelTranslator", "DocplexMpTranslator"]
