@@ -3,6 +3,6 @@ features:
   - |
     Introduced a new converter class ``MaximizeToMinimize`` for ``QuadraticProgram``.
     It converts a problem to a minimization problem. The converter was added to 
-    the default converters list of ``OptimizationAlgorithm``.  Algorithms, which 
-    converted problems internally before, are now using ``MaximizeToMinimize``.
+    the default converters in ``QuadraticProgramToQubo``. Algorithms that
+    previously did the conversion internally are now using ``MaximizeToMinimize``.
 

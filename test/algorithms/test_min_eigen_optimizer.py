@@ -33,6 +33,7 @@ from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
     LinearEqualityToPenalty,
+    MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
@@ -156,7 +157,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
         penalize = LinearEqualityToPenalty()
-        converters = [ineq2eq, int2bin, penalize]
+        max2min = MaximizeToMinimize()
+        converters = [ineq2eq, int2bin, penalize, max2min]
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=converters)
         result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)

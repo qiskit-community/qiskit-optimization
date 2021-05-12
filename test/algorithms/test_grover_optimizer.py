@@ -30,6 +30,7 @@ from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
     LinearEqualityToPenalty,
+    MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
@@ -171,7 +172,8 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
         penalize = LinearEqualityToPenalty()
-        converters = [ineq2eq, int2bin, penalize]
+        max2min = MaximizeToMinimize()
+        converters = [ineq2eq, int2bin, penalize, max2min]
         gmf = GroverOptimizer(
             4,
             num_iterations=n_iter,

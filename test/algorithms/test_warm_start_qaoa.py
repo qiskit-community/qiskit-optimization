@@ -28,6 +28,11 @@ from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (
     MeanAggregator,
     WarmStartQAOAOptimizer,
 )
+from qiskit_optimization.converters import (
+    InequalityToEquality,
+    IntegerToBinary,
+    LinearEqualityToPenalty,
+)
 from qiskit_optimization.applications.max_cut import Maxcut
 
 
@@ -52,6 +57,11 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
+        # a list of converters without max2min
+        ineq2eq = InequalityToEquality()
+        int2bin = IntegerToBinary()
+        penalize = LinearEqualityToPenalty()
+        converters = [ineq2eq, int2bin, penalize]
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=presolver,
             relax_for_pre_solver=False,
@@ -59,6 +69,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
             epsilon=0.25,
             num_initial_solutions=10,
             aggregator=aggregator,
+            converters=converters,
         )
         result_warm = optimizer.solve(problem)
 
