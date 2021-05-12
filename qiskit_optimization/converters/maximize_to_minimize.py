@@ -27,32 +27,33 @@ class MaximizeToMinimize(QuadraticProgramConverter):
     """Convert a maximization problem to minimization problem."""
 
     def __init__(self) -> None:
-        self._src = None  # type: Optional[QuadraticProgram]
-        self._dst = None  # type: Optional[QuadraticProgram]
+        self._src_num_vars = None  # type: Optional[int]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem into a new minimization problem.
+        """Convert a problem into a minimization problem.
 
         Args:
             problem: The problem to be solved, that is a maximization or minimization problem.
 
         Returns:
             The converted problem, that is a minimization problem.
+            Original problem is returned if it already is a minimization problem.
         """
 
-        # Copy original QP as reference.
-        self._src = copy.deepcopy(problem)
-        self._dst = copy.deepcopy(problem)
+        # Copy original number of variables as reference.
+        self._src_num_vars = problem.get_num_vars()
+        # only convert maximization problem
+        problem_min = problem
 
-        if self._src.objective.sense == QuadraticObjective.Sense.MAXIMIZE:
+        if problem.objective.sense == QuadraticObjective.Sense.MAXIMIZE:
             # Turn the problem to `ObjSense.MINIMIZE` by flipping the sign of the objective function
+            problem_min = copy.deepcopy(problem)
+            problem_min.objective.sense = QuadraticObjective.Sense.MINIMIZE
+            problem_min.objective.constant = (-1) * problem.objective.constant
+            problem_min.objective.linear = (-1) * problem.objective.linear.coefficients
+            problem_min.objective.quadratic = (-1) * problem.objective.quadratic.coefficients
 
-            self._dst.objective.sense = QuadraticObjective.Sense.MINIMIZE
-            self._dst.objective.constant = (-1) * self._src.objective.constant
-            self._dst.objective.linear = (-1) * self._src.objective.linear.coefficients
-            self._dst.objective.quadratic = (-1) * self._src.objective.quadratic.coefficients
-
-        return self._dst
+        return problem_min
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem.
@@ -67,7 +68,7 @@ class MaximizeToMinimize(QuadraticProgramConverter):
             QiskitOptimizationError: if the number of variables in the result differs from
                                      that of the original problem.
         """
-        if len(x) != self._src.get_num_vars():
+        if len(x) != self._src_num_vars:
             raise QiskitOptimizationError(
                 "The number of variables in the passed result differs from "
                 "that of the original problem."
