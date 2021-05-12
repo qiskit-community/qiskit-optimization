@@ -112,9 +112,7 @@ class ADMMParameters:
         self.warm_start = warm_start
 
     def __repr__(self) -> str:
-        props = ", ".join(
-            ["{}={}".format(key, value) for (key, value) in vars(self).items()]
-        )
+        props = ", ".join(["{}={}".format(key, value) for (key, value) in vars(self).items()])
         return "{0}({1})".format(type(self).__name__, props)
 
 
@@ -203,9 +201,7 @@ class ADMMOptimizationResult(OptimizationResult):
             state: the internal computation state of ADMM.
             status: Termination status of an optimization algorithm
         """
-        super().__init__(
-            x=x, fval=fval, variables=variables, status=status, raw_results=state
-        )
+        super().__init__(x=x, fval=fval, variables=variables, status=status, raw_results=state)
 
     @property
     def state(self) -> ADMMState:
@@ -246,9 +242,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         self._params = params or ADMMParameters()
 
         # create optimizers if not specified
-        self._qubo_optimizer = qubo_optimizer or MinimumEigenOptimizer(
-            NumPyMinimumEigensolver()
-        )
+        self._qubo_optimizer = qubo_optimizer or MinimumEigenOptimizer(NumPyMinimumEigensolver())
         self._continuous_optimizer = continuous_optimizer or SlsqpOptimizer()
 
         # internal state where we'll keep intermediate solution
@@ -273,9 +267,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
         # 1. get bin/int and continuous variable indices
         bin_int_indices = self._get_variable_indices(problem, Variable.Type.BINARY)
-        continuous_indices = self._get_variable_indices(
-            problem, Variable.Type.CONTINUOUS
-        )
+        continuous_indices = self._get_variable_indices(problem, Variable.Type.CONTINUOUS)
 
         # 2. binary and continuous variables are separable in objective
         for bin_int_index in bin_int_indices:
@@ -319,9 +311,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         self._state = ADMMState(problem, self._params.rho_initial)
 
         # parse problem and convert to an ADMM specific representation.
-        self._state.binary_indices = self._get_variable_indices(
-            problem, Variable.Type.BINARY
-        )
+        self._state.binary_indices = self._get_variable_indices(problem, Variable.Type.BINARY)
         self._state.continuous_indices = self._get_variable_indices(
             problem, Variable.Type.CONTINUOUS
         )
@@ -448,9 +438,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             problem.objective.sense = QuadraticObjective.Sense.MINIMIZE
             problem.objective.constant = (-1) * problem.objective.constant
             problem.objective.linear = (-1) * problem.objective.linear.coefficients
-            problem.objective.quadratic = (
-                -1
-            ) * problem.objective.quadratic.coefficients
+            problem.objective.quadratic = (-1) * problem.objective.quadratic.coefficients
         return problem, sense
 
     @staticmethod
@@ -492,9 +480,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         Returns:
             A solution array.
         """
-        solution = np.zeros(
-            len(self._state.binary_indices) + len(self._state.continuous_indices)
-        )
+        solution = np.zeros(len(self._state.binary_indices) + len(self._state.continuous_indices))
         # restore solution at the original index location
         solution.put(self._state.binary_indices, binary_vars)
         solution.put(self._state.continuous_indices, continuous_vars)
@@ -532,14 +518,10 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
         # objective
         self._state.q0 = self._get_q(self._state.step1_absolute_indices)
-        c0_vec = self._state.op.objective.linear.to_array()[
-            self._state.step1_absolute_indices
-        ]
+        c0_vec = self._state.op.objective.linear.to_array()[self._state.step1_absolute_indices]
         self._state.c0 = c0_vec
         self._state.q1 = self._get_q(self._state.continuous_indices)
-        self._state.c1 = self._state.op.objective.linear.to_array()[
-            self._state.continuous_indices
-        ]
+        self._state.c1 = self._state.op.objective.linear.to_array()[self._state.continuous_indices]
         # equality constraints with binary vars only
         self._state.a0, self._state.b0 = self._get_a0_b0()
 
@@ -561,9 +543,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             # either in the linear or quadratic terms
             if (
                 self._state.op.objective.linear[binary_index] != 0
-                or np.abs(
-                    self._state.op.objective.quadratic.coefficients[binary_index, :]
-                ).sum()
+                or np.abs(self._state.op.objective.quadratic.coefficients[binary_index, :]).sum()
                 != 0
             ):
                 # add the variable if it was not added before
@@ -649,11 +629,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         vector = []
 
         for constraint in self._state.binary_equality_constraints:
-            row = (
-                constraint.linear.to_array()
-                .take(self._state.step1_absolute_indices)
-                .tolist()
-            )
+            row = constraint.linear.to_array().take(self._state.step1_absolute_indices).tolist()
 
             matrix.append(row)
             vector.append(constraint.rhs)
@@ -662,9 +638,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             np_matrix = np.array(matrix)
             np_vector = np.array(vector)
         else:
-            np_matrix = np.array([0] * len(self._state.step1_absolute_indices)).reshape(
-                (1, -1)
-            )
+            np_matrix = np.array([0] * len(self._state.step1_absolute_indices)).reshape((1, -1))
             np_vector = np.zeros(shape=(1,))
 
         return np_matrix, np_vector
@@ -686,9 +660,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # prepare and set quadratic objective.
         quadratic_objective = (
             self._state.q0
-            + self._params.factor_c
-            / 2
-            * np.dot(self._state.a0.transpose(), self._state.a0)
+            + self._params.factor_c / 2 * np.dot(self._state.a0.transpose(), self._state.a0)
             + self._state.rho / 2 * np.eye(binary_size)
         )
         op1.objective.quadratic = quadratic_objective
@@ -726,9 +698,9 @@ class ADMMOptimizer(OptimizationAlgorithm):
             # replacing Q0 objective and take of min/max sense, initially we consider minimization
             op2.objective.quadratic[var_index, var_index] = self._state.rho / 2
             # replacing linear objective
-            op2.objective.linear[var_index] = -1 * self._state.lambda_mult[
-                i
-            ] - self._state.rho * (self._state.x0[i] - self._state.y[i])
+            op2.objective.linear[var_index] = -1 * self._state.lambda_mult[i] - self._state.rho * (
+                self._state.x0[i] - self._state.y[i]
+            )
 
         # remove A0 x0 = b0 constraints
         for constraint in self._state.binary_equality_constraints:
@@ -750,15 +722,13 @@ class ADMMOptimizer(OptimizationAlgorithm):
             op3.continuous_var(lowerbound=-np.inf, upperbound=np.inf, name=name)
 
         # set quadratic objective y
-        quadratic_y = self._params.beta / 2 * np.eye(
+        quadratic_y = self._params.beta / 2 * np.eye(binary_size) + self._state.rho / 2 * np.eye(
             binary_size
-        ) + self._state.rho / 2 * np.eye(binary_size)
+        )
         op3.objective.quadratic = quadratic_y
 
         # set linear objective for y
-        linear_y = -self._state.lambda_mult - self._state.rho * (
-            self._state.x0 - self._state.z
-        )
+        linear_y = -self._state.lambda_mult - self._state.rho * (self._state.x0 - self._state.z)
         op3.objective.linear = linear_y
 
         return op3
@@ -873,9 +843,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         cr_ineq = 0.0
         for constraint in self._state.inequality_constraints:
             sense = -1.0 if constraint.sense == Constraint.Sense.GE else 1.0
-            cr_ineq += max(
-                sense * (constraint.evaluate(solution) - constraint.rhs), 0.0
-            )
+            cr_ineq += max(sense * (constraint.evaluate(solution) - constraint.rhs), 0.0)
 
         return cr_eq + cr_ineq
 
