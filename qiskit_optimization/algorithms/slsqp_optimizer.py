@@ -187,7 +187,7 @@ class SlsqpOptimizer(MultiStartOptimizer):
         # we deal with minimization in the optimizer, so turn the problem to minimization
         max2min = MaximizeToMinimize()
         original_problem = problem
-        problem = max2min.convert(problem)
+        problem = self._convert(problem, max2min)
 
         # construct quadratic objective function
         def _objective(x):

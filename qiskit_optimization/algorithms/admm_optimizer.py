@@ -300,13 +300,10 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # map integer variables to binary variables
         from ..converters.integer_to_binary import IntegerToBinary
 
-        int2bin = IntegerToBinary()
-        original_problem = problem
-        problem = int2bin.convert(problem)
-
         # we deal with minimization in the optimizer, so turn the problem to minimization
-        max2min = MaximizeToMinimize()
-        problem = max2min.convert(problem)
+        converters = [IntegerToBinary(), MaximizeToMinimize()]
+        original_problem = problem
+        problem = self._convert(problem, converters)
 
         # create our computation state.
         self._state = ADMMState(problem, self._params.rho_initial)
@@ -405,7 +402,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             ADMMOptimizationResult,
             self._interpret(
                 x=solution,
-                converters=[int2bin, max2min],
+                converters=converters,
                 problem=original_problem,
                 result_class=ADMMOptimizationResult,
                 state=self._state,
