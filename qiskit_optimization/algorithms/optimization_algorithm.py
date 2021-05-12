@@ -478,7 +478,7 @@ class OptimizationAlgorithm(ABC):
         raw_samples: List[SolutionSample],
         converters: List[QuadraticProgramConverter],
     ) -> List[SolutionSample]:
-        prob = {}  # type: dict
+        prob = {}
         array = {}
         for sample in raw_samples:
             x = sample.x
@@ -534,7 +534,6 @@ class OptimizationAlgorithm(ABC):
         Raises:
             TypeError: If the type of eigenvector is not supported.
         """
-
         if isinstance(eigenvector, DictStateFn):
             eigenvector = eigenvector.primitive
         elif isinstance(eigenvector, StateFn):

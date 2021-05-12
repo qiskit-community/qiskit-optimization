@@ -74,7 +74,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._num_key_qubits = None
         self._n_iterations = num_iterations
         self._quantum_instance = None
-        self._circuit_results = {}  # type: ignore
+        self._circuit_results = {}
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
@@ -184,7 +184,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                 problem_.objective.linear[i] = -val
             for (i, j), val in problem_.objective.quadratic.to_dict().items():
                 problem_.objective.quadratic[i, j] = -val
-        self._num_key_qubits = len(problem_.objective.linear.to_array())  # type: ignore
+        self._num_key_qubits = len(problem_.objective.linear.to_array())
 
         # Variables for tracking the optimum.
         optimum_found = False
@@ -219,6 +219,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             # Get oracle O and the state preparation operator A for the current threshold.
             problem_.objective.constant = orig_constant - threshold
             a_operator = self._get_a_operator(qr_key_value, problem_)
+
             # Iterate until we measure a negative.
             loops_with_no_improvement = 0
             while not improvement_found:
@@ -255,21 +256,19 @@ class GroverOptimizer(OptimizationAlgorithm):
                     threshold = optimum_value
 
                     # trace out work qubits and store samples
-                    # pylint: disable=invalid-unary-operand-type
-                    if self._quantum_instance.is_statevector:  # type: ignore
+                    if self._quantum_instance.is_statevector:
                         indices = list(range(n_key, len(outcome)))
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
                         self._circuit_results = {
-                            i[-n_key:]: v for i, v in self._circuit_results.items()  # type: ignore
+                            i[-1 * n_key :]: v for i, v in self._circuit_results.items()
                         }
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
                     raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
-
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
