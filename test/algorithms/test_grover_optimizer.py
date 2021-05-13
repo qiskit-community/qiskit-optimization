@@ -231,7 +231,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
         opt_sol = -2
         success = OptimizationResultStatus.SUCCESS
-        grover_optimizer = GroverOptimizer(3, num_iterations=10, quantum_instance=q_instance)
+        grover_optimizer = GroverOptimizer(4, num_iterations=10, quantum_instance=q_instance)
         results = grover_optimizer.solve(op)
         self.assertEqual(results.fval, opt_sol)
         np.testing.assert_array_almost_equal(results.x, [0, 1])
