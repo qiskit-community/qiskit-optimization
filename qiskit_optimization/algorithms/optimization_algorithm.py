@@ -478,7 +478,7 @@ class OptimizationAlgorithm(ABC):
         raw_samples: List[SolutionSample],
         converters: List[QuadraticProgramConverter],
     ) -> List[SolutionSample]:
-        prob = {}
+        prob = {}  # type: dict
         array = {}
         for sample in raw_samples:
             x = sample.x

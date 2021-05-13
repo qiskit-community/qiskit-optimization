@@ -71,10 +71,10 @@ class GroverOptimizer(OptimizationAlgorithm):
             TypeError: When there one of converters is an invalid type.
         """
         self._num_value_qubits = num_value_qubits
-        self._num_key_qubits = None
+        self._num_key_qubits = 0
         self._n_iterations = num_iterations
-        self._quantum_instance = None
-        self._circuit_results = {}
+        self._quantum_instance = None  # type: Optional[QuantumInstance]
+        self._circuit_results = {}  # type: dict
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
