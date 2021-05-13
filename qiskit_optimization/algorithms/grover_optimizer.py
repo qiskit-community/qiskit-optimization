@@ -59,10 +59,10 @@ class GroverOptimizer(OptimizationAlgorithm):
             TypeError: When there one of converters is an invalid type.
         """
         self._num_value_qubits = num_value_qubits
-        self._num_key_qubits = None
+        self._num_key_qubits = 0
         self._n_iterations = num_iterations
-        self._quantum_instance = None
-        self._circuit_results = {}  # type: ignore
+        self._quantum_instance = None  # type: Optional[QuantumInstance]
+        self._circuit_results = {}  # type: dict
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
@@ -168,7 +168,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                 problem_.objective.linear[i] = -val
             for (i, j), val in problem_.objective.quadratic.to_dict().items():
                 problem_.objective.quadratic[i, j] = -val
-        self._num_key_qubits = len(problem_.objective.linear.to_array())  # type: ignore
+        self._num_key_qubits = len(problem_.objective.linear.to_array())
 
         # Variables for tracking the optimum.
         optimum_found = False
@@ -237,13 +237,14 @@ class GroverOptimizer(OptimizationAlgorithm):
                     threshold = optimum_value
 
                     # trace out work qubits and store samples
-                    if self._quantum_instance.is_statevector:  # type: ignore
+                    if self._quantum_instance.is_statevector:
                         indices = list(range(n_key, len(outcome)))
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
-                        self._circuit_results = {i[0:n_key]: v for i,
-                                                 v in self._circuit_results.items()}
+                        self._circuit_results = {
+                            i[-1 * n_key :]: v for i, v in self._circuit_results.items()
+                        }
 
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
                                                                  problem_init)
@@ -313,7 +314,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
             hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {b[::-1]: np.sqrt(v / shots) for (b, v) in state.items()}
+            self._circuit_results = {b: (v / shots) ** 0.5 for (b, v) in state.items()}
         return hist
 
     @staticmethod

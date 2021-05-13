@@ -48,7 +48,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         # Get expected value.
         solver = MinimumEigenOptimizer(NumPyMinimumEigensolver())
         comp_result = solver.solve(problem)
-
         # Validate results.
         np.testing.assert_array_almost_equal(comp_result.x, results.x)
         self.assertEqual(comp_result.fval, results.fval)
@@ -137,6 +136,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     def test_converter_list(self):
         """Test converters list"""
         # Input.
+
         model = Model()
         x_0 = model.binary_var(name='x0')
         x_1 = model.binary_var(name='x1')
@@ -152,6 +152,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                               converters=qp2qubo)
         results = gmf.solve(op)
         self.validate_results(op, results)
+
         # a list of converters
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
@@ -168,31 +169,62 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                             quantum_instance=self.sv_simulator,
                             converters=invalid)
 
-    def test_samples_and_raw_samples(self):
+    @data("sv", "qasm")
+    def test_samples_and_raw_samples(self, simulator):
         """Test samples and raw_samples"""
         op = QuadraticProgram()
-        op.integer_var(0, 3, 'x')
-        op.binary_var('y')
-        op.minimize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
+        op.integer_var(0, 3, "x")
+        op.binary_var("y")
+        op.minimize(linear={"x": 1, "y": 2})
+        op.linear_constraint(linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy")
+        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
+        grover_optimizer = GroverOptimizer(8, num_iterations=10, quantum_instance=q_instance)
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
-        algorithm_globals.random_seed = 1
-        grover_optimizer = GroverOptimizer(
-            8, num_iterations=5, quantum_instance=self.qasm_simulator)
-        result = grover_optimizer.solve(op)
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 32)
-        self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
-        self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
-        self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
-        self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
-        for sample in result.raw_samples:
+        results = grover_optimizer.solve(op)
+        self.assertEqual(len(results.samples), 8)
+        self.assertEqual(len(results.raw_samples), 32)
+        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1)
+        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1)
+        self.assertAlmostEqual(min(s.fval for s in results.samples), 0)
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+        for sample in results.raw_samples:
             self.assertEqual(sample.status, success)
-        np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x[0:2])
-        self.assertAlmostEqual(result.fval, result.raw_samples[0].fval)
-        self.assertEqual(result.status, result.raw_samples[0].status)
+        np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
+        self.assertAlmostEqual(results.fval, results.samples[0].fval)
+        self.assertEqual(results.status, results.samples[0].status)
+        self.assertAlmostEqual(results.fval, results.raw_samples[0].fval)
+        self.assertEqual(results.status, results.raw_samples[0].status)
+        np.testing.assert_array_almost_equal([1, 0, 0, 0, 0], results.raw_samples[0].x)
+
+    @data("sv", "qasm")
+    def test_bit_ordering(self, simulator):
+        """Test bit ordering"""
+        # test minimize
+        algorithm_globals.random_seed = 2
+        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
+        mdl = Model("docplex model")
+        x = mdl.binary_var("x")
+        y = mdl.binary_var("y")
+        mdl.minimize(x - 2 * y)
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        opt_sol = -2
+        success = OptimizationResultStatus.SUCCESS
+        grover_optimizer = GroverOptimizer(3, num_iterations=10, quantum_instance=q_instance)
+        results = grover_optimizer.solve(op)
+        self.assertEqual(results.fval, opt_sol)
+        np.testing.assert_array_almost_equal(results.x, [0, 1])
+        self.assertEqual(results.status, success)
+        results.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1, delta=1e-5)
+        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1, delta=1e-5)
+        self.assertAlmostEqual(min(s.fval for s in results.samples), -2)
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+        for sample in results.raw_samples:
+            self.assertEqual(sample.status, success)
 
 
 if __name__ == '__main__':
