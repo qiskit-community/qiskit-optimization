@@ -535,12 +535,12 @@ class OptimizationAlgorithm(ABC):
             TypeError: If the type of eigenvector is not supported.
         """
         if isinstance(eigenvector, DictStateFn):
-            eigenvector = {bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()}
+            eigenvector = eigenvector.primitive
         elif isinstance(eigenvector, StateFn):
             eigenvector = eigenvector.to_matrix()
 
         def generate_solution(bitstr, qubo, probability):
-            x = np.fromiter(list(bitstr), dtype=int)
+            x = np.fromiter(list(bitstr[::-1]), dtype=int)
             fval = qubo.objective.evaluate(x)
             return SolutionSample(
                 x=x,
@@ -551,10 +551,11 @@ class OptimizationAlgorithm(ABC):
 
         solutions = []
         if isinstance(eigenvector, dict):
-            all_counts = sum(eigenvector.values())
+            # When eigenvector is a dict, square the values since the values are normalized.
+            # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
+            probabilities = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
-            for bitstr, count in eigenvector.items():
-                sampling_probability = count / all_counts
+            for bitstr, sampling_probability in probabilities.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
@@ -567,7 +568,7 @@ class OptimizationAlgorithm(ABC):
             for i, sampling_probability in enumerate(probabilities):
                 # add the i-th state if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-                    bitstr = "{:b}".format(i).rjust(num_qubits, "0")[::-1]
+                    bitstr = "{:b}".format(i).rjust(num_qubits, "0")
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:
