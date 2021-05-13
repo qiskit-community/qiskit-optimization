@@ -532,11 +532,7 @@ class OptimizationAlgorithm(ABC):
             for i, sampling_probability in enumerate(probabilities):
                 # add the i-th state if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-<<<<<<< HEAD
-                    bitstr = '{:b}'.format(i).rjust(num_qubits, '0')[::-1]
-=======
                     bitstr = "{:b}".format(i).rjust(num_qubits, "0")
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:

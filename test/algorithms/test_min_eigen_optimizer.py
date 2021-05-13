@@ -24,14 +24,6 @@ from qiskit.algorithms import QAOA, VQE, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.utils import QuantumInstance, algorithm_globals
-<<<<<<< HEAD
-from qiskit.algorithms import QAOA, NumPyMinimumEigensolver
-from qiskit.algorithms.optimizers import COBYLA
-from qiskit_optimization.algorithms import (CplexOptimizer, MinimumEigenOptimizer)
-from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
-from qiskit_optimization.converters import (InequalityToEquality, IntegerToBinary,
-                                            LinearEqualityToPenalty, QuadraticProgramToQubo)
-=======
 from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationResultStatus,
@@ -42,7 +34,6 @@ from qiskit_optimization.converters import (
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -61,9 +52,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         # QAOA
         optimizer = COBYLA()
-<<<<<<< HEAD
-        self.min_eigen_solvers['qaoa'] = QAOA(optimizer=optimizer)
-=======
         self.min_eigen_solvers["qaoa"] = QAOA(optimizer=optimizer)
         # simulators
         self.sv_simulator = QuantumInstance(
@@ -97,7 +85,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         mdl.minimize(x - 2 * y)
         self.op_ordering = QuadraticProgram()
         self.op_ordering.from_docplex(mdl)
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
 
     @data(
         ('exact', None, 'op_ip1.lp'),
@@ -209,27 +196,9 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             MinimumEigenOptimizer(min_eigen_solver,
                                   converters=invalid)
 
-<<<<<<< HEAD
-    def test_samples(self):
-        """Test samples"""
-        SUCCESS = OptimizationResultStatus.SUCCESS  # pylint: disable=invalid-name
-        algorithm_globals.random_seed = 123
-        quantum_instance = QuantumInstance(backend=BasicAer.get_backend('qasm_simulator'),
-                                           seed_simulator=123, seed_transpiler=123,
-                                           shots=1000)
-
-        # test minimize
-        op = QuadraticProgram()
-        op.integer_var(0, 3, 'x')
-        op.binary_var('y')
-        op.minimize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
-
-=======
     def test_samples_numpy_eigen_solver(self):
         """Test samples for NumPyMinimumEigensolver"""
         # test minimize
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
         min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
         result = min_eigen_optimizer.solve(self.op_minimize)
@@ -247,15 +216,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
-<<<<<<< HEAD
-        op = QuadraticProgram()
-        op.integer_var(0, 3, 'x')
-        op.binary_var('y')
-        op.maximize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='<=', rhs=1, name='xy')
-
-=======
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
         min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
         result = min_eigen_optimizer.solve(self.op_maximize)

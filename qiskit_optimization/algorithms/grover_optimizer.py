@@ -242,14 +242,9 @@ class GroverOptimizer(OptimizationAlgorithm):
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
-<<<<<<< HEAD
-                        self._circuit_results = {i[0:n_key]: v for i,
-                                                 v in self._circuit_results.items()}
-=======
                         self._circuit_results = {
-                            i[-1 * n_key :]: v for i, v in self._circuit_results.items()
+                            i[-1 * n_key:]: v for i, v in self._circuit_results.items()
                         }
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
 
                     raw_samples = self._eigenvector_to_solutions(self._circuit_results,
                                                                  problem_init)

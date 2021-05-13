@@ -173,26 +173,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     def test_samples_and_raw_samples(self, simulator):
         """Test samples and raw_samples"""
         op = QuadraticProgram()
-<<<<<<< HEAD
-        op.integer_var(0, 3, 'x')
-        op.binary_var('y')
-        op.minimize(linear={'x': 1, 'y': 2})
-        op.linear_constraint(linear={'x': 1, 'y': 1}, sense='>=', rhs=1, name='xy')
-        opt_sol = 1
-        success = OptimizationResultStatus.SUCCESS
-        algorithm_globals.random_seed = 1
-        grover_optimizer = GroverOptimizer(
-            8, num_iterations=5, quantum_instance=self.qasm_simulator)
-        result = grover_optimizer.solve(op)
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 32)
-        self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
-        self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
-        self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
-        self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
-        self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
-        for sample in result.raw_samples:
-=======
         op.integer_var(0, 3, "x")
         op.binary_var("y")
         op.minimize(linear={"x": 1, "y": 2})
@@ -244,7 +224,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
->>>>>>> 4bce259... Fix bit ordering and probabilities of samples in optimization_algorithm.py (#97)
             self.assertEqual(sample.status, success)
 
 
