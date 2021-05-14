@@ -272,7 +272,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
                     # Using Durr and Hoyer method, increase m.
-                    m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))
+                    m = max(m + 1, int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2)))))
                     logger.info("No Improvement. M: %s", m)
 
                     # Check if we've already seen this value.
