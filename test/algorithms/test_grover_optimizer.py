@@ -38,10 +38,22 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 1
+<<<<<<< HEAD
         self.sv_simulator = QuantumInstance(Aer.get_backend('statevector_simulator'),
                                             seed_simulator=921, seed_transpiler=200)
         self.qasm_simulator = QuantumInstance(Aer.get_backend('qasm_simulator'),
                                               seed_simulator=123, seed_transpiler=123)
+=======
+        self.sv_simulator = QuantumInstance(
+            Aer.get_backend("statevector_simulator"),
+            seed_simulator=921,
+            seed_transpiler=200,
+        )
+        self.qasm_simulator = QuantumInstance(
+            Aer.get_backend("qasm_simulator"), seed_simulator=123, seed_transpiler=123
+        )
+        self.n_iter = 8
+>>>>>>> b0d411a... Fix GroverOptimizer's rotation_count (#132)
 
     def validate_results(self, problem, results):
         """Validate the results object returned by GroverOptimizer."""
@@ -84,8 +96,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(model)
 
         # Get the optimum key and value.
-        n_iter = 8
-        gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator)
+        gmf = GroverOptimizer(4, num_iterations=self.n_iter, quantum_instance=self.sv_simulator)
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -105,8 +116,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(model)
 
         # Get the optimum key and value.
-        n_iter = 8
-        gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator)
+        gmf = GroverOptimizer(4, num_iterations=self.n_iter, quantum_instance=self.sv_simulator)
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -127,10 +137,15 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(model)
 
         # Get the optimum key and value.
+<<<<<<< HEAD
         n_iter = 10
 
         q_instance = self.sv_simulator if simulator == 'sv' else self.qasm_simulator
         gmf = GroverOptimizer(6, num_iterations=n_iter, quantum_instance=q_instance)
+=======
+        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
+        gmf = GroverOptimizer(6, num_iterations=self.n_iter, quantum_instance=q_instance)
+>>>>>>> b0d411a... Fix GroverOptimizer's rotation_count (#132)
         results = gmf.solve(op)
         self.validate_results(op, results)
 
@@ -145,11 +160,19 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(model)
 
         # Get the optimum key and value.
-        n_iter = 8
         # a single converter.
         qp2qubo = QuadraticProgramToQubo()
+<<<<<<< HEAD
         gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator,
                               converters=qp2qubo)
+=======
+        gmf = GroverOptimizer(
+            4,
+            num_iterations=self.n_iter,
+            quantum_instance=self.sv_simulator,
+            converters=qp2qubo,
+        )
+>>>>>>> b0d411a... Fix GroverOptimizer's rotation_count (#132)
         results = gmf.solve(op)
         self.validate_results(op, results)
         # a list of converters
@@ -157,20 +180,43 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         int2bin = IntegerToBinary()
         penalize = LinearEqualityToPenalty()
         converters = [ineq2eq, int2bin, penalize]
+<<<<<<< HEAD
         gmf = GroverOptimizer(4, num_iterations=n_iter, quantum_instance=self.sv_simulator,
                               converters=converters)
+=======
+        gmf = GroverOptimizer(
+            4,
+            num_iterations=self.n_iter,
+            quantum_instance=self.sv_simulator,
+            converters=converters,
+        )
+>>>>>>> b0d411a... Fix GroverOptimizer's rotation_count (#132)
         results = gmf.solve(op)
         self.validate_results(op, results)
         # invalid converters
         with self.assertRaises(TypeError):
             invalid = [qp2qubo, "invalid converter"]
+<<<<<<< HEAD
             GroverOptimizer(4, num_iterations=n_iter,
                             quantum_instance=self.sv_simulator,
                             converters=invalid)
 
     def test_samples_and_raw_samples(self):
+=======
+            GroverOptimizer(
+                4,
+                num_iterations=self.n_iter,
+                quantum_instance=self.sv_simulator,
+                converters=invalid,
+            )
+
+    @data("sv", "qasm")
+    def test_samples_and_raw_samples(self, simulator):
+>>>>>>> b0d411a... Fix GroverOptimizer's rotation_count (#132)
         """Test samples and raw_samples"""
+        algorithm_globals.random_seed = 2
         op = QuadraticProgram()
+<<<<<<< HEAD
         op.integer_var(0, 3, 'x')
         op.binary_var('y')
         op.minimize(linear={'x': 1, 'y': 2})
@@ -189,6 +235,63 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(min(s.fval for s in result.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
+=======
+        op.integer_var(0, 3, "x")
+        op.binary_var("y")
+        op.minimize(linear={"x": 1, "y": 2})
+        op.linear_constraint(linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy")
+        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
+        grover_optimizer = GroverOptimizer(
+            8, num_iterations=self.n_iter, quantum_instance=q_instance
+        )
+        opt_sol = 1
+        success = OptimizationResultStatus.SUCCESS
+        results = grover_optimizer.solve(op)
+        self.assertEqual(len(results.samples), 8)
+        self.assertEqual(len(results.raw_samples), 32)
+        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1)
+        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1)
+        self.assertAlmostEqual(min(s.fval for s in results.samples), 0)
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+        for sample in results.raw_samples:
+            self.assertEqual(sample.status, success)
+        np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
+        self.assertAlmostEqual(results.fval, results.samples[0].fval)
+        self.assertEqual(results.status, results.samples[0].status)
+        self.assertAlmostEqual(results.fval, results.raw_samples[0].fval)
+        self.assertEqual(results.status, results.raw_samples[0].status)
+        np.testing.assert_array_almost_equal([1, 0, 0, 0, 0], results.raw_samples[0].x)
+
+    @data("sv", "qasm")
+    def test_bit_ordering(self, simulator):
+        """Test bit ordering"""
+        # test minimize
+        algorithm_globals.random_seed = 2
+        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
+        mdl = Model("docplex model")
+        x = mdl.binary_var("x")
+        y = mdl.binary_var("y")
+        mdl.minimize(x - 2 * y)
+        op = QuadraticProgram()
+        op.from_docplex(mdl)
+        opt_sol = -2
+        success = OptimizationResultStatus.SUCCESS
+        grover_optimizer = GroverOptimizer(
+            3, num_iterations=self.n_iter, quantum_instance=q_instance
+        )
+        results = grover_optimizer.solve(op)
+        self.assertEqual(results.fval, opt_sol)
+        np.testing.assert_array_almost_equal(results.x, [0, 1])
+        self.assertEqual(results.status, success)
+        results.raw_samples.sort(key=lambda x: x.probability, reverse=True)
+        self.assertAlmostEqual(sum(s.probability for s in results.samples), 1, delta=1e-5)
+        self.assertAlmostEqual(sum(s.probability for s in results.raw_samples), 1, delta=1e-5)
+        self.assertAlmostEqual(min(s.fval for s in results.samples), -2)
+        self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+        self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+        for sample in results.raw_samples:
+>>>>>>> b0d411a... Fix GroverOptimizer's rotation_count (#132)
             self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(result.x, result.raw_samples[0].x[0:2])
         self.assertAlmostEqual(result.fval, result.raw_samples[0].fval)
