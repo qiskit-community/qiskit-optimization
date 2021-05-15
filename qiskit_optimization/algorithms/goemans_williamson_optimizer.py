@@ -20,14 +20,19 @@ from typing import Optional, List, Tuple, Union
 import numpy as np
 from qiskit.exceptions import MissingOptionalLibraryError
 
-from .optimization_algorithm import OptimizationResult, OptimizationResultStatus, \
-    OptimizationAlgorithm, SolutionSample
+from .optimization_algorithm import (
+    OptimizationResult,
+    OptimizationResultStatus,
+    OptimizationAlgorithm,
+    SolutionSample,
+)
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
 
 try:
     import cvxpy as cvx
     from cvxpy import DCPError, DGPError, SolverError
+
     _HAS_CVXPY = True
 except ImportError:
     _HAS_CVXPY = False
@@ -42,10 +47,15 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
     values of just one solution. Explore ``samples`` for all possible solutions.
     """
 
-    def __init__(self, x: Optional[Union[List[float], np.ndarray]], fval: float,
-                 variables: List[Variable], status: OptimizationResultStatus,
-                 samples: Optional[List[SolutionSample]],
-                 sdp_solution: Optional[np.ndarray] = None) -> None:
+    def __init__(
+        self,
+        x: Optional[Union[List[float], np.ndarray]],
+        fval: float,
+        variables: List[Variable],
+        status: OptimizationResultStatus,
+        samples: Optional[List[SolutionSample]],
+        sdp_solution: Optional[np.ndarray] = None,
+    ) -> None:
         """
         Args:
             x: the optimal value found in the optimization.
@@ -78,8 +88,13 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
     the graph.
     """
 
-    def __init__(self, num_cuts: int, sort_cuts: bool = True,
-                 unique_cuts: bool = True, seed: int = 0):
+    def __init__(
+        self,
+        num_cuts: int,
+        sort_cuts: bool = True,
+        unique_cuts: bool = True,
+        seed: int = 0,
+    ):
         """
         Args:
             num_cuts: Number of cuts to generate.
@@ -95,7 +110,8 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             raise MissingOptionalLibraryError(
                 libname="CVXPY",
                 name="GoemansWilliamsonOptimizer",
-                pip_install="pip install 'qiskit-optimization[cvxpy]'")
+                pip_install="pip install 'qiskit-optimization[cvxpy]'",
+            )
         super().__init__()
 
         self._num_cuts = num_cuts
@@ -114,9 +130,11 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         """
         message = ""
         if problem.get_num_binary_vars() != problem.get_num_vars():
-            message = f"Only binary variables are supported, while the total number of variables " \
-                      f"{problem.get_num_vars()} and there are {problem.get_num_binary_vars()} " \
-                      f"binary variables across them"
+            message = (
+                f"Only binary variables are supported, while the total number of variables "
+                f"{problem.get_num_vars()} and there are {problem.get_num_binary_vars()} "
+                f"binary variables across them"
+            )
         return message
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
@@ -137,15 +155,19 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             chi = self._solve_max_cut_sdp(adj_matrix)
         except (DCPError, DGPError, SolverError):
             logger.error("Can't solve SDP problem")
-            return GoemansWilliamsonOptimizationResult(x=[], fval=0, variables=problem.variables,
-                                                       status=OptimizationResultStatus.FAILURE,
-                                                       samples=[])
+            return GoemansWilliamsonOptimizationResult(
+                x=[],
+                fval=0,
+                variables=problem.variables,
+                status=OptimizationResultStatus.FAILURE,
+                samples=[],
+            )
 
         cuts = self._generate_random_cuts(chi, len(adj_matrix))
 
-        numeric_solutions = [(cuts[i, :],
-                              self.max_cut_value(cuts[i, :], adj_matrix))
-                             for i in range(self._num_cuts)]
+        numeric_solutions = [
+            (cuts[i, :], self.max_cut_value(cuts[i, :], adj_matrix)) for i in range(self._num_cuts)
+        ]
 
         if self._sort_cuts:
             numeric_solutions.sort(key=lambda x: -x[1])
@@ -153,22 +175,29 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         if self._unique_cuts:
             numeric_solutions = self._get_unique_cuts(numeric_solutions)
 
-        numeric_solutions = numeric_solutions[:self._num_cuts]
-        samples = [SolutionSample(
-            x=solution[0],
-            fval=solution[1],
-            probability=1.0 / len(numeric_solutions),
-            status=OptimizationResultStatus.SUCCESS) for solution in numeric_solutions]
+        numeric_solutions = numeric_solutions[: self._num_cuts]
+        samples = [
+            SolutionSample(
+                x=solution[0],
+                fval=solution[1],
+                probability=1.0 / len(numeric_solutions),
+                status=OptimizationResultStatus.SUCCESS,
+            )
+            for solution in numeric_solutions
+        ]
 
-        return GoemansWilliamsonOptimizationResult(x=samples[0].x,
-                                                   fval=samples[0].fval,
-                                                   variables=problem.variables,
-                                                   status=OptimizationResultStatus.SUCCESS,
-                                                   samples=samples,
-                                                   sdp_solution=chi)
+        return GoemansWilliamsonOptimizationResult(
+            x=samples[0].x,
+            fval=samples[0].fval,
+            variables=problem.variables,
+            status=OptimizationResultStatus.SUCCESS,
+            samples=samples,
+            sdp_solution=chi,
+        )
 
-    def _get_unique_cuts(self, solutions: List[Tuple[np.ndarray, float]]) \
-            -> List[Tuple[np.ndarray, float]]:
+    def _get_unique_cuts(
+        self, solutions: List[Tuple[np.ndarray, float]]
+    ) -> List[Tuple[np.ndarray, float]]:
         """
         Returns:
             Unique Goemans-Williamson cuts.
@@ -179,12 +208,15 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         # starting from 1 to start from 0. In the next loop repetitive cuts will be removed.
         for idx, cut in enumerate(solutions):
             if cut[0][0] == 1:
-                solutions[idx] = (np.array([0 if _ == 1 else 1 for _ in cut[0]]), cut[1])
+                solutions[idx] = (
+                    np.array([0 if _ == 1 else 1 for _ in cut[0]]),
+                    cut[1],
+                )
 
         seen_cuts = set()
         unique_cuts = []
         for cut in solutions:
-            cut_str = ''.join([str(_) for _ in cut[0]])
+            cut_str = "".join([str(_) for _ in cut[0]])
             if cut_str in seen_cuts:
                 continue
 

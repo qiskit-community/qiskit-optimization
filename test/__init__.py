@@ -12,10 +12,6 @@
 
 """ Optimization test packages """
 
-from .optimization_test_case import (QiskitOptimizationTestCase,
-                                     requires_extra_library)
+from .optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
-__all__ = [
-    'QiskitOptimizationTestCase',
-    'requires_extra_library'
-]
+__all__ = ["QiskitOptimizationTestCase", "requires_extra_library"]

@@ -44,8 +44,11 @@ class GraphOptimizationApplication(OptimizationApplication):
         # The view of the graph is stored which means the graph can not be changed.
         self._graph = nx.Graph(graph).copy(as_view=True)
 
-    def draw(self, result: Optional[Union[OptimizationResult, np.ndarray]] = None,
-             pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def draw(
+        self,
+        result: Optional[Union[OptimizationResult, np.ndarray]] = None,
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
 
@@ -59,7 +62,8 @@ class GraphOptimizationApplication(OptimizationApplication):
             raise MissingOptionalLibraryError(
                 libname="matplotlib",
                 name="GraphOptimizationApplication",
-                pip_install="pip install 'qiskit-optimization[matplotlib]'")
+                pip_install="pip install 'qiskit-optimization[matplotlib]'",
+            )
 
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
@@ -67,8 +71,11 @@ class GraphOptimizationApplication(OptimizationApplication):
             self._draw_result(result, pos)
 
     @abstractmethod
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:

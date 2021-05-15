@@ -17,21 +17,33 @@ import numpy as np
 
 from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
 from qiskit.opflow import OperatorBase
-from .optimization_algorithm import (OptimizationResultStatus, OptimizationAlgorithm,
-                                     OptimizationResult, SolutionSample)
+from .optimization_algorithm import (
+    OptimizationResultStatus,
+    OptimizationAlgorithm,
+    OptimizationResult,
+    SolutionSample,
+)
 from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import QuadraticProgramToQubo, QuadraticProgramConverter
+from ..converters.quadratic_program_to_qubo import (
+    QuadraticProgramToQubo,
+    QuadraticProgramConverter,
+)
 from ..problems.quadratic_program import QuadraticProgram, Variable
 
 
 class MinimumEigenOptimizationResult(OptimizationResult):
-    """ Minimum Eigen Optimizer Result."""
+    """Minimum Eigen Optimizer Result."""
 
-    def __init__(self, x: Union[List[float], np.ndarray], fval: float, variables: List[Variable],
-                 status: OptimizationResultStatus,
-                 samples: Optional[List[SolutionSample]] = None,
-                 min_eigen_solver_result: Optional[MinimumEigensolverResult] = None,
-                 raw_samples: Optional[List[SolutionSample]] = None) -> None:
+    def __init__(
+        self,
+        x: Union[List[float], np.ndarray],
+        fval: float,
+        variables: List[Variable],
+        status: OptimizationResultStatus,
+        samples: Optional[List[SolutionSample]] = None,
+        min_eigen_solver_result: Optional[MinimumEigensolverResult] = None,
+        raw_samples: Optional[List[SolutionSample]] = None,
+    ) -> None:
         """
         Args:
             x: the optimal value found by ``MinimumEigensolver``.
@@ -44,8 +56,14 @@ class MinimumEigenOptimizationResult(OptimizationResult):
             raw_samples: the x values of the QUBO, the objective function value of the QUBO,
                 and the probability of sampling.
         """
-        super().__init__(x=x, fval=fval, variables=variables, status=status, raw_results=None,
-                         samples=samples)
+        super().__init__(
+            x=x,
+            fval=fval,
+            variables=variables,
+            status=status,
+            raw_results=None,
+            samples=samples,
+        )
         self._min_eigen_solver_result = min_eigen_solver_result
         self._raw_samples = raw_samples
 
@@ -94,9 +112,14 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         result = optimizer.solve(problem)
     """
 
-    def __init__(self, min_eigen_solver: MinimumEigensolver, penalty: Optional[float] = None,
-                 converters: Optional[Union[QuadraticProgramConverter,
-                                            List[QuadraticProgramConverter]]] = None) -> None:
+    def __init__(
+        self,
+        min_eigen_solver: MinimumEigensolver,
+        penalty: Optional[float] = None,
+        converters: Optional[
+            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
+        ] = None,
+    ) -> None:
         """
         This initializer takes the minimum eigen solver to be used to approximate the ground state
         of the resulting Hamiltonian as well as a optional penalty factor to scale penalty terms
@@ -116,8 +139,10 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         """
 
         if not min_eigen_solver.supports_aux_operators():
-            raise QiskitOptimizationError('Given MinimumEigensolver does not return the eigenstate '
-                                          + 'and is not supported by the MinimumEigenOptimizer.')
+            raise QiskitOptimizationError(
+                "Given MinimumEigensolver does not return the eigenstate "
+                + "and is not supported by the MinimumEigenOptimizer."
+            )
         self._min_eigen_solver = min_eigen_solver
         self._penalty = penalty
 
@@ -171,11 +196,13 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
         return self._solve_internal(operator, offset, problem_, problem)
 
-    def _solve_internal(self,
-                        operator: OperatorBase,
-                        offset: float,
-                        converted_problem: QuadraticProgram,
-                        original_problem: QuadraticProgram):
+    def _solve_internal(
+        self,
+        operator: OperatorBase,
+        offset: float,
+        converted_problem: QuadraticProgram,
+        original_problem: QuadraticProgram,
+    ):
 
         # only try to solve non-empty Ising Hamiltonians
         x = None  # type: Optional[Any]
@@ -190,7 +217,8 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             raw_samples = None
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
-                    eigen_result.eigenstate, converted_problem)
+                    eigen_result.eigenstate, converted_problem
+                )
                 raw_samples.sort(key=lambda x: converted_problem.objective.sense.value * x.fval)
                 x = raw_samples[0].x
                 fval = raw_samples[0].fval
@@ -204,15 +232,26 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         if fval is None or x is None:
             # if not function value is given, then something went wrong, e.g., a
             # NumPyMinimumEigensolver has been configured with an infeasible filter criterion.
-            return MinimumEigenOptimizationResult(x=None, fval=None,
-                                                  variables=original_problem.variables,
-                                                  status=OptimizationResultStatus.FAILURE,
-                                                  samples=None, raw_samples=None,
-                                                  min_eigen_solver_result=eigen_result)
+            return MinimumEigenOptimizationResult(
+                x=None,
+                fval=None,
+                variables=original_problem.variables,
+                status=OptimizationResultStatus.FAILURE,
+                samples=None,
+                raw_samples=None,
+                min_eigen_solver_result=eigen_result,
+            )
         # translate result back to integers
         samples = self._interpret_samples(original_problem, raw_samples, self._converters)
-        return cast(MinimumEigenOptimizationResult,
-                    self._interpret(x=x, converters=self._converters, problem=original_problem,
-                                    result_class=MinimumEigenOptimizationResult,
-                                    samples=samples, raw_samples=raw_samples,
-                                    min_eigen_solver_result=eigen_result))
+        return cast(
+            MinimumEigenOptimizationResult,
+            self._interpret(
+                x=x,
+                converters=self._converters,
+                problem=original_problem,
+                result_class=MinimumEigenOptimizationResult,
+                samples=samples,
+                raw_samples=raw_samples,
+                min_eigen_solver_result=eigen_result,
+            ),
+        )

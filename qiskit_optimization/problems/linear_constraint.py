@@ -22,17 +22,19 @@ from .linear_expression import LinearExpression
 
 
 class LinearConstraint(Constraint):
-    """ Representation of a linear constraint."""
+    """Representation of a linear constraint."""
 
     # Note: added, duplicating in effect that in Constraint, to avoid issues with Sphinx
     Sense = ConstraintSense
 
-    def __init__(self,
-                 quadratic_program: Any, name: str,
-                 linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
-                 sense: ConstraintSense,
-                 rhs: float
-                 ) -> None:
+    def __init__(
+        self,
+        quadratic_program: Any,
+        name: str,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+        sense: ConstraintSense,
+        rhs: float,
+    ) -> None:
         """
         Args:
             quadratic_program: The parent quadratic program.
@@ -54,8 +56,10 @@ class LinearConstraint(Constraint):
         return self._linear
 
     @linear.setter
-    def linear(self, linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]]) \
-            -> None:
+    def linear(
+        self,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+    ) -> None:
         """Sets the linear expression corresponding to the left-hand-side of the constraint.
         The coefficients can either be given by an array, a (sparse) 1d matrix, a list or a
         dictionary.
