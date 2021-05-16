@@ -51,10 +51,10 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         self._max_to_min = MaximizeToMinimize()
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem with linear inequality constraints into new one with a QUBO form.
+        """Convert a problem with linear constraints into new one with a QUBO form.
 
         Args:
-            problem: The problem with linear inequality constraints to be solved.
+            problem: The problem with linear constraints to be solved.
 
         Returns:
             The problem converted in QUBO format as minimization problem.
