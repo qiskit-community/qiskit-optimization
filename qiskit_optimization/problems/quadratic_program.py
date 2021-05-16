@@ -1153,7 +1153,7 @@ class QuadraticProgram:
         Returns:
             An optimization problem by substituting variables with constants or other variables.
             If the substitution is valid, `QuadraticProgram.status` is still
-            `QuadraticProgram.Status.VALIAD`.
+            `QuadraticProgram.Status.VALID`.
             Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
 
         Raises:
@@ -1165,6 +1165,10 @@ class QuadraticProgram:
 
     def to_ising(self) -> Tuple[OperatorBase, float]:
         """Return the Ising Hamiltonian of this problem.
+
+        Variables are mapped to qubits in the same order, i.e.,
+        i-th variable is mapped to i-th qubit.
+        See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
 
         Returns:
             qubit_op: The qubit operator for the problem
@@ -1264,6 +1268,10 @@ class QuadraticProgram:
                    qubit_op: Union[OperatorBase, PauliSumOp],
                    offset: float = 0.0, linear: bool = False) -> None:
         r"""Create a quadratic program from a qubit operator and a shift value.
+
+        Variables are mapped to qubits in the same order, i.e.,
+        i-th variable is mapped to i-th qubit.
+        See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
 
         Args:
             qubit_op: The qubit operator of the problem.
@@ -1464,7 +1472,7 @@ class SubstituteVariables:
         Returns:
             An optimization problem by substituting variables with constants or other variables.
             If the substitution is valid, `QuadraticProgram.status` is still
-            `QuadraticProgram.Status.VALIAD`.
+            `QuadraticProgram.Status.VALID`.
             Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
 
         Raises:
