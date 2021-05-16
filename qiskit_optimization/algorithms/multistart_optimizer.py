@@ -70,7 +70,6 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         Returns:
             The result of the multi start algorithm applied to the problem.
         """
-
         fval_sol = INFINITY
         x_sol: Optional[np.ndarray] = None
         rest_sol: Optional[Tuple] = None

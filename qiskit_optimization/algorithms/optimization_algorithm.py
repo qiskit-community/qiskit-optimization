@@ -390,7 +390,6 @@ class OptimizationAlgorithm(ABC):
             isinstance(converter, QuadraticProgramConverter) for converter in converters
         ):
             return converters
-
         else:
             raise TypeError("`converters` must all be of the QuadraticProgramConverter type")
 
