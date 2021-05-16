@@ -71,10 +71,10 @@ class GroverOptimizer(OptimizationAlgorithm):
             TypeError: When there one of converters is an invalid type.
         """
         self._num_value_qubits = num_value_qubits
-        self._num_key_qubits = None
+        self._num_key_qubits = 0
         self._n_iterations = num_iterations
-        self._quantum_instance = None
-        self._circuit_results = {}  # type: ignore
+        self._quantum_instance = None  # type: Optional[QuantumInstance]
+        self._circuit_results = {}  # type: dict
 
         if quantum_instance is not None:
             self.quantum_instance = quantum_instance
@@ -142,7 +142,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         oracle = QuantumCircuit(qr_key_value, oracle_bit)
         oracle.z(self._num_key_qubits)  # recognize negative values.
 
-        def is_good_state(self, measurement):
+        def is_good_state(measurement):
             """Check whether ``measurement`` is a good state or not."""
             value = measurement[
                 self._num_key_qubits : self._num_key_qubits + self._num_value_qubits
@@ -217,7 +217,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             while not improvement_found:
                 # Determine the number of rotations.
                 loops_with_no_improvement += 1
-                rotation_count = int(np.ceil(algorithm_globals.random.uniform(0, m - 1)))
+                rotation_count = algorithm_globals.random.integers(0, m)
                 rotations += rotation_count
                 # Apply Grover's Algorithm to find values below the threshold.
                 # TODO: Utilize Grover's incremental feature - requires changes to Grover.
@@ -248,13 +248,13 @@ class GroverOptimizer(OptimizationAlgorithm):
                     threshold = optimum_value
 
                     # trace out work qubits and store samples
-                    if self._quantum_instance.is_statevector:  # type: ignore
+                    if self._quantum_instance.is_statevector:
                         indices = list(range(n_key, len(outcome)))
                         rho = partial_trace(self._circuit_results, indices)
                         self._circuit_results = np.diag(rho.data) ** 0.5
                     else:
                         self._circuit_results = {
-                            i[0:n_key]: v for i, v in self._circuit_results.items()
+                            i[-1 * n_key :]: v for i, v in self._circuit_results.items()
                         }
 
                     raw_samples = self._eigenvector_to_solutions(
@@ -315,11 +315,9 @@ class GroverOptimizer(OptimizationAlgorithm):
     def _measure(self, circuit: QuantumCircuit) -> str:
         """Get probabilities from the given backend, and picks a random outcome."""
         probs = self._get_probs(circuit)
-        freq = sorted(probs.items(), key=lambda x: x[1], reverse=True)
+        logger.info("Frequencies: %s", probs)
         # Pick a random outcome.
-        idx = algorithm_globals.random.choice(len(freq), 1, p=[x[1] for x in freq])[0]
-        logger.info("Frequencies: %s", freq)
-        return freq[idx][0]
+        return algorithm_globals.random.choice(list(probs.keys()), 1, p=list(probs.values()))[0]
 
     def _get_probs(self, qc: QuantumCircuit) -> Dict[str, float]:
         """Gets probabilities from a given backend."""
@@ -338,8 +336,8 @@ class GroverOptimizer(OptimizationAlgorithm):
         else:
             state = result.get_counts(qc)
             shots = self.quantum_instance.run_config.shots
-            hist = {key[::-1]: val / shots for key, val in state.items() if val > 0}
-            self._circuit_results = {b[::-1]: np.sqrt(v / shots) for (b, v) in state.items()}
+            hist = {key[::-1]: val / shots for key, val in sorted(state.items()) if val > 0}
+            self._circuit_results = {b: (v / shots) ** 0.5 for (b, v) in state.items()}
         return hist
 
     @staticmethod
