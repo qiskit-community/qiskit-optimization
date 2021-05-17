@@ -143,17 +143,11 @@ class OptimizationResult:
         if samples:
             sum_prob = np.sum([e.probability for e in samples])
             if not np.isclose(sum_prob, 1.0):
-                warn(
-                    "The sum of probability of samples is not close to 1: {}".format(
-                        sum_prob
-                    )
-                )
+                warn("The sum of probability of samples is not close to 1: {}".format(sum_prob))
             self._samples = samples
         else:
             self._samples = [
-                SolutionSample(
-                    x=cast(np.ndarray, x), fval=fval, status=status, probability=1.0
-                )
+                SolutionSample(x=cast(np.ndarray, x), fval=fval, status=status, probability=1.0)
             ]
 
     def __repr__(self) -> str:
@@ -188,8 +182,7 @@ class OptimizationResult:
         if isinstance(key, str):
             return self._variables_dict[key]
         raise TypeError(
-            "Integer or string key required,"
-            "instead {}({}) provided.".format(type(key), key)
+            "Integer or string key required," "instead {}({}) provided.".format(type(key), key)
         )
 
     def get_correlations(self) -> np.ndarray:
@@ -368,16 +361,12 @@ class OptimizationAlgorithm(ABC):
         is_feasible = problem.is_feasible(x)
 
         return (
-            OptimizationResultStatus.SUCCESS
-            if is_feasible
-            else OptimizationResultStatus.INFEASIBLE
+            OptimizationResultStatus.SUCCESS if is_feasible else OptimizationResultStatus.INFEASIBLE
         )
 
     @staticmethod
     def _prepare_converters(
-        converters: Optional[
-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
-        ],
+        converters: Optional[Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]],
         penalty: Optional[float] = None,
     ) -> List[QuadraticProgramConverter]:
         """Prepare a list of converters from the input.
@@ -405,9 +394,7 @@ class OptimizationAlgorithm(ABC):
         ):
             return converters
         else:
-            raise TypeError(
-                "`converters` must all be of the QuadraticProgramConverter type"
-            )
+            raise TypeError("`converters` must all be of the QuadraticProgramConverter type")
 
     @staticmethod
     def _convert(
@@ -442,7 +429,7 @@ class OptimizationAlgorithm(ABC):
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
         ] = None,
         result_class: Type[OptimizationResult] = OptimizationResult,
-        **kwargs
+        **kwargs,
     ) -> OptimizationResult:
         """Convert back the result of the converted problem to the result of the original problem.
 
@@ -481,7 +468,7 @@ class OptimizationAlgorithm(ABC):
             fval=problem.objective.evaluate(x),
             variables=problem.variables,
             status=cls._get_feasibility_status(problem, x),
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
@@ -548,14 +535,12 @@ class OptimizationAlgorithm(ABC):
             TypeError: If the type of eigenvector is not supported.
         """
         if isinstance(eigenvector, DictStateFn):
-            eigenvector = {
-                bitstr: val ** 2 for (bitstr, val) in eigenvector.primitive.items()
-            }
+            eigenvector = eigenvector.primitive
         elif isinstance(eigenvector, StateFn):
             eigenvector = eigenvector.to_matrix()
 
         def generate_solution(bitstr, qubo, probability):
-            x = np.fromiter(list(bitstr), dtype=int)
+            x = np.fromiter(list(bitstr[::-1]), dtype=int)
             fval = qubo.objective.evaluate(x)
             return SolutionSample(
                 x=x,
@@ -566,15 +551,14 @@ class OptimizationAlgorithm(ABC):
 
         solutions = []
         if isinstance(eigenvector, dict):
-            all_counts = sum(eigenvector.values())
+            # When eigenvector is a dict, square the values since the values are normalized.
+            # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
+            probabilities = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
-            for bitstr, count in eigenvector.items():
-                sampling_probability = count / all_counts
+            for bitstr, sampling_probability in probabilities.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-                    solutions.append(
-                        generate_solution(bitstr, qubo, sampling_probability)
-                    )
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         elif isinstance(eigenvector, np.ndarray):
             num_qubits = int(np.log2(eigenvector.size))
@@ -584,14 +568,10 @@ class OptimizationAlgorithm(ABC):
             for i, sampling_probability in enumerate(probabilities):
                 # add the i-th state if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-                    bitstr = "{:b}".format(i).rjust(num_qubits, "0")[::-1]
-                    solutions.append(
-                        generate_solution(bitstr, qubo, sampling_probability)
-                    )
+                    bitstr = "{:b}".format(i).rjust(num_qubits, "0")
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:
-            raise TypeError(
-                "Unsupported format of eigenvector. Provide a dict or numpy.ndarray."
-            )
+            raise TypeError("Unsupported format of eigenvector. Provide a dict or numpy.ndarray.")
 
         return solutions

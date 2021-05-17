@@ -118,9 +118,7 @@ class Tsp(GraphOptimizationApplication):
 
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(
-        n: int, low: int = 0, high: int = 100, seed: int = None
-    ) -> "Tsp":
+    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> "Tsp":
         """Create a random instance of the traveling salesman problem
 
         Args:
@@ -136,13 +134,9 @@ class Tsp(GraphOptimizationApplication):
             algorithm_globals.random_seed = seed
         coord = algorithm_globals.random.uniform(low, high, (n, 2))
         pos = {i: (coord_[0], coord_[1]) for i, coord_ in enumerate(coord)}
-        graph = nx.random_geometric_graph(
-            n, np.hypot(high - low, high - low) + 1, pos=pos
-        )
+        graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
-            delta = [
-                graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)
-            ]
+            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
             graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return Tsp(graph)
 
@@ -183,9 +177,7 @@ class Tsp(GraphOptimizationApplication):
                     typ.strip()
                     if typ != "EUC_2D":
                         raise QiskitOptimizationError(
-                            'This supports only "EUC_2D" edge weight. Actual: {}'.format(
-                                typ
-                            )
+                            'This supports only "EUC_2D" edge weight. Actual: {}'.format(typ)
                         )
                 elif line.startswith("NODE_COORD_SECTION"):
                     coord_section = True
@@ -204,9 +196,7 @@ class Tsp(GraphOptimizationApplication):
             len(coord), np.hypot(x_max - x_min, y_max - y_min) + 1, pos=coord
         )
         for w, v in graph.edges:
-            delta = [
-                graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)
-            ]
+            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
             graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return Tsp(graph)
 

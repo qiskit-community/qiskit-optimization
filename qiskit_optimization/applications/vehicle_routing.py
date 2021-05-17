@@ -83,12 +83,10 @@ class VehicleRouting(GraphOptimizationApplication):
                 mdl.add_constraint(mdl.sum(x[i, j] for i in range(n) if i != j) == 1)
         # For the depot node
         mdl.add_constraint(
-            mdl.sum(x[i, self.depot] for i in range(n) if i != self.depot)
-            == self.num_vehicles
+            mdl.sum(x[i, self.depot] for i in range(n) if i != self.depot) == self.num_vehicles
         )
         mdl.add_constraint(
-            mdl.sum(x[self.depot, j] for j in range(n) if j != self.depot)
-            == self.num_vehicles
+            mdl.sum(x[self.depot, j] for j in range(n) if j != self.depot) == self.num_vehicles
         )
 
         # To eliminate sub-routes
@@ -99,16 +97,13 @@ class VehicleRouting(GraphOptimizationApplication):
                 clique_set.append(list(comb))
         for clique in clique_set:
             mdl.add_constraint(
-                mdl.sum(x[(i, j)] for i in clique for j in clique if i != j)
-                <= len(clique) - 1
+                mdl.sum(x[(i, j)] for i in clique for j in clique if i != j) <= len(clique) - 1
             )
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
 
-    def interpret(
-        self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[List[List[int]]]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[List[int]]]:
         """Interpret a result as a list of the routes for each vehicle
 
         Args:
@@ -182,11 +177,7 @@ class VehicleRouting(GraphOptimizationApplication):
     def _edge_color(self, route_list: List[List[List[int]]]):
         # Arrange route_list and return the list of the colors of each route
         # for edge_color of nx.draw_networkx_edges
-        return [
-            k / len(route_list)
-            for k in range(len(route_list))
-            for edge in route_list[k]
-        ]
+        return [k / len(route_list) for k in range(len(route_list)) for edge in route_list[k]]
 
     @property
     def num_vehicles(self) -> int:
@@ -248,15 +239,9 @@ class VehicleRouting(GraphOptimizationApplication):
             A VehicleRouting instance created from the input information
         """
         random.seed(seed)
-        pos = {
-            i: (random.randint(low, high), random.randint(low, high)) for i in range(n)
-        }
-        graph = nx.random_geometric_graph(
-            n, np.hypot(high - low, high - low) + 1, pos=pos
-        )
+        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
+        graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
-            delta = [
-                graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)
-            ]
+            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
             graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return VehicleRouting(graph, num_vehicle, depot)

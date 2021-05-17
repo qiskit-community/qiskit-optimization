@@ -32,16 +32,11 @@ class TestTsp(QiskitOptimizationTestCase):
         random.seed(123)
         low = 0
         high = 100
-        pos = {
-            i: (random.randint(low, high), random.randint(low, high)) for i in range(4)
-        }
-        self.graph = nx.random_geometric_graph(
-            4, np.hypot(high - low, high - low) + 1, pos=pos
-        )
+        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(4)}
+        self.graph = nx.random_geometric_graph(4, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in self.graph.edges:
             delta = [
-                self.graph.nodes[w]["pos"][i] - self.graph.nodes[v]["pos"][i]
-                for i in range(2)
+                self.graph.nodes[w]["pos"][i] - self.graph.nodes[v]["pos"][i] for i in range(2)
             ]
             self.graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
 
@@ -71,9 +66,7 @@ class TestTsp(QiskitOptimizationTestCase):
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {})
         for edge, val in obj.quadratic.to_dict().items():
-            self.assertEqual(
-                val, self.graph.edges[edge[0] // 4, edge[1] // 4]["weight"]
-            )
+            self.assertEqual(val, self.graph.edges[edge[0] // 4, edge[1] // 4]["weight"])
 
         # Test constraint
         lin = op.linear_constraints
@@ -88,9 +81,7 @@ class TestTsp(QiskitOptimizationTestCase):
         for i in range(4):
             self.assertEqual(lin[4 + i].sense, Constraint.Sense.EQ)
             self.assertEqual(lin[4 + i].rhs, 1)
-            self.assertEqual(
-                lin[4 + i].linear.to_dict(), {i: 1, 4 + i: 1, 8 + i: 1, 12 + i: 1}
-            )
+            self.assertEqual(lin[4 + i].linear.to_dict(), {i: 1, 4 + i: 1, 8 + i: 1, 12 + i: 1})
 
     def test_interpret(self):
         """Test interpret"""
