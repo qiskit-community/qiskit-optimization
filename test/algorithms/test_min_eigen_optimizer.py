@@ -243,7 +243,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def test_samples_qaoa(self, simulator):
         """Test samples for QAOA"""
         # test minimize
-        algorithm_globals.random_seed = 1
+        algorithm_globals.random_seed = 4
         quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
         qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
