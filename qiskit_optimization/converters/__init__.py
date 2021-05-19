@@ -49,13 +49,13 @@ from .inequality_to_equality import InequalityToEquality
 from .linear_equality_to_penalty import LinearEqualityToPenalty
 from .quadratic_program_to_qubo import QuadraticProgramToQubo
 from .quadratic_program_converter import QuadraticProgramConverter
-from .special_constraint_to_penalty import SpecialConstraintToPenalty
+from .linear_inequality_to_penalty import LinearInequalityToPenalty
 
 __all__ = [
     "InequalityToEquality",
     "IntegerToBinary",
     "LinearEqualityToPenalty",
+    "LinearInequalityToPenalty",
     "QuadraticProgramConverter",
     "QuadraticProgramToQubo",
-    "SpecialConstraintToPenalty",
 ]

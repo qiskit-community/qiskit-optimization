@@ -74,7 +74,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         self.penalty = penalty  # type: Optional[float]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem of special constraints into an unconstrained problem.
+        """Convert a problem of known inequality constraints into an unconstrained problem.
 
         Args:
             problem: The problem to be solved, that does not contain inequality constraints.
@@ -116,7 +116,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         # convert linear constraints into penalty terms
         for constraint in self._src.linear_constraints:
 
-            # [TODO] put special contraint check function here
+            # special contraint check function here
             if self._is_special_constraint(constraint) == False:
                 self._dst.linear_constraints.append(constraint)
                 continue
@@ -190,17 +190,14 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                 conv_matrix[0][0] = 1 if sense != ConstraintSense.LE else 0
                 conv_matrix[0][index1] = -1 if sense != ConstraintSense.LE else 0
                 conv_matrix[0][index2] = -1 if sense != ConstraintSense.LE else 0
-                conv_matrix[index1][index2] = 2 if sense == ConstraintSense.EQ else 1
+                conv_matrix[index1][index2] = 1
             elif rhs == 0:
                 conv_matrix[0][0] = 0
-                if sense == ConstraintSense.EQ:
-                    conv_matrix[0][index1] = 1
-                    conv_matrix[0][index2] = 1
-                elif vars[index1 - 1][1] > 0.0:
+                if vars[index1 - 1][1] > 0.0:
                     conv_matrix[0][index1] = 1
                 elif vars[index2 - 1][1] > 0.0:
                     conv_matrix[0][index2] = 1
-                conv_matrix[index1][index2] = -2 if sense == ConstraintSense.EQ else -1
+                conv_matrix[index1][index2] = -1
 
         return conv_matrix
 
@@ -228,7 +225,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                     # x+y>=1
                     return True
             if rhs == 0:
-                if sense == Constraint.Sense.LE or sense == Constraint.Sense.EQ:
+                if sense == Constraint.Sense.LE:
                     # x-y<=0
                     # x-y=0
                     return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
