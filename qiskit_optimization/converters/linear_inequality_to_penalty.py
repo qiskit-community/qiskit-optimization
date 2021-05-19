@@ -30,7 +30,7 @@ from ..problems.variable import Variable
 logger = logging.getLogger(__name__)
 
 
-class SpecialConstraintToPenalty(QuadraticProgramConverter):
+class LinearInequalityToPenalty(QuadraticProgramConverter):
     """Convert a problem of known constraints to unconstrained with penalty terms.
     
     There are known constraints which do not require to add slack variables to
