@@ -31,7 +31,36 @@ logger = logging.getLogger(__name__)
 
 
 class SpecialConstraintToPenalty(QuadraticProgramConverter):
-    """Convert a problem of special constraints to unconstrained with penalty terms."""
+    """Convert a problem of known constraints to unconstrained with penalty terms.
+    
+    There are known constraints which do not require to add slack variables to
+    construct penalty terms [1].
+
+    Supported known constraint in this class is shown below.
+
+    .. math::
+      \begin{array}{|l|l|}
+      \hline \text { Classical Constraint } & \text { Equivalent Penalty } \\
+      \hline x+y \leq 1 & P(x y) \\
+      \hline x+y=1 & P(1-x-y+2 x y) \\
+      \hline x \leq y & P(x-x y) \\
+      \hline x_{1}+x_{2}+x_{3} \leq 1 & P\left(x_{1} x_{2}+x_{1} x_{3}+x_{2} x_{3}\right) \\
+      \hline
+      \end{array}
+
+    Where x, y or z are binary variables, and P is penalty constant. In this calss,
+    value of P is automatically determined, but can be supplied as argument at the timing
+    of instantiation.
+
+    If the constraint does not match the pattern of classical constraint, the constraint
+    is kept as is. Otherwise, constraint is converted into equivalent penalty and added
+    to objective function.
+    
+    References:
+        [1]: Fred Glover, Gary Kochenberger, Yu Du (2019), 
+             A Tutorial on Formulating and Using QUBO Models,
+            `arXiv:1811.11538 <https://arxiv.org/abs/1811.11538>`_.    
+    """
 
     def __init__(self, penalty: Optional[float] = None) -> None:
         """
@@ -54,7 +83,7 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
             The converted problem
 
         Raises:
-            QiskitOptimizationError: 
+            QiskitOptimizationError:
         """
 
         # create empty QuadraticProgram model
@@ -76,7 +105,7 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
             elif x.vartype == Variable.Type.INTEGER:
                 self._dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
-                raise QiskitOptimizationError('Unsupported vartype: {}'.format(x.vartype))
+                raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
 
         # get original objective terms
         offset = self._src.objective.constant
@@ -91,21 +120,23 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
             if self._is_special_constraint(constraint) == False:
                 self._dst.linear_constraints.append(constraint)
                 continue
-            # 
+            #
 
             conv_matrix = self._conversion_matrix(constraint)
             rowlist = list(constraint.linear.to_dict().items())
 
             # constant part
             if conv_matrix[0][0] != 0:
-              offset += sense*penalty*conv_matrix[0][0]
+                offset += sense * penalty * conv_matrix[0][0]
 
             # linear parts of penalty
             for j in range(len(rowlist)):
                 # if j already exists in the linear terms dic, add a penalty term
                 # into existing value else create new key and value in the linear_term dict
-                if conv_matrix[0][j+1] != 0:
-                  linear[rowlist[j][0]] = linear.get(rowlist[j][0], 0.0) + sense*penalty*conv_matrix[0][j+1]
+                if conv_matrix[0][j + 1] != 0:
+                    linear[rowlist[j][0]] = (
+                        linear.get(rowlist[j][0], 0.0) + sense * penalty * conv_matrix[0][j + 1]
+                    )
 
             # quadratic parts of penalty
             for j in range(len(rowlist)):
@@ -114,9 +145,13 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
                     # add a penalty term into existing value
                     # else create new key and value in the quadratic term dict
 
-                    if conv_matrix[j+1][k+1] != 0:
-                      tup = cast(Union[Tuple[int, int], Tuple[str, str]], (rowlist[j][0], rowlist[k][0]))
-                      quadratic[tup] = quadratic.get(tup, 0.0) + sense*penalty * conv_matrix[j+1][k+1]
+                    if conv_matrix[j + 1][k + 1] != 0:
+                        tup = cast(
+                            Union[Tuple[int, int], Tuple[str, str]], (rowlist[j][0], rowlist[k][0])
+                        )
+                        quadratic[tup] = (
+                            quadratic.get(tup, 0.0) + sense * penalty * conv_matrix[j + 1][k + 1]
+                        )
 
         if self._src.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             self._dst.minimize(offset, linear, quadratic)
@@ -129,7 +164,7 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
         return self._dst
 
     def _conversion_matrix(self, constraint) -> np.ndarray:
-        """ Construct conversion matrix for special constraint.
+        """Construct conversion matrix for special constraint.
 
         Returns:
             Return conversion matrix which is used to construct
@@ -145,11 +180,11 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
         combinations = list(itertools.combinations(np.arange(num_vars), 2))
 
         # conversion matrix
-        conv_matrix = np.zeros((num_vars+1,num_vars+1), dtype=int)
+        conv_matrix = np.zeros((num_vars + 1, num_vars + 1), dtype=int)
 
         for combination in combinations:
-            index1 = combination[0]+1
-            index2 = combination[1]+1
+            index1 = combination[0] + 1
+            index2 = combination[1] + 1
 
             if rhs == 1:
                 conv_matrix[0][0] = 1 if sense != ConstraintSense.LE else 0
@@ -161,9 +196,9 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
                 if sense == ConstraintSense.EQ:
                     conv_matrix[0][index1] = 1
                     conv_matrix[0][index2] = 1
-                elif vars[index1-1][1] > 0.0:
+                elif vars[index1 - 1][1] > 0.0:
                     conv_matrix[0][index1] = 1
-                elif vars[index2-1][1] > 0.0:
+                elif vars[index2 - 1][1] > 0.0:
                     conv_matrix[0][index2] = 1
                 conv_matrix[index1][index2] = -2 if sense == ConstraintSense.EQ else -1
 
@@ -187,10 +222,10 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
 
         if len(params) == 2:
             if rhs == 1:
-                if all( i == 1 for i in params.values() ):
-                    #x+y<=1
-                    #x+y>=1
-                    #x+y>=1
+                if all(i == 1 for i in params.values()):
+                    # x+y<=1
+                    # x+y>=1
+                    # x+y>=1
                     return True
             if rhs == 0:
                 if sense == Constraint.Sense.LE or sense == Constraint.Sense.EQ:
@@ -199,7 +234,7 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
                     return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
         elif len(params) == 3:
             if rhs == 1:
-                if all( i == 1 for i in params.values() ):
+                if all(i == 1 for i in params.values()):
                     if sense == Constraint.Sense.LE:
                         # x+y+z<=1
                         return True
@@ -224,10 +259,10 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
             terms.extend(coef for coef in constraint.linear.to_dict().values())
         if any(isinstance(term, float) and not term.is_integer() for term in terms):
             logger.warning(
-                'Warning: Using %f for the penalty coefficient because '
-                'a float coefficient exists in constraints. \n'
-                'The value could be too small. '
-                'If so, set the penalty coefficient manually.',
+                "Warning: Using %f for the penalty coefficient because "
+                "a float coefficient exists in constraints. \n"
+                "The value could be too small. "
+                "If so, set the penalty coefficient manually.",
                 default_penalty,
             )
             return default_penalty
@@ -257,8 +292,8 @@ class SpecialConstraintToPenalty(QuadraticProgramConverter):
         """
         if len(x) != self._src.get_num_vars():
             raise QiskitOptimizationError(
-                'The number of variables in the passed result differs from '
-                'that of the original problem.'
+                "The number of variables in the passed result differs from "
+                "that of the original problem."
             )
         return np.asarray(x)
 
