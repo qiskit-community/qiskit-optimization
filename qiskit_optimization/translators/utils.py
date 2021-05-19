@@ -41,7 +41,7 @@ def _load_model(model: Any) -> "QuadraticProgram":
 
     """
     for trans in translators:
-        if trans.is_compatible(model):
+        if trans.is_installed() and trans.is_compatible(model):
             return trans.model_to_qp(model)
     raise QiskitOptimizationError(
         "There is no compatible translator to this model: {}".format(type(model))
