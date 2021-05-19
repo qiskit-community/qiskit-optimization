@@ -28,6 +28,15 @@ class ModelTranslator(ABC):
     """
 
     @abstractmethod
+    def is_installed(self) -> bool:
+        """Checks whether the dependent module for this translator is installed or not.
+
+        Returns:
+            Returns True if necessary modules are installed, False otherwise.
+        """
+        pass
+
+    @abstractmethod
     def is_compatible(self, model: Any) -> bool:
         """Checks whether a given model can be translated with this translator.
 

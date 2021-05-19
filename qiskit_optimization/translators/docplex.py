@@ -42,6 +42,9 @@ if TYPE_CHECKING:
 class DocplexMpTranslator(ModelTranslator):
     """Translator between a Docplex model and a quadratic program"""
 
+    def is_installed(self) -> bool:
+        return True
+
     def is_compatible(self, model: Any) -> bool:
         """Checks whether a given model can be translated with this translator.
 
