@@ -18,12 +18,12 @@ from warnings import warn
 
 from qiskit.exceptions import MissingOptionalLibraryError
 
-from ..problems.quadratic_program import QuadraticProgram
 from .optimization_algorithm import (
     OptimizationAlgorithm,
     OptimizationResult,
     OptimizationResultStatus,
 )
+from ..problems.quadratic_program import QuadraticProgram
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ class CplexOptimizer(OptimizationAlgorithm):
             )
 
         self._disp = disp
-        self._cplex_parameters = {} if cplex_parameters is None else cplex_parameters
+        self._cplex_parameters = cplex_parameters
 
     @staticmethod
     def is_cplex_installed():
@@ -95,12 +95,12 @@ class CplexOptimizer(OptimizationAlgorithm):
         self._disp = disp
 
     @property
-    def cplex_parameters(self) -> Dict[str, Any]:
+    def cplex_parameters(self) -> Optional[Dict[str, Any]]:
         """Returns parameters for CPLEX"""
         return self._cplex_parameters
 
     @cplex_parameters.setter
-    def cplex_parameters(self, parameters: Dict[str, Any]):
+    def cplex_parameters(self, parameters: Optional[Dict[str, Any]]):
         """Set parameters for CPLEX
         Args:
             parameters: The parameters for CPLEX
@@ -142,9 +142,10 @@ class CplexOptimizer(OptimizationAlgorithm):
         mod = problem.to_docplex()
         sol = mod.solve(log_output=self._disp, cplex_parameters=self._cplex_parameters)
         if sol is None:
+            # no solution is found
             warn("CPLEX cannot solve the model")
             x = [0.0] * mod.number_of_variables
-            result = OptimizationResult(
+            return OptimizationResult(
                 x=x,
                 fval=problem.objective.evaluate(x),
                 variables=problem.variables,
@@ -152,12 +153,12 @@ class CplexOptimizer(OptimizationAlgorithm):
                 raw_results=None,
             )
         else:
+            # a solution is found
             x = sol.get_values(mod.iter_variables())
-            result = OptimizationResult(
+            return OptimizationResult(
                 x=x,
                 fval=sol.get_objective_value(),
                 variables=problem.variables,
                 status=self._get_feasibility_status(problem, x),
                 raw_results=sol,
             )
-        return result
