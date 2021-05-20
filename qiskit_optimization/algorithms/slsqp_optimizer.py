@@ -189,13 +189,6 @@ class SlsqpOptimizer(MultiStartOptimizer):
         original_problem = problem
         problem = self._convert(problem, max2min)
 
-        # construct quadratic objective function
-        def _objective(x):
-            return problem.objective.evaluate(x)
-
-        def _objective_gradient(x):
-            return problem.objective.evaluate_gradient(x)
-
         # initialize constraints and bounds
         slsqp_bounds = []
         slsqp_eq_constraints = []
@@ -227,12 +220,12 @@ class SlsqpOptimizer(MultiStartOptimizer):
         # actual minimization function to be called by multi_start_solve
         def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
             output = fmin_slsqp(
-                _objective,
+                problem.objective.evaluate,
                 x_0,
                 eqcons=slsqp_eq_constraints,
                 ieqcons=slsqp_ineq_constraints,
                 bounds=slsqp_bounds,
-                fprime=_objective_gradient,
+                fprime=problem.objective.evaluate_gradient,
                 iter=self._iter,
                 acc=self._acc,
                 iprint=self._iprint,

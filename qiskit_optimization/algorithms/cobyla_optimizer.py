@@ -123,10 +123,6 @@ class CobylaOptimizer(MultiStartOptimizer):
         original_problem = problem
         problem = self._convert(problem, max2min)
 
-        # construct quadratic objective function
-        def objective(x):
-            return problem.objective.evaluate(x)
-
         # initialize constraints list
         constraints = []
 
@@ -170,7 +166,7 @@ class CobylaOptimizer(MultiStartOptimizer):
         # actual minimization function to be called by multi_start_solve
         def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
             x = fmin_cobyla(
-                objective,
+                problem.objective.evaluate,
                 x_0,
                 constraints,
                 rhobeg=self._rhobeg,
