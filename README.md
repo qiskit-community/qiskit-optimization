@@ -39,7 +39,14 @@ To do this follow the instructions in the
 
 ### Optional Installs
 
-* **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files.
+* **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files and the usage of
+  the `CplexOptimizer`, wrapper for ``cplex.Cplex``.
+
+* **CVXPY** may be installed using command `pip install 'qiskit-optimization[cvx]'` to install the
+  package. CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
+
+* **Matplotlib** may be installed using command `pip install 'qiskit-optimization[matplotlib]'` to install the
+  package. Matplotlib being installed will enable the usage of the `draw` method in the graph optimization application classes.
 
 ### Creating Your First Optimization Programming Experiment in Qiskit
 
