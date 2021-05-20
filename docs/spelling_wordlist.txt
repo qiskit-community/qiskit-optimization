@@ -26,6 +26,7 @@ IntermediateResult
 LinearConstraint
 LinearEqualityToPenalty
 LinearExpression
+macOS
 MeanAggregator
 MinimumEigenOptimizationResult
 MinimumEigenOptimizer
@@ -88,3 +89,4 @@ tradeoff
 tsplib
 undirected
 wavefunction
+zsh
