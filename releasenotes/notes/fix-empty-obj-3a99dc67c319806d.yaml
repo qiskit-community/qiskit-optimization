@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fixes an issue that an error may occur if no objective function is set.

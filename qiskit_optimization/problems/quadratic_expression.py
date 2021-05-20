@@ -118,6 +118,11 @@ class QuadraticExpression(QuadraticProgramElement):
             )
         return self._triangle_matrix(coefficients)
 
+    def _resize_dok_matrix(self):
+        n = self.quadratic_program.get_num_vars()
+        if self._coefficients.shape != (n, n):
+            self._coefficients.resize(n, n)
+
     @staticmethod
     def _triangle_matrix(mat: dok_matrix) -> dok_matrix:
         lower = tril(mat, -1, format="dok")
@@ -137,6 +142,7 @@ class QuadraticExpression(QuadraticProgramElement):
         Returns:
             The coefficients of the quadratic expression.
         """
+        self._resize_dok_matrix()
         return self._coefficients
 
     @coefficients.setter
@@ -165,7 +171,7 @@ class QuadraticExpression(QuadraticProgramElement):
         Returns:
             An array with the coefficients corresponding to the quadratic expression.
         """
-        coeffs = self._symmetric_matrix(self._coefficients) if symmetric else self._coefficients
+        coeffs = self._symmetric_matrix(self.coefficients) if symmetric else self.coefficients
         return coeffs.toarray()
 
     def to_dict(

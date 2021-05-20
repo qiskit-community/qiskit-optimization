@@ -15,20 +15,13 @@
 import tempfile
 import unittest
 from os import path
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
+import numpy as np
 from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
-from qiskit_optimization.problems import (
-    Constraint,
-    QuadraticObjective,
-    Variable,
-    VarType,
-)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
 
 
 class TestQuadraticProgram(QiskitOptimizationTestCase):
@@ -724,6 +717,52 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             obj.quadratic.to_array(symmetric=True).tolist(),
             [[0, 0, 0.5], [0, 1, 0], [0.5, 0, 0]],
         )
+
+    def test_empty_objective(self):
+        """test empty objective"""
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        self.assertAlmostEqual(q_p.objective.evaluate([0, 0, 0]), 0)
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        self.assertAlmostEqual(q_p.objective.evaluate([1, 1, 1]), 0)
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        np.testing.assert_array_almost_equal(q_p.objective.evaluate_gradient([0, 0, 0]), [0, 0, 0])
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        np.testing.assert_array_almost_equal(q_p.objective.evaluate_gradient([1, 1, 1]), [0, 0, 0])
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), np.zeros(3))
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        np.testing.assert_array_almost_equal(q_p.objective.quadratic.to_array(), np.zeros((3, 3)))
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        coeff = q_p.objective.linear.coefficients
+        self.assertEqual(coeff.shape, (1, 3))
+        self.assertEqual(coeff.nnz, 0)
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        coeff = q_p.objective.quadratic.coefficients
+        self.assertEqual(coeff.shape, (3, 3))
+        self.assertEqual(coeff.nnz, 0)
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        self.assertDictEqual(q_p.objective.linear.to_dict(), {})
+
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(3)
+        self.assertDictEqual(q_p.objective.quadratic.to_dict(), {})
 
     @requires_extra_library
     def test_read_from_lp_file(self):
