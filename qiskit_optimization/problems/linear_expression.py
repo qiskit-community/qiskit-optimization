@@ -12,13 +12,13 @@
 
 """Linear expression interface."""
 
-from typing import List, Union, Dict, Any
+from typing import Any, Dict, List, Union
 
 from numpy import ndarray
-from scipy.sparse import spmatrix, dok_matrix
+from scipy.sparse import dok_matrix, spmatrix
 
-from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
+from .quadratic_program_element import QuadraticProgramElement
 
 
 class LinearExpression(QuadraticProgramElement):
@@ -94,11 +94,6 @@ class LinearExpression(QuadraticProgramElement):
             raise QiskitOptimizationError("Unsupported format for coefficients.")
         return coefficients
 
-    def _resize_dok_matrix(self):
-        n = self.quadratic_program.get_num_vars()
-        if self._coefficients.shape != (1, n):
-            self._coefficients.resize(1, n)
-
     @property
     def coefficients(self) -> dok_matrix:
         """Returns the coefficients of the linear expression.
@@ -106,7 +101,6 @@ class LinearExpression(QuadraticProgramElement):
         Returns:
             The coefficients of the linear expression.
         """
-        self._resize_dok_matrix()
         return self._coefficients
 
     @coefficients.setter
@@ -127,7 +121,7 @@ class LinearExpression(QuadraticProgramElement):
         Returns:
             An array with the coefficients corresponding to the linear expression.
         """
-        return self.coefficients.toarray()[0]
+        return self._coefficients.toarray()[0]
 
     def to_dict(self, use_name: bool = False) -> Dict[Union[int, str], float]:
         """Returns the coefficients of the linear expression as dictionary, either using variable

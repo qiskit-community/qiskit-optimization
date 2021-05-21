@@ -720,49 +720,15 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
     def test_empty_objective(self):
         """test empty objective"""
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        self.assertAlmostEqual(q_p.objective.evaluate([0, 0, 0]), 0)
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate([0, 0, 0])
 
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        self.assertAlmostEqual(q_p.objective.evaluate([1, 1, 1]), 0)
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        np.testing.assert_array_almost_equal(q_p.objective.evaluate_gradient([0, 0, 0]), [0, 0, 0])
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        np.testing.assert_array_almost_equal(q_p.objective.evaluate_gradient([1, 1, 1]), [0, 0, 0])
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), np.zeros(3))
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        np.testing.assert_array_almost_equal(q_p.objective.quadratic.to_array(), np.zeros((3, 3)))
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        coeff = q_p.objective.linear.coefficients
-        self.assertEqual(coeff.shape, (1, 3))
-        self.assertEqual(coeff.nnz, 0)
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        coeff = q_p.objective.quadratic.coefficients
-        self.assertEqual(coeff.shape, (3, 3))
-        self.assertEqual(coeff.nnz, 0)
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        self.assertDictEqual(q_p.objective.linear.to_dict(), {})
-
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(3)
-        self.assertDictEqual(q_p.objective.quadratic.to_dict(), {})
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate_gradient([0, 0, 0])
 
     @requires_extra_library
     def test_read_from_lp_file(self):
