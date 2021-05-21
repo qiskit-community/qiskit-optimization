@@ -57,11 +57,6 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
-        # a list of converters without max2min
-        ineq2eq = InequalityToEquality()
-        int2bin = IntegerToBinary()
-        penalize = LinearEqualityToPenalty()
-        converters = [ineq2eq, int2bin, penalize]
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=presolver,
             relax_for_pre_solver=False,
