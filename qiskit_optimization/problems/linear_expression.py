@@ -12,13 +12,13 @@
 
 """Linear expression interface."""
 
-from typing import Any, Dict, List, Union
+from typing import List, Union, Dict, Any
 
 from numpy import ndarray
-from scipy.sparse import dok_matrix, spmatrix
+from scipy.sparse import spmatrix, dok_matrix
 
-from ..exceptions import QiskitOptimizationError
 from .quadratic_program_element import QuadraticProgramElement
+from ..exceptions import QiskitOptimizationError
 
 
 class LinearExpression(QuadraticProgramElement):

@@ -12,14 +12,14 @@
 
 """Quadratic expression interface."""
 
-from typing import Any, Dict, List, Tuple, Union
+from typing import List, Union, Dict, Tuple, Any
 
 import numpy as np
 from numpy import ndarray
-from scipy.sparse import dok_matrix, spmatrix, tril, triu
+from scipy.sparse import spmatrix, dok_matrix, tril, triu
 
-from ..exceptions import QiskitOptimizationError
 from .quadratic_program_element import QuadraticProgramElement
+from ..exceptions import QiskitOptimizationError
 
 
 class QuadraticExpression(QuadraticProgramElement):
