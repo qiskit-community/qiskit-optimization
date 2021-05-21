@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes :meth`qiskit_optimization.problems.quadratic_objective.QuadraticObjective.evaluate`
+    and :meth`qiskit_optimization.problems.quadratic_objective.QuadraticObjective.evaluate_gradient`
+    to raise ``QiskitOptimizationError`` with an appropriate message if no objective function is set.
