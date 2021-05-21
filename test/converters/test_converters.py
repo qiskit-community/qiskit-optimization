@@ -34,6 +34,7 @@ from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
     LinearEqualityToPenalty,
+    MaximizeToMinimize,
 )
 from qiskit_optimization.problems import Constraint, Variable
 
@@ -65,6 +66,8 @@ class TestConverters(QiskitOptimizationTestCase):
         conv = IntegerToBinary()
         op = conv.convert(op)
         conv = LinearEqualityToPenalty()
+        op = conv.convert(op)
+        conv = MaximizeToMinimize()
         op = conv.convert(op)
         _, shift = op.to_ising()
         self.assertEqual(shift, 0.0)
@@ -348,6 +351,31 @@ class TestConverters(QiskitOptimizationTestCase):
 
         new_x = conv.interpret([0, 1, -1])
         np.testing.assert_array_almost_equal(new_x, [0, 1, -1])
+
+    def test_maximize_to_minimize(self):
+        """Test maximization to minimization conversion"""
+        op_max = QuadraticProgram()
+        op_min = QuadraticProgram()
+        for i in range(2):
+            op_max.binary_var(name="x{}".format(i))
+            op_min.binary_var(name="x{}".format(i))
+        op_max.integer_var(name="x{}".format(2), lowerbound=-3, upperbound=3)
+        op_min.integer_var(name="x{}".format(2), lowerbound=-3, upperbound=3)
+        op_max.maximize(constant=3, linear={"x0": 1}, quadratic={("x1", "x2"): 2})
+        op_min.minimize(constant=3, linear={"x0": 1}, quadratic={("x1", "x2"): 2})
+        # check conversion of maximization problem
+        conv = MaximizeToMinimize()
+        op_conv = conv.convert(op_max)
+        self.assertEqual(op_conv.objective.sense, op_conv.objective.Sense.MINIMIZE)
+        x = [0, 1, 2]
+        fval_min = op_conv.objective.evaluate(conv.interpret(x))
+        self.assertAlmostEqual(fval_min, -7)
+        self.assertAlmostEqual(op_max.objective.evaluate(x), -fval_min)
+        # check conversion of minimization problem
+        op_conv = conv.convert(op_min)
+        self.assertEqual(op_conv.objective.sense, op_min.objective.sense)
+        fval_min = op_conv.objective.evaluate(conv.interpret(x))
+        self.assertAlmostEqual(op_min.objective.evaluate(x), fval_min)
 
     def test_integer_to_binary(self):
         """Test integer to binary"""

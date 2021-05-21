@@ -172,19 +172,11 @@ class GroverOptimizer(OptimizationAlgorithm):
 
         self._verify_compatibility(problem)
 
-        # convert problem to QUBO
+        # convert problem to minimization QUBO problem
         problem_ = self._convert(problem, self._converters)
         problem_init = deepcopy(problem_)
 
-        # convert to minimization problem
-        if problem_.objective.sense == problem_.objective.Sense.MAXIMIZE:
-            problem_.objective.sense = problem_.objective.Sense.MINIMIZE
-            problem_.objective.constant = -problem_.objective.constant
-            for i, val in problem_.objective.linear.to_dict().items():
-                problem_.objective.linear[i] = -val
-            for (i, j), val in problem_.objective.quadratic.to_dict().items():
-                problem_.objective.quadratic[i, j] = -val
-        self._num_key_qubits = len(problem_.objective.linear.to_array())
+        self._num_key_qubits = len(problem_.objective.linear.to_array())  # type: ignore
 
         # Variables for tracking the optimum.
         optimum_found = False
@@ -268,7 +260,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
-                    raw_samples.sort(key=lambda x: problem_.objective.sense.value * x.fval)
+                    raw_samples.sort(key=lambda x: x.fval)
                     samples = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
                     # Using Durr and Hoyer method, increase m.
@@ -299,10 +291,10 @@ class GroverOptimizer(OptimizationAlgorithm):
             optimum_key = 0
 
         opt_x = np.array([1 if s == "1" else 0 for s in ("{0:%sb}" % n_key).format(optimum_key)])
-        # Compute function value
+        # Compute function value of minimization QUBO
         fval = problem_init.objective.evaluate(opt_x)
 
-        # cast binaries back to integers
+        # cast binaries back to integers and eventually minimization to maximization
         return cast(
             GroverOptimizationResult,
             self._interpret(
@@ -386,14 +378,14 @@ class GroverOptimizationResult(OptimizationResult):
             operation_counts: The counts of each operation performed per iteration.
             n_input_qubits: The number of qubits used to represent the input.
             n_output_qubits: The number of qubits used to represent the output.
-            intermediate_fval: The intermediate value of the objective function of the solution,
-                that is expected to be identical with ``fval``.
+            intermediate_fval: The intermediate value of the objective function of the
+                minimization qubo solution, that is expected to be consistent to ``fval``.
             threshold: The threshold of Grover algorithm.
             status: the termination status of the optimization algorithm.
             samples: the x values, the objective function value of the original problem,
                 the probability, and the status of sampling.
-            raw_samples: the x values of the QUBO, the objective function value of the QUBO,
-                and the probability of sampling.
+            raw_samples: the x values of the QUBO, the objective function value of the
+                minimization QUBO, and the probability of sampling.
         """
         super().__init__(
             x=x,

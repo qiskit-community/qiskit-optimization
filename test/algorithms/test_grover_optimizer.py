@@ -30,6 +30,7 @@ from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
     LinearEqualityToPenalty,
+    MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
@@ -60,7 +61,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         # Validate results.
         np.testing.assert_array_almost_equal(comp_result.x, results.x)
         self.assertEqual(comp_result.fval, results.fval)
-        self.assertAlmostEqual(results.fval, results.intermediate_fval)
+        # optimizer internally deals with minimization problem
+        self.assertAlmostEqual(
+            results.fval, problem.objective.sense.value * results.intermediate_fval
+        )
 
     def test_qubo_gas_int_zero(self):
         """Test for when the answer is zero."""
@@ -165,7 +169,8 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
         penalize = LinearEqualityToPenalty()
-        converters = [ineq2eq, int2bin, penalize]
+        max2min = MaximizeToMinimize()
+        converters = [ineq2eq, int2bin, penalize, max2min]
         gmf = GroverOptimizer(
             4,
             num_iterations=self.n_iter,
