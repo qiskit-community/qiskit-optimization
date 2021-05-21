@@ -28,11 +28,6 @@ from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (
     MeanAggregator,
     WarmStartQAOAOptimizer,
 )
-from qiskit_optimization.converters import (
-    InequalityToEquality,
-    IntegerToBinary,
-    LinearEqualityToPenalty,
-)
 from qiskit_optimization.applications.max_cut import Maxcut
 
 
