@@ -165,14 +165,14 @@ class QuadraticObjective(QuadraticProgramElement):
             The value of the quadratic objective given the variable values.
 
         Raises:
-            QiskitOptimizationError: if the size of `x` does not match with the number of variables.
+            QiskitOptimizationError: if the shape of the objective function does not match with
+                the number of variables.
         """
-        n = len(x)
+        n = self.quadratic_program.get_num_vars()
         if self.linear.coefficients.shape != (1, n) or self.quadratic.coefficients.shape != (n, n):
             raise QiskitOptimizationError(
-                "The size of x does not match with the number of "
-                "variables. Need to define the objective function "
-                "after defining all variables"
+                "The shape of the objective function does not match with the number of variables. "
+                "Need to define the objective function after defining all variables"
             )
         return self.constant + self.linear.evaluate(x) + self.quadratic.evaluate(x)
 
@@ -186,13 +186,13 @@ class QuadraticObjective(QuadraticProgramElement):
             The value of the gradient of the quadratic objective given the variable values.
 
         Raises:
-            QiskitOptimizationError: if the size of `x` does not match with the number of variables.
+            QiskitOptimizationError: if the shape of the objective function does not match with
+                the number of variables.
         """
-        n = len(x)
+        n = self.quadratic_program.get_num_vars()
         if self.linear.coefficients.shape != (1, n) or self.quadratic.coefficients.shape != (n, n):
             raise QiskitOptimizationError(
-                "The size of x does not match with the number of "
-                "variables. Need to define the objective function "
-                "after defining all variables"
+                "The shape of the objective function does not match with the number of variables. "
+                "Need to define the objective function after defining all variables"
             )
         return self.linear.evaluate_gradient(x) + self.quadratic.evaluate_gradient(x)

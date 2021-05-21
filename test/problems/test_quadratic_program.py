@@ -730,6 +730,16 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var_list(3)
             _ = q_p.objective.evaluate_gradient([0, 0, 0])
 
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate({})
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate_gradient({})
+
     @requires_extra_library
     def test_read_from_lp_file(self):
         """test read lp file"""
