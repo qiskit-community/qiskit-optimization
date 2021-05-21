@@ -15,20 +15,13 @@
 import tempfile
 import unittest
 from os import path
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
+import numpy as np
 from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
-from qiskit_optimization.problems import (
-    Constraint,
-    QuadraticObjective,
-    Variable,
-    VarType,
-)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
 
 
 class TestQuadraticProgram(QiskitOptimizationTestCase):
@@ -724,6 +717,28 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             obj.quadratic.to_array(symmetric=True).tolist(),
             [[0, 0, 0.5], [0, 1, 0], [0.5, 0, 0]],
         )
+
+    def test_empty_objective(self):
+        """test empty objective"""
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate([0, 0, 0])
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate_gradient([0, 0, 0])
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate({})
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            _ = q_p.objective.evaluate_gradient({})
 
     @requires_extra_library
     def test_read_from_lp_file(self):
