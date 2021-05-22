@@ -22,6 +22,7 @@ from ..infinity import INFINITY
 
 class VarType(Enum):
     """Constants defining variable type."""
+
     CONTINUOUS = 0
     BINARY = 1
     INTEGER = 2
@@ -32,10 +33,14 @@ class Variable(QuadraticProgramElement):
 
     Type = VarType
 
-    def __init__(self, quadratic_program: Any, name: str,
-                 lowerbound: Union[float, int] = 0,
-                 upperbound: Union[float, int] = INFINITY,
-                 vartype: VarType = VarType.CONTINUOUS) -> None:
+    def __init__(
+        self,
+        quadratic_program: Any,
+        name: str,
+        lowerbound: Union[float, int] = 0,
+        upperbound: Union[float, int] = INFINITY,
+        vartype: VarType = VarType.CONTINUOUS,
+    ) -> None:
         """Creates a new Variable.
 
         The variables is exposed by the top-level `QuadraticProgram` class
@@ -136,7 +141,7 @@ class Variable(QuadraticProgramElement):
         self._vartype = vartype
 
     def as_tuple(self) -> Tuple[str, Union[float, int], Union[float, int], VarType]:
-        """ Returns a tuple corresponding to this variable.
+        """Returns a tuple corresponding to this variable.
 
         Returns:
             A tuple corresponding to this variable consisting of name, lowerbound, upperbound and

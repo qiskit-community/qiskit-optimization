@@ -16,14 +16,13 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import networkx as nx
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.clique import Clique
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestClique(QiskitOptimizationTestCase):
-    """ Test Clique class"""
+    """Test Clique class"""
 
     def setUp(self):
         """Set up for the tests"""
@@ -33,11 +32,17 @@ class TestClique(QiskitOptimizationTestCase):
         for _ in range(5):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 0, 1, 1, 1], fval=4, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[1, 0, 1, 1, 1],
+            fval=4,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
         self.result_c3 = OptimizationResult(
-            x=[1, 0, 1, 1, 0], fval=0, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[1, 0, 1, 1, 0],
+            fval=0,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -73,7 +78,7 @@ class TestClique(QiskitOptimizationTestCase):
     def test_node_colors(self):
         """Test _node_colors"""
         clique = Clique(self.graph)
-        self.assertEqual(clique._node_colors(self.result), ['r', 'darkgrey', 'r', 'r', 'r'])
+        self.assertEqual(clique._node_colors(self.result), ["r", "darkgrey", "r", "r", "r"])
 
     def test_size(self):
         """Test size"""
@@ -119,5 +124,5 @@ class TestClique(QiskitOptimizationTestCase):
         """Test _node_colors for the clique size 3"""
         clique = Clique(self.graph, 3)
         self.assertEqual(
-            clique._node_colors(self.result_c3),
-            ['r', 'darkgrey', 'r', 'r', 'darkgrey'])
+            clique._node_colors(self.result_c3), ["r", "darkgrey", "r", "r", "darkgrey"]
+        )

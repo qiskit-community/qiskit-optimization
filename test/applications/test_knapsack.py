@@ -14,14 +14,13 @@
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.knapsack import Knapsack
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestKnapsack(QiskitOptimizationTestCase):
-    """ Test Knapsack class"""
+    """Test Knapsack class"""
 
     def setUp(self):
         """Set up for the tests"""
@@ -33,8 +32,11 @@ class TestKnapsack(QiskitOptimizationTestCase):
         for _ in range(4):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[0, 1, 0, 1], fval=90, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[0, 1, 0, 1],
+            fval=90,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""

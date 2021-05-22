@@ -16,8 +16,12 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from docplex.mp.model import Model
 from qiskit_optimization.algorithms import CobylaOptimizer
-from qiskit_optimization.algorithms.admm_optimizer import ADMMOptimizer, ADMMParameters, \
-    ADMMOptimizationResult, ADMMState
+from qiskit_optimization.algorithms.admm_optimizer import (
+    ADMMOptimizer,
+    ADMMParameters,
+    ADMMOptimizationResult,
+    ADMMState,
+)
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -26,9 +30,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
 
     def test_admm_maximization(self):
         """Tests a simple maximization problem using ADMM optimizer"""
-        mdl = Model('simple-max')
-        c = mdl.continuous_var(lb=0, ub=10, name='c')
-        x = mdl.binary_var(name='x')
+        mdl = Model("simple-max")
+        c = mdl.continuous_var(lb=0, ub=10, name="c")
+        x = mdl.binary_var(name="x")
         mdl.maximize(c + x * x)
         op = QuadraticProgram()
         op.from_docplex(mdl)
@@ -58,12 +62,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
         and Quantum Computers.
         arXiv preprint arXiv:2001.02069."""
-        mdl = Model('ex4')
+        mdl = Model("ex4")
 
-        v = mdl.binary_var(name='v')
-        w = mdl.binary_var(name='w')
+        v = mdl.binary_var(name="v")
+        w = mdl.binary_var(name="w")
         # pylint:disable=invalid-name
-        t = mdl.binary_var(name='t')
+        t = mdl.binary_var(name="t")
 
         b = 2
 
@@ -75,8 +79,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=False
+            rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -84,9 +87,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1., 0., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([1.0, 0.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2., solution.fval, 3)
+        np.testing.assert_almost_equal(2.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
@@ -96,12 +99,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         is omitted in objective to test a problem when a binary variable defined but is used only
         in constraints.
         """
-        mdl = Model('ex4')
+        mdl = Model("ex4")
 
-        v = mdl.binary_var(name='v')
-        w = mdl.binary_var(name='w')
+        v = mdl.binary_var(name="v")
+        w = mdl.binary_var(name="w")
         # pylint:disable=invalid-name
-        t = mdl.binary_var(name='t')
+        t = mdl.binary_var(name="t")
 
         b = 2
 
@@ -113,8 +116,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=False
+            rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -122,9 +124,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1., 0., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([1.0, 0.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2., solution.fval, 3)
+        np.testing.assert_almost_equal(2.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
@@ -134,12 +136,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
         and Quantum Computers.
         arXiv preprint arXiv:2001.02069."""
-        mdl = Model('ex5')
+        mdl = Model("ex5")
 
         # pylint:disable=invalid-name
-        v = mdl.binary_var(name='v')
-        w = mdl.binary_var(name='w')
-        t = mdl.binary_var(name='t')
+        v = mdl.binary_var(name="v")
+        w = mdl.binary_var(name="w")
+        t = mdl.binary_var(name="t")
 
         mdl.minimize(v + w + t)
         mdl.add_constraint(2 * v + 2 * w + t <= 3, "cons1")
@@ -150,8 +152,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=False
+            rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -160,20 +161,20 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1., 0., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([1.0, 0.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2., solution.fval, 3)
+        np.testing.assert_almost_equal(2.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
     def test_admm_ex5_warm_start(self):
         """Example 5 but with a warm start"""
-        mdl = Model('ex5')
+        mdl = Model("ex5")
 
         # pylint:disable=invalid-name
-        v = mdl.binary_var(name='v')
-        w = mdl.binary_var(name='w')
-        t = mdl.binary_var(name='t')
+        v = mdl.binary_var(name="v")
+        w = mdl.binary_var(name="w")
+        t = mdl.binary_var(name="t")
 
         mdl.minimize(v + w + t)
         mdl.add_constraint(2 * v + 2 * w + t <= 3, "cons1")
@@ -184,8 +185,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=False, warm_start=True
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=False,
+            warm_start=True,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -194,9 +199,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([0., 1., 0.], solution.x, 3)
+        np.testing.assert_almost_equal([0.0, 1.0, 0.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(1., solution.fval, 3)
+        np.testing.assert_almost_equal(1.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
@@ -206,13 +211,13 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
         and Quantum Computers.
         arXiv preprint arXiv:2001.02069."""
-        mdl = Model('ex6')
+        mdl = Model("ex6")
 
         # pylint:disable=invalid-name
-        v = mdl.binary_var(name='v')
-        w = mdl.binary_var(name='w')
-        t = mdl.binary_var(name='t')
-        u = mdl.continuous_var(name='u')
+        v = mdl.binary_var(name="v")
+        w = mdl.binary_var(name="w")
+        t = mdl.binary_var(name="t")
+        u = mdl.continuous_var(name="u")
 
         mdl.minimize(v + w + t + 5 * (u - 2) ** 2)
         mdl.add_constraint(v + 2 * w + t + u <= 3, "cons1")
@@ -223,8 +228,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=True, tol=1.e-6
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=True,
+            tol=1.0e-6,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -233,24 +242,24 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1., 0., 0., 2.], solution.x, 3)
+        np.testing.assert_almost_equal([1.0, 0.0, 0.0, 2.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(1., solution.fval, 3)
+        np.testing.assert_almost_equal(1.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
     def test_admm_ex6_max(self):
         """Example 6 as maximization"""
-        mdl = Model('ex6-max')
+        mdl = Model("ex6-max")
 
         # pylint:disable=invalid-name
-        v = mdl.binary_var(name='v')
-        w = mdl.binary_var(name='w')
-        t = mdl.binary_var(name='t')
-        u = mdl.continuous_var(name='u')
+        v = mdl.binary_var(name="v")
+        w = mdl.binary_var(name="w")
+        t = mdl.binary_var(name="t")
+        u = mdl.continuous_var(name="u")
 
         # mdl.minimize(v + w + t + 5 * (u - 2) ** 2)
-        mdl.maximize(- v - w - t - 5 * (u - 2) ** 2)
+        mdl.maximize(-v - w - t - 5 * (u - 2) ** 2)
         mdl.add_constraint(v + 2 * w + t + u <= 3, "cons1")
         mdl.add_constraint(v + w + t >= 1, "cons2")
         mdl.add_constraint(v + w == 1, "cons3")
@@ -259,8 +268,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=True, tol=1.e-6
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=True,
+            tol=1.0e-6,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -269,9 +282,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1., 0., 0., 2.], solution.x, 3)
+        np.testing.assert_almost_equal([1.0, 0.0, 0.0, 2.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(-1., solution.fval, 3)
+        np.testing.assert_almost_equal(-1.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
@@ -280,9 +293,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl = Model("eq-constraints-cts-vars")
 
         # pylint:disable=invalid-name
-        v = mdl.binary_var(name='v')
-        w = mdl.continuous_var(name='w', lb=0.)
-        t = mdl.continuous_var(name='t', lb=0.)
+        v = mdl.binary_var(name="v")
+        w = mdl.continuous_var(name="w", lb=0.0)
+        t = mdl.continuous_var(name="t", lb=0.0)
 
         mdl.minimize(v + w + t)
         mdl.add_constraint(2 * v + w >= 2, "cons1")
@@ -292,8 +305,11 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=True,
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=True,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -302,18 +318,18 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([0., 1., 0.], solution.x, 3)
+        np.testing.assert_almost_equal([0.0, 1.0, 0.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(1., solution.fval, 3)
+        np.testing.assert_almost_equal(1.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
     def test_quad_constraints(self):
         """Simple example to test quadratic constraints."""
-        mdl = Model('quad-constraints')
+        mdl = Model("quad-constraints")
 
-        v = mdl.binary_var(name='v')
-        w = mdl.continuous_var(name='w', lb=0.)
+        v = mdl.binary_var(name="v")
+        w = mdl.continuous_var(name="w", lb=0.0)
 
         mdl.minimize(v + w)
         mdl.add_constraint(v + w >= 1, "cons2")
@@ -323,8 +339,11 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op.from_docplex(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900,
-            maxiter=100, three_block=True,
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=True,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -333,9 +352,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([0., 1.], solution.x, 3)
+        np.testing.assert_almost_equal([0.0, 1.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(1., solution.fval, 3)
+        np.testing.assert_almost_equal(1.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
@@ -353,10 +372,10 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
 
     def test_integer_variables(self):
         """Tests ADMM with integer variables."""
-        mdl = Model('integer-variables')
+        mdl = Model("integer-variables")
 
-        v = mdl.integer_var(lb=5, ub=20, name='v')
-        w = mdl.continuous_var(name='w', lb=0.)
+        v = mdl.integer_var(lb=5, ub=20, name="v")
+        w = mdl.continuous_var(name="w", lb=0.0)
 
         mdl.minimize(v + w)
         op = QuadraticProgram()
@@ -368,8 +387,8 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([5., 0.], solution.x, 3)
+        np.testing.assert_almost_equal([5.0, 0.0], solution.x, 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(5., solution.fval, 3)
+        np.testing.assert_almost_equal(5.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
