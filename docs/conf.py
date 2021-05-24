@@ -119,7 +119,8 @@ nbsphinx_thumbnails = {
     '_static/5_ADMM.png',
 }
 
-spelling_word_list_filename = ['spelling_wordlist.txt', '../.pylintdict']
+spelling_word_list_filename = "../.pylintdict"
+spelling_filters = ["lowercase_filter.LowercaseFilter"]
 
 # -----------------------------------------------------------------------------
 # Autosummary
@@ -183,7 +184,7 @@ modindex_common_prefix = ['qiskit_optimization.']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-  #
+#
 html_theme = "qiskit_sphinx_theme"
 
 html_theme_path = ['.', qiskit_sphinx_theme.get_html_theme_path()]
@@ -214,4 +215,5 @@ def setup(app):
     app.add_directive('customgalleryitem', CustomGalleryItemDirective)
     app.add_directive('customcarditem', CustomCardItemDirective)
     app.add_directive('customcalloutitem', CustomCalloutItemDirective)
+
 
