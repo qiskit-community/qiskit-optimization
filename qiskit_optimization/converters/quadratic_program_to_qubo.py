@@ -43,19 +43,21 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
         from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
+        from ..converters.maximize_to_minimize import MaximizeToMinimize
 
         self._int_to_bin = IntegerToBinary()
         self._ineq_to_eq = InequalityToEquality(mode="integer")
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
+        self._max_to_min = MaximizeToMinimize()
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem with linear equality constraints into new one with a QUBO form.
+        """Convert a problem with linear constraints into new one with a QUBO form.
 
         Args:
-            problem: The problem with linear equality constraints to be solved.
+            problem: The problem with linear constraints to be solved.
 
         Returns:
-            The problem converted in QUBO format.
+            The problem converted in QUBO format as minimization problem.
 
         Raises:
             QiskitOptimizationError: In case of an incompatible problem.
@@ -75,6 +77,9 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         # Penalize linear equality constraints with only binary variables
         problem_ = self._penalize_lin_eq_constraints.convert(problem_)
 
+        # Convert maximization to minimization problem
+        problem_ = self._max_to_min.convert(problem_)
+
         # Return QUBO
         return problem_
 
@@ -87,6 +92,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         Returns:
             The result of the original problem.
         """
+        x = self._max_to_min.interpret(x)
         x = self._penalize_lin_eq_constraints.interpret(x)
         x = self._int_to_bin.interpret(x)
         x = self._ineq_to_eq.interpret(x)

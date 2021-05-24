@@ -59,6 +59,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
             epsilon=0.25,
             num_initial_solutions=10,
             aggregator=aggregator,
+            converters=[],
         )
         result_warm = optimizer.solve(problem)
 

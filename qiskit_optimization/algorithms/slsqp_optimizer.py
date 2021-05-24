@@ -23,6 +23,7 @@ from ..exceptions import QiskitOptimizationError
 from ..problems import Variable
 from ..problems.constraint import Constraint
 from ..problems.quadratic_program import QuadraticProgram
+from ..converters import MaximizeToMinimize
 
 logger = logging.getLogger(__name__)
 
@@ -183,13 +184,10 @@ class SlsqpOptimizer(MultiStartOptimizer):
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
         self._verify_compatibility(problem)
-
-        # construct quadratic objective function
-        def _objective(x):
-            return problem.objective.sense.value * problem.objective.evaluate(x)
-
-        def _objective_gradient(x):
-            return problem.objective.sense.value * problem.objective.evaluate_gradient(x)
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = self._convert(problem, max2min)
 
         # initialize constraints and bounds
         slsqp_bounds = []
@@ -222,12 +220,12 @@ class SlsqpOptimizer(MultiStartOptimizer):
         # actual minimization function to be called by multi_start_solve
         def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
             output = fmin_slsqp(
-                _objective,
+                problem.objective.evaluate,
                 x_0,
                 eqcons=slsqp_eq_constraints,
                 ieqcons=slsqp_ineq_constraints,
                 bounds=slsqp_bounds,
-                fprime=_objective_gradient,
+                fprime=problem.objective.evaluate_gradient,
                 iter=self._iter,
                 acc=self._acc,
                 iprint=self._iprint,
@@ -241,6 +239,10 @@ class SlsqpOptimizer(MultiStartOptimizer):
 
         # actual optimization goes here
         result = self.multi_start_solve(_minimize, problem)
+        # eventually convert back minimization to maximization
+        result = self._interpret(
+            x=result.x, problem=original_problem, converters=max2min, raw_results=result.raw_results
+        )
 
         if self._full_output:
             return SlsqpOptimizationResult(
