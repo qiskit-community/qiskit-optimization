@@ -30,6 +30,7 @@ class SpellDictGenerator:
     _DOCS_DIR = "docs"
     _BUILD_DIR = "_build"
     _STUBS_DIR = "stubs"
+    _JUPYTER_EXECUTE_DIR = "jupyter_execute"
     _SPHINX_DICT_FILE = "dummy_spelling_wordlist.txt"
     _SPELLING_SUFFIX = ".spelling"
     _MAKE_FILE = "Makefile"
@@ -42,6 +43,9 @@ class SpellDictGenerator:
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), self._docs_dir)
         self._build_dir = os.path.join(self._docs_dir, SpellDictGenerator._BUILD_DIR)
         self._stubs_dir = os.path.join(self._docs_dir, SpellDictGenerator._STUBS_DIR)
+        self._jupyter_execute_dir = os.path.join(
+            self._docs_dir, SpellDictGenerator._JUPYTER_EXECUTE_DIR
+        )
         self._sphinx_words: Set[str] = set()
         self._pylint_words: Set[str] = set()
 
@@ -56,25 +60,33 @@ class SpellDictGenerator:
             shutil.rmtree(self._build_dir)
         if os.path.isdir(self._stubs_dir):
             shutil.rmtree(self._stubs_dir)
-        os.mkdir(self._build_dir)
-        sphinx_dict_file = os.path.join(self._build_dir, SpellDictGenerator._SPHINX_DICT_FILE)
-        # create empty dictionary file
-        with open(sphinx_dict_file, "w"):
-            pass
-        sphinx_build(
-            [
-                "-b",
-                "spelling",
-                "-D",
-                f"spelling_word_list_filename={sphinx_dict_file}",
-                self._docs_dir,
-                self._build_dir,
-            ]
-        )
-        self._sphinx_words = SpellDictGenerator._get_sphinx_spell_words(self._build_dir)
-        shutil.rmtree(self._build_dir)
-        shutil.rmtree(self._stubs_dir)
-        return self._sphinx_words
+        if os.path.isdir(self._jupyter_execute_dir):
+            shutil.rmtree(self._jupyter_execute_dir)
+        try:
+            os.mkdir(self._build_dir)
+            sphinx_dict_file = os.path.join(self._build_dir, SpellDictGenerator._SPHINX_DICT_FILE)
+            # create empty dictionary file
+            with open(sphinx_dict_file, "w"):
+                pass
+            sphinx_build(
+                [
+                    "-b",
+                    "spelling",
+                    "-D",
+                    f"spelling_word_list_filename={sphinx_dict_file}",
+                    self._docs_dir,
+                    self._build_dir,
+                ]
+            )
+            self._sphinx_words = SpellDictGenerator._get_sphinx_spell_words(self._build_dir)
+            return self._sphinx_words
+        finally:
+            if os.path.isdir(self._build_dir):
+                shutil.rmtree(self._build_dir)
+            if os.path.isdir(self._stubs_dir):
+                shutil.rmtree(self._stubs_dir)
+            if os.path.isdir(self._jupyter_execute_dir):
+                shutil.rmtree(self._jupyter_execute_dir)
 
     @staticmethod
     def _get_sphinx_spell_words(path: str) -> Set[str]:
