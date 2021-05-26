@@ -16,7 +16,7 @@ import itertools
 import random
 from typing import List, Dict, Union, Optional
 
-import networkx as nx
+import retworkx as nx
 import numpy as np
 from docplex.mp.model import Model
 

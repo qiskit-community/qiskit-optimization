@@ -14,7 +14,7 @@
 
 from typing import Dict, List, Optional, Union
 
-import networkx as nx
+import retworkx as nx
 import numpy as np
 from docplex.mp.model import Model
 

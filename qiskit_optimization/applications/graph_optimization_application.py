@@ -15,7 +15,8 @@
 from abc import abstractmethod
 from typing import Union, Optional, Dict, List
 
-import networkx as nx
+import retworkx as rx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from qiskit.exceptions import MissingOptionalLibraryError
 
@@ -35,14 +36,14 @@ class GraphOptimizationApplication(OptimizationApplication):
     An abstract class for graph optimization applications.
     """
 
-    def __init__(self, graph: Union[nx.Graph, np.ndarray, List]) -> None:
+    def __init__(self, graph: rx.PyGraph) -> None:
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
             NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
         """
         # The view of the graph is stored which means the graph can not be changed.
-        self._graph = nx.Graph(graph).copy(as_view=True)
+        self._graph = graph #.copy(as_view=True)
 
     def draw(
         self,
@@ -66,7 +67,7 @@ class GraphOptimizationApplication(OptimizationApplication):
             )
 
         if result is None:
-            nx.draw(self._graph, pos=pos, with_labels=True)
+            mpl_draw(self._graph, pos=pos, with_labels=True)
         else:
             self._draw_result(result, pos)
 
@@ -85,7 +86,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         pass
 
     @property
-    def graph(self) -> nx.Graph:
+    def graph(self) -> rx.PyGraph:
         """Getter of the graph
 
         Returns:
@@ -94,7 +95,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         return self._graph
 
     @staticmethod
-    def random_graph(num_nodes: int, num_edges: int, seed: Optional[int] = None) -> nx.Graph:
+    def random_graph(num_nodes: int, num_edges: int, seed: Optional[int] = None) -> rx.PyGraph:
         """
 
         Args:
@@ -105,5 +106,5 @@ class GraphOptimizationApplication(OptimizationApplication):
         Returns:
             A random graph of NetworkX
         """
-        graph = nx.gnm_random_graph(num_nodes, num_edges, seed)
+        graph = rx.undirected_gnm_random_graph(num_nodes, num_edges, seed)
         return graph

@@ -13,7 +13,8 @@
 """An application class for the clique."""
 from typing import Optional, Union, List, Dict
 
-import networkx as nx
+import retworkx as rx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
@@ -31,7 +32,7 @@ class Clique(GraphOptimizationApplication):
     """
 
     def __init__(
-        self, graph: Union[nx.Graph, np.ndarray, List], size: Optional[int] = None
+        self, graph: rx.PyGraph, size: Optional[int] = None
     ) -> None:
         """
         Args:
@@ -53,12 +54,12 @@ class Clique(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the clique problem instance.
         """
-        complement_g = nx.complement(self._graph)
-
+        complement_g = rx.complement(self._graph)
+        print('XXX', self._graph.edge_list())
         mdl = Model(name="Clique")
-        n = self._graph.number_of_nodes()
+        n = len(self._graph.nodes())
         x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
-        for w, v in complement_g.edges:
+        for w, v in complement_g.edge_list():
             mdl.add_constraint(x[w] + x[v] <= 1)
         if self.size is None:
             mdl.maximize(mdl.sum(x[i] for i in x))
@@ -96,13 +97,13 @@ class Clique(GraphOptimizationApplication):
             pos: The positions of nodes
         """
         x = self._result_to_x(result)
-        nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
+        mpl_draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
     def _node_colors(self, x: np.ndarray) -> List[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with dark gray.
-        return ["r" if x[node] else "darkgrey" for node in self._graph.nodes]
+        return ["r" if x[node] else "darkgrey" for node in self._graph.nodes()]
 
     @property
     def size(self) -> int:

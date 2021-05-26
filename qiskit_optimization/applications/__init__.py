@@ -48,18 +48,18 @@ Applications
 """
 
 from .clique import Clique
-from .exact_cover import ExactCover
-from .graph_optimization_application import GraphOptimizationApplication
-from .graph_partition import GraphPartition
-from .knapsack import Knapsack
-from .max_cut import Maxcut
-from .number_partition import NumberPartition
-from .optimization_application import OptimizationApplication
-from .set_packing import SetPacking
-from .stable_set import StableSet
-from .tsp import Tsp
-from .vehicle_routing import VehicleRouting
-from .vertex_cover import VertexCover
+#from .exact_cover import ExactCover
+#from .graph_optimization_application import GraphOptimizationApplication
+#from .graph_partition import GraphPartition
+#from .knapsack import Knapsack
+#from .max_cut import Maxcut
+#from .number_partition import NumberPartition
+#from .optimization_application import OptimizationApplication
+#from .set_packing import SetPacking
+#from .stable_set import StableSet
+#from .tsp import Tsp
+#from .vehicle_routing import VehicleRouting
+#from .vertex_cover import VertexCover
 
 _all__ = [
     "Clique",
