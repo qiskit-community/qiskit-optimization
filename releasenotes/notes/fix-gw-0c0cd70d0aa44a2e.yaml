@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    Introduced a new converter class ``MinimizeToMaximize`` for ``QuadraticProgram``.
+    It converts a problem to a maximization problem.
+fixes:
+  - |
+    Fixes the Goemans-Williamson optimizer. If a minimization problem is passed to the optimizer,
+    then it is converted to a maximization problem and then solved.

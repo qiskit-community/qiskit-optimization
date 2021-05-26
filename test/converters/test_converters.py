@@ -34,6 +34,7 @@ from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
     LinearEqualityToPenalty,
+    MaximizeToMinimize,
 )
 from qiskit_optimization.problems import Constraint, Variable
 
@@ -65,6 +66,8 @@ class TestConverters(QiskitOptimizationTestCase):
         conv = IntegerToBinary()
         op = conv.convert(op)
         conv = LinearEqualityToPenalty()
+        op = conv.convert(op)
+        conv = MaximizeToMinimize()
         op = conv.convert(op)
         _, shift = op.to_ising()
         self.assertEqual(shift, 0.0)
