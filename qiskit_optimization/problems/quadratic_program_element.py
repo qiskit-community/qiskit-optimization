@@ -19,7 +19,7 @@ class QuadraticProgramElement:
     """Interface class for all objects that have a parent QuadraticProgram."""
 
     def __init__(self, quadratic_program: Any) -> None:
-        """ Initialize object with parent QuadraticProgram.
+        """Initialize object with parent QuadraticProgram.
 
         Args:
             quadratic_program: The parent QuadraticProgram.
@@ -29,7 +29,7 @@ class QuadraticProgramElement:
         from .quadratic_program import QuadraticProgram
 
         if not isinstance(quadratic_program, QuadraticProgram):
-            raise TypeError('QuadraticProgram instance expected')
+            raise TypeError("QuadraticProgram instance expected")
 
         self._quadratic_program = quadratic_program
 
@@ -55,6 +55,6 @@ class QuadraticProgramElement:
         from .quadratic_program import QuadraticProgram
 
         if not isinstance(quadratic_program, QuadraticProgram):
-            raise TypeError('QuadraticProgram instance expected')
+            raise TypeError("QuadraticProgram instance expected")
 
         self._quadratic_program = quadratic_program

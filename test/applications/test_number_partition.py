@@ -14,14 +14,13 @@
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.algorithms import (OptimizationResult,
-                                            OptimizationResultStatus)
+from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.number_partition import NumberPartition
-from qiskit_optimization.problems import (Constraint, QuadraticObjective, VarType)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
 
 class TestNumberPartition(QiskitOptimizationTestCase):
-    """ Test NumberPartition class"""
+    """Test NumberPartition class"""
 
     def setUp(self):
         """Set up for the test"""
@@ -31,8 +30,11 @@ class TestNumberPartition(QiskitOptimizationTestCase):
         for _ in range(5):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 1, 0, 0, 0], fval=0, variables=op.variables,
-            status=OptimizationResultStatus.SUCCESS)
+            x=[1, 1, 0, 0, 0],
+            fval=0,
+            variables=op.variables,
+            status=OptimizationResultStatus.SUCCESS,
+        )
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
@@ -55,9 +57,9 @@ class TestNumberPartition(QiskitOptimizationTestCase):
         self.assertEqual(len(lin), 1)
         self.assertEqual(lin[0].sense, Constraint.Sense.EQ)
         self.assertEqual(lin[0].rhs, -30)
-        self.assertEqual(lin[0].linear.to_dict(), {
-                             i: -2*num for i, num in enumerate(self.num_set)
-                             })
+        self.assertEqual(
+            lin[0].linear.to_dict(), {i: -2 * num for i, num in enumerate(self.num_set)}
+        )
 
     def test_interpret(self):
         """Test interpret"""

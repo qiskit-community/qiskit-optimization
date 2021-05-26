@@ -32,8 +32,12 @@ class VehicleRouting(GraphOptimizationApplication):
         [1]: "Vehicle routing problem", https://en.wikipedia.org/wiki/Vehicle_routing_problem
     """
 
-    def __init__(self, graph: Union[nx.Graph, np.ndarray, List],
-                 num_vehicles: int = 2, depot: int = 0) -> None:
+    def __init__(
+        self,
+        graph: Union[nx.Graph, np.ndarray, List],
+        num_vehicles: int = 2,
+        depot: int = 0,
+    ) -> None:
         """
         Args:
             graph: A graph representing a vehicle routing problem. It can be specified directly as a
@@ -54,15 +58,21 @@ class VehicleRouting(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the vehicle routing problem instance.
         """
-        mdl = Model(name='Vehicle routing')
+        mdl = Model(name="Vehicle routing")
         n = self._graph.number_of_nodes()
         x = {}
         for i in range(n):
             for j in range(n):
                 if i != j:
-                    x[(i, j)] = mdl.binary_var(name='x_{0}_{1}'.format(i, j))
-        mdl.minimize(mdl.sum(self._graph.edges[i, j]['weight']*x[(i, j)]
-                             for i in range(n) for j in range(n) if i != j))
+                    x[(i, j)] = mdl.binary_var(name="x_{0}_{1}".format(i, j))
+        mdl.minimize(
+            mdl.sum(
+                self._graph.edges[i, j]["weight"] * x[(i, j)]
+                for i in range(n)
+                for j in range(n)
+                if i != j
+            )
+        )
         # Only 1 edge goes out from each node
         for i in range(n):
             if i != self.depot:
@@ -72,21 +82,23 @@ class VehicleRouting(GraphOptimizationApplication):
             if j != self.depot:
                 mdl.add_constraint(mdl.sum(x[i, j] for i in range(n) if i != j) == 1)
         # For the depot node
-        mdl.add_constraint(mdl.sum(x[i, self.depot]
-                                   for i in range(n) if i != self.depot) == self.num_vehicles)
-        mdl.add_constraint(mdl.sum(x[self.depot, j]
-                                   for j in range(n) if j != self.depot) == self.num_vehicles)
+        mdl.add_constraint(
+            mdl.sum(x[i, self.depot] for i in range(n) if i != self.depot) == self.num_vehicles
+        )
+        mdl.add_constraint(
+            mdl.sum(x[self.depot, j] for j in range(n) if j != self.depot) == self.num_vehicles
+        )
 
         # To eliminate sub-routes
         node_list = [i for i in range(n) if i != self.depot]
         clique_set = []
-        for i in range(2, len(node_list)+1):
+        for i in range(2, len(node_list) + 1):
             for comb in itertools.combinations(node_list, i):
                 clique_set.append(list(comb))
         for clique in clique_set:
-            mdl.add_constraint(mdl.sum(x[(i, j)]
-                                       for i in clique
-                                       for j in clique if i != j) <= len(clique) - 1)
+            mdl.add_constraint(
+                mdl.sum(x[(i, j)] for i in clique for j in clique if i != j) <= len(clique) - 1
+            )
         op = QuadraticProgram()
         op.from_docplex(mdl)
         return op
@@ -132,8 +144,11 @@ class VehicleRouting(GraphOptimizationApplication):
 
         return route_list
 
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:
@@ -148,8 +163,11 @@ class VehicleRouting(GraphOptimizationApplication):
             self._graph,
             pos,
             edgelist=self._edgelist(route_list),
-            width=8, alpha=0.5, edge_color=self._edge_color(route_list), edge_cmap=plt.cm.plasma
-            )
+            width=8,
+            alpha=0.5,
+            edge_color=self._edge_color(route_list),
+            edge_cmap=plt.cm.plasma,
+        )
 
     def _edgelist(self, route_list: List[List[List[int]]]):
         # Arrange route_list and return the list of the edges for the edge list of
@@ -159,7 +177,7 @@ class VehicleRouting(GraphOptimizationApplication):
     def _edge_color(self, route_list: List[List[List[int]]]):
         # Arrange route_list and return the list of the colors of each route
         # for edge_color of nx.draw_networkx_edges
-        return [k/len(route_list) for k in range(len(route_list)) for edge in route_list[k]]
+        return [k / len(route_list) for k in range(len(route_list)) for edge in route_list[k]]
 
     @property
     def num_vehicles(self) -> int:
@@ -199,8 +217,14 @@ class VehicleRouting(GraphOptimizationApplication):
 
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: Optional[int] = None,
-                               num_vehicle: int = 2, depot: int = 0) -> 'VehicleRouting':
+    def create_random_instance(
+        n: int,
+        low: int = 0,
+        high: int = 100,
+        seed: Optional[int] = None,
+        num_vehicle: int = 2,
+        depot: int = 0,
+    ) -> "VehicleRouting":
         """Create a random instance of the vehicle routing problem.
 
         Args:
@@ -216,8 +240,8 @@ class VehicleRouting(GraphOptimizationApplication):
         """
         random.seed(seed)
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
-        graph = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
+        graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
-            delta = [graph.nodes[w]['pos'][i] - graph.nodes[v]['pos'][i] for i in range(2)]
-            graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
+            graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return VehicleRouting(graph, num_vehicle, depot)

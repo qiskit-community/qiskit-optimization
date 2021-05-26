@@ -24,20 +24,18 @@ class TestGurobiOptimizer(QiskitOptimizationTestCase):
     """Gurobi Optimizer Tests."""
 
     @data(
-        ('op_ip1.lp', [0, 2], 6),
-        ('op_mip1.lp', [1, 1, 0], 6),
-        ('op_lp1.lp', [0.25, 1.75], 5.8750)
+        ("op_ip1.lp", [0, 2], 6), ("op_mip1.lp", [1, 1, 0], 6), ("op_lp1.lp", [0.25, 1.75], 5.8750)
     )
     @requires_extra_library
     def test_gurobi_optimizer(self, config):
-        """ Gurobi Optimizer Test """
+        """Gurobi Optimizer Test"""
         # unpack configuration
         gurobi_optimizer = GurobiOptimizer(disp=False)
         filename, x, fval = config
 
         # load optimization problem
         problem = QuadraticProgram()
-        lp_file = self.get_resource_path(filename, 'algorithms/resources')
+        lp_file = self.get_resource_path(filename, "algorithms/resources")
         problem.read_from_lp_file(lp_file)
 
         # solve problem with gurobi
@@ -49,5 +47,5 @@ class TestGurobiOptimizer(QiskitOptimizationTestCase):
             self.assertAlmostEqual(result.x[i], x[i])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

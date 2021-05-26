@@ -46,7 +46,10 @@ mypy:
 	mypy qiskit_optimization test tools
 
 style:
-	pycodestyle qiskit_optimization test tools
+	black --check qiskit_optimization test tools
+
+black:
+	black qiskit_optimization test tools
 
 test:
 	python -m unittest discover -v test
@@ -57,6 +60,7 @@ test_ci:
 
 spell:
 	pylint -rn --disable=all --enable=spelling --spelling-dict=en_US --spelling-private-dict-file=.pylintdict qiskit_optimization test tools
+	make -C docs spell SPHINXOPTS=$(SPHINXOPTS)
 
 copyright:
 	python tools/check_copyright.py

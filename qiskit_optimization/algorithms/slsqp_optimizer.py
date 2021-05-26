@@ -23,6 +23,7 @@ from ..exceptions import QiskitOptimizationError
 from ..problems import Variable
 from ..problems.constraint import Constraint
 from ..problems.quadratic_program import QuadraticProgram
+from ..converters import MaximizeToMinimize
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +32,18 @@ class SlsqpOptimizationResult(OptimizationResult):
     """
     SLSQP optimization result, defines additional properties that may be returned by the optimizer.
     """
-    def __init__(self, x: Union[List[float], np.ndarray], fval: float, variables: List[Variable],
-                 status: OptimizationResultStatus, fx: Optional[np.ndarray] = None,
-                 its: Optional[int] = None, imode: Optional[int] = None,
-                 smode: Optional[str] = None) -> None:
+
+    def __init__(
+        self,
+        x: Union[List[float], np.ndarray],
+        fval: float,
+        variables: List[Variable],
+        status: OptimizationResultStatus,
+        fx: Optional[np.ndarray] = None,
+        its: Optional[int] = None,
+        imode: Optional[int] = None,
+        smode: Optional[str] = None,
+    ) -> None:
         """
         Constructs a result object with properties specific to SLSQP.
 
@@ -98,8 +107,15 @@ class SlsqpOptimizer(MultiStartOptimizer):
     """
 
     # pylint: disable=redefined-builtin
-    def __init__(self, iter: int = 100, acc: float = 1.0E-6, iprint: int = 0, trials: int = 1,
-                 clip: float = 100., full_output: bool = False) -> None:
+    def __init__(
+        self,
+        iter: int = 100,
+        acc: float = 1.0e-6,
+        iprint: int = 0,
+        trials: int = 1,
+        clip: float = 100.0,
+        full_output: bool = False,
+    ) -> None:
         """Initializes the SlsqpOptimizer.
 
         This initializer takes the algorithmic parameters of SLSQP and stores them for later use
@@ -149,9 +165,9 @@ class SlsqpOptimizer(MultiStartOptimizer):
         """
         # check whether there are variables of type other than continuous
         if len(problem.variables) > problem.get_num_continuous_vars():
-            return 'The SLSQP optimizer supports only continuous variables'
+            return "The SLSQP optimizer supports only continuous variables"
 
-        return ''
+        return ""
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
         """Tries to solves the given problem using the optimizer.
@@ -168,13 +184,10 @@ class SlsqpOptimizer(MultiStartOptimizer):
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
         self._verify_compatibility(problem)
-
-        # construct quadratic objective function
-        def _objective(x):
-            return problem.objective.sense.value * problem.objective.evaluate(x)
-
-        def _objective_gradient(x):
-            return problem.objective.sense.value * problem.objective.evaluate_gradient(x)
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = self._convert(problem, max2min)
 
         # initialize constraints and bounds
         slsqp_bounds = []
@@ -189,8 +202,9 @@ class SlsqpOptimizer(MultiStartOptimizer):
 
         # pylint: disable=no-member
         # add linear and quadratic constraints
-        for constraint in cast(List[Constraint], problem.linear_constraints) + \
-                cast(List[Constraint], problem.quadratic_constraints):
+        for constraint in cast(List[Constraint], problem.linear_constraints) + cast(
+            List[Constraint], problem.quadratic_constraints
+        ):
             rhs = constraint.rhs
             sense = constraint.sense
 
@@ -201,14 +215,22 @@ class SlsqpOptimizer(MultiStartOptimizer):
             elif sense == Constraint.Sense.GE:
                 slsqp_ineq_constraints += [lambda x, rhs=rhs, c=constraint: c.evaluate(x) - rhs]
             else:
-                raise QiskitOptimizationError('Unsupported constraint type!')
+                raise QiskitOptimizationError("Unsupported constraint type!")
 
         # actual minimization function to be called by multi_start_solve
         def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
-            output = fmin_slsqp(_objective, x_0, eqcons=slsqp_eq_constraints,
-                                ieqcons=slsqp_ineq_constraints, bounds=slsqp_bounds,
-                                fprime=_objective_gradient, iter=self._iter, acc=self._acc,
-                                iprint=self._iprint, full_output=self._full_output)
+            output = fmin_slsqp(
+                problem.objective.evaluate,
+                x_0,
+                eqcons=slsqp_eq_constraints,
+                ieqcons=slsqp_ineq_constraints,
+                bounds=slsqp_bounds,
+                fprime=problem.objective.evaluate_gradient,
+                iter=self._iter,
+                acc=self._acc,
+                iprint=self._iprint,
+                full_output=self._full_output,
+            )
             if self._full_output:
                 x, *rest = output
             else:
@@ -217,12 +239,26 @@ class SlsqpOptimizer(MultiStartOptimizer):
 
         # actual optimization goes here
         result = self.multi_start_solve(_minimize, problem)
+        # eventually convert back minimization to maximization
+        result = self._interpret(
+            x=result.x, problem=original_problem, converters=max2min, raw_results=result.raw_results
+        )
 
         if self._full_output:
-            return SlsqpOptimizationResult(x=result.x, fval=result.fval, variables=result.variables,
-                                           status=self._get_feasibility_status(problem, result.x),
-                                           fx=result.raw_results[0], its=result.raw_results[1],
-                                           imode=result.raw_results[2], smode=result.raw_results[3])
+            return SlsqpOptimizationResult(
+                x=result.x,
+                fval=result.fval,
+                variables=result.variables,
+                status=self._get_feasibility_status(problem, result.x),
+                fx=result.raw_results[0],
+                its=result.raw_results[1],
+                imode=result.raw_results[2],
+                smode=result.raw_results[3],
+            )
         else:
-            return SlsqpOptimizationResult(x=result.x, fval=result.fval, variables=result.variables,
-                                           status=self._get_feasibility_status(problem, result.x))
+            return SlsqpOptimizationResult(
+                x=result.x,
+                fval=result.fval,
+                variables=result.variables,
+                status=self._get_feasibility_status(problem, result.x),
+            )

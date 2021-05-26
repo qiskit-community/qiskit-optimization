@@ -13,4 +13,4 @@
 """Infinity constant."""
 
 
-INFINITY = 1.0E+20  # pylint: disable=invalid-name
+INFINITY = 1.0e20  # pylint: disable=invalid-name

@@ -17,4 +17,5 @@ from qiskit.exceptions import QiskitError
 
 class QiskitOptimizationError(QiskitError):
     """Class for errors returned by Qiskit's optimization module."""
+
     pass

@@ -24,13 +24,13 @@ from ..problems.quadratic_program import QuadraticProgram
 class QuadraticProgramToQubo(QuadraticProgramConverter):
     """Convert a given optimization problem to a new problem that is a QUBO.
 
-        Examples:
-            >>> from qiskit_optimization.problems import QuadraticProgram
-            >>> from qiskit_optimization.converters import QuadraticProgramToQubo
-            >>> problem = QuadraticProgram()
-            >>> # define a problem
-            >>> conv = QuadraticProgramToQubo()
-            >>> problem2 = conv.convert(problem)
+    Examples:
+        >>> from qiskit_optimization.problems import QuadraticProgram
+        >>> from qiskit_optimization.converters import QuadraticProgramToQubo
+        >>> problem = QuadraticProgram()
+        >>> # define a problem
+        >>> conv = QuadraticProgramToQubo()
+        >>> problem2 = conv.convert(problem)
     """
 
     def __init__(self, penalty: Optional[float] = None) -> None:
@@ -43,19 +43,21 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
         from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
+        from ..converters.flip_problem_sense import MaximizeToMinimize
 
         self._int_to_bin = IntegerToBinary()
-        self._ineq_to_eq = InequalityToEquality(mode='integer')
+        self._ineq_to_eq = InequalityToEquality(mode="integer")
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
+        self._max_to_min = MaximizeToMinimize()
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem with linear equality constraints into new one with a QUBO form.
+        """Convert a problem with linear constraints into new one with a QUBO form.
 
         Args:
-            problem: The problem with linear equality constraints to be solved.
+            problem: The problem with linear constraints to be solved.
 
         Returns:
-            The problem converted in QUBO format.
+            The problem converted in QUBO format as minimization problem.
 
         Raises:
             QiskitOptimizationError: In case of an incompatible problem.
@@ -64,7 +66,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         # analyze compatibility of problem
         msg = self.get_compatibility_msg(problem)
         if len(msg) > 0:
-            raise QiskitOptimizationError('Incompatible problem: {}'.format(msg))
+            raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
 
         # Convert inequality constraints into equality constraints by adding slack variables
         problem_ = self._ineq_to_eq.convert(problem)
@@ -75,18 +77,22 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         # Penalize linear equality constraints with only binary variables
         problem_ = self._penalize_lin_eq_constraints.convert(problem_)
 
+        # Convert maximization to minimization problem
+        problem_ = self._max_to_min.convert(problem_)
+
         # Return QUBO
         return problem_
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
 
-            Args:
-                x: The result of the converted problem.
+        Args:
+            x: The result of the converted problem.
 
-            Returns:
-                The result of the original problem.
+        Returns:
+            The result of the original problem.
         """
+        x = self._max_to_min.interpret(x)
         x = self._penalize_lin_eq_constraints.interpret(x)
         x = self._int_to_bin.interpret(x)
         x = self._ineq_to_eq.interpret(x)
@@ -107,14 +113,14 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         """
 
         # initialize message
-        msg = ''
+        msg = ""
         # check whether there are incompatible variable types
         if problem.get_num_continuous_vars() > 0:
-            msg += 'Continuous variables are not supported! '
+            msg += "Continuous variables are not supported! "
 
         # check whether there are incompatible constraint types
         if len(problem.quadratic_constraints) > 0:
-            msg += 'Quadratic constraints are not supported. '
+            msg += "Quadratic constraints are not supported. "
         # check whether there are float coefficients in constraints
         compatible_with_integer_slack = True
         for l_constraint in problem.linear_constraints:
@@ -125,15 +131,12 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
             linear = q_constraint.linear.to_dict()
             quadratic = q_constraint.quadratic.to_dict()
             if any(
-                    isinstance(coef, float) and not coef.is_integer()
-                    for coef in quadratic.values()
-            ) or any(
-                isinstance(coef, float) and not coef.is_integer() for coef in linear.values()
-            ):
+                isinstance(coef, float) and not coef.is_integer() for coef in quadratic.values()
+            ) or any(isinstance(coef, float) and not coef.is_integer() for coef in linear.values()):
                 compatible_with_integer_slack = False
         if not compatible_with_integer_slack:
-            msg += 'Can not convert inequality constraints to equality constraint because \
-                    float coefficients are in constraints. '
+            msg += "Can not convert inequality constraints to equality constraint because \
+                    float coefficients are in constraints. "
 
         # if an error occurred, return error message, otherwise, return None
         return msg

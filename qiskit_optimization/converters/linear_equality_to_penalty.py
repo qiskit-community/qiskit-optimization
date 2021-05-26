@@ -75,7 +75,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             elif x.vartype == Variable.Type.INTEGER:
                 self._dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
-                raise QiskitOptimizationError('Unsupported vartype: {}'.format(x.vartype))
+                raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
 
         # get original objective terms
         offset = self._src.objective.constant
@@ -88,8 +88,8 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
             if constraint.sense != Constraint.Sense.EQ:
                 raise QiskitOptimizationError(
-                    'An inequality constraint exists. '
-                    'The method supports only equality constraints.'
+                    "An inequality constraint exists. "
+                    "The method supports only equality constraints."
                 )
 
             constant = constraint.rhs
@@ -145,10 +145,10 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             terms.extend(coef for coef in constraint.linear.to_dict().values())
         if any(isinstance(term, float) and not term.is_integer() for term in terms):
             logger.warning(
-                'Warning: Using %f for the penalty coefficient because '
-                'a float coefficient exists in constraints. \n'
-                'The value could be too small. '
-                'If so, set the penalty coefficient manually.',
+                "Warning: Using %f for the penalty coefficient because "
+                "a float coefficient exists in constraints. \n"
+                "The value could be too small. "
+                "If so, set the penalty coefficient manually.",
                 default_penalty,
             )
             return default_penalty
@@ -178,8 +178,8 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         """
         if len(x) != self._src.get_num_vars():
             raise QiskitOptimizationError(
-                'The number of variables in the passed result differs from '
-                'that of the original problem.'
+                "The number of variables in the passed result differs from "
+                "that of the original problem."
             )
         return np.asarray(x)
 

@@ -55,14 +55,15 @@ from .quadratic_program import QuadraticProgram
 from .quadratic_program_element import QuadraticProgramElement
 from .variable import Variable, VarType
 
-__all__ = ['Constraint',
-           'LinearExpression',
-           'LinearConstraint',
-           'QuadraticExpression',
-           'QuadraticConstraint',
-           'QuadraticObjective',
-           'QuadraticProgram',
-           'QuadraticProgramElement',
-           'Variable',
-           'VarType'
-           ]
+__all__ = [
+    "Constraint",
+    "LinearExpression",
+    "LinearConstraint",
+    "QuadraticExpression",
+    "QuadraticConstraint",
+    "QuadraticObjective",
+    "QuadraticProgram",
+    "QuadraticProgramElement",
+    "Variable",
+    "VarType",
+]
