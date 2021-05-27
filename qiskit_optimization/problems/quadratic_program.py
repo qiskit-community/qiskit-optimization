@@ -901,10 +901,10 @@ class QuadraticProgram:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
         if translator is None:
-            from qiskit_optimization.translators.docplex import DocplexMpTranslator
+            from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
 
             translator = DocplexMpTranslator()
-        return translator.qp_to_model(self)
+        return translator.from_qp(self)
 
     def from_docplex(self, model: Model) -> None:
         """Loads this quadratic program from a docplex model.

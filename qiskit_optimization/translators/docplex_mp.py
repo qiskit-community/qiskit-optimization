@@ -56,7 +56,7 @@ class DocplexMpTranslator(ModelTranslator):
         """
         return isinstance(model, Model)
 
-    def qp_to_model(self, quadratic_program: "QuadraticProgram") -> Model:
+    def from_qp(self, quadratic_program: "QuadraticProgram") -> Model:
         """Returns a docplex model corresponding to a quadratic program.
 
         Args:
@@ -146,7 +146,7 @@ class DocplexMpTranslator(ModelTranslator):
 
         return mdl
 
-    def model_to_qp(self, model: Model) -> "QuadraticProgram":
+    def to_qp(self, model: Model) -> "QuadraticProgram":
         """Translate a docplex model into a quadratic program.
 
         Note that this supports only basic functions of docplex as follows:

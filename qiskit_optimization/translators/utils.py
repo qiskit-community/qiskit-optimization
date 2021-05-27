@@ -15,7 +15,7 @@
 from typing import Any, TYPE_CHECKING
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
-from .docplex import DocplexMpTranslator
+from .docplex_mp import DocplexMpTranslator
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
@@ -42,7 +42,7 @@ def _load_model(model: Any) -> "QuadraticProgram":
     """
     for trans in translators:
         if trans.is_installed() and trans.is_compatible(model):
-            return trans.model_to_qp(model)
+            return trans.to_qp(model)
     raise QiskitOptimizationError(
         "There is no compatible translator to this model: {}".format(type(model))
     )

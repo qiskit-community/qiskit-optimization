@@ -33,10 +33,10 @@ Translators
    :toctree: ../stubs/
    :nosignatures:
 
-   DocplexTranslator
+   DocplexMpTranslator
 """
 
 from .model_translator import ModelTranslator
-from .docplex import DocplexMpTranslator
+from .docplex_mp import DocplexMpTranslator
 
 _all = ["ModelTranslator", "DocplexMpTranslator"]
