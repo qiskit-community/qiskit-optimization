@@ -44,12 +44,12 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         super().setUp()
         algorithm_globals.random_seed = 1
         self.sv_simulator = QuantumInstance(
-            Aer.get_backend("statevector_simulator"),
+            Aer.get_backend("aer_simulator_statevector"),
             seed_simulator=921,
             seed_transpiler=200,
         )
         self.qasm_simulator = QuantumInstance(
-            Aer.get_backend("qasm_simulator"), seed_simulator=123, seed_transpiler=123
+            Aer.get_backend("aer_simulator"), seed_simulator=123, seed_transpiler=123
         )
         self.n_iter = 8
 
