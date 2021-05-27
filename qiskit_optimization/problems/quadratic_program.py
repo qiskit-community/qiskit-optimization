@@ -1368,7 +1368,6 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-
         return self.to_docplex().export_as_lp_string()
 
     def pprint_as_string(self) -> str:
