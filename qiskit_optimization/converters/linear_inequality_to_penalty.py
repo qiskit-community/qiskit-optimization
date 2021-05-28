@@ -153,6 +153,10 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                             quadratic.get(tup, 0.0) + sense * penalty * conv_matrix[j + 1][k + 1]
                         )
 
+        # Copy quadratic_constraints
+        for constraint in self._src.quadratic_constraints:
+            self._dst.quadratic_constraints.append(constraint)
+
         if self._src.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             self._dst.minimize(offset, linear, quadratic)
         else:
@@ -220,14 +224,13 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         if len(params) == 2:
             if rhs == 1:
                 if all(i == 1 for i in params.values()):
-                    # x+y<=1
-                    # x+y>=1
-                    # x+y>=1
-                    return True
+                    if sense == Constraint.Sense.LE or sense == Constraint.Sense.GE:
+                        # x+y<=1
+                        # x+y>=1
+                        return True
             if rhs == 0:
                 if sense == Constraint.Sense.LE:
                     # x-y<=0
-                    # x-y=0
                     return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
         elif len(params) == 3:
             if rhs == 1:
