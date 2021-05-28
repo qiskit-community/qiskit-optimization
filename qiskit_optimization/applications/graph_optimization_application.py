@@ -50,7 +50,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         elif isinstance(graph, nx.Graph):
             self._graph = rx.networkx_converter(graph)
         elif isinstance(graph, (np.ndarray, List)):
-            self._graph = rx.PyGraph.from_adjacency_matrix(graph)
+            self._graph = rx.PyGraph.from_adjacency_matrix(np.asarray(graph))
         else:
             raise TypeError("graph should be rx.PyGraph or nx.Graph")
 
