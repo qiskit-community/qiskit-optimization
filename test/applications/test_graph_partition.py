@@ -13,7 +13,7 @@
 """ Test GraphPartinioning class"""
 from test.optimization_test_case import QiskitOptimizationTestCase
 
-import networkx as nx
+import retworkx as rx
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
@@ -27,7 +27,7 @@ class TestGraphPartition(QiskitOptimizationTestCase):
     def setUp(self):
         """Set up for the tests"""
         super().setUp()
-        self.graph = nx.gnm_random_graph(4, 4, 123)
+        self.graph = rx.undirected_gnm_random_graph(4, 4, 123)
         op = QuadraticProgram()
         for _ in range(4):
             op.binary_var()

@@ -69,7 +69,7 @@ class VehicleRouting(GraphOptimizationApplication):
                     x[(i, j)] = mdl.binary_var(name="x_{0}_{1}".format(i, j))
         mdl.minimize(
             mdl.sum(
-                self._graph.get_edge_data(i, j)["weight"] * x[(i, j)]
+                self._graph.get_edge_data(i, j) * x[(i, j)]
                 for i in range(n)
                 for j in range(n)
                 if i != j
@@ -250,5 +250,5 @@ class VehicleRouting(GraphOptimizationApplication):
                 graph.get_node_data(i)["pos"][d] - graph.get_node_data(j)["pos"][d]
                 for d in range(dim)
             ]
-            graph.update_edge(i, j, {"weight": np.rint(np.hypot(delta[0], delta[1]))})
+            graph.update_edge(i, j, np.rint(np.hypot(delta[0], delta[1])))
         return VehicleRouting(graph, num_vehicle, depot)

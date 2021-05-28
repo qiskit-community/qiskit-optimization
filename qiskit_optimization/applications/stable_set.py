@@ -42,8 +42,6 @@ class StableSet(GraphOptimizationApplication):
         mdl = Model(name="Stable set")
         n = self._graph.num_nodes()
         x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
-        for w, v in self._graph.edge_list():
-            self._graph.get_edge_data(w, v).setdefault("weight", 1)
         objective = mdl.sum(x[i] for i in x)
         for w, v in self._graph.edge_list():
             mdl.add_constraint(x[w] + x[v] <= 1)

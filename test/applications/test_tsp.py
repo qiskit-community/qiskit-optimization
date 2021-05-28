@@ -29,16 +29,10 @@ class TestTsp(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        random.seed(123)
+        seed = 123
         low = 0
         high = 100
-        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(4)}
-        self.graph = nx.random_geometric_graph(4, np.hypot(high - low, high - low) + 1, pos=pos)
-        for w, v in self.graph.edges:
-            delta = [
-                self.graph.nodes[w]["pos"][i] - self.graph.nodes[v]["pos"][i] for i in range(2)
-            ]
-            self.graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
+        self.graph = Tsp.create_random_instance(4, low, high, seed).graph
 
         op = QuadraticProgram()
         for i in range(16):
@@ -66,7 +60,7 @@ class TestTsp(QiskitOptimizationTestCase):
         self.assertEqual(obj.constant, 0)
         self.assertDictEqual(obj.linear.to_dict(), {})
         for edge, val in obj.quadratic.to_dict().items():
-            self.assertEqual(val, self.graph.edges[edge[0] // 4, edge[1] // 4]["weight"])
+            self.assertEqual(val, self.graph.get_edge_data(edge[0] // 4, edge[1] // 4))
 
         # Test constraint
         lin = op.linear_constraints
@@ -96,7 +90,5 @@ class TestTsp(QiskitOptimizationTestCase):
     def test_create_random_instance(self):
         """Test create_random_instance"""
         tsp = Tsp.create_random_instance(n=3, seed=123)
-        graph = tsp.graph
-        edge_weight = [graph.get_edge_data(*edge)["weight"] for edge in graph.edge_list()]
         expected_weight = [48, 91, 63]
-        self.assertEqual(edge_weight, expected_weight)
+        self.assertEqual(tsp.graph.edges(), expected_weight)

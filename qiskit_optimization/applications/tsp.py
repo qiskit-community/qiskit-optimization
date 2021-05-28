@@ -51,7 +51,7 @@ class Tsp(GraphOptimizationApplication):
             for k in range(n)
         }
         tsp_func = mdl.sum(
-            self._graph.get_edge_data(i, j)["weight"] * x[(i, k)] * x[(j, (k + 1) % n)]
+            self._graph.get_edge_data(i, j) * x[(i, k)] * x[(j, (k + 1) % n)]
             for i in range(n)
             for j in range(n)
             for k in range(n)
@@ -142,7 +142,7 @@ class Tsp(GraphOptimizationApplication):
                 graph.get_node_data(i)["pos"][d] - graph.get_node_data(j)["pos"][d]
                 for d in range(dim)
             ]
-            graph.update_edge(i, j, {"weight": np.rint(np.hypot(delta[0], delta[1]))})
+            graph.update_edge(i, j, np.rint(np.hypot(delta[0], delta[1])))
         return Tsp(graph)
 
     @staticmethod
@@ -197,12 +197,13 @@ class Tsp(GraphOptimizationApplication):
         y_max = max(coord_[1] for coord_ in coord)
         y_min = min(coord_[1] for coord_ in coord)
 
-        graph = nx.random_geometric_graph(
+        # TODO: fix and add test
+        graph = rx.random_geometric_graph(
             len(coord), np.hypot(x_max - x_min, y_max - y_min) + 1, pos=coord
         )
         for w, v in graph.edges:
             delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
-            graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
+            graph.update_edge(w, v, np.rint(np.hypot(delta[0], delta[1])))
         return Tsp(graph)
 
     @staticmethod
