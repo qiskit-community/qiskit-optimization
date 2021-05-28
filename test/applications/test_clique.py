@@ -13,6 +13,7 @@
 """ Test Clique class"""
 
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import retworkx as rx
 
 from qiskit_optimization import QuadraticProgram
@@ -28,7 +29,6 @@ class TestClique(QiskitOptimizationTestCase):
         """Set up for the tests"""
         super().setUp()
         self.graph = rx.undirected_gnm_random_graph(5, 8, 123)
-        print('XXX', self.graph.edge_list())
         op = QuadraticProgram()
         for _ in range(5):
             op.binary_var()

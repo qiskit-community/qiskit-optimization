@@ -13,14 +13,16 @@
 """An abstract class for graph optimization application classes."""
 
 from abc import abstractmethod
-from typing import Union, Optional, Dict, List
+from typing import Dict, Optional, Union
 
+import networkx as nx
+import numpy as np
 import retworkx as rx
 from retworkx.visualization import mpl_draw
-import numpy as np
-from qiskit.exceptions import MissingOptionalLibraryError
 
+from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization.algorithms import OptimizationResult
+
 from .optimization_application import OptimizationApplication
 
 try:
@@ -36,14 +38,19 @@ class GraphOptimizationApplication(OptimizationApplication):
     An abstract class for graph optimization applications.
     """
 
-    def __init__(self, graph: rx.PyGraph) -> None:
+    def __init__(self, graph: Union[rx.PyGraph, nx.Graph]) -> None:
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
             NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
         """
         # The view of the graph is stored which means the graph can not be changed.
-        self._graph = graph #.copy(as_view=True)
+        if isinstance(graph, rx.PyGraph):
+            self._graph = graph.copy()
+        elif isinstance(graph, nx.Graph):
+            self._graph = rx.networkx_converter(graph)
+        else:
+            raise TypeError("graph should be rx.PyGraph or nx.Graph")
 
     def draw(
         self,
@@ -108,3 +115,12 @@ class GraphOptimizationApplication(OptimizationApplication):
         """
         graph = rx.undirected_gnm_random_graph(num_nodes, num_edges, seed)
         return graph
+
+    @staticmethod
+    def random_geometric_graph(num_nodes: int, radius: float,
+                               seed: Optional[int] = None) -> rx.PyGraph:
+        """
+
+        """
+        graph = rx.PyGraph()
+        graph.add_nodes_from(range(num_nodes))

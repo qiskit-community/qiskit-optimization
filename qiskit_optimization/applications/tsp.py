@@ -13,7 +13,8 @@
 """An application class for Traveling salesman problem (TSP)."""
 from typing import Dict, List, Optional, Union
 
-import retworkx as nx
+import retworkx as rx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
@@ -42,14 +43,14 @@ class Tsp(GraphOptimizationApplication):
             from the traveling salesman problem instance.
         """
         mdl = Model(name="TSP")
-        n = self._graph.number_of_nodes()
+        n = self._graph.num_nodes()
         x = {
             (i, k): mdl.binary_var(name="x_{0}_{1}".format(i, k))
             for i in range(n)
             for k in range(n)
         }
         tsp_func = mdl.sum(
-            self._graph.edges[i, j]["weight"] * x[(i, k)] * x[(j, (k + 1) % n)]
+            self._graph.get_edge_data(i, j)["weight"] * x[(i, k)] * x[(j, (k + 1) % n)]
             for i in range(n)
             for j in range(n)
             for k in range(n)
@@ -101,7 +102,7 @@ class Tsp(GraphOptimizationApplication):
             pos: The positions of nodes
         """
         x = self._result_to_x(result)
-        nx.draw(self._graph, with_labels=True, pos=pos)
+        mpl_draw(self._graph, with_labels=True, pos=pos)
         nx.draw_networkx_edges(
             self._graph,
             pos,

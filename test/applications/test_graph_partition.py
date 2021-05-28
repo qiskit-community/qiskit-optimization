@@ -12,6 +12,7 @@
 
 """ Test GraphPartinioning class"""
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import networkx as nx
 
 from qiskit_optimization import QuadraticProgram

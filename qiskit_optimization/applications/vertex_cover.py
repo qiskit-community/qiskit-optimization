@@ -14,7 +14,8 @@
 
 from typing import Dict, List, Optional, Union
 
-import retworkx as nx
+import retworkx as rx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
@@ -39,10 +40,10 @@ class VertexCover(GraphOptimizationApplication):
             from the vertex cover instance.
         """
         mdl = Model(name="Vertex cover")
-        n = self._graph.number_of_nodes()
+        n = self._graph.num_nodes()
         x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
         objective = mdl.sum(x[i] for i in x)
-        for w, v in self._graph.edges:
+        for w, v in self._graph.edge_list():
             mdl.add_constraint(x[w] + x[v] >= 1)
         mdl.minimize(objective)
         op = QuadraticProgram()
@@ -77,10 +78,10 @@ class VertexCover(GraphOptimizationApplication):
             pos: The positions of nodes
         """
         x = self._result_to_x(result)
-        nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
+        mpl_draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
     def _node_colors(self, x: np.ndarray) -> List[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with dark gray.
-        return ["r" if x[node] else "darkgrey" for node in self._graph.nodes]
+        return ["r" if x[node] else "darkgrey" for node in self._graph.nodes()]

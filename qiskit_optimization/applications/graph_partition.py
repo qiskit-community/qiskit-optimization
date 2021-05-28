@@ -14,7 +14,8 @@
 
 from typing import Dict, List, Optional, Union
 
-import retworkx as nx
+import retworkx as rx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
@@ -39,13 +40,13 @@ class GraphPartition(GraphOptimizationApplication):
             from the graph partition instance.
         """
         mdl = Model(name="Graph partition")
-        n = self._graph.number_of_nodes()
+        n = self._graph.num_nodes()
         x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
-        for w, v in self._graph.edges:
-            self._graph.edges[w, v].setdefault("weight", 1)
+        for i, j in self._graph.edge_list():
+            self._graph.get_edge_data(i, j).setdefault("weight", 1)
         objective = mdl.sum(
-            self._graph.edges[i, j]["weight"] * (x[i] + x[j] - 2 * x[i] * x[j])
-            for i, j in self._graph.edges
+            self._graph.get_edge_data(i, j)["weight"] * (x[i] + x[j] - 2 * x[i] * x[j])
+            for i, j in self._graph.edge_list()
         )
         mdl.minimize(objective)
         mdl.add_constraint(mdl.sum([x[i] for i in x]) == n // 2)
@@ -83,10 +84,10 @@ class GraphPartition(GraphOptimizationApplication):
             pos: The positions of nodes
         """
         x = self._result_to_x(result)
-        nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
+        mpl_draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
     def _node_colors(self, x: np.ndarray) -> List[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ["r" if x[node] else "b" for node in self._graph.nodes]
+        return ["r" if x[node] else "b" for node in self._graph.nodes()]

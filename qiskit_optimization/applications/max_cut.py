@@ -14,7 +14,7 @@
 """An application class for the Max-cut."""
 
 from typing import List, Dict, Optional, Union
-import retworkx as nx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
@@ -41,14 +41,14 @@ class Maxcut(GraphOptimizationApplication):
         """
         mdl = Model(name="Max-cut")
         x = {
-            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(self._graph.number_of_nodes())
+            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(self._graph.num_nodes())
         }
-        for w, v in self._graph.edges:
-            self._graph.edges[w, v].setdefault("weight", 1)
+        for i, j in self._graph.edge_list():
+            self._graph.get_edge_data(i, j).setdefault("weight", 1)
         objective = mdl.sum(
-            self._graph.edges[i, j]["weight"] * x[i] * (1 - x[j])
-            + self._graph.edges[i, j]["weight"] * x[j] * (1 - x[i])
-            for i, j in self._graph.edges
+            self._graph.get_edge_data(i, j)["weight"] * x[i] * (1 - x[j])
+            + self._graph.get_edge_data(i, j)["weight"] * x[j] * (1 - x[i])
+            for i, j in self._graph.edge_list()
         )
         mdl.maximize(objective)
         op = QuadraticProgram()
@@ -67,7 +67,7 @@ class Maxcut(GraphOptimizationApplication):
             pos: The positions of nodes
         """
         x = self._result_to_x(result)
-        nx.draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
+        mpl_draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as two lists of node indices

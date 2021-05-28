@@ -16,7 +16,9 @@ import itertools
 import random
 from typing import List, Dict, Union, Optional
 
-import retworkx as nx
+import networkx as nx
+import retworkx as rx
+from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
@@ -34,7 +36,7 @@ class VehicleRouting(GraphOptimizationApplication):
 
     def __init__(
         self,
-        graph: Union[nx.Graph, np.ndarray, List],
+        graph: Union[rx.PyGraph, nx.Graph],
         num_vehicles: int = 2,
         depot: int = 0,
     ) -> None:
@@ -59,7 +61,7 @@ class VehicleRouting(GraphOptimizationApplication):
             from the vehicle routing problem instance.
         """
         mdl = Model(name="Vehicle routing")
-        n = self._graph.number_of_nodes()
+        n = self._graph.num_nodes()
         x = {}
         for i in range(n):
             for j in range(n):
@@ -67,7 +69,7 @@ class VehicleRouting(GraphOptimizationApplication):
                     x[(i, j)] = mdl.binary_var(name="x_{0}_{1}".format(i, j))
         mdl.minimize(
             mdl.sum(
-                self._graph.edges[i, j]["weight"] * x[(i, j)]
+                self._graph.get_edge_data(i, j)["weight"] * x[(i, j)]
                 for i in range(n)
                 for j in range(n)
                 if i != j
@@ -113,7 +115,7 @@ class VehicleRouting(GraphOptimizationApplication):
             A list of the routes for each vehicle
         """
         x = self._result_to_x(result)
-        n = self._graph.number_of_nodes()
+        n = self._graph.num_nodes()
         idx = 0
         edge_list = []
         for i in range(n):
@@ -158,8 +160,8 @@ class VehicleRouting(GraphOptimizationApplication):
         import matplotlib.pyplot as plt
 
         route_list = self.interpret(result)
-        nx.draw(self._graph, with_labels=True, pos=pos)
-        nx.draw_networkx_edges(
+        mpl_draw(self._graph, with_labels=True, pos=pos)
+        mpl_draw(
             self._graph,
             pos,
             edgelist=self._edgelist(route_list),
@@ -240,8 +242,8 @@ class VehicleRouting(GraphOptimizationApplication):
         """
         random.seed(seed)
         pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
-        graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
+        graph = rx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
             delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
-            graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
+            graph.get_edge_data(w, v)["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return VehicleRouting(graph, num_vehicle, depot)

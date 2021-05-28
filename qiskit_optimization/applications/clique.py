@@ -11,15 +11,17 @@
 # that they have been altered from the originals.
 
 """An application class for the clique."""
-from typing import Optional, Union, List, Dict
+from typing import Dict, List, Optional, Union
 
-import retworkx as rx
-from retworkx.visualization import mpl_draw
+import networkx as nx
 import numpy as np
+import retworkx as rx
 from docplex.mp.model import Model
+from retworkx.visualization import mpl_draw
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
 from .graph_optimization_application import GraphOptimizationApplication
 
 
@@ -31,9 +33,7 @@ class Clique(GraphOptimizationApplication):
         https://en.wikipedia.org/wiki/Clique_(graph_theory)
     """
 
-    def __init__(
-        self, graph: rx.PyGraph, size: Optional[int] = None
-    ) -> None:
+    def __init__(self, graph: Union[rx.PyGraph, nx.Graph], size: Optional[int] = None) -> None:
         """
         Args:
             graph: A graph representing a clique problem. It can be specified directly as a
@@ -55,9 +55,8 @@ class Clique(GraphOptimizationApplication):
             from the clique problem instance.
         """
         complement_g = rx.complement(self._graph)
-        print('XXX', self._graph.edge_list())
         mdl = Model(name="Clique")
-        n = len(self._graph.nodes())
+        n = self._graph.num_nodes()
         x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
         for w, v in complement_g.edge_list():
             mdl.add_constraint(x[w] + x[v] <= 1)
