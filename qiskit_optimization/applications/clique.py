@@ -33,7 +33,9 @@ class Clique(GraphOptimizationApplication):
         https://en.wikipedia.org/wiki/Clique_(graph_theory)
     """
 
-    def __init__(self, graph: Union[rx.PyGraph, nx.Graph], size: Optional[int] = None) -> None:
+    def __init__(
+        self, graph: Union[rx.PyGraph, nx.Graph, np.ndarray, List], size: Optional[int] = None
+    ) -> None:
         """
         Args:
             graph: A graph representing a clique problem. It can be specified directly as a

@@ -13,7 +13,7 @@
 """An abstract class for graph optimization application classes."""
 
 from abc import abstractmethod
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import networkx as nx
 import numpy as np
@@ -38,7 +38,7 @@ class GraphOptimizationApplication(OptimizationApplication):
     An abstract class for graph optimization applications.
     """
 
-    def __init__(self, graph: Union[rx.PyGraph, nx.Graph]) -> None:
+    def __init__(self, graph: Union[rx.PyGraph, nx.Graph, np.ndarray, List]) -> None:
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
@@ -49,6 +49,8 @@ class GraphOptimizationApplication(OptimizationApplication):
             self._graph = graph.copy()
         elif isinstance(graph, nx.Graph):
             self._graph = rx.networkx_converter(graph)
+        elif isinstance(graph, (np.ndarray, List)):
+            self._graph = rx.PyGraph.from_adjacency_matrix(graph)
         else:
             raise TypeError("graph should be rx.PyGraph or nx.Graph")
 
@@ -114,13 +116,4 @@ class GraphOptimizationApplication(OptimizationApplication):
             A random graph of NetworkX
         """
         graph = rx.undirected_gnm_random_graph(num_nodes, num_edges, seed)
-        return graph
-
-    @staticmethod
-    def random_geometric_graph(
-        num_nodes: int, radius: float, seed: Optional[int] = None
-    ) -> rx.PyGraph:
-        """ """
-        graph = rx.PyGraph()
-        graph.add_nodes_from(range(num_nodes))
         return graph

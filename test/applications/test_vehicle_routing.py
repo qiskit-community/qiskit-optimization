@@ -28,16 +28,10 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        random.seed(600)
+        seed = 600
         low = 0
         high = 100
-        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(4)}
-        self.graph = nx.random_geometric_graph(4, np.hypot(high - low, high - low) + 1, pos=pos)
-        for w, v in self.graph.edges:
-            delta = [
-                self.graph.nodes[w]["pos"][i] - self.graph.nodes[v]["pos"][i] for i in range(2)
-            ]
-            self.graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
+        self.graph = VehicleRouting.create_random_instance(4, low, high, seed).graph
         op = QuadraticProgram()
         for i in range(12):
             op.binary_var()
@@ -343,15 +337,6 @@ class TestVehicleRouting(QiskitOptimizationTestCase):
             vehicle_routing._edge_color(vehicle_routing.interpret(self.result_nv3)),
             [0.0, 0.0, 1 / 3, 1 / 3, 2 / 3, 2 / 3],
         )
-
-    def test_create_random_instance(self):
-        """Test create_random_instance"""
-        vehicle_routing = VehicleRouting.create_random_instance(n=4, seed=600)
-        graph = vehicle_routing.graph
-        for node in graph.nodes:
-            self.assertEqual(graph.nodes[node]["pos"], self.graph.nodes[node]["pos"])
-        for edge in graph.edges:
-            self.assertEqual(graph.edges[edge]["weight"], self.graph.edges[edge]["weight"])
 
     def test_num_vehicles(self):
         """Test num_vehicles"""

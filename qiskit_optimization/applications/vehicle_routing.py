@@ -13,7 +13,6 @@
 """An application class for the vehicle routing problem."""
 
 import itertools
-import random
 from typing import List, Dict, Union, Optional
 
 import networkx as nx
@@ -22,6 +21,7 @@ from retworkx.visualization import mpl_draw
 import numpy as np
 from docplex.mp.model import Model
 
+from qiskit.utils import algorithm_globals
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from .graph_optimization_application import GraphOptimizationApplication
@@ -36,7 +36,7 @@ class VehicleRouting(GraphOptimizationApplication):
 
     def __init__(
         self,
-        graph: Union[rx.PyGraph, nx.Graph],
+        graph: Union[rx.PyGraph, nx.Graph, np.ndarray, List],
         num_vehicles: int = 2,
         depot: int = 0,
     ) -> None:
@@ -164,7 +164,7 @@ class VehicleRouting(GraphOptimizationApplication):
         mpl_draw(
             self._graph,
             pos,
-            edgelist=self._edgelist(route_list),
+            edge_list=self._edgelist(route_list),
             width=8,
             alpha=0.5,
             edge_color=self._edge_color(route_list),
@@ -240,10 +240,15 @@ class VehicleRouting(GraphOptimizationApplication):
         Returns:
             A VehicleRouting instance created from the input information
         """
-        random.seed(seed)
-        pos = {i: (random.randint(low, high), random.randint(low, high)) for i in range(n)}
+        if seed:
+            algorithm_globals.random_seed = seed
+        dim = 2
+        pos = algorithm_globals.random.uniform(low, high, (n, dim))
         graph = rx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
-        for w, v in graph.edges:
-            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
-            graph.get_edge_data(w, v)["weight"] = np.rint(np.hypot(delta[0], delta[1]))
+        for i, j in graph.edge_list():
+            delta = [
+                graph.get_node_data(i)["pos"][d] - graph.get_node_data(j)["pos"][d]
+                for d in range(dim)
+            ]
+            graph.update_edge(i, j, {"weight": np.rint(np.hypot(delta[0], delta[1]))})
         return VehicleRouting(graph, num_vehicle, depot)

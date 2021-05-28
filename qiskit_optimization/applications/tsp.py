@@ -107,7 +107,7 @@ class Tsp(GraphOptimizationApplication):
         mpl_draw(
             self._graph,
             pos,
-            edgelist=self._edgelist(x),
+            edge_list=self._edgelist(x),
             width=8,
             alpha=0.5,
             edge_color="tab:red",
@@ -135,19 +135,14 @@ class Tsp(GraphOptimizationApplication):
         if seed:
             algorithm_globals.random_seed = seed
         dim = 2
-        coord = algorithm_globals.random.uniform(low, high, (n, dim))
-        pos = {i: (coord_[0], coord_[1]) for i, coord_ in enumerate(coord)}
-        graph = rx.PyGraph()
-        graph.add_nodes_from([{"pos": pos[i]} for i in range(n)])
-        #for i, coord in pos.items():
-        #    graph.get_node_data(i)["pos"] = coord
-        for i in range(n):
-            for j in range(i + 1, n):
-                delta = [
-                    graph.get_node_data(i)["pos"][d] - graph.get_node_data(j)["pos"][d]
-                    for d in range(dim)
-                ]
-                graph.add_edge(i, j, {"weight": np.rint(np.hypot(*delta))})
+        pos = algorithm_globals.random.uniform(low, high, (n, dim))
+        graph = rx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
+        for i, j in graph.edge_list():
+            delta = [
+                graph.get_node_data(i)["pos"][d] - graph.get_node_data(j)["pos"][d]
+                for d in range(dim)
+            ]
+            graph.update_edge(i, j, {"weight": np.rint(np.hypot(delta[0], delta[1]))})
         return Tsp(graph)
 
     @staticmethod
