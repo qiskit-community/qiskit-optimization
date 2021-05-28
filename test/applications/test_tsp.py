@@ -97,6 +97,6 @@ class TestTsp(QiskitOptimizationTestCase):
         """Test create_random_instance"""
         tsp = Tsp.create_random_instance(n=3, seed=123)
         graph = tsp.graph
-        edge_weight = [graph.edges[edge]["weight"] for edge in graph.edges]
+        edge_weight = [graph.get_edge_data(*edge)["weight"] for edge in graph.edge_list()]
         expected_weight = [48, 91, 63]
         self.assertEqual(edge_weight, expected_weight)

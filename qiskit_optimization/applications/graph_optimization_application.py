@@ -117,10 +117,10 @@ class GraphOptimizationApplication(OptimizationApplication):
         return graph
 
     @staticmethod
-    def random_geometric_graph(num_nodes: int, radius: float,
-                               seed: Optional[int] = None) -> rx.PyGraph:
-        """
-
-        """
+    def random_geometric_graph(
+        num_nodes: int, radius: float, seed: Optional[int] = None
+    ) -> rx.PyGraph:
+        """ """
         graph = rx.PyGraph()
         graph.add_nodes_from(range(num_nodes))
+        return graph

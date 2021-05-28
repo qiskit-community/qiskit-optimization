@@ -13,12 +13,13 @@
 """An application class for Traveling salesman problem (TSP)."""
 from typing import Dict, List, Optional, Union
 
-import retworkx as rx
-from retworkx.visualization import mpl_draw
 import numpy as np
+import retworkx as rx
 from docplex.mp.model import Model
+from retworkx.visualization import mpl_draw
 
 from qiskit.utils import algorithm_globals
+
 from ..algorithms import OptimizationResult
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
@@ -103,7 +104,7 @@ class Tsp(GraphOptimizationApplication):
         """
         x = self._result_to_x(result)
         mpl_draw(self._graph, with_labels=True, pos=pos)
-        nx.draw_networkx_edges(
+        mpl_draw(
             self._graph,
             pos,
             edgelist=self._edgelist(x),
@@ -133,12 +134,20 @@ class Tsp(GraphOptimizationApplication):
         """
         if seed:
             algorithm_globals.random_seed = seed
-        coord = algorithm_globals.random.uniform(low, high, (n, 2))
+        dim = 2
+        coord = algorithm_globals.random.uniform(low, high, (n, dim))
         pos = {i: (coord_[0], coord_[1]) for i, coord_ in enumerate(coord)}
-        graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
-        for w, v in graph.edges:
-            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
-            graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
+        graph = rx.PyGraph()
+        graph.add_nodes_from([{"pos": pos[i]} for i in range(n)])
+        #for i, coord in pos.items():
+        #    graph.get_node_data(i)["pos"] = coord
+        for i in range(n):
+            for j in range(i + 1, n):
+                delta = [
+                    graph.get_node_data(i)["pos"][d] - graph.get_node_data(j)["pos"][d]
+                    for d in range(dim)
+                ]
+                graph.add_edge(i, j, {"weight": np.rint(np.hypot(*delta))})
         return Tsp(graph)
 
     @staticmethod
