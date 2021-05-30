@@ -205,9 +205,9 @@ class OptimizationResult:
                         correlations[i, j] -= prob
         return correlations
 
-    def get_probabilities(self, status=None) -> Dict[str, float]:
+    def get_probabilities(self, status: Optional[OptimizationResultStatus] = None) -> Dict[str, float]:
         """
-        Returns samples, and function values that are successful.
+        Returns samples, and function values.
 
         Returns:
             A dictionary with sample names, and function values.
