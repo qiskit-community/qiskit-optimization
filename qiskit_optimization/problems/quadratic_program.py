@@ -24,6 +24,7 @@ import numpy as np
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
 from docplex.mp.constr import QuadraticConstraint as DocplexQuadraticConstraint
+from docplex.mp.constr import IndicatorConstraint as DocplexIndicatorConstraint
 
 try:
     # new location since docplex 2.16.196
@@ -992,7 +993,7 @@ class QuadraticProgram:
 
         Note that this supports only basic functions of docplex as follows:
         - quadratic objective function
-        - linear / quadratic constraints
+        - linear / quadratic / indicator constraints
         - binary / integer / continuous variables
 
         Args:
@@ -1057,8 +1058,8 @@ class QuadraticProgram:
 
         # get linear constraints
         for constraint in model.iter_constraints():
-            if isinstance(constraint, DocplexQuadraticConstraint):
-                # ignore quadratic constraints here and process them later
+            if isinstance(constraint, (DocplexQuadraticConstraint, DocplexIndicatorConstraint)):
+                # ignore quadratic constraints and indicator constraints here and process them later
                 continue
             if not isinstance(constraint, DocplexLinearConstraint) or isinstance(
                 constraint, NotEqualConstraint
@@ -1143,6 +1144,40 @@ class QuadraticProgram:
             else:
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
 
+        # get indicator constraints
+        for constraint in model.iter_logical_constraints():
+            name = constraint.name
+            linear_constraint = constraint.linear_constraint
+            sense = linear_constraint.sense
+            left_expr = linear_constraint.get_left_expr()
+            right_expr = linear_constraint.get_right_expr()
+            # for linear constraints we may get an instance of Var instead of expression,
+            # e.g. x + y = z
+            if isinstance(left_expr, Var):
+                left_expr = left_expr + 0
+            if isinstance(right_expr, Var):
+                right_expr = right_expr + 0
+
+            rhs = right_expr.constant - left_expr.constant
+
+            lhs = {}
+            for x in left_expr.iter_variables():
+                lhs[var_names[x]] = left_expr.get_coef(x)
+            for x in right_expr.iter_variables():
+                lhs[var_names[x]] = lhs.get(var_names[x], 0.0) - right_expr.get_coef(x)
+
+            binary_var = self.get_variable(var_names[constraint.binary_var])
+            active_value = constraint.active_value
+
+            if sense == sense.EQ:
+                self.indicator_constraint(binary_var, lhs, "==", rhs, active_value, name)
+            elif sense == sense.GE:
+                self.indicator_constraint(binary_var, lhs, ">=", rhs, active_value, name)
+            elif sense == sense.LE:
+                self.indicator_constraint(binary_var, lhs, "<=", rhs, active_value, name)
+            else:
+                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+
     def to_docplex(self) -> Model:
         """Returns a docplex model corresponding to this quadratic program.
 
@@ -1181,15 +1216,15 @@ class QuadraticProgram:
             mdl.maximize(objective)
 
         # add linear constraints
-        for i, i_constraint in enumerate(self.linear_constraints):
-            name = i_constraint.name
-            rhs = i_constraint.rhs
-            if rhs == 0 and i_constraint.linear.coefficients.nnz == 0:
+        for i, l_constraint in enumerate(self.linear_constraints):
+            name = l_constraint.name
+            rhs = l_constraint.rhs
+            if rhs == 0 and l_constraint.linear.coefficients.nnz == 0:
                 continue
             linear_expr = 0
-            for j, v in i_constraint.linear.to_dict().items():
+            for j, v in l_constraint.linear.to_dict().items():
                 linear_expr += v * var[cast(int, j)]
-            sense = i_constraint.sense
+            sense = l_constraint.sense
             if sense == Constraint.Sense.EQ:
                 mdl.add_constraint(linear_expr == rhs, ctname=name)
             elif sense == Constraint.Sense.GE:
