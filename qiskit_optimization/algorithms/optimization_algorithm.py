@@ -213,15 +213,11 @@ class OptimizationResult:
             A dictionary with sample names, and function values.
         """
         sample_results = {}
-        if status is None:
-            for sample in self.samples:
+
+        for sample in self.samples:
+            if status is None or sample.status == status:
                 sample_values = f"{''.join(map(str, map(int, sample.x)))}"
                 sample_results.update({sample_values: sample.probability})
-        else:
-            for sample in self.samples:
-                sample_values = f"{''.join(map(str, map(int, sample.x)))}"
-                if sample.status.name in status:
-                    sample_results.update({sample_values: sample.probability})
 
         return sample_results
 
