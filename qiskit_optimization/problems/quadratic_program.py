@@ -49,6 +49,7 @@ from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
 from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
+from .indicator_constraint import IndicatorConstraint
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
 
@@ -88,6 +89,9 @@ class QuadraticProgram:
         self._quadratic_constraints = []  # type: List[QuadraticConstraint]
         self._quadratic_constraints_index = {}  # type: Dict[str, int]
 
+        self._indicator_constraints = []  # type: List[IndicatorConstraint]
+        self._indicator_constraints_index = {}  # type: Dict[str, int]
+
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
@@ -108,6 +112,9 @@ class QuadraticProgram:
 
         self._quadratic_constraints.clear()
         self._quadratic_constraints_index.clear()
+
+        self._indicator_constraints.clear()
+        self._indicator_constraints_index.clear()
 
         self._objective = QuadraticObjective(self)
 
@@ -776,6 +783,100 @@ class QuadraticProgram:
         """
         return len(self._quadratic_constraints)
 
+    @property
+    def indicator_constraints(self) -> List[IndicatorConstraint]:
+        """Returns the list of indicator constraints of the quadratic program.
+
+        Returns:
+            List of indicator constraints.
+        """
+        return self._indicator_constraints
+
+    @property
+    def indicator_constraints_index(self) -> Dict[str, int]:
+        """Returns the dictionary that maps the name of a indicator constraint to its index.
+
+        Returns:
+            The indicator constraint index dictionary.
+        """
+        return self._indicator_constraints_index
+
+    def indicator_constraint(
+        self,
+        binary_var: Variable,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+        sense: Union[str, ConstraintSense] = "<=",
+        rhs: float = 0.0,
+        active_value: int = 1,
+        name: Optional[str] = None
+    ) -> IndicatorConstraint:
+        """Adds an indicator constraint to the quadratic program of the form:
+            z=f -> linear * x sense rhs
+
+        Args:
+            binary_var: The binary indicator variable.
+            linear: The linear coefficients of the constraint.
+            sense: The sense of the constraint,
+              - '==', '=', 'E', and 'EQ' denote 'equal to'.
+              - '>=', '>', 'G', and 'GE' denote 'greater-than-or-equal-to'.
+              - '<=', '<', 'L', and 'LE' denote 'less-than-or-equal-to'.
+            rhs: The right hand side of the constraint.
+            active_value: The value of the binary variable is used to force the satisfaction of the
+            linear constraint. Default is 1.
+            name: The name of the constraint.
+
+        Returns:
+            The added constraint.
+
+        Raises:
+            QiskitOptimizationError: if the constraint name already exists.
+        """
+        if name:
+            if name in self.indicator_constraints_index:
+                raise QiskitOptimizationError(
+                    "Indicator constraint name already exists: {}".format(name)
+                )
+        else:
+            k = self.get_num_indicator_constraints()
+            while "i{}".format(k) in self.indicator_constraints_index:
+                k += 1
+            name = "i{}".format(k)
+        self.indicator_constraints_index[name] = len(self.indicator_constraints)
+        if linear is None:
+            linear = {}
+        constraint = IndicatorConstraint(
+            self, name, binary_var, linear, Constraint.Sense.convert(sense), rhs,
+            active_value
+        )
+        self.indicator_constraints.append(constraint)
+        return constraint
+
+    def get_indicator_constraint(self, i: Union[int, str]) -> QuadraticConstraint:
+        """Returns a quadratic constraint for a given name or index.
+
+        Args:
+            i: the index or name of the constraint.
+
+        Returns:
+            The corresponding constraint.
+
+        Raises:
+            IndexError: if the index is out of the list size
+            KeyError: if the name does not exist
+        """
+        if isinstance(i, int):
+            return self._indicator_constraints[i]
+        else:
+            return self._indicator_constraints[self._indicator_constraints_index[i]]
+
+    def get_num_indicator_constraints(self) -> int:
+        """Returns the number of quadratic constraints.
+
+        Returns:
+            The number of quadratic constraints.
+        """
+        return len(self._indicator_constraints)
+
     def remove_linear_constraint(self, i: Union[str, int]) -> None:
         """Remove a linear constraint
 
@@ -808,6 +909,23 @@ class QuadraticProgram:
         del self._quadratic_constraints[i]
         self._quadratic_constraints_index = {
             cst.name: j for j, cst in enumerate(self._quadratic_constraints)
+        }
+
+    def remove_indicator_constraint(self, i: Union[str, int]) -> None:
+        """Remove an indicator constraint
+
+        Args:
+            i: an index or a name of an indicator constraint
+
+        Raises:
+            KeyError: if name does not exist
+            IndexError: if index is out of range
+        """
+        if isinstance(i, str):
+            i = self._indicator_constraints_index[i]
+        del self._indicator_constraints[i]
+        self._indicator_constraints_index = {
+            cst.name: j for j, cst in enumerate(self._indicator_constraints)
         }
 
     @property
@@ -1063,15 +1181,15 @@ class QuadraticProgram:
             mdl.maximize(objective)
 
         # add linear constraints
-        for i, l_constraint in enumerate(self.linear_constraints):
-            name = l_constraint.name
-            rhs = l_constraint.rhs
-            if rhs == 0 and l_constraint.linear.coefficients.nnz == 0:
+        for i, i_constraint in enumerate(self.linear_constraints):
+            name = i_constraint.name
+            rhs = i_constraint.rhs
+            if rhs == 0 and i_constraint.linear.coefficients.nnz == 0:
                 continue
             linear_expr = 0
-            for j, v in l_constraint.linear.to_dict().items():
+            for j, v in i_constraint.linear.to_dict().items():
                 linear_expr += v * var[cast(int, j)]
-            sense = l_constraint.sense
+            sense = i_constraint.sense
             if sense == Constraint.Sense.EQ:
                 mdl.add_constraint(linear_expr == rhs, ctname=name)
             elif sense == Constraint.Sense.GE:
@@ -1104,6 +1222,28 @@ class QuadraticProgram:
                 mdl.add_constraint(quadratic_expr >= rhs, ctname=name)
             elif sense == Constraint.Sense.LE:
                 mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
+            else:
+                # should never happen
+                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+
+        # add indicator constraints
+        for i, i_constraint in enumerate(self.indicator_constraints):
+            name = i_constraint.name
+            rhs = i_constraint.rhs
+            if rhs == 0 and i_constraint.linear.coefficients.nnz == 0:
+                continue
+            linear_expr = 0
+            for j, v in i_constraint.linear.to_dict().items():
+                linear_expr += v * var[cast(int, j)]
+            sense = i_constraint.sense
+            binary_var = var[self.variables_index[i_constraint.binary_var.name]]
+            active_value = i_constraint.active_value
+            if sense == Constraint.Sense.EQ:
+                mdl.add_indicator(binary_var, linear_expr == rhs, active_value, name)
+            elif sense == Constraint.Sense.GE:
+                mdl.add_indicator(binary_var, linear_expr >= rhs, active_value, name)
+            elif sense == Constraint.Sense.LE:
+                mdl.add_indicator(binary_var, linear_expr <= rhs, active_value, name)
             else:
                 # should never happen
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
@@ -1497,6 +1637,16 @@ class QuadraticProgram:
                 violated_constraints.append(constraint)
             elif constraint.sense == ConstraintSense.EQ and not isclose(lhs, constraint.rhs):
                 violated_constraints.append(constraint)
+        # for indicator constraints
+        for constraint in self._indicator_constraints:
+            if x[self.variables_index[constraint.binary_var.name]] == constraint.active_value:
+                lhs = constraint.evaluate(x)
+                if constraint.sense == ConstraintSense.LE and lhs > constraint.rhs:
+                    violated_constraints.append(constraint)
+                elif constraint.sense == ConstraintSense.GE and lhs < constraint.rhs:
+                    violated_constraints.append(constraint)
+                elif constraint.sense == ConstraintSense.EQ and not isclose(lhs, constraint.rhs):
+                    violated_constraints.append(constraint)
 
         feasible = not violated_variables and not violated_constraints
 
