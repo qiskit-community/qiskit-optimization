@@ -48,6 +48,9 @@ To do this follow the instructions in the
 * **Matplotlib** may be installed using command `pip install 'qiskit-optimization[matplotlib]'` to install the
   package. Matplotlib being installed will enable the usage of the `draw` method in the graph optimization application classes.
 
+* **Gurobipy** may be installed using command `pip install 'qiskit-optimization[gurobi]'` to install the
+  package. Gurobipy being installed will enable the usage of the GurobiOptimizer.
+
 ### Creating Your First Optimization Programming Experiment in Qiskit
 
 Now that Qiskit Optimization is installed, it's time to begin working with the optimization module.
