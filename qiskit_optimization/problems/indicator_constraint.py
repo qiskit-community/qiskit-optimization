@@ -17,6 +17,7 @@ from typing import Union, List, Dict, Any
 from numpy import ndarray
 from scipy.sparse import spmatrix
 
+from ..exceptions import QiskitOptimizationError
 from .constraint import Constraint, ConstraintSense
 from .linear_expression import LinearExpression
 from .variable import Variable
@@ -36,7 +37,7 @@ class IndicatorConstraint(Constraint):
         linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
         sense: ConstraintSense,
         rhs: float,
-        active_value: int = 1
+        active_value: int = 1,
     ) -> None:
         """Constructs an indicator constraint, consisting of a binary indicator variable and
             linear terms.
@@ -75,7 +76,6 @@ class IndicatorConstraint(Constraint):
         """
 
         self._active_value = active_value
-
 
     @property
     def binary_var(self) -> Variable:
@@ -129,3 +129,40 @@ class IndicatorConstraint(Constraint):
             The left-hand-side of the constraint given the variable values.
         """
         return self.linear.evaluate(x)
+
+    def evaluate_indicator(
+        self, x: Union[ndarray, List, Dict[Union[int, str], float], int]
+    ) -> bool:
+        """Evaluate the binary indicator var using the active value.
+
+        Args:
+            x: The values of the variables to be evaluated.
+
+        Returns:
+            If x equals to the active value, return True. Otherwise, return False.
+
+        Raises:
+            QiskitOptimizationError: if the given variable index does not match to the index of
+            self.binary_var.
+            QiskitOptimizationError: if x is given in unsupported format.
+        """
+        if isinstance(x, (list, ndarray)) and len(x) == 1:
+            val = x[0]
+        elif isinstance(x, dict) and len(x) == 1:
+            for index, value in x.items():
+                if isinstance(index, str):
+                    index = self.quadratic_program.variables_index[index]
+                if index != self.quadratic_program.variables_index[self.binary_var.name]:
+                    raise QiskitOptimizationError(
+                        "Given variable index {0} does not match to the index of the stored binary \
+                        indicator variable index {1}.".format(
+                            index, self.quadratic_program.variables_index[self.binary_var.name]
+                        ),
+                    )
+                val = value
+        elif isinstance(x, int):
+            val = x
+        else:
+            raise QiskitOptimizationError("Unsupported format for x.")
+
+        return val == self.active_value

@@ -1145,7 +1145,7 @@ class QuadraticProgram:
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
 
         # get indicator constraints
-        for constraint in model.iter_logical_constraints():
+        for constraint in model.iter_indicator_constraints():
             name = constraint.name
             linear_constraint = constraint.linear_constraint
             sense = linear_constraint.sense
