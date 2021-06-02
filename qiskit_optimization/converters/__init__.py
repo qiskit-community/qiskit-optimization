@@ -46,6 +46,7 @@ Converters
 
 """
 
+from .indicator_to_inequality import IndicatorToInequality
 from .integer_to_binary import IntegerToBinary
 from .inequality_to_equality import InequalityToEquality
 from .linear_equality_to_penalty import LinearEqualityToPenalty
@@ -55,6 +56,7 @@ from .quadratic_program_to_qubo import QuadraticProgramToQubo
 from .quadratic_program_converter import QuadraticProgramConverter
 
 __all__ = [
+    "IndicatorToInequality",
     "InequalityToEquality",
     "IntegerToBinary",
     "LinearEqualityToPenalty",

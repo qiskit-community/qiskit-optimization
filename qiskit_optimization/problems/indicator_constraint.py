@@ -33,7 +33,7 @@ class IndicatorConstraint(Constraint):
         self,
         quadratic_program: Any,
         name: str,
-        binary_var: Variable,
+        binary_var: Union[str, int, Variable],
         linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
         sense: ConstraintSense,
         rhs: float,
@@ -55,7 +55,18 @@ class IndicatorConstraint(Constraint):
         """
         super().__init__(quadratic_program, name, sense, rhs)
         self._linear = LinearExpression(quadratic_program, linear)
-        self._binary_var = binary_var
+        if isinstance(binary_var, Variable):
+            self._binary_var = binary_var
+        elif isinstance(binary_var, (int, str)):
+            self._binary_var = quadratic_program.get_variable(binary_var)
+        else:
+            raise QiskitOptimizationError("Unsupported format for the binary var. It must be \
+                Variable, the index, or the name: {}".format(type(binary_var)))
+        if self._binary_var.vartype != Variable.Type.BINARY:
+            raise QiskitOptimizationError("Unsupported variable type {}".format(self._binary_var.vartype))
+
+        if active_value not in (0, 1):
+            raise QiskitOptimizationError("Active value must be 1 or 0: {}".format(active_value))
         self._active_value = active_value
 
     @property
@@ -74,7 +85,6 @@ class IndicatorConstraint(Constraint):
         Returns:
             The active value
         """
-
         self._active_value = active_value
 
     @property

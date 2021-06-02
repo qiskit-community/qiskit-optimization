@@ -112,7 +112,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
         new_linear = indicator_const.linear.to_dict(use_name=True)
         new_rhs = indicator_const.rhs
         sense = indicator_const.sense
-
+        new_name = indicator_const.name + self._delimiter + "indicator"
         if sense == Constraint.Sense.LE:
             _, lhs_ub = self._calc_linear_bounds(new_linear)
             big_m = lhs_ub - new_rhs
@@ -121,7 +121,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
                 new_rhs = new_rhs + big_m
             else:
                 new_linear[indicator_const.binary_var.name] = -big_m
-            self._dst.linear_constraint(new_linear, "<=", new_rhs)
+            self._dst.linear_constraint(new_linear, "<=", new_rhs, new_name)
         elif sense == Constraint.Sense.GE:
             lhs_lb, _ = self._calc_linear_bounds(new_linear)
             big_m = new_rhs - lhs_lb
@@ -130,7 +130,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
                 new_rhs = new_rhs - big_m
             else:
                 new_linear[indicator_const.binary_var.name] = big_m
-            self._dst.linear_constraint(new_linear, ">=", new_rhs)
+            self._dst.linear_constraint(new_linear, ">=", new_rhs, new_name)
         elif sense == Constraint.Sense.EQ:
             # for equality constraints, add both GE and LE constraints.
             # new_linear2, new_rhs2, and big_m2 are for a >= constraint
@@ -147,8 +147,8 @@ class IndicatorToInequality(QuadraticProgramConverter):
             else:
                 new_linear[indicator_const.binary_var.name] = -big_m
                 new_linear2[indicator_const.binary_var.name] = big_m2
-            self._dst.linear_constraint(new_linear, "<=", new_rhs)
-            self._dst.linear_constraint(new_linear2, ">=", new_rhs2)
+            self._dst.linear_constraint(new_linear, "<=", new_rhs, new_name+"_LE")
+            self._dst.linear_constraint(new_linear2, ">=", new_rhs2, new_name+"_GE")
 
     def _calc_linear_bounds(self, linear):
         lhs_lb, lhs_ub = 0, 0
