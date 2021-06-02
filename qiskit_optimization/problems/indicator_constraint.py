@@ -141,7 +141,7 @@ class IndicatorConstraint(Constraint):
         return self.linear.evaluate(x)
 
     def evaluate_indicator(
-        self, x: Union[ndarray, List, Dict[Union[int, str], float], int]
+        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
     ) -> bool:
         """Evaluate the binary indicator var using the active value.
 
@@ -156,22 +156,15 @@ class IndicatorConstraint(Constraint):
             self.binary_var.
             QiskitOptimizationError: if x is given in unsupported format.
         """
-        if isinstance(x, (list, ndarray)) and len(x) == 1:
-            val = x[0]
-        elif isinstance(x, dict) and len(x) == 1:
-            for index, value in x.items():
-                if isinstance(index, str):
-                    index = self.quadratic_program.variables_index[index]
-                if index != self.quadratic_program.variables_index[self.binary_var.name]:
-                    raise QiskitOptimizationError(
-                        "Given variable index {0} does not match to the index of the stored binary \
-                        indicator variable index {1}.".format(
-                            index, self.quadratic_program.variables_index[self.binary_var.name]
-                        ),
-                    )
-                val = value
-        elif isinstance(x, int):
-            val = x
+        index = self.quadratic_program.variables_index[self.binary_var.name]
+        if isinstance(x, (list, ndarray)):
+            val = x[index]
+        elif isinstance(x, dict):
+            for ind, value in x.items():
+                if isinstance(ind, str):
+                    ind = self.quadratic_program.variables_index[ind]
+                if index == ind:
+                    val = value
         else:
             raise QiskitOptimizationError("Unsupported format for x.")
 
