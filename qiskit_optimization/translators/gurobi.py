@@ -16,19 +16,21 @@ from typing import cast, Any, TYPE_CHECKING
 
 try:
     import gurobipy as gp
-    from gurobipy import Model as GurobiModel
+    from gurobipy import Model
 
     _HAS_GUROBI = True
 except ImportError:
     _HAS_GUROBI = False
 
-    class GurobiModel:  # type: ignore
-        """Empty GurobiModel class
+    class Model:  # type: ignore
+        """Empty Model class
         Replacement if gurobipy.Model is not present.
         """
 
         pass
 
+
+from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
@@ -40,7 +42,7 @@ if TYPE_CHECKING:
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-class GurobipyTranslator(ModelTranslator):
+class GurobiTranslator(ModelTranslator):
     """Translator between a Gurobipy and a quadratic program"""
 
     def is_installed(self) -> bool:
@@ -69,21 +71,30 @@ class GurobipyTranslator(ModelTranslator):
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
-        # from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-        # quadratic_program = cast(QuadraticProgram, quadratic_program)
+
+        if not _HAS_GUROBI:
+            raise MissingOptionalLibraryError(
+                libname="GUROBI",
+                name="GurobiOptimizer",
+                pip_install="pip install gurobipy",
+            )
 
         # initialize model
-        mdl = Model(quadratic_program.name)
+        mdl = gp.Model(quadratic_program.name)
 
         # add variables
         var = {}
         for idx, x in enumerate(quadratic_program.variables):
             if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.continuous_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
+                var[idx] = mdl.addVar(
+                    vtype=gp.GRB.CONTINUOUS, lb=x.lowerbound, ub=x.upperbound, name=x.name
+                )
             elif x.vartype == Variable.Type.BINARY:
-                var[idx] = mdl.binary_var(name=x.name)
+                var[idx] = mdl.addVar(vtype=gp.GRB.BINARY, name=x.name)
             elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
+                var[idx] = mdl.addVar(
+                    vtype=gp.GRB.INTEGER, lb=x.lowerbound, ub=x.upperbound, name=x.name
+                )
             else:
                 # should never happen
                 raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
@@ -95,9 +106,9 @@ class GurobipyTranslator(ModelTranslator):
         for (i, j), v in quadratic_program.objective.quadratic.to_dict().items():
             objective += v * var[cast(int, i)] * var[cast(int, j)]
         if quadratic_program.objective.sense == QuadraticObjective.Sense.MINIMIZE:
-            mdl.minimize(objective)
+            mdl.setObjective(objective, sense=gp.GRB.MINIMIZE)
         else:
-            mdl.maximize(objective)
+            mdl.setObjective(objective, sense=gp.GRB.MAXIMIZE)
 
         # add linear constraints
         for i, l_constraint in enumerate(quadratic_program.linear_constraints):
@@ -110,11 +121,11 @@ class GurobipyTranslator(ModelTranslator):
                 linear_expr += v * var[cast(int, j)]
             sense = l_constraint.sense
             if sense == Constraint.Sense.EQ:
-                mdl.add_constraint(linear_expr == rhs, ctname=name)
+                mdl.addConstr(linear_expr == rhs, name=name)
             elif sense == Constraint.Sense.GE:
-                mdl.add_constraint(linear_expr >= rhs, ctname=name)
+                mdl.addConstr(linear_expr >= rhs, name=name)
             elif sense == Constraint.Sense.LE:
-                mdl.add_constraint(linear_expr <= rhs, ctname=name)
+                mdl.addConstr(linear_expr <= rhs, name=name)
             else:
                 # should never happen
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
@@ -136,11 +147,11 @@ class GurobipyTranslator(ModelTranslator):
                 quadratic_expr += v * var[cast(int, j)] * var[cast(int, k)]
             sense = q_constraint.sense
             if sense == Constraint.Sense.EQ:
-                mdl.add_constraint(quadratic_expr == rhs, ctname=name)
+                mdl.addConstr(quadratic_expr == rhs, name=name)
             elif sense == Constraint.Sense.GE:
-                mdl.add_constraint(quadratic_expr >= rhs, ctname=name)
+                mdl.addConstr(quadratic_expr >= rhs, name=name)
             elif sense == Constraint.Sense.LE:
-                mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
+                mdl.addConstr(quadratic_expr <= rhs, name=name)
             else:
                 # should never happen
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
@@ -164,53 +175,71 @@ class GurobipyTranslator(ModelTranslator):
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+
+        if not _HAS_GUROBI:
+            raise MissingOptionalLibraryError(
+                libname="GUROBI",
+                name="GurobiOptimizer",
+                pip_install="pip install gurobipy",
+            )
+
         # pylint: disable=cyclic-import
         from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
         quadratic_program = QuadraticProgram()
+
+        # Update the model to make sure everything works as expected
+        model.update()
+
         # get name
-        quadratic_program.name = model.name
+        quadratic_program.name = model.ModelName
 
         # get variables
-        # keep track of names separately, since docplex allows to have None names.
+        # keep track of names separately, since gurobipy allows to have None names.
         var_names = {}
-        for x in model.iter_variables():
-            if isinstance(x.vartype, ContinuousVarType):
-                x_new = quadratic_program.continuous_var(x.lb, x.ub, x.name)
-            elif isinstance(x.vartype, BinaryVarType):
-                x_new = quadratic_program.binary_var(x.name)
-            elif isinstance(x.vartype, IntegerVarType):
-                x_new = quadratic_program.integer_var(x.lb, x.ub, x.name)
+        for x in model.getVars():
+            if x.vtype == gp.GRB.CONTINUOUS:
+                x_new = quadratic_program.continuous_var(x.lb, x.ub, x.VarName)
+            elif x.vtype == gp.GRB.BINARY:
+                x_new = quadratic_program.binary_var(x.VarName)
+            elif x.vtype == gp.GRB.INTEGER:
+                x_new = quadratic_program.integer_var(x.lb, x.ub, x.VarName)
             else:
                 raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.name, x.vartype)
+                    "Unsupported variable type: {} {}".format(x.VarName, x.vtype)
                 )
             var_names[x] = x_new.name
 
         # objective sense
-        minimize = model.objective_sense.is_minimize()
+        minimize = model.ModelSense == gp.GRB.MINIMIZE
 
-        # make sure objective expression is linear or quadratic and not a variable
-        if isinstance(model.objective_expr, Var):
-            model.objective_expr = model.objective_expr + 0
+        # Retrieve the objective
+        objective = model.getObjective()
+        has_quadratic_objective = False
 
-        # get objective offset
-        constant = model.objective_expr.constant
+        # Retrieve the linear part in case it is a quadratic objective
+        if isinstance(objective, gp.QuadExpr):
+            linear_part = objective.getLinExpr()
+            has_quadratic_objective = True
+        else:
+            linear_part = objective
+
+        # Get the constant
+        constant = linear_part.getConstant()
 
         # get linear part of objective
         linear = {}
-        linear_part = model.objective_expr.get_linear_part()
-        for x in linear_part.iter_variables():
-            linear[var_names[x]] = linear_part.get_coef(x)
+        for i in range(linear_part.size()):
+            linear[var_names[linear_part.getVar(i)]] = linear_part.getCoeff(i)
 
         # get quadratic part of objective
         quadratic = {}
-        if isinstance(model.objective_expr, QuadExpr):
-            for quad_triplet in model.objective_expr.iter_quad_triplets():
-                i = var_names[quad_triplet[0]]
-                j = var_names[quad_triplet[1]]
-                v = quad_triplet[2]
-                quadratic[i, j] = v
+        if has_quadratic_objective:
+            for i in range(objective.size()):
+                x = var_names[objective.getVar1(i)]
+                y = var_names[objective.getVar2(i)]
+                v = objective.getCoeff(i)
+                quadratic[x, y] = v
 
         # set objective
         if minimize:
@@ -218,90 +247,57 @@ class GurobipyTranslator(ModelTranslator):
         else:
             quadratic_program.maximize(constant, linear, quadratic)
 
+        # check whether there are any general constraints
+        if model.NumSOS > 0 or model.NumGenConstrs > 0:
+            raise QiskitOptimizationError("Unsupported constraint: SOS or General Constraint")
+
         # get linear constraints
-        for constraint in model.iter_constraints():
-            if isinstance(constraint, DocplexQuadraticConstraint):
-                # ignore quadratic constraints here and process them later
-                continue
-            if not isinstance(constraint, DocplexLinearConstraint) or isinstance(
-                constraint, NotEqualConstraint
-            ):
-                # If any constraint is not linear/quadratic constraints, it raises an error.
-                # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
-                # but it cannot be handled by optimization.
-                raise QiskitOptimizationError("Unsupported constraint: {}".format(constraint))
-            name = constraint.name
-            sense = constraint.sense
+        for constraint in model.getConstrs():
+            name = constraint.ConstrName
+            sense = constraint.Sense
 
-            left_expr = constraint.get_left_expr()
-            right_expr = constraint.get_right_expr()
-            # for linear constraints we may get an instance of Var instead of expression,
-            # e.g. x + y = z
-            if isinstance(left_expr, Var):
-                left_expr = left_expr + 0
-            if isinstance(right_expr, Var):
-                right_expr = right_expr + 0
-
-            rhs = right_expr.constant - left_expr.constant
+            left_expr = model.getRow(constraint)
+            rhs = constraint.RHS
 
             lhs = {}
-            for x in left_expr.iter_variables():
-                lhs[var_names[x]] = left_expr.get_coef(x)
-            for x in right_expr.iter_variables():
-                lhs[var_names[x]] = lhs.get(var_names[x], 0.0) - right_expr.get_coef(x)
+            for i in range(left_expr.size()):
+                lhs[var_names[left_expr.getVar(i)]] = left_expr.getCoeff(i)
 
-            if sense == sense.EQ:
+            if sense == gp.GRB.EQUAL:
                 quadratic_program.linear_constraint(lhs, "==", rhs, name)
-            elif sense == sense.GE:
+            elif sense == gp.GRB.GREATER_EQUAL:
                 quadratic_program.linear_constraint(lhs, ">=", rhs, name)
-            elif sense == sense.LE:
+            elif sense == gp.GRB.LESS_EQUAL:
                 quadratic_program.linear_constraint(lhs, "<=", rhs, name)
             else:
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
 
         # get quadratic constraints
-        for constraint in model.iter_quadratic_constraints():
-            name = constraint.name
-            sense = constraint.sense
+        for constraint in model.getQConstrs():
+            name = constraint.QCName
+            sense = constraint.QCSense
 
-            left_expr = constraint.get_left_expr()
-            right_expr = constraint.get_right_expr()
+            left_expr = model.getQCRow(constraint)
+            rhs = constraint.QCRHS
 
-            rhs = right_expr.constant - left_expr.constant
             linear = {}
             quadratic = {}
 
-            if left_expr.is_quad_expr():
-                for x in left_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = left_expr.linear_part.get_coef(x)
-                for quad_triplet in left_expr.iter_quad_triplets():
-                    i = var_names[quad_triplet[0]]
-                    j = var_names[quad_triplet[1]]
-                    v = quad_triplet[2]
-                    quadratic[i, j] = v
-            else:
-                for x in left_expr.iter_variables():
-                    linear[var_names[x]] = left_expr.get_coef(x)
+            linear_part = left_expr.getLinExpr()
+            for i in range(linear_part.size()):
+                linear[var_names[linear_part.getVar(i)]] = linear_part.getCoeff(i)
 
-            if right_expr.is_quad_expr():
-                for x in right_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = linear.get(
-                        var_names[x], 0.0
-                    ) - right_expr.linear_part.get_coef(x)
-                for quad_triplet in right_expr.iter_quad_triplets():
-                    i = var_names[quad_triplet[0]]
-                    j = var_names[quad_triplet[1]]
-                    v = quad_triplet[2]
-                    quadratic[i, j] = quadratic.get((i, j), 0.0) - v
-            else:
-                for x in right_expr.iter_variables():
-                    linear[var_names[x]] = linear.get(var_names[x], 0.0) - right_expr.get_coef(x)
+            for i in range(left_expr.size()):
+                x = var_names[left_expr.getVar1(i)]
+                y = var_names[left_expr.getVar2(i)]
+                v = left_expr.getCoeff(i)
+                quadratic[x, y] = v
 
-            if sense == sense.EQ:
+            if sense == gp.GRB.EQUAL:
                 quadratic_program.quadratic_constraint(linear, quadratic, "==", rhs, name)
-            elif sense == sense.GE:
+            elif sense == gp.GRB.GREATER_EQUAL:
                 quadratic_program.quadratic_constraint(linear, quadratic, ">=", rhs, name)
-            elif sense == sense.LE:
+            elif sense == gp.GRB.LESS_EQUAL:
                 quadratic_program.quadratic_constraint(linear, quadratic, "<=", rhs, name)
             else:
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))

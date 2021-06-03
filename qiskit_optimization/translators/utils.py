@@ -16,12 +16,13 @@ from typing import Any, TYPE_CHECKING
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from .docplex_mp import DocplexMpTranslator
+from .gurobi import GurobiTranslator
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
-translators = [DocplexMpTranslator()]
+translators = [DocplexMpTranslator(), GurobiTranslator()]
 
 
 def _load_model(model: Any) -> "QuadraticProgram":
