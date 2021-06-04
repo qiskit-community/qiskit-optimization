@@ -17,7 +17,6 @@ import unittest
 from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
-import numpy as np
 from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
@@ -960,19 +959,20 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(c.sense, senses[i])
         # test for an indicator constraint
         q_p = QuadraticProgram("test")
-        for i in range(3):
-            q_p.binary_var(name="x{}".format(i))
+        q_p.binary_var(name="x")
+        q_p.binary_var(name="y")
+        q_p.binary_var(name="z")
         q_p.binary_var(name="a")
-        q_p.indicator_constraint("a", {"x0": 1, "x1": 1, "x2": 1}, "<=", 1, 1, "indicator_const")
+        q_p.indicator_constraint("a", {"x": 1, "y": 1, "z": 1}, "<=", 1, 1, "indicator_const")
         q_p2 = QuadraticProgram()
         q_p2.from_docplex(q_p.to_docplex())
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
         mdl = Model("test")
-        x0 = mdl.binary_var("x0")
-        x1 = mdl.binary_var("x1")
-        x2 = mdl.binary_var("x2")
+        x = mdl.binary_var("x")
+        y = mdl.binary_var("y")
+        z = mdl.binary_var("z")
         a = mdl.binary_var("a")
-        mdl.add_indicator(a, (x0 + x1 + x2 <= 1), active_value=1, name="indicator_const")
+        mdl.add_indicator(a, (x + y + z <= 1), active_value=1, name="indicator_const")
         self.assertEqual(q_p.export_as_lp_string(), mdl.export_as_lp_string())
 
     def test_gurobipy(self):
