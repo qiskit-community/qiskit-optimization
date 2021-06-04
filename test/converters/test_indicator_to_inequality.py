@@ -11,32 +11,10 @@
 # that they have been altered from the originals.
 
 """ Test a IndicatorToInequality converter """
-import logging
-import unittest
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
-
+from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
-from docplex.mp.model import Model
-from qiskit.algorithms import NumPyMinimumEigensolver
-from qiskit.opflow import Z, I
 from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
-    CplexOptimizer,
-    ADMMOptimizer,
-)
-from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
-from qiskit_optimization.converters import (
-    InequalityToEquality,
-    IntegerToBinary,
-    LinearEqualityToPenalty,
-    MaximizeToMinimize,
-    IndicatorToInequality,
-)
-from qiskit_optimization.problems import Constraint, Variable
+from qiskit_optimization.converters import IndicatorToInequality
 from qiskit_optimization.problems.constraint import ConstraintSense
 
 
@@ -44,6 +22,7 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
     """Test an IndicatorToInequality converter"""
 
     def test_convert_indicator_to_inequality(self):
+        """Test convert method"""
         # for an LE constraint
         op = QuadraticProgram()
         for i in range(3):
@@ -102,6 +81,7 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         self.assertEqual(l_const.name, "i_const@indicator_GE")
 
     def test_interpret(self):
+        """Test interpret method"""
         op = QuadraticProgram()
         for i in range(3):
             op.binary_var(name="x{}".format(i))

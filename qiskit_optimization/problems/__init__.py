@@ -46,6 +46,7 @@ Note:
 """
 
 from .constraint import Constraint
+from .indicator_constraint import IndicatorConstraint
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
 from .quadratic_constraint import QuadraticConstraint
@@ -57,6 +58,7 @@ from .variable import Variable, VarType
 
 __all__ = [
     "Constraint",
+    "IndicatorConstraint",
     "LinearExpression",
     "LinearConstraint",
     "QuadraticExpression",

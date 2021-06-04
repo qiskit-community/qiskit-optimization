@@ -52,19 +52,31 @@ class IndicatorConstraint(Constraint):
             active_value: The value of the binary variable is used to force the satisfaction of the
             linear constraint. Default is 1.
 
+        Raises:
+            QiskitOptimizationError: If given binary_var is not Variable, the index, or the name
+                of the variable.
+            QiskitOptimizationError: If binary_var is not a binary variable
+            QiskitOptimizationError: If active_value is not 0 or 1.
         """
+        # Type check for the arguments
         super().__init__(quadratic_program, name, sense, rhs)
         self._linear = LinearExpression(quadratic_program, linear)
         if isinstance(binary_var, Variable):
-            self._binary_var = binary_var
+            binary_var_ = binary_var
         elif isinstance(binary_var, (int, str)):
-            self._binary_var = quadratic_program.get_variable(binary_var)
+            binary_var_ = quadratic_program.get_variable(binary_var)
         else:
-            raise QiskitOptimizationError("Unsupported format for the binary var. It must be \
-                Variable, the index, or the name: {}".format(type(binary_var)))
-        if self._binary_var.vartype != Variable.Type.BINARY:
-            raise QiskitOptimizationError("Unsupported variable type {}".format(self._binary_var.vartype))
-
+            raise QiskitOptimizationError(
+                "Unsupported format for binary_var. It must be \
+                Variable, the index, or the name: {}".format(
+                    type(binary_var)
+                )
+            )
+        if binary_var_.vartype != Variable.Type.BINARY:
+            raise QiskitOptimizationError(
+                "binary_var must be a binary variable: {}".format(binary_var_.vartype)
+            )
+        self._binary_var = binary_var_
         if active_value not in (0, 1):
             raise QiskitOptimizationError("Active value must be 1 or 0: {}".format(active_value))
         self._active_value = active_value
@@ -140,9 +152,7 @@ class IndicatorConstraint(Constraint):
         """
         return self.linear.evaluate(x)
 
-    def evaluate_indicator(
-        self, x: Union[ndarray, List, Dict[Union[int, str], float]]
-    ) -> bool:
+    def evaluate_indicator(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> bool:
         """Evaluate the binary indicator var using the active value.
 
         Args:

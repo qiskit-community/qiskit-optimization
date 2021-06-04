@@ -42,7 +42,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
     _delimiter = "@"  # users are supposed not to use this character in variable names
 
     def __init__(self) -> None:
-        self._src = None  # type: Optional[QuadraticProgram]
+        self._src_num_var = 0
         self._dst = None  # type: Optional[QuadraticProgram]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -59,11 +59,11 @@ class IndicatorToInequality(QuadraticProgramConverter):
             QiskitOptimizationError: If an unsupported mode is selected.
             QiskitOptimizationError: If an unsupported sense is specified.
         """
-        self._src = copy.deepcopy(problem)
+        self._src_num_var = problem.get_num_vars()
         self._dst = QuadraticProgram(name=problem.name)
 
         # Copy variables
-        for x in self._src.variables:
+        for x in problem.variables:
             if x.vartype == Variable.Type.BINARY:
                 self._dst.binary_var(name=x.name)
             elif x.vartype == Variable.Type.INTEGER:
@@ -76,22 +76,22 @@ class IndicatorToInequality(QuadraticProgramConverter):
                 raise QiskitOptimizationError("Unsupported variable type {}".format(x.vartype))
 
         # Copy the objective function
-        constant = self._src.objective.constant
-        linear = self._src.objective.linear.to_dict(use_name=True)
-        quadratic = self._src.objective.quadratic.to_dict(use_name=True)
-        if self._src.objective.sense == QuadraticObjective.Sense.MINIMIZE:
+        constant = problem.objective.constant
+        linear = problem.objective.linear.to_dict(use_name=True)
+        quadratic = problem.objective.quadratic.to_dict(use_name=True)
+        if problem.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             self._dst.minimize(constant, linear, quadratic)
         else:
             self._dst.maximize(constant, linear, quadratic)
 
         # For linear constraints
-        for l_constraint in self._src.linear_constraints:
+        for l_constraint in problem.linear_constraints:
             linear = l_constraint.linear.to_dict(use_name=True)
             self._dst.linear_constraint(
                 linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
             )
         # For quadratic constraints
-        for q_constraint in self._src.quadratic_constraints:
+        for q_constraint in problem.quadratic_constraints:
             linear = q_constraint.linear.to_dict(use_name=True)
             quadratic = q_constraint.quadratic.to_dict(use_name=True)
             self._dst.quadratic_constraint(
@@ -102,19 +102,19 @@ class IndicatorToInequality(QuadraticProgramConverter):
                 q_constraint.name,
             )
         # For indicator constraints
-        for i_constraint in self._src.indicator_constraints:
-            self._convert_indicator_constraint(i_constraint)
+        for i_constraint in problem.indicator_constraints:
+            self._convert_indicator_constraint(problem, i_constraint)
 
         return self._dst
 
-    def _convert_indicator_constraint(self, indicator_const):
+    def _convert_indicator_constraint(self, problem, indicator_const):
         # convert indicator constraints to inequality constraints
         new_linear = indicator_const.linear.to_dict(use_name=True)
         new_rhs = indicator_const.rhs
         sense = indicator_const.sense
         new_name = indicator_const.name + self._delimiter + "indicator"
         if sense == Constraint.Sense.LE:
-            _, lhs_ub = self._calc_linear_bounds(new_linear)
+            _, lhs_ub = self._calc_linear_bounds(problem, new_linear)
             big_m = lhs_ub - new_rhs
             if indicator_const.active_value:
                 new_linear[indicator_const.binary_var.name] = big_m
@@ -123,7 +123,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
                 new_linear[indicator_const.binary_var.name] = -big_m
             self._dst.linear_constraint(new_linear, "<=", new_rhs, new_name)
         elif sense == Constraint.Sense.GE:
-            lhs_lb, _ = self._calc_linear_bounds(new_linear)
+            lhs_lb, _ = self._calc_linear_bounds(problem, new_linear)
             big_m = new_rhs - lhs_lb
             if indicator_const.active_value:
                 new_linear[indicator_const.binary_var.name] = - big_m
@@ -136,7 +136,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
             # new_linear2, new_rhs2, and big_m2 are for a >= constraint
             new_linear2 = indicator_const.linear.to_dict(use_name=True)
             new_rhs2 = indicator_const.rhs
-            lhs_lb, lhs_ub = self._calc_linear_bounds(new_linear)
+            lhs_lb, lhs_ub = self._calc_linear_bounds(problem, new_linear)
             big_m = lhs_ub - new_rhs
             big_m2 = new_rhs - lhs_lb
             if indicator_const.active_value:
@@ -150,10 +150,10 @@ class IndicatorToInequality(QuadraticProgramConverter):
             self._dst.linear_constraint(new_linear, "<=", new_rhs, new_name+"_LE")
             self._dst.linear_constraint(new_linear2, ">=", new_rhs2, new_name+"_GE")
 
-    def _calc_linear_bounds(self, linear):
+    def _calc_linear_bounds(self, problem, linear):
         lhs_lb, lhs_ub = 0, 0
         for var_name, v in linear.items():
-            x = self._src.get_variable(var_name)
+            x = problem.get_variable(var_name)
             lhs_lb += min(x.lowerbound * v, x.upperbound * v)
             lhs_ub += max(x.lowerbound * v, x.upperbound * v)
         return lhs_lb, lhs_ub
@@ -171,7 +171,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
             QiskitOptimizationError: if the number of variables in the result differs from
                                      that of the original problem.
         """
-        if len(x) != self._src.get_num_vars():
+        if len(x) != self._src_num_var:
             raise QiskitOptimizationError(
                 "The number of variables in the passed result differs from "
                 "that of the original problem."
