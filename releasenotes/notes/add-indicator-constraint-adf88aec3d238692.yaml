@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Adds :class`qiskit_optimization.problems.IndicatorConstraint` so that users can use indicator
+    constraints (e.g. x=1 -> y + z = 1) in `qiskit_optimization.problems.QuadraticProgram`.
+    Also supports indicator constraints in
+    `qiskit_optimization.problems.QuadraticProgram.from_docplex` and
+    `qiskit_optimization.problems.QuadraticProgram.to_docplex`.
