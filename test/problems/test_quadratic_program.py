@@ -922,13 +922,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
-            mod.add_indicator(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
             mod.add_equivalence(x, x + y <= 1, 1)
             q_p.from_docplex(mod)
 
@@ -965,6 +958,22 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertDictEqual(c.linear.to_dict(use_name=True), {"x2": -1})
             self.assertDictEqual(c.quadratic.to_dict(use_name=True), {("x0", "x1"): 1})
             self.assertEqual(c.sense, senses[i])
+        # test for an indicator constraint
+        q_p = QuadraticProgram("test")
+        for i in range(3):
+            q_p.binary_var(name="x{}".format(i))
+        q_p.binary_var(name="a")
+        q_p.indicator_constraint("a", {"x0": 1, "x1": 1, "x2": 1}, "<=", 1, 1, "indicator_const")
+        q_p2 = QuadraticProgram()
+        q_p2.from_docplex(q_p.to_docplex())
+        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
+        mdl = Model("test")
+        x0 = mdl.binary_var("x0")
+        x1 = mdl.binary_var("x1")
+        x2 = mdl.binary_var("x2")
+        a = mdl.binary_var("a")
+        mdl.add_indicator(a, (x0 + x1 + x2 <= 1), active_value=1, name="indicator_const")
+        self.assertEqual(q_p.export_as_lp_string(), mdl.export_as_lp_string())
 
     def test_gurobipy(self):
         """test from_gurobipy and to_gurobipy"""
