@@ -63,6 +63,9 @@ goldstone
 grover
 groveroptimizer
 gset
+gurobi
+gurobioptimizer
+gurobipy
 gutmann
 hamilton
 hamiltonian
@@ -100,6 +103,7 @@ minimumeigenoptimizer
 multiset
 ndarray
 ndarrays
+noop
 networkx
 neven
 nosignatures
@@ -159,6 +163,7 @@ str
 subcollection
 subgraph
 submodules
+sys
 subproblem
 summands
 terra
@@ -176,6 +181,8 @@ upperbound
 variational
 vartype
 vqe
+writelines
+xixj
 wavefunction
 wecker
 williamson
