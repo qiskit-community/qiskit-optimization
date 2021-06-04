@@ -12,7 +12,7 @@
 
 """ Test DocplexMpTranslator """
 
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import Model
 

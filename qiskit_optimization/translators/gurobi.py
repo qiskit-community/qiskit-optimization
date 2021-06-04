@@ -70,6 +70,7 @@ class GurobiTranslator(ModelTranslator):
 
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
+            MissingOptionalLibraryError: if gurobipy is not installed.
         """
 
         if not _HAS_GUROBI:
@@ -174,6 +175,7 @@ class GurobiTranslator(ModelTranslator):
 
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
+            MissingOptionalLibraryError: if gurobipy is not installed.
         """
 
         if not _HAS_GUROBI:
