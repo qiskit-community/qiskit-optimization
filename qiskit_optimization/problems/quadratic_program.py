@@ -826,7 +826,7 @@ class QuadraticProgram:
         sense: Union[str, ConstraintSense] = "<=",
         rhs: float = 0.0,
         active_value: int = 1,
-        name: Optional[str] = None
+        name: Optional[str] = None,
     ) -> IndicatorConstraint:
         """Adds an indicator constraint to the quadratic program of the form:
             z=f -> linear * x sense rhs
@@ -863,14 +863,13 @@ class QuadraticProgram:
         if linear is None:
             linear = {}
         constraint = IndicatorConstraint(
-            self, name, binary_var, linear, Constraint.Sense.convert(sense), rhs,
-            active_value
+            self, name, binary_var, linear, Constraint.Sense.convert(sense), rhs, active_value
         )
         self.indicator_constraints.append(constraint)
         return constraint
 
-    def get_indicator_constraint(self, i: Union[int, str]) -> QuadraticConstraint:
-        """Returns a quadratic constraint for a given name or index.
+    def get_indicator_constraint(self, i: Union[int, str]) -> IndicatorConstraint:
+        """Returns an indicator constraint for a given name or index.
 
         Args:
             i: the index or name of the constraint.
@@ -888,10 +887,10 @@ class QuadraticProgram:
             return self._indicator_constraints[self._indicator_constraints_index[i]]
 
     def get_num_indicator_constraints(self) -> int:
-        """Returns the number of quadratic constraints.
+        """Returns the number of indicator constraints.
 
         Returns:
-            The number of quadratic constraints.
+            The number of indicator constraints.
         """
         return len(self._indicator_constraints)
 
@@ -1333,6 +1332,7 @@ class QuadraticProgram:
                 self.indicator_constraint(binary_var, lhs, "<=", rhs, active_value, name)
             else:
                 raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+
     def to_gurobipy(self) -> GurobiModel:
         """Returns a gurobipy model corresponding to this quadratic program
 

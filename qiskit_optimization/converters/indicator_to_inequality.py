@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,6 @@
 # that they have been altered from the originals.
 """The inequality to equality converter."""
 
-import copy
-import logging
 from typing import List, Optional, Union
 
 import numpy as np
@@ -23,8 +21,6 @@ from ..problems.constraint import Constraint
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
-
-logger = logging.getLogger(__name__)
 
 
 class IndicatorToInequality(QuadraticProgramConverter):
@@ -126,7 +122,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
             lhs_lb, _ = self._calc_linear_bounds(problem, new_linear)
             big_m = new_rhs - lhs_lb
             if indicator_const.active_value:
-                new_linear[indicator_const.binary_var.name] = - big_m
+                new_linear[indicator_const.binary_var.name] = -big_m
                 new_rhs = new_rhs - big_m
             else:
                 new_linear[indicator_const.binary_var.name] = big_m
@@ -142,13 +138,13 @@ class IndicatorToInequality(QuadraticProgramConverter):
             if indicator_const.active_value:
                 new_linear[indicator_const.binary_var.name] = big_m
                 new_rhs = new_rhs + big_m
-                new_linear2[indicator_const.binary_var.name] = - big_m2
+                new_linear2[indicator_const.binary_var.name] = -big_m2
                 new_rhs2 = new_rhs2 - big_m2
             else:
                 new_linear[indicator_const.binary_var.name] = -big_m
                 new_linear2[indicator_const.binary_var.name] = big_m2
-            self._dst.linear_constraint(new_linear, "<=", new_rhs, new_name+"_LE")
-            self._dst.linear_constraint(new_linear2, ">=", new_rhs2, new_name+"_GE")
+            self._dst.linear_constraint(new_linear, "<=", new_rhs, new_name + "_LE")
+            self._dst.linear_constraint(new_linear2, ">=", new_rhs2, new_name + "_GE")
 
     def _calc_linear_bounds(self, problem, linear):
         lhs_lb, lhs_ub = 0, 0
