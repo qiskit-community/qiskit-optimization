@@ -23,16 +23,16 @@ from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
 
 
-class IndicatorToInequality(QuadraticProgramConverter):
-    """Convert indicator constraints into inequality constraints by using a big-M formulation.
+class IndicatorToLinear(QuadraticProgramConverter):
+    """Convert indicator constraints into linear constraints by using a big-M formulation.
     e.g. x = 1 -> ax <= b is converted into ax <= b + M * (1 - z)
 
     Examples:
         >>> from qiskit_optimization.problems import QuadraticProgram
-        >>> from qiskit_optimization.converters import IndicatorToInequality
+        >>> from qiskit_optimization.converters import IndicatorToLinear
         >>> problem = QuadraticProgram()
         >>> # define a problem
-        >>> conv = IndicatorToInequality()
+        >>> conv = IndicatorToLinear()
         >>> problem2 = conv.convert(problem)
     """
 
@@ -43,13 +43,13 @@ class IndicatorToInequality(QuadraticProgramConverter):
         self._dst = None  # type: Optional[QuadraticProgram]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem with indicator constraints into one with only inequality constraints.
+        """Convert a problem with indicator constraints into one with only linear constraints.
 
         Args:
             problem: The problem to be solved, that may contain indicator constraints.
 
         Returns:
-            The converted problem, that contain only inequality constraints.
+            The converted problem, that contain only linear constraints.
 
         Raises:
             QiskitOptimizationError: If a variable type is not supported.
@@ -105,7 +105,7 @@ class IndicatorToInequality(QuadraticProgramConverter):
         return self._dst
 
     def _convert_indicator_constraint(self, problem, indicator_const):
-        # convert indicator constraints to inequality constraints
+        # convert indicator constraints to linear constraints
         new_linear = indicator_const.linear.to_dict(use_name=True)
         new_rhs = indicator_const.rhs
         sense = indicator_const.sense

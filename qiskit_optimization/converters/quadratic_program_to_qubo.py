@@ -40,7 +40,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
                 If None is passed, a penalty factor will be automatically calculated on every
                 conversion.
         """
-        from ..converters.indicator_to_inequality import IndicatorToInequality
+        from ..converters.indicator_to_inequality import IndicatorToLinear
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
         from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
@@ -50,7 +50,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         self._ineq_to_eq = InequalityToEquality(mode="integer")
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
         self._max_to_min = MaximizeToMinimize()
-        self._indic_to_ineq = IndicatorToInequality()
+        self._indic_to_ineq = IndicatorToLinear()
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Convert a problem with linear constraints into new one with a QUBO form.

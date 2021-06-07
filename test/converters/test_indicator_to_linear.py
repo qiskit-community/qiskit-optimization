@@ -10,18 +10,18 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test a IndicatorToInequality converter """
+""" Test a IndicatorToLinear converter """
 from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit_optimization.converters import IndicatorToInequality
+from qiskit_optimization.converters import IndicatorToLinear
 from qiskit_optimization.problems.constraint import ConstraintSense
 
 
-class TestIndicatorToInequality(QiskitOptimizationTestCase):
-    """Test an IndicatorToInequality converter"""
+class TestIndicatorToLinear(QiskitOptimizationTestCase):
+    """Test an IndicatorToLinear converter"""
 
-    def test_convert_indicator_to_inequality(self):
+    def test_convert_indicator_to_linear(self):
         """Test convert method"""
         # for an LE constraint
         op = QuadraticProgram()
@@ -31,8 +31,8 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense="<=", rhs=1, name="i_const"
         )
-        indi2ineq = IndicatorToInequality()
-        new_op = indi2ineq.convert(op)
+        indi2lin = IndicatorToLinear()
+        new_op = indi2lin.convert(op)
         self.assertEqual(new_op.get_num_indicator_constraints(), 0)
         self.assertEqual(new_op.get_num_linear_constraints(), 1)
         l_const = new_op.linear_constraints[0]
@@ -48,8 +48,8 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense=">=", rhs=1, name="i_const"
         )
-        indi2ineq = IndicatorToInequality()
-        new_op = indi2ineq.convert(op)
+        indi2lin = IndicatorToLinear()
+        new_op = indi2lin.convert(op)
         self.assertEqual(new_op.get_num_indicator_constraints(), 0)
         self.assertEqual(new_op.get_num_linear_constraints(), 1)
         l_const = new_op.linear_constraints[0]
@@ -65,8 +65,8 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense="==", rhs=1, name="i_const"
         )
-        indi2ineq = IndicatorToInequality()
-        new_op = indi2ineq.convert(op)
+        indi2lin = IndicatorToLinear()
+        new_op = indi2lin.convert(op)
         self.assertEqual(new_op.get_num_indicator_constraints(), 0)
         self.assertEqual(new_op.get_num_linear_constraints(), 2)
         l_const = new_op.linear_constraints[0]
@@ -89,8 +89,8 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense=">=", rhs=1, name="i_const"
         )
-        indi2ineq = IndicatorToInequality()
-        _ = indi2ineq.convert(op)
-        np.testing.assert_array_almost_equal([1, 0, 0, 1], indi2ineq.interpret([1, 0, 0, 1]))
+        indi2lin = IndicatorToLinear()
+        _ = indi2lin.convert(op)
+        np.testing.assert_array_almost_equal([1, 0, 0, 1], indi2lin.interpret([1, 0, 0, 1]))
         with self.assertRaises(QiskitOptimizationError):
-            indi2ineq.interpret([1, 0, 0])
+            indi2lin.interpret([1, 0, 0])

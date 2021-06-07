@@ -829,7 +829,7 @@ class QuadraticProgram:
         name: Optional[str] = None,
     ) -> IndicatorConstraint:
         """Adds an indicator constraint to the quadratic program of the form:
-            z=f -> linear * x sense rhs
+            binary_var = active_value -> linear * x sense rhs
 
         Args:
             binary_var: The binary indicator variable.
