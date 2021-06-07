@@ -17,16 +17,10 @@ from typing import TYPE_CHECKING, Any, cast
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
 from docplex.mp.constr import QuadraticConstraint as DocplexQuadraticConstraint
+from docplex.mp.dvar import Var
 from docplex.mp.model import Model
 from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
-
-try:
-    # new location since docplex 2.16.196
-    from docplex.mp.dvar import Var
-except ImportError:
-    # old location until docplex 2.15.194
-    from docplex.mp.linear import Var
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint

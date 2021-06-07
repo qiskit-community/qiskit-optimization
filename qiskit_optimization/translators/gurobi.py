@@ -31,6 +31,7 @@ except ImportError:
 
 
 from qiskit.exceptions import MissingOptionalLibraryError
+
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective

@@ -15,7 +15,6 @@
 from typing import TYPE_CHECKING, Any
 
 from docplex.mp.model_reader import ModelReader
-
 from qiskit.exceptions import MissingOptionalLibraryError
 
 from .docplex_mp import DocplexMpTranslator
