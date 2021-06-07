@@ -13,5 +13,5 @@ deprecations:
     ``QuadraticProgram.from_docplex`` and ``QuadraticProgram.to_docplex`` are deprecated.
     It is because ``QuadraticProgram.load`` and ``QuadraticProgram.save`` cover the features.
   - |
-    ``QuadraticProgram.read_from_lp_file`` and ``QuadraticProgram.read_from_lp_file`` are deprecated
+    ``QuadraticProgram.read_from_lp_file`` and ``QuadraticProgram.write_to_lp_file`` are deprecated
     because ``LPFileTranslator`` covers the features.
