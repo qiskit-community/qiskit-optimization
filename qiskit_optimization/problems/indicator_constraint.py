@@ -67,18 +67,16 @@ class IndicatorConstraint(Constraint):
             binary_var_ = quadratic_program.get_variable(binary_var)
         else:
             raise QiskitOptimizationError(
-                "Unsupported format for binary_var. It must be \
-                Variable, the index, or the name: {}".format(
-                    type(binary_var)
-                )
+                f"Unsupported format for binary_var. It must be \
+                Variable, the index, or the name: {type(binary_var)}"
             )
         if binary_var_.vartype != Variable.Type.BINARY:
             raise QiskitOptimizationError(
-                "binary_var must be a binary variable: {}".format(binary_var_.vartype)
+                f"binary_var must be a binary variable: {binary_var_.vartype}"
             )
         self._binary_var = binary_var_
         if active_value not in (0, 1):
-            raise QiskitOptimizationError("Active value must be 1 or 0: {}".format(active_value))
+            raise QiskitOptimizationError(f"Active value must be 1 or 0: {active_value}")
         self._active_value = active_value
 
     @property
@@ -176,6 +174,6 @@ class IndicatorConstraint(Constraint):
                 if index == ind:
                     val = value
         else:
-            raise QiskitOptimizationError("Unsupported format for x.")
+            raise QiskitOptimizationError(f"Unsupported type {type(x)} for x.")
 
         return val == self.active_value
