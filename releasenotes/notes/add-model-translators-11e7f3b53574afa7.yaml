@@ -10,8 +10,9 @@ features:
     using the translator framework.
 deprecations:
   - |
-    ``QuadraticProgram.from_docplex`` and ``QuadraticProgram.to_docplex`` are deprecated.
-    It is because ``QuadraticProgram.load`` and ``QuadraticProgram.export`` cover the features.
+    ``QuadraticProgram.from_docplex``, ``QuadraticProgram.to_docplex``, and
+    ``QuadraticProgram.export_as_lp_string`` are deprecated because
+    ``QuadraticProgram.load`` and ``QuadraticProgram.export`` cover the features.
   - |
     ``QuadraticProgram.read_from_lp_file`` and ``QuadraticProgram.write_to_lp_file`` are deprecated
     because ``LPFileTranslator`` covers the features.
