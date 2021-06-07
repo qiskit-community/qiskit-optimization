@@ -18,12 +18,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import DOcplexException
 
-from qiskit_optimization.problems import (
-    Constraint,
-    QuadraticObjective,
-    QuadraticProgram,
-    Variable,
-)
+from qiskit_optimization.problems import Constraint, QuadraticObjective, QuadraticProgram, Variable
 from qiskit_optimization.translators import LPFileTranslator
 
 

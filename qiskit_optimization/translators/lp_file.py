@@ -16,6 +16,8 @@ from typing import TYPE_CHECKING, Any
 
 from docplex.mp.model_reader import ModelReader
 
+from qiskit.exceptions import MissingOptionalLibraryError
+
 from .docplex_mp import DocplexMpTranslator
 from .model_translator import ModelTranslator
 
@@ -23,21 +25,28 @@ if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
+try:
+    import cplex  # pylint: disable=unused-import
+
+    _HAS_CPLEX = True
+except ImportError:
+    _HAS_CPLEX = False
+
 
 class LPFileTranslator(ModelTranslator):
     """Translator between a LP file and a quadratic program"""
 
-    def __init__(self, filename: str = ""):
+    def __init__(self, output_filename: str = ""):
         """
         Args:
-            filename: The filename of the file the model is written to.
+            output_filename: The filename of the file the model is written to.
               If filename is a directory, file name 'my_problem.lp' is appended.
               If filename does not end with '.lp', suffix '.lp' is appended.
         """
-        self._filename = filename
+        self._filename = output_filename
 
     def is_installed(self) -> bool:
-        return True
+        return _HAS_CPLEX
 
     def is_compatible(self, model: Any) -> bool:
         """Checks whether a file name is a string or not
@@ -48,7 +57,7 @@ class LPFileTranslator(ModelTranslator):
         Returns:
             Returns True if the file name is string, False otherwise.
         """
-        return isinstance(model, str)
+        return isinstance(model, str) and model.lower().endswith(".lp")
 
     def from_qp(self, quadratic_program: "QuadraticProgram") -> None:
         """Write a docplex model to a LP file.
@@ -73,7 +82,15 @@ class LPFileTranslator(ModelTranslator):
 
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
+            MissingOptionalLibraryError: if CPLEX is not installed.
         """
+
+        if not _HAS_CPLEX:
+            raise MissingOptionalLibraryError(
+                libname="CPLEX",
+                name="LPFileTranslator",
+                pip_install="pip install 'qiskit-optimization[cplex]'",
+            )
 
         def _parse_problem_name(filename: str) -> str:
             # Because docplex model reader uses the base name as model name,

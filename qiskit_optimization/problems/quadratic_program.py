@@ -39,14 +39,15 @@ from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 from numpy import ndarray, zeros
 from scipy.sparse import spmatrix
 
+from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
+from ..translators.lp_file import LPFileTranslator
 from ..translators.model_translator import ModelTranslator
 from ..translators.utils import _load_model
-from ..translators.lp_file import LPFileTranslator
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -1128,6 +1129,9 @@ class QuadraticProgram:
 
         Raises:
             FileNotFoundError: If the file does not exist.
+            MissingOptionalLibraryError: If CPLEX is not installed.
+        Note:
+            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
         warnings.warn(
             "The read_from_lp_file method is deprecated and will be "
@@ -1135,6 +1139,15 @@ class QuadraticProgram:
             "load() method",
             DeprecationWarning,
         )
+
+        try:
+            import cplex  # pylint: disable=unused-import
+        except ImportError as ex:
+            raise MissingOptionalLibraryError(
+                libname="CPLEX",
+                name="QuadraticProgram.read_from_lp_file",
+                pip_install="pip install 'qiskit-optimization[cplex]'",
+            ) from ex
 
         def _parse_problem_name(filename: str) -> str:
             # Because docplex model reader uses the base name as model name,
