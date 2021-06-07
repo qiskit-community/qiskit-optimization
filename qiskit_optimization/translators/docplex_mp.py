@@ -12,7 +12,7 @@
 
 """Model translators between QuadraticProgram and Docplex"""
 
-from typing import cast, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
@@ -32,6 +32,7 @@ from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
+
 from .model_translator import ModelTranslator
 
 if TYPE_CHECKING:

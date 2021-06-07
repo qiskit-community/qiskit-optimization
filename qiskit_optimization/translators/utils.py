@@ -12,9 +12,10 @@
 
 """Utilities for optimization model translators"""
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
+
 from .docplex_mp import DocplexMpTranslator
 from .gurobi import GurobiTranslator
 

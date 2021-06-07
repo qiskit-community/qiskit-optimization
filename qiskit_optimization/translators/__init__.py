@@ -37,8 +37,8 @@ Translators
    GurobiTranslator
 """
 
-from .model_translator import ModelTranslator
 from .docplex_mp import DocplexMpTranslator
 from .gurobi import GurobiTranslator
+from .model_translator import ModelTranslator
 
 _all = ["ModelTranslator", "DocplexMpTranslator", "GurobiTranslator"]

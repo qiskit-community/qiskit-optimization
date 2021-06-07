@@ -12,7 +12,7 @@
 
 """Model translators between QuadraticProgram and Docplex"""
 
-from typing import cast, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 try:
     import gurobipy as gp
@@ -35,6 +35,7 @@ from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
+
 from .model_translator import ModelTranslator
 
 if TYPE_CHECKING:
@@ -47,6 +48,15 @@ class GurobiTranslator(ModelTranslator):
 
     def is_installed(self) -> bool:
         return _HAS_GUROBI
+
+    @staticmethod
+    def _check_gurobi_is_installed():
+        if not _HAS_GUROBI:
+            raise MissingOptionalLibraryError(
+                libname="GUROBI",
+                name="GurobiTranslator",
+                pip_install="pip install gurobipy",
+            )
 
     def is_compatible(self, model: Any) -> bool:
         """Checks whether a given model can be translated with this translator.
@@ -73,12 +83,7 @@ class GurobiTranslator(ModelTranslator):
             MissingOptionalLibraryError: if gurobipy is not installed.
         """
 
-        if not _HAS_GUROBI:
-            raise MissingOptionalLibraryError(
-                libname="GUROBI",
-                name="GurobiOptimizer",
-                pip_install="pip install gurobipy",
-            )
+        self._check_gurobi_is_installed()
 
         # initialize model
         mdl = gp.Model(quadratic_program.name)
@@ -178,12 +183,7 @@ class GurobiTranslator(ModelTranslator):
             MissingOptionalLibraryError: if gurobipy is not installed.
         """
 
-        if not _HAS_GUROBI:
-            raise MissingOptionalLibraryError(
-                libname="GUROBI",
-                name="GurobiOptimizer",
-                pip_install="pip install gurobipy",
-            )
+        self._check_gurobi_is_installed()
 
         # pylint: disable=cyclic-import
         from qiskit_optimization.problems.quadratic_program import QuadraticProgram
