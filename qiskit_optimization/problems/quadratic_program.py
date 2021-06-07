@@ -39,7 +39,6 @@ from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 from numpy import ndarray, zeros
 from scipy.sparse import spmatrix
 
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
 
@@ -47,6 +46,7 @@ from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from ..translators.model_translator import ModelTranslator
 from ..translators.utils import _load_model
+from ..translators.lp_file import LPFileTranslator
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -919,7 +919,7 @@ class QuadraticProgram:
 
         warnings.warn(
             "The to_docplex method is deprecated and will be "
-            "removed in a future release. Instead use the"
+            "removed in a future release. Instead use the "
             "load() method",
             DeprecationWarning,
         )
@@ -1076,7 +1076,7 @@ class QuadraticProgram:
         """
         warnings.warn(
             "The to_docplex method is deprecated and will be "
-            "removed in a future release. Instead use the"
+            "removed in a future release. Instead use the "
             "save() method",
             DeprecationWarning,
         )
@@ -1128,19 +1128,13 @@ class QuadraticProgram:
 
         Raises:
             FileNotFoundError: If the file does not exist.
-            MissingOptionalLibraryError: If CPLEX is not installed.
-
-        Note:
-            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
-        try:
-            import cplex  # pylint: disable=unused-import
-        except ImportError as ex:
-            raise MissingOptionalLibraryError(
-                libname="CPLEX",
-                name="QuadraticProgram.read_from_lp_file",
-                pip_install="pip install 'qiskit-optimization[cplex]'",
-            ) from ex
+        warnings.warn(
+            "The read_from_lp_file method is deprecated and will be "
+            "removed in a future release. Instead use the "
+            "load() method",
+            DeprecationWarning,
+        )
 
         def _parse_problem_name(filename: str) -> str:
             # Because docplex model reader uses the base name as model name,
@@ -1172,7 +1166,14 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
-        self.save().export_as_lp(filename)
+        warnings.warn(
+            "The write_to_lp_file method is deprecated and will be "
+            "removed in a future release. Instead use the"
+            "save() method with LPFileTranslator ",
+            DeprecationWarning,
+        )
+
+        self.save(LPFileTranslator(filename))
 
     def substitute_variables(
         self,

@@ -4,7 +4,7 @@ features:
     Adds a model translator framework to convert a modeling libraries (e.g., docplex, gurobipy, etc.)
     to ``QuadraticProgram`` and vice versa.
   - |
-    Adds ``DocplexMpTranslator`` and ``GurobiTranslator`` as model translators.
+    Adds ``DocplexMpTranslator``, ``GurobiTranslator`` and ``LPFileTranslator`` as model translators.
   - |
     Adds ``QuadraticProgram.load`` and ``QuadraticProgram.save`` to import and export optimization models
     using the translator framework.
@@ -12,3 +12,6 @@ deprecations:
   - |
     ``QuadraticProgram.from_docplex`` and ``QuadraticProgram.to_docplex`` are deprecated.
     It is because ``QuadraticProgram.load`` and ``QuadraticProgram.save`` cover the features.
+  - |
+    ``QuadraticProgram.read_from_lp_file`` and ``QuadraticProgram.read_from_lp_file`` are deprecated
+    because ``LPFileTranslator`` covers the features.

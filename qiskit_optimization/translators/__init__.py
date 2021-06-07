@@ -35,10 +35,12 @@ Translators
 
    DocplexMpTranslator
    GurobiTranslator
+   LPFileTranslator
 """
 
 from .docplex_mp import DocplexMpTranslator
 from .gurobi import GurobiTranslator
+from .lp_file import LPFileTranslator
 from .model_translator import ModelTranslator
 
-_all = ["ModelTranslator", "DocplexMpTranslator", "GurobiTranslator"]
+_all = ["ModelTranslator", "DocplexMpTranslator", "GurobiTranslator", "LPFileTranslator"]

@@ -18,12 +18,13 @@ from qiskit_optimization.exceptions import QiskitOptimizationError
 
 from .docplex_mp import DocplexMpTranslator
 from .gurobi import GurobiTranslator
+from .lp_file import LPFileTranslator
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
-translators = [DocplexMpTranslator(), GurobiTranslator()]
+translators = [DocplexMpTranslator(), GurobiTranslator(), LPFileTranslator()]
 
 
 def _load_model(model: Any) -> "QuadraticProgram":
