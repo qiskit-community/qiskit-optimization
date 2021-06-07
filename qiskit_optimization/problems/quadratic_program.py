@@ -1007,7 +1007,7 @@ class QuadraticProgram:
             DeprecationWarning,
         )
 
-        other = self.load(filename)
+        other = LPFileTranslator().to_qp(filename)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
