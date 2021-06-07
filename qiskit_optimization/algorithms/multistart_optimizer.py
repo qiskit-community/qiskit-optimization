@@ -17,7 +17,7 @@ better results. This implementation is suitable for local optimizers."""
 import logging
 import time
 from abc import ABC
-from typing import Optional, Callable, Tuple, Any
+from typing import Callable, Tuple, Any, Optional
 
 import numpy as np
 from scipy.stats import uniform
@@ -25,6 +25,7 @@ from scipy.stats import uniform
 from ..problems.quadratic_program import QuadraticProgram
 from ..infinity import INFINITY
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
+from ..converters import MaximizeToMinimize
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,11 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         x_sol: Optional[np.ndarray] = None
         rest_sol: Optional[Tuple] = None
 
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = self._convert(problem, max2min)
+
         # Implementation of multi-start optimizer
         for trial in range(self._trials):
             x_0 = np.zeros(problem.get_num_vars())
@@ -86,21 +92,15 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             x, rest = minimize(x_0)
             logger.debug("minimize done in: %s seconds", str(time.time() - t_0))
 
-            # we minimize, to get actual objective value we must multiply by the sense value
-            fval = problem.objective.evaluate(x) * problem.objective.sense.value
+            fval = problem.objective.evaluate(x)
             # we minimize the objective
             if fval < fval_sol:
-                # here we get back to the original sense of the problem
-                fval_sol = fval * problem.objective.sense.value
+                fval_sol = fval
                 x_sol = x
                 rest_sol = rest
-
-        return OptimizationResult(
-            x=x_sol,
-            fval=fval_sol,
-            variables=problem.variables,
-            status=self._get_feasibility_status(problem, x_sol),
-            raw_results=rest_sol,
+        # eventually convert back minimization to maximization
+        return self._interpret(
+            x_sol, problem=original_problem, converters=max2min, raw_results=rest_sol
         )
 
     @property

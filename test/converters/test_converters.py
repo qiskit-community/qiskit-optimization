@@ -28,7 +28,8 @@ from qiskit_optimization.converters import (
     IntegerToBinary,
     LinearEqualityToPenalty,
     LinearInequalityToPenalty,
-    QuadraticProgramToQubo
+    MaximizeToMinimize,
+    QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import Constraint, Variable
 
@@ -60,6 +61,8 @@ class TestConverters(QiskitOptimizationTestCase):
         conv = IntegerToBinary()
         op = conv.convert(op)
         conv = LinearEqualityToPenalty()
+        op = conv.convert(op)
+        conv = MaximizeToMinimize()
         op = conv.convert(op)
         _, shift = op.to_ising()
         self.assertEqual(shift, 0.0)
@@ -659,7 +662,7 @@ class TestConverters(QiskitOptimizationTestCase):
         lip = LinearInequalityToPenalty()
 
         op.binary_var(name="x")
-        op.binary_var(name="y")       
+        op.binary_var(name="y")
         op.binary_var(name="z")
         op.binary_var(name="w")
         linear = {"x": 2, "y": 1, "z": -1, "w": 1}
@@ -673,7 +676,9 @@ class TestConverters(QiskitOptimizationTestCase):
         linear_constraint = {"y": 2, "z": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "None 1")
         quadratic_constraint = {("x", "x"): -2, ("y", "w"): 1}
-        op.quadratic_constraint(linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2")
+        op.quadratic_constraint(
+            linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2"
+        )
 
         lip.penalty = 5
         op2 = lip.convert(op)
@@ -701,7 +706,7 @@ class TestConverters(QiskitOptimizationTestCase):
         # Test with no max/min
         self.assertEqual(op.get_num_linear_constraints(), 1)
         lip.penalty = 1
-        constant=1
+        constant = 1
         linear = {"x": -lip.penalty, "y": -lip.penalty}
         quadratic = {("x", "y"): lip.penalty}
         op2 = lip.convert(op)
@@ -717,9 +722,9 @@ class TestConverters(QiskitOptimizationTestCase):
         linear = {"x": 2, "y": 1}
         op.maximize(linear=linear)
         lip.penalty = 5
-        constant=-lip.penalty
-        linear["x"] = linear["x"]+lip.penalty
-        linear["y"] = linear["y"]+lip.penalty
+        constant = -lip.penalty
+        linear["x"] = linear["x"] + lip.penalty
+        linear["y"] = linear["y"] + lip.penalty
         quadratic = {("x", "y"): -lip.penalty}
         op2 = lip.convert(op)
         cnst = op2.objective.constant
@@ -734,9 +739,9 @@ class TestConverters(QiskitOptimizationTestCase):
         linear = {"x": 2, "y": 1}
         op.minimize(linear=linear)
         lip.penalty = 5
-        constant=lip.penalty
-        linear["x"] = linear["x"]-lip.penalty
-        linear["y"] = linear["y"]-lip.penalty
+        constant = lip.penalty
+        linear["x"] = linear["x"] - lip.penalty
+        linear["y"] = linear["y"] - lip.penalty
         quadratic = {("x", "y"): lip.penalty}
         op2 = lip.convert(op)
         cnst = op2.objective.constant
@@ -752,7 +757,7 @@ class TestConverters(QiskitOptimizationTestCase):
         lip = LinearInequalityToPenalty()
 
         op.binary_var(name="x")
-        op.binary_var(name="y")       
+        op.binary_var(name="y")
         op.binary_var(name="z")
         op.binary_var(name="w")
         linear = {"x": 2, "y": 1, "z": -1, "w": 1}
@@ -766,18 +771,20 @@ class TestConverters(QiskitOptimizationTestCase):
         linear_constraint = {"y": 2, "z": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "None 1")
         quadratic_constraint = {("x", "x"): -2, ("y", "w"): 1}
-        op.quadratic_constraint(linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2")
+        op.quadratic_constraint(
+            linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2"
+        )
 
         lip.penalty = 5
         op2 = lip.convert(op)
-        constant=lip.penalty * 2
-        linear["x"] = linear["x"]-lip.penalty
-        linear["y"] = linear["y"]-lip.penalty
-        linear["z"] = linear["z"]-lip.penalty
-        linear["w"] = linear["w"]-lip.penalty
+        constant = lip.penalty * 2
+        linear["x"] = linear["x"] - lip.penalty
+        linear["y"] = linear["y"] - lip.penalty
+        linear["z"] = linear["z"] - lip.penalty
+        linear["w"] = linear["w"] - lip.penalty
         quadratic[("x", "w")] = lip.penalty
         quadratic[("y", "z")] = quadratic[("y", "z")] + lip.penalty
-        constant=lip.penalty
+        constant = lip.penalty
         ldct = op2.objective.linear.to_dict(use_name=True)
         qdct = op2.objective.quadratic.to_dict(use_name=True)
         self.assertEqual(cnst, constant)
@@ -871,7 +878,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-x-y+xy)")
 
         conv.penalty = 1
-        constant=1
+        constant = 1
         linear = {"x": -conv.penalty, "y": -conv.penalty}
         quadratic = {("x", "y"): conv.penalty}
         op2 = conv.convert(op)
@@ -882,8 +889,6 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(ldct, linear)
         self.assertEqual(qdct, quadratic)
         self.assertEqual(op2.get_num_linear_constraints(), 0)
-
-
 
 
 if __name__ == "__main__":
