@@ -902,7 +902,7 @@ class QuadraticProgram:
             else:
                 raise QiskitOptimizationError(f"Invalid string option: {translator}")
         else:
-            raise TypeError(f"Invalid translator {translator}")
+            raise TypeError(f"Invalid translator: {translator}")
 
     def from_docplex(self, model: Model) -> None:
         """Loads this quadratic program from a docplex model.
