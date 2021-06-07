@@ -123,7 +123,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
         """
 
         # convert to Gurobi problem
-        model = problem.save(GurobiTranslator())
+        model = problem.export(GurobiTranslator())
 
         # Enable non-convex
         model.Params.NonConvex = 2

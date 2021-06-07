@@ -24,8 +24,8 @@ from qiskit_optimization.translators import DocplexMpTranslator
 class TestDocplexMpTranslator(QiskitOptimizationTestCase):
     """DocplexMpTranslator tests"""
 
-    def test_load_and_save(self):
-        """test load and save with DocplexMpTranslator"""
+    def test_load_and_export(self):
+        """test load and export with DocplexMpTranslator"""
         translator = DocplexMpTranslator()
 
         q_p = QuadraticProgram("test")
@@ -39,7 +39,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         )
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = QuadraticProgram.load(q_p.save(translator))
+        q_p2 = QuadraticProgram.load(q_p.export(translator))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = Model("test")

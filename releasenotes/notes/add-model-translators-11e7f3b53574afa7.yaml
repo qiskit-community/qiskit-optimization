@@ -6,12 +6,12 @@ features:
   - |
     Adds ``DocplexMpTranslator``, ``GurobiTranslator`` and ``LPFileTranslator`` as model translators.
   - |
-    Adds ``QuadraticProgram.load`` and ``QuadraticProgram.save`` to import and export optimization models
+    Adds ``QuadraticProgram.load`` and ``QuadraticProgram.export`` to import and export optimization models
     using the translator framework.
 deprecations:
   - |
     ``QuadraticProgram.from_docplex`` and ``QuadraticProgram.to_docplex`` are deprecated.
-    It is because ``QuadraticProgram.load`` and ``QuadraticProgram.save`` cover the features.
+    It is because ``QuadraticProgram.load`` and ``QuadraticProgram.export`` cover the features.
   - |
     ``QuadraticProgram.read_from_lp_file`` and ``QuadraticProgram.write_to_lp_file`` are deprecated
     because ``LPFileTranslator`` covers the features.

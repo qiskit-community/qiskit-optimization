@@ -23,8 +23,8 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
     """GurobiTranslator tests"""
 
     @requires_extra_library
-    def test_load_and_save(self):
-        """test load and save with GurobiTranslator"""
+    def test_load_and_export(self):
+        """test load and export with GurobiTranslator"""
         translator = GurobiTranslator()
 
         q_p = QuadraticProgram("test")
@@ -34,7 +34,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p.minimize(constant=1, linear={"x": 1, "y": 2}, quadratic={("x", "y"): -1, ("z", "z"): 2})
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = QuadraticProgram.load(q_p.save(translator))
+        q_p2 = QuadraticProgram.load(q_p.export(translator))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         import gurobipy as gp

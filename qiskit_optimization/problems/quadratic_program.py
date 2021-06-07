@@ -888,7 +888,7 @@ class QuadraticProgram:
         """
         return _load_model(model)
 
-    def save(self, translator: Optional[ModelTranslator] = None) -> Any:
+    def export(self, translator: Optional[ModelTranslator] = None) -> Any:
         """Returns an optimization model corresponding to this quadratic program.
 
         Returns:
@@ -1078,10 +1078,10 @@ class QuadraticProgram:
         warnings.warn(
             "The to_docplex method is deprecated and will be "
             "removed in a future release. Instead use the "
-            "save() method",
+            "export() method",
             DeprecationWarning,
         )
-        return self.save()
+        return self.export()
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
@@ -1089,7 +1089,7 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        return self.save().export_as_lp_string()
+        return self.export().export_as_lp_string()
 
     def pprint_as_string(self) -> str:
         """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
@@ -1103,7 +1103,7 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        return self.save().pprint_as_string()
+        return self.export().pprint_as_string()
 
     def prettyprint(self, out: Optional[str] = None) -> None:
         """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
@@ -1119,7 +1119,7 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        self.save().prettyprint(out)
+        self.export().prettyprint(out)
 
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
@@ -1182,11 +1182,11 @@ class QuadraticProgram:
         warnings.warn(
             "The write_to_lp_file method is deprecated and will be "
             "removed in a future release. Instead use the"
-            "save() method with LPFileTranslator ",
+            "export() method with LPFileTranslator ",
             DeprecationWarning,
         )
 
-        self.save(LPFileTranslator(filename))
+        self.export(LPFileTranslator(filename))
 
     def substitute_variables(
         self,
