@@ -35,6 +35,7 @@ from qiskit_optimization.converters import (
     IntegerToBinary,
     LinearEqualityToPenalty,
     MaximizeToMinimize,
+    QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import Constraint, Variable
 
@@ -616,6 +617,34 @@ class TestConverters(QiskitOptimizationTestCase):
         for cst, cst2 in zip(mod.quadratic_constraints, mod2.quadratic_constraints):
             self.assertDictEqual(cst.linear.to_dict(), cst2.linear.to_dict())
             self.assertDictEqual(cst.quadratic.to_dict(), cst2.quadratic.to_dict())
+
+    def test_quadratic_to_qubo_indicator(self):
+        """Test QuadraticProgramToQUbo with an indicator constraint"""
+        op = QuadraticProgram()
+        for i in range(2):
+            op.binary_var(name=f"x{i}")
+        op.binary_var(name="z")
+        op.indicator_constraint(
+            binary_var="z", linear={"x0": 1, "x1": 1}, sense="<=", rhs=1, name="i_const"
+        )
+        quad2qubo = QuadraticProgramToQubo()
+        new_op = quad2qubo.convert(op)
+        self.assertEqual(new_op.get_num_indicator_constraints(), 0)
+        self.assertEqual(new_op.get_num_linear_constraints(), 0)
+        self.assertEqual(new_op.objective.constant, 4)
+        np.testing.assert_array_almost_equal(
+            new_op.objective.linear.to_array(), [-4, -4, -4, -4, -4]
+        )
+        np.testing.assert_array_almost_equal(
+            new_op.objective.quadratic.to_array(),
+            [
+                [1, 2, 2, 2, 2],
+                [0, 1, 2, 2, 2],
+                [0, 0, 1, 2, 2],
+                [0, 0, 0, 1, 2],
+                [0, 0, 0, 0, 1],
+            ],
+        )
 
 
 if __name__ == "__main__":

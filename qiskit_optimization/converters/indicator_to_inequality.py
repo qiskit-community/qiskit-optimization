@@ -24,7 +24,8 @@ from ..problems.variable import Variable
 
 
 class IndicatorToInequality(QuadraticProgramConverter):
-    """Convert inequality constraints into equality constraints by introducing slack variables.
+    """Convert indicator constraints into inequality constraints by using a big-M formulation.
+    e.g. x = 1 -> ax <= b is converted into ax <= b + M * (1 - z)
 
     Examples:
         >>> from qiskit_optimization.problems import QuadraticProgram
