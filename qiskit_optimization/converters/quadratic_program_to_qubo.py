@@ -68,7 +68,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         # analyze compatibility of problem
         msg = self.get_compatibility_msg(problem)
         if len(msg) > 0:
-            raise QiskitOptimizationError(f"Incompatible problem: {msg}"z)
+            raise QiskitOptimizationError(f"Incompatible problem: {msg}")
 
         # Convert indicator constraints into inequality constraints by using a big-M formulation
         problem_ = self._indic_to_ineq.convert(problem)
