@@ -43,7 +43,7 @@ class LPFileTranslator(ModelTranslator):
         """Checks whether a file name is a string or not
 
         Args:
-            model: a LP file name.
+            model: a LP file name to be read.
 
         Returns:
             Returns True if the file name is string, False otherwise.
@@ -66,7 +66,7 @@ class LPFileTranslator(ModelTranslator):
         """Read a LP file to generate ``QuadraticProgram``.
 
         Args:
-            model: a LP file name to be written.
+            model: a LP file name to be read.
 
         Returns:
             The quadratic program corresponding to the model.
