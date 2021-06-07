@@ -14,7 +14,7 @@
 
 import tempfile
 from os import path
-from test.optimization_test_case import QiskitOptimizationTestCase
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 from docplex.mp.model import DOcplexException
 
@@ -25,6 +25,7 @@ from qiskit_optimization.translators import LPFileTranslator
 class TestDocplexMpTranslator(QiskitOptimizationTestCase):
     """DocplexMpTranslator tests"""
 
+    @requires_extra_library
     def test_read_from_lp_file(self):
         """test read lp file"""
         try:
