@@ -98,17 +98,17 @@ class QuadraticProgram:
         self._name = name
         self._status = QuadraticProgram.Status.VALID
 
-        self._variables = []  # type: List[Variable]
-        self._variables_index = {}  # type: Dict[str, int]
+        self._variables: List[Variable] = []
+        self._variables_index: Dict[str, int] = {}
 
-        self._linear_constraints = []  # type: List[LinearConstraint]
-        self._linear_constraints_index = {}  # type: Dict[str, int]
+        self._linear_constraints: List[LinearConstraint] = []
+        self._linear_constraints_index: Dict[str, int] = {}
 
-        self._quadratic_constraints = []  # type: List[QuadraticConstraint]
-        self._quadratic_constraints_index = {}  # type: Dict[str, int]
+        self._quadratic_constraints: List[QuadraticConstraint] = []
+        self._quadratic_constraints_index: Dict[str, int] = {}
 
-        self._indicator_constraints = []  # type: List[IndicatorConstraint]
-        self._indicator_constraints_index = {}  # type: Dict[str, int]
+        self._indicator_constraints: List[IndicatorConstraint] = []
+        self._indicator_constraints_index: Dict[str, int] = {}
 
         self._objective = QuadraticObjective(self)
 
@@ -851,14 +851,12 @@ class QuadraticProgram:
         """
         if name:
             if name in self.indicator_constraints_index:
-                raise QiskitOptimizationError(
-                    "Indicator constraint name already exists: {}".format(name)
-                )
+                raise QiskitOptimizationError(f"Indicator constraint name already exists: {name}")
         else:
             k = self.get_num_indicator_constraints()
-            while "i{}".format(k) in self.indicator_constraints_index:
+            while f"i{k}" in self.indicator_constraints_index:
                 k += 1
-            name = "i{}".format(k)
+            name = f"i{k}"
         self.indicator_constraints_index[name] = len(self.indicator_constraints)
         if linear is None:
             linear = {}
@@ -1297,7 +1295,7 @@ class QuadraticProgram:
             elif sense == sense.LE:
                 self.quadratic_constraint(linear, quadratic, "<=", rhs, name)
             else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+                raise QiskitOptimizationError(f"Unsupported constraint sense: {constraint}")
 
         # get indicator constraints
         for constraint in model.iter_indicator_constraints():
@@ -1331,7 +1329,7 @@ class QuadraticProgram:
             elif sense == sense.LE:
                 self.indicator_constraint(binary_var, lhs, "<=", rhs, active_value, name)
             else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+                raise QiskitOptimizationError(f"Unsupported constraint sense: {constraint}")
 
     def to_gurobipy(self) -> GurobiModel:
         """Returns a gurobipy model corresponding to this quadratic program
@@ -1453,7 +1451,7 @@ class QuadraticProgram:
                 var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
+                raise QiskitOptimizationError(f"Unsupported variable type: {x.vartype}")
 
         # add objective
         objective = self.objective.constant
@@ -1484,7 +1482,7 @@ class QuadraticProgram:
                 mdl.add_constraint(linear_expr <= rhs, ctname=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
         # add quadratic constraints
         for i, q_constraint in enumerate(self.quadratic_constraints):
@@ -1510,7 +1508,7 @@ class QuadraticProgram:
                 mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
         # add indicator constraints
         for i, i_constraint in enumerate(self.indicator_constraints):
@@ -1532,7 +1530,7 @@ class QuadraticProgram:
                 mdl.add_indicator(binary_var, linear_expr <= rhs, active_value, name)
             else:
                 # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+                raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
         return mdl
 

@@ -26,7 +26,7 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         # for an LE constraint
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.binary_var(name="a")
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense="<=", rhs=1, name="i_const"
@@ -43,7 +43,7 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         # for a GE constraint
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.binary_var(name="a")
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense=">=", rhs=1, name="i_const"
@@ -60,7 +60,7 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         # for an EQ constraint
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.binary_var(name="a")
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense="==", rhs=1, name="i_const"
@@ -84,7 +84,7 @@ class TestIndicatorToInequality(QiskitOptimizationTestCase):
         """Test interpret method"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.binary_var(name="a")
         op.indicator_constraint(
             binary_var="a", linear={"x0": 1, "x1": 1, "x2": 1}, sense=">=", rhs=1, name="i_const"

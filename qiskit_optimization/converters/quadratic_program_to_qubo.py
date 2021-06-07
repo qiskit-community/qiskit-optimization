@@ -40,6 +40,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
                 If None is passed, a penalty factor will be automatically calculated on every
                 conversion.
         """
+        from ..converters.indicator_to_inequality import IndicatorToInequality
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
         from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
@@ -49,6 +50,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         self._ineq_to_eq = InequalityToEquality(mode="integer")
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
         self._max_to_min = MaximizeToMinimize()
+        self._indic_to_ineq = IndicatorToInequality()
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Convert a problem with linear constraints into new one with a QUBO form.
@@ -68,8 +70,11 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         if len(msg) > 0:
             raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
 
+        # Convert indicator constraints into inequality constraints by using a big-M formulation
+        problem_ = self._indic_to_ineq.convert(problem)
+
         # Convert inequality constraints into equality constraints by adding slack variables
-        problem_ = self._ineq_to_eq.convert(problem)
+        problem_ = self._ineq_to_eq.convert(problem_)
 
         # Map integer variables to binary variables
         problem_ = self._int_to_bin.convert(problem_)
@@ -96,6 +101,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         x = self._penalize_lin_eq_constraints.interpret(x)
         x = self._int_to_bin.interpret(x)
         x = self._ineq_to_eq.interpret(x)
+        x = self._indic_to_ineq.interpret(x)
         return x
 
     @staticmethod

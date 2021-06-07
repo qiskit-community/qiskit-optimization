@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test LinearConstraint """
+""" Test IndicatorConstraint """
 
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
@@ -26,7 +26,7 @@ class TestIndicatorConstraint(QiskitOptimizationTestCase):
         """Make a test problem"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.binary_var(name="a")
         return op
 
