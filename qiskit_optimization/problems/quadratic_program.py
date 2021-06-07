@@ -21,27 +21,11 @@ from math import fsum, isclose
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
-from docplex.mp.constr import NotEqualConstraint
-from docplex.mp.constr import QuadraticConstraint as DocplexQuadraticConstraint
-
-try:
-    # new location since docplex 2.16.196
-    from docplex.mp.dvar import Var
-except ImportError:
-    # old location until docplex 2.15.194
-    from docplex.mp.linear import Var
-
 from docplex.mp.model import Model
-from docplex.mp.model_reader import ModelReader
-from docplex.mp.quad import QuadExpr
-from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 from numpy import ndarray, zeros
-from scipy.sparse import spmatrix
-
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
+from scipy.sparse import spmatrix
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
@@ -942,146 +926,9 @@ class QuadraticProgram:
             DeprecationWarning,
         )
 
-        # clear current problem
-        self.clear()
-
-        # get name
-        self.name = model.name
-
-        # get variables
-        # keep track of names separately, since docplex allows to have None names.
-        var_names = {}
-        for x in model.iter_variables():
-            if isinstance(x.vartype, ContinuousVarType):
-                x_new = self.continuous_var(x.lb, x.ub, x.name)
-            elif isinstance(x.vartype, BinaryVarType):
-                x_new = self.binary_var(x.name)
-            elif isinstance(x.vartype, IntegerVarType):
-                x_new = self.integer_var(x.lb, x.ub, x.name)
-            else:
-                raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.name, x.vartype)
-                )
-            var_names[x] = x_new.name
-
-        # objective sense
-        minimize = model.objective_sense.is_minimize()
-
-        # make sure objective expression is linear or quadratic and not a variable
-        if isinstance(model.objective_expr, Var):
-            model.objective_expr = model.objective_expr + 0
-
-        # get objective offset
-        constant = model.objective_expr.constant
-
-        # get linear part of objective
-        linear = {}
-        linear_part = model.objective_expr.get_linear_part()
-        for x in linear_part.iter_variables():
-            linear[var_names[x]] = linear_part.get_coef(x)
-
-        # get quadratic part of objective
-        quadratic = {}
-        if isinstance(model.objective_expr, QuadExpr):
-            for quad_triplet in model.objective_expr.iter_quad_triplets():
-                i = var_names[quad_triplet[0]]
-                j = var_names[quad_triplet[1]]
-                v = quad_triplet[2]
-                quadratic[i, j] = v
-
-        # set objective
-        if minimize:
-            self.minimize(constant, linear, quadratic)
-        else:
-            self.maximize(constant, linear, quadratic)
-
-        # get linear constraints
-        for constraint in model.iter_constraints():
-            if isinstance(constraint, DocplexQuadraticConstraint):
-                # ignore quadratic constraints here and process them later
-                continue
-            if not isinstance(constraint, DocplexLinearConstraint) or isinstance(
-                constraint, NotEqualConstraint
-            ):
-                # If any constraint is not linear/quadratic constraints, it raises an error.
-                # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
-                # but it cannot be handled by optimization.
-                raise QiskitOptimizationError("Unsupported constraint: {}".format(constraint))
-            name = constraint.name
-            sense = constraint.sense
-
-            left_expr = constraint.get_left_expr()
-            right_expr = constraint.get_right_expr()
-            # for linear constraints we may get an instance of Var instead of expression,
-            # e.g. x + y = z
-            if isinstance(left_expr, Var):
-                left_expr = left_expr + 0
-            if isinstance(right_expr, Var):
-                right_expr = right_expr + 0
-
-            rhs = right_expr.constant - left_expr.constant
-
-            lhs = {}
-            for x in left_expr.iter_variables():
-                lhs[var_names[x]] = left_expr.get_coef(x)
-            for x in right_expr.iter_variables():
-                lhs[var_names[x]] = lhs.get(var_names[x], 0.0) - right_expr.get_coef(x)
-
-            if sense == sense.EQ:
-                self.linear_constraint(lhs, "==", rhs, name)
-            elif sense == sense.GE:
-                self.linear_constraint(lhs, ">=", rhs, name)
-            elif sense == sense.LE:
-                self.linear_constraint(lhs, "<=", rhs, name)
-            else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
-
-        # get quadratic constraints
-        for constraint in model.iter_quadratic_constraints():
-            name = constraint.name
-            sense = constraint.sense
-
-            left_expr = constraint.get_left_expr()
-            right_expr = constraint.get_right_expr()
-
-            rhs = right_expr.constant - left_expr.constant
-            linear = {}
-            quadratic = {}
-
-            if left_expr.is_quad_expr():
-                for x in left_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = left_expr.linear_part.get_coef(x)
-                for quad_triplet in left_expr.iter_quad_triplets():
-                    i = var_names[quad_triplet[0]]
-                    j = var_names[quad_triplet[1]]
-                    v = quad_triplet[2]
-                    quadratic[i, j] = v
-            else:
-                for x in left_expr.iter_variables():
-                    linear[var_names[x]] = left_expr.get_coef(x)
-
-            if right_expr.is_quad_expr():
-                for x in right_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = linear.get(
-                        var_names[x], 0.0
-                    ) - right_expr.linear_part.get_coef(x)
-                for quad_triplet in right_expr.iter_quad_triplets():
-                    i = var_names[quad_triplet[0]]
-                    j = var_names[quad_triplet[1]]
-                    v = quad_triplet[2]
-                    quadratic[i, j] = quadratic.get((i, j), 0.0) - v
-            else:
-                for x in right_expr.iter_variables():
-                    linear[var_names[x]] = linear.get(var_names[x], 0.0) - right_expr.get_coef(x)
-
-            if sense == sense.EQ:
-                self.quadratic_constraint(linear, quadratic, "==", rhs, name)
-            elif sense == sense.GE:
-                self.quadratic_constraint(linear, quadratic, ">=", rhs, name)
-            elif sense == sense.LE:
-                self.quadratic_constraint(linear, quadratic, "<=", rhs, name)
-            else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+        other = self.load(model)
+        for attr, val in vars(other).items():
+            setattr(self, attr, val)
 
     def to_docplex(self) -> Model:
         """Returns a docplex model corresponding to this quadratic program.
@@ -1152,9 +999,6 @@ class QuadraticProgram:
 
         Raises:
             FileNotFoundError: If the file does not exist.
-            MissingOptionalLibraryError: If CPLEX is not installed.
-        Note:
-            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
         warnings.warn(
             "The read_from_lp_file method is deprecated and will be "
@@ -1163,32 +1007,9 @@ class QuadraticProgram:
             DeprecationWarning,
         )
 
-        try:
-            import cplex  # pylint: disable=unused-import
-        except ImportError as ex:
-            raise MissingOptionalLibraryError(
-                libname="CPLEX",
-                name="QuadraticProgram.read_from_lp_file",
-                pip_install="pip install 'qiskit-optimization[cplex]'",
-            ) from ex
-
-        def _parse_problem_name(filename: str) -> str:
-            # Because docplex model reader uses the base name as model name,
-            # we parse the model name in the LP file manually.
-            # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
-            prefix = "\\Problem name:"
-            model_name = ""
-            with open(filename) as file:
-                for line in file:
-                    if line.startswith(prefix):
-                        model_name = line[len(prefix) :].strip()
-                    if not line.startswith("\\"):
-                        break
-            return model_name
-
-        model_reader = ModelReader()
-        model = model_reader.read(filename, model_name=_parse_problem_name(filename))
-        self.from_docplex(model)
+        other = self.load(filename)
+        for attr, val in vars(other).items():
+            setattr(self, attr, val)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
