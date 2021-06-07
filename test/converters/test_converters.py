@@ -28,6 +28,7 @@ from qiskit_optimization.converters import (
     IntegerToBinary,
     LinearEqualityToPenalty,
     LinearInequalityToPenalty,
+    QuadraticProgramToQubo
 )
 from qiskit_optimization.problems import Constraint, Variable
 
@@ -856,6 +857,33 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(ldct, linear)
         self.assertEqual(qdct, quadratic)
         self.assertEqual(op2.get_num_linear_constraints(), 0)
+
+    def test_quadratic_program_to_qubo_inequality_to_penalty(self):
+        """Test QuadraticProgramToQubo, passing inequality pattern"""
+
+        op = QuadraticProgram()
+        conv = QuadraticProgramToQubo()
+        op.binary_var(name="x")
+        op.binary_var(name="y")
+
+        # Linear constraints
+        linear_constraint = {"x": 1, "y": 1}
+        op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-x-y+xy)")
+
+        conv.penalty = 1
+        constant=1
+        linear = {"x": -conv.penalty, "y": -conv.penalty}
+        quadratic = {("x", "y"): conv.penalty}
+        op2 = conv.convert(op)
+        cnst = op2.objective.constant
+        ldct = op2.objective.linear.to_dict(use_name=True)
+        qdct = op2.objective.quadratic.to_dict(use_name=True)
+        self.assertEqual(cnst, constant)
+        self.assertEqual(ldct, linear)
+        self.assertEqual(qdct, quadratic)
+        self.assertEqual(op2.get_num_linear_constraints(), 0)
+
+
 
 
 if __name__ == "__main__":
