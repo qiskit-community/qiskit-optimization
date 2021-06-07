@@ -858,28 +858,28 @@ class QuadraticProgram:
         )
 
     @staticmethod
-    def load(model: Any) -> "QuadraticProgram":
-        """Loads this quadratic program from an optimization model.
+    def load(source: Any) -> "QuadraticProgram":
+        """Loads this quadratic program from an external source.
 
         Args:
-            model: The optimization model to be loaded.
+            source: The external source to be loaded.
 
         Returns:
-            the quadratic program corresponding to the model.
+            the quadratic program corresponding to the source.
 
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
-        return _load_model(model)
+        return _load_model(source)
 
     def export(self, translator: Optional[Union[ModelTranslator, str]] = None) -> Any:
-        """Returns an optimization model corresponding to this quadratic program.
+        """Exports this quadratic program as another object.
 
         Args:
             translator: The model translator or string format ('lp' or 'pprint').
 
         Returns:
-            The optimization model corresponding to this quadratic program.
+            The object corresponding to this quadratic program.
 
         Raises:
             TypeError: if the ``translator`` is neither ``ModelTranslator`` nor ``str``.

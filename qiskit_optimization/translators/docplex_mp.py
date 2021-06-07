@@ -41,21 +41,21 @@ if TYPE_CHECKING:
 
 
 class DocplexMpTranslator(ModelTranslator):
-    """Translator between a Docplex model and a quadratic program"""
+    """Translator between a docplex model and a quadratic program"""
 
     def is_installed(self) -> bool:
         return True
 
-    def is_compatible(self, model: Any) -> bool:
+    def is_compatible(self, source: Any) -> bool:
         """Checks whether a given model can be translated with this translator.
 
         Args:
-            model: The optimization model to check compatibility.
+            source: The docplex model to be loaded.
 
         Returns:
             Returns True if the model is compatible, False otherwise.
         """
-        return isinstance(model, Model)
+        return isinstance(source, Model)
 
     def from_qp(self, quadratic_program: "QuadraticProgram") -> Model:
         """Returns a docplex model corresponding to a quadratic program.
@@ -147,7 +147,7 @@ class DocplexMpTranslator(ModelTranslator):
 
         return mdl
 
-    def to_qp(self, model: Model) -> "QuadraticProgram":
+    def to_qp(self, source: Model) -> "QuadraticProgram":
         """Translate a docplex model into a quadratic program.
 
         Note that this supports only basic functions of docplex as follows:
@@ -156,7 +156,7 @@ class DocplexMpTranslator(ModelTranslator):
         - binary / integer / continuous variables
 
         Args:
-            model: The docplex model to be loaded.
+            source: The docplex model to be loaded.
 
         Returns:
             The quadratic program corresponding to the model.
@@ -164,10 +164,13 @@ class DocplexMpTranslator(ModelTranslator):
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+        model = source
+
         # pylint: disable=cyclic-import
         from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
         quadratic_program = QuadraticProgram()
+
         # get name
         quadratic_program.name = model.name
 

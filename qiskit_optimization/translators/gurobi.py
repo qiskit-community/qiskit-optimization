@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Model translators between QuadraticProgram and Docplex"""
+"""Model translators between QuadraticProgram and Gurobipy"""
 
 from typing import TYPE_CHECKING, Any, cast
 
@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 
 
 class GurobiTranslator(ModelTranslator):
-    """Translator between a Gurobipy and a quadratic program"""
+    """Translator between a gurobipy model and a quadratic program"""
 
     def is_installed(self) -> bool:
         return _HAS_GUROBI
@@ -58,25 +58,25 @@ class GurobiTranslator(ModelTranslator):
                 pip_install="pip install gurobipy",
             )
 
-    def is_compatible(self, model: Any) -> bool:
+    def is_compatible(self, source: Any) -> bool:
         """Checks whether a given model can be translated with this translator.
 
         Args:
-            model: The optimization model to check compatibility.
+            source: The gurobipy model to be loaded.
 
         Returns:
             Returns True if the model is compatible, False otherwise.
         """
-        return isinstance(model, Model)
+        return isinstance(source, Model)
 
     def from_qp(self, quadratic_program: "QuadraticProgram") -> Model:
-        """Returns a docplex model corresponding to a quadratic program.
+        """Returns a gurobipy model corresponding to a quadratic program.
 
         Args:
             quadratic_program: The quadratic program to be translated
 
         Returns:
-            The docplex model corresponding to a quadratic program.
+            The gurobipy model corresponding to a quadratic program.
 
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
@@ -164,16 +164,16 @@ class GurobiTranslator(ModelTranslator):
 
         return mdl
 
-    def to_qp(self, model: Model) -> "QuadraticProgram":
-        """Translate a docplex model into a quadratic program.
+    def to_qp(self, source: Model) -> "QuadraticProgram":
+        """Translate a gurobipy model into a quadratic program.
 
-        Note that this supports only basic functions of docplex as follows:
+        Note that this supports only basic functions of gurobipy as follows:
         - quadratic objective function
         - linear / quadratic constraints
         - binary / integer / continuous variables
 
         Args:
-            model: The docplex model to be loaded.
+            source: The gurobipy model to be loaded.
 
         Returns:
             The quadratic program corresponding to the model.
@@ -184,6 +184,8 @@ class GurobiTranslator(ModelTranslator):
         """
 
         self._check_gurobi_is_installed()
+
+        model = source
 
         # pylint: disable=cyclic-import
         from qiskit_optimization.problems.quadratic_program import QuadraticProgram

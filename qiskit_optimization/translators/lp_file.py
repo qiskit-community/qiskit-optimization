@@ -48,22 +48,22 @@ class LPFileTranslator(ModelTranslator):
     def is_installed(self) -> bool:
         return _HAS_CPLEX
 
-    def is_compatible(self, model: Any) -> bool:
+    def is_compatible(self, source: Any) -> bool:
         """Checks whether a file name is a string or not
 
         Args:
-            model: a LP file name to be read.
+            source: a LP file name to be read.
 
         Returns:
             Returns True if the file name is string, False otherwise.
         """
-        return isinstance(model, str) and model.lower().endswith(".lp")
+        return isinstance(source, str) and source.lower().endswith(".lp")
 
     def from_qp(self, quadratic_program: "QuadraticProgram") -> None:
         """Write a docplex model to a LP file.
 
         Args:
-            quadratic_program: The quadratic program to be translated
+            quadratic_program: The quadratic program to be written.
 
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
@@ -71,11 +71,11 @@ class LPFileTranslator(ModelTranslator):
         mdl = DocplexMpTranslator().from_qp(quadratic_program)
         mdl.export_as_lp(self._filename)
 
-    def to_qp(self, model: Any) -> "QuadraticProgram":
+    def to_qp(self, source: Any) -> "QuadraticProgram":
         """Read a LP file to generate ``QuadraticProgram``.
 
         Args:
-            model: a LP file name to be read.
+            source: a LP file name to be read.
 
         Returns:
             The quadratic program corresponding to the model.
@@ -106,6 +106,6 @@ class LPFileTranslator(ModelTranslator):
                         break
             return model_name
 
-        filename = model
+        filename = source
         mdl = ModelReader().read(filename, model_name=_parse_problem_name(filename))
         return DocplexMpTranslator().to_qp(mdl)

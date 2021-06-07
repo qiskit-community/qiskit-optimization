@@ -21,11 +21,7 @@ if TYPE_CHECKING:
 
 
 class ModelTranslator(ABC):
-    """Translator between an optimization model and a quadratic program
-
-    Note:
-        The types of quadratic_program is `Any` because we need to avoid cyclic import.
-    """
+    """Translator between a quadratic program and another object."""
 
     @abstractmethod
     def is_installed(self) -> bool:
@@ -37,11 +33,11 @@ class ModelTranslator(ABC):
         pass
 
     @abstractmethod
-    def is_compatible(self, model: Any) -> bool:
-        """Checks whether a given model can be translated with this translator.
+    def is_compatible(self, source: Any) -> bool:
+        """Checks whether a source can be translated with this translator.
 
         Args:
-            model: The optimization model to check compatibility.
+            source: The external source to be translated into ``QuadraticProgram``.
 
         Returns:
             Returns True if the model is compatible, False otherwise.
@@ -53,7 +49,7 @@ class ModelTranslator(ABC):
         """Returns an optimization model corresponding to a quadratic program.
 
         Args:
-            quadratic_program: The quadratic program to be translated
+            quadratic_program: The quadratic program to be translated.
 
         Returns:
             The optimization model corresponding to a quadratic program.
@@ -61,11 +57,11 @@ class ModelTranslator(ABC):
         pass
 
     @abstractmethod
-    def to_qp(self, model: Any) -> "QuadraticProgram":
+    def to_qp(self, source: Any) -> "QuadraticProgram":
         """Translate an optimization model into a quadratic program.
 
         Args:
-            model: The optimization model to be loaded.
+            source: The external source to be translated into ``QuadraticProgram``.
 
         Returns:
             The quadratic program corresponding to the model.
