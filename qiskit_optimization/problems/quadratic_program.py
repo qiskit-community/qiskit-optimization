@@ -95,7 +95,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        return self.to_docplex().export_as_lp_string()
+        return self.export("lp")
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
@@ -888,20 +888,37 @@ class QuadraticProgram:
         """
         return _load_model(model)
 
-    def export(self, translator: Optional[ModelTranslator] = None) -> Any:
+    def export(self, translator: Optional[Union[ModelTranslator, str]] = None) -> Any:
         """Returns an optimization model corresponding to this quadratic program.
+
+        Args:
+            translator: The model translator or string format ('lp' or 'pprint').
 
         Returns:
             The optimization model corresponding to this quadratic program.
 
         Raises:
-            QiskitOptimizationError: if non-supported elements (should never happen).
+            TypeError: if the ``translator`` is neither ``ModelTranslator`` nor ``str``.
+            QiskitOptimizationError: if the string option is not valid.
         """
-        if translator is None:
-            from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
+        from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
 
+        if translator is None:
             translator = DocplexMpTranslator()
-        return translator.from_qp(self)
+
+        if isinstance(translator, ModelTranslator):
+            return translator.from_qp(self)
+        elif isinstance(translator, str):
+            mdl = DocplexMpTranslator().from_qp(self)
+            string = translator.lower()
+            if string == "lp":
+                return mdl.export_as_lp_string()
+            elif string == "pprint":
+                return mdl.pprint_as_string()
+            else:
+                raise QiskitOptimizationError(f"Invalid string option: {translator}")
+        else:
+            raise TypeError(f"Invalid translator {translator}")
 
     def from_docplex(self, model: Model) -> None:
         """Loads this quadratic program from a docplex model.
@@ -1089,7 +1106,13 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        return self.export().export_as_lp_string()
+        warnings.warn(
+            "The export_as_lp_string method is deprecated and will be "
+            "removed in a future release. Instead use the "
+            "export() method",
+            DeprecationWarning,
+        )
+        return self.export("lp")
 
     def pprint_as_string(self) -> str:
         """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
@@ -1098,12 +1121,12 @@ class QuadraticProgram:
         """
         warnings.warn(
             "The pprint_as_string method is deprecated and will be "
-            "removed in a future release. Instead use the"
+            "removed in a future release. Instead use the "
             "to_docplex() method and run pprint_as_string() on that "
             "output",
             DeprecationWarning,
         )
-        return self.export().pprint_as_string()
+        return self.export("pprint")
 
     def prettyprint(self, out: Optional[str] = None) -> None:
         """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
@@ -1114,7 +1137,7 @@ class QuadraticProgram:
         """
         warnings.warn(
             "The prettyprint method is deprecated and will be "
-            "removed in a future release. Instead use the"
+            "removed in a future release. Instead use the "
             "to_docplex() method and run prettyprint() on that "
             "output",
             DeprecationWarning,
@@ -1181,7 +1204,7 @@ class QuadraticProgram:
         """
         warnings.warn(
             "The write_to_lp_file method is deprecated and will be "
-            "removed in a future release. Instead use the"
+            "removed in a future release. Instead use the "
             "export() method with LPFileTranslator ",
             DeprecationWarning,
         )
