@@ -620,7 +620,7 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertDictEqual(cst.quadratic.to_dict(), cst2.quadratic.to_dict())
 
     def test_linear_inequality_to_penalty1(self):
-        """Test special contraint to penalty x+y <= 1 -> P(xy)"""
+        """Test special constraint to penalty x+y <= 1 -> P(x*y)"""
 
         op = QuadraticProgram()
         lip = LinearInequalityToPenalty()
@@ -699,7 +699,7 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(op2.get_num_quadratic_constraints(), 1)
 
     def test_linear_inequality_to_penalty2(self):
-        """Test special contraint to penalty x+y >= 1 -> P(1-x-y+xy)"""
+        """Test special constraint to penalty x+y >= 1 -> P(1-x-y+x*y)"""
 
         op = QuadraticProgram()
         lip = LinearInequalityToPenalty()
@@ -801,7 +801,7 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(op2.get_num_quadratic_constraints(), 1)
 
     def test_linear_inequality_to_penalty4(self):
-        """Test special contraint to penalty x+y+z <= 1 -> P(xy+yz+zx)"""
+        """Test special constraint to penalty x+y+z <= 1 -> P(x*y+y*z+z*x)"""
 
         op = QuadraticProgram()
         lip = LinearInequalityToPenalty()
@@ -823,7 +823,7 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(op2.get_num_linear_constraints(), 0)
 
     def test_linear_inequality_to_penalty6(self):
-        """Test special contraint to penalty 6 x-y <= 0 -> P(x-xy)"""
+        """Test special constraint to penalty 6 x-y <= 0 -> P(x-x*y)"""
 
         op = QuadraticProgram()
         lip = LinearInequalityToPenalty()
