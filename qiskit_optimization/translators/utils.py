@@ -42,4 +42,4 @@ def _load_qp_from_source(source: Any) -> "QuadraticProgram":
     for trans in _translators:
         if trans.is_installed() and trans.is_compatible(source):
             return trans.to_qp(source)
-    raise QiskitOptimizationError(f"There is no compatible translator to this source: {source}")
+    raise QiskitOptimizationError(f"There is no compatible translator for this source: {source}")
