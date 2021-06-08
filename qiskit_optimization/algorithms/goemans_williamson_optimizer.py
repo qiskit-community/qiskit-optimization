@@ -15,7 +15,7 @@ Implementation of the Goemans-Williamson algorithm as an optimizer.
 Requires CVXPY to run.
 """
 import logging
-from typing import Optional, List, Tuple, Union, cast
+from typing import Optional, List, Tuple, Union
 
 import numpy as np
 from qiskit.exceptions import MissingOptionalLibraryError
@@ -26,7 +26,6 @@ from .optimization_algorithm import (
     OptimizationAlgorithm,
     SolutionSample,
 )
-from ..converters.flip_problem_sense import MinimizeToMaximize
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
 
@@ -150,9 +149,6 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         """
         self._verify_compatibility(problem)
 
-        min2max = MinimizeToMaximize()
-        problem = min2max.convert(problem)
-
         adj_matrix = self._extract_adjacency_matrix(problem)
 
         try:
@@ -190,15 +186,13 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             for solution in numeric_solutions
         ]
 
-        return cast(
-            GoemansWilliamsonOptimizationResult,
-            self._interpret(
-                x=samples[0].x,
-                problem=problem,
-                converters=[min2max],
-                result_class=GoemansWilliamsonOptimizationResult,
-                samples=samples,
-            ),
+        return GoemansWilliamsonOptimizationResult(
+            x=samples[0].x,
+            fval=samples[0].fval,
+            variables=problem.variables,
+            status=OptimizationResultStatus.SUCCESS,
+            samples=samples,
+            sdp_solution=chi,
         )
 
     def _get_unique_cuts(

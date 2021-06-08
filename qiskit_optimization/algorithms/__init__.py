@@ -47,7 +47,6 @@ Algorithms and results
    GoemansWilliamsonOptimizationResult
    GroverOptimizationResult
    GroverOptimizer
-   GurobiOptimizer
    IntermediateResult
    MeanAggregator
    MinimumEigenOptimizationResult
@@ -76,7 +75,6 @@ from .goemans_williamson_optimizer import (
     GoemansWilliamsonOptimizationResult,
 )
 from .grover_optimizer import GroverOptimizer, GroverOptimizationResult
-from .gurobi_optimizer import GurobiOptimizer
 from .minimum_eigen_optimizer import (
     MinimumEigenOptimizer,
     MinimumEigenOptimizationResult,
@@ -113,7 +111,6 @@ __all__ = [
     "GoemansWilliamsonOptimizationResult",
     "GroverOptimizer",
     "GroverOptimizationResult",
-    "GurobiOptimizer",
     "MeanAggregator",
     "MinimumEigenOptimizer",
     "MinimumEigenOptimizationResult",

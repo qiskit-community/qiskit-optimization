@@ -35,7 +35,6 @@ from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
     LinearEqualityToPenalty,
-    MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
@@ -191,8 +190,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ineq2eq = InequalityToEquality()
         int2bin = IntegerToBinary()
         penalize = LinearEqualityToPenalty()
-        max2min = MaximizeToMinimize()
-        converters = [ineq2eq, int2bin, penalize, max2min]
+        converters = [ineq2eq, int2bin, penalize]
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=converters)
         result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
@@ -232,10 +230,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.samples[0].status, success)
         self.assertEqual(len(result.raw_samples), 1)
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [0, 0, 1, 0])
-        # optimizer internally deals with minimization problem
-        self.assertAlmostEqual(
-            self.op_maximize.objective.sense.value * result.raw_samples[0].fval, opt_sol
-        )
+        self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
 
@@ -278,11 +273,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(max(s.fval for s in result.samples), 5)
         self.assertAlmostEqual(max(s.fval for s in result.samples if s.status == success), opt_sol)
-        # optimizer internally deals with minimization problem
-        self.assertAlmostEqual(
-            max(self.op_maximize.objective.sense.value * s.fval for s in result.raw_samples),
-            opt_sol,
-        )
+        self.assertAlmostEqual(max(s.fval for s in result.raw_samples), opt_sol)
         for sample in result.raw_samples:
             self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(result.x, [0, 1])
@@ -292,10 +283,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.samples[0].fval, opt_sol)
         self.assertEqual(result.samples[0].status, success)
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [0, 0, 1, 0])
-        # optimizer internally deals with minimization problem
-        self.assertAlmostEqual(
-            self.op_maximize.objective.sense.value * result.raw_samples[0].fval, opt_sol
-        )
+        self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertEqual(result.raw_samples[0].status, success)
         # test bit ordering
         opt_sol = -2

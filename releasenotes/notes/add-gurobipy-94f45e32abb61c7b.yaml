@@ -1,6 +1,0 @@
----
-features:
-  - |
-    Adds :class`qiskit_optimization.algorithms.GurobiOptimizer`.
-    ``pip install qiskit_optimization[gurobi]`` installs
-    ``gurobipy`` to enable this optimizer.

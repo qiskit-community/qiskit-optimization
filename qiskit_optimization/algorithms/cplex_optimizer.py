@@ -13,22 +13,16 @@
 """The CPLEX optimizer wrapped to be used within Qiskit's optimization module."""
 
 import logging
-from typing import Any, Dict, Optional
-from warnings import warn
 
 from qiskit.exceptions import MissingOptionalLibraryError
-
-from .optimization_algorithm import (
-    OptimizationAlgorithm,
-    OptimizationResult,
-    OptimizationResultStatus,
-)
+from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
+from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
 
 logger = logging.getLogger(__name__)
 
 try:
-    from cplex import Cplex  # pylint: disable=unused-import
+    from cplex.exceptions import CplexSolverError
 
     _HAS_CPLEX = True
 except ImportError:
@@ -50,14 +44,11 @@ class CplexOptimizer(OptimizationAlgorithm):
         >>> if optimizer: result = optimizer.solve(problem)
     """
 
-    def __init__(
-        self, disp: bool = False, cplex_parameters: Optional[Dict[str, Any]] = None
-    ) -> None:
+    def __init__(self, disp: bool = False) -> None:
         """Initializes the CplexOptimizer.
 
         Args:
             disp: Whether to print CPLEX output or not.
-            cplex_parameters: The parameters for CPLEX.
 
         Raises:
             MissingOptionalLibraryError: CPLEX is not installed.
@@ -70,7 +61,6 @@ class CplexOptimizer(OptimizationAlgorithm):
             )
 
         self._disp = disp
-        self._cplex_parameters = cplex_parameters
 
     @staticmethod
     def is_cplex_installed():
@@ -93,19 +83,6 @@ class CplexOptimizer(OptimizationAlgorithm):
             disp: The display setting.
         """
         self._disp = disp
-
-    @property
-    def cplex_parameters(self) -> Optional[Dict[str, Any]]:
-        """Returns parameters for CPLEX"""
-        return self._cplex_parameters
-
-    @cplex_parameters.setter
-    def cplex_parameters(self, parameters: Optional[Dict[str, Any]]):
-        """Set parameters for CPLEX
-        Args:
-            parameters: The parameters for CPLEX
-        """
-        self._cplex_parameters = parameters
 
     # pylint:disable=unused-argument
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
@@ -139,26 +116,33 @@ class CplexOptimizer(OptimizationAlgorithm):
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
 
-        mod = problem.to_docplex()
-        sol = mod.solve(log_output=self._disp, cplex_parameters=self._cplex_parameters)
-        if sol is None:
-            # no solution is found
-            warn("CPLEX cannot solve the model")
-            x = [0.0] * mod.number_of_variables
-            return OptimizationResult(
-                x=x,
-                fval=problem.objective.evaluate(x),
-                variables=problem.variables,
-                status=OptimizationResultStatus.FAILURE,
-                raw_results=None,
-            )
-        else:
-            # a solution is found
-            x = sol.get_values(mod.iter_variables())
-            return OptimizationResult(
-                x=x,
-                fval=sol.get_objective_value(),
-                variables=problem.variables,
-                status=self._get_feasibility_status(problem, x),
-                raw_results=sol,
-            )
+        # convert to CPLEX problem
+        cplex = problem.to_docplex().get_cplex()
+
+        # set display setting
+        if not self.disp:
+            cplex.set_log_stream(None)
+            cplex.set_error_stream(None)
+            cplex.set_warning_stream(None)
+            cplex.set_results_stream(None)
+
+        # solve problem
+        try:
+            cplex.solve()
+        except CplexSolverError as ex:
+            raise QiskitOptimizationError(str(ex)) from ex
+
+        # process results
+        sol = cplex.solution
+
+        # create results
+        result = OptimizationResult(
+            x=sol.get_values(),
+            fval=sol.get_objective_value(),
+            variables=problem.variables,
+            status=self._get_feasibility_status(problem, sol.get_values()),
+            raw_results=sol,
+        )
+
+        # return solution
+        return result
