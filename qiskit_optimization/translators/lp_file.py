@@ -12,13 +12,15 @@
 
 """LP file reader and writer"""
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from docplex.mp.model_reader import ModelReader
+
 from qiskit.exceptions import MissingOptionalLibraryError
 
+from ..exceptions import QiskitOptimizationError
 from .docplex_mp import DocplexMpTranslator
-from .model_translator import ModelTranslator
+from .quadratic_program_translator import QuadraticProgramTranslator
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
@@ -32,10 +34,10 @@ except ImportError:
     _HAS_CPLEX = False
 
 
-class LPFileTranslator(ModelTranslator):
+class LPFileTranslator(QuadraticProgramTranslator):
     """Translator between a LP file and a quadratic program"""
 
-    def __init__(self, output_filename: str = ""):
+    def __init__(self, output_filename: Optional[str] = None):
         """
         Args:
             output_filename: The filename of the file the model is written to.
@@ -44,10 +46,12 @@ class LPFileTranslator(ModelTranslator):
         """
         self._filename = output_filename
 
-    def is_installed(self) -> bool:
+    @classmethod
+    def is_installed(cls) -> bool:
         return _HAS_CPLEX
 
-    def is_compatible(self, source: Any) -> bool:
+    @classmethod
+    def is_compatible(cls, source: Any) -> bool:
         """Checks whether a file name is a string or not
 
         Args:
@@ -66,7 +70,10 @@ class LPFileTranslator(ModelTranslator):
 
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
+            QiskitOptimizationError: if a file name is not provided in the constructor.
         """
+        if self._filename is None:
+            raise QiskitOptimizationError("No file name is provided")
         mdl = DocplexMpTranslator().from_qp(quadratic_program)
         mdl.export_as_lp(self._filename)
 

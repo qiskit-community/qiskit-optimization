@@ -13,7 +13,7 @@
 """An abstract class for optimization algorithms in Qiskit's optimization module."""
 
 from abc import ABC, abstractmethod
-from typing import List, Union, Optional
+from typing import List, Union
 
 import numpy as np
 

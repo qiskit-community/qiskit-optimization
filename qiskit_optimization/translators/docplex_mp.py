@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Model translators between QuadraticProgram and Docplex"""
+"""Translator between a docplex.mp model and a quadratic program"""
 
 from typing import TYPE_CHECKING, Any, cast
 
@@ -27,24 +27,26 @@ from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
 
-from .model_translator import ModelTranslator
+from .quadratic_program_translator import QuadraticProgramTranslator
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-class DocplexMpTranslator(ModelTranslator):
-    """Translator between a docplex model and a quadratic program"""
+class DocplexMpTranslator(QuadraticProgramTranslator):
+    """Translator between a docplex.mp model and a quadratic program"""
 
-    def is_installed(self) -> bool:
+    @classmethod
+    def is_installed(cls) -> bool:
         return True
 
-    def is_compatible(self, source: Any) -> bool:
-        """Checks whether a given model can be translated with this translator.
+    @classmethod
+    def is_compatible(cls, source: Any) -> bool:
+        """Checks whether the supplied model type is supported by translator.
 
         Args:
-            source: The docplex model to be loaded.
+            source: The docplex.mp model to be loaded.
 
         Returns:
             Returns True if the model is compatible, False otherwise.
@@ -52,20 +54,17 @@ class DocplexMpTranslator(ModelTranslator):
         return isinstance(source, Model)
 
     def from_qp(self, quadratic_program: "QuadraticProgram") -> Model:
-        """Returns a docplex model corresponding to a quadratic program.
+        """Returns a docplex.mp model corresponding to a quadratic program.
 
         Args:
             quadratic_program: The quadratic program to be translated
 
         Returns:
-            The docplex model corresponding to a quadratic program.
+            The docplex.mp model corresponding to a quadratic program.
 
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
-        # from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-        # quadratic_program = cast(QuadraticProgram, quadratic_program)
-
         # initialize model
         mdl = Model(quadratic_program.name)
 
@@ -142,7 +141,7 @@ class DocplexMpTranslator(ModelTranslator):
         return mdl
 
     def to_qp(self, source: Model) -> "QuadraticProgram":
-        """Translate a docplex model into a quadratic program.
+        """Translate a docplex.mp model into a quadratic program.
 
         Note that this supports only basic functions of docplex as follows:
         - quadratic objective function
@@ -150,7 +149,7 @@ class DocplexMpTranslator(ModelTranslator):
         - binary / integer / continuous variables
 
         Args:
-            source: The docplex model to be loaded.
+            source: The docplex.mp model to be loaded.
 
         Returns:
             The quadratic program corresponding to the model.

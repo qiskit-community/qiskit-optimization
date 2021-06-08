@@ -24,28 +24,22 @@ if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
-translators = [DocplexMpTranslator(), GurobiTranslator(), LPFileTranslator()]
+_translators = [DocplexMpTranslator(), GurobiTranslator(), LPFileTranslator()]
 
 
-def _load_model(model: Any) -> "QuadraticProgram":
-    """Returns a quadratic program corresponding to the model.
+def _load_qp_from_source(source: Any) -> "QuadraticProgram":
+    """Returns a quadratic program loading from a provided source.
 
     Args:
-        model: The optimization model to be translated
+        source: The external source to be translated into a quadratic program.
 
     Returns:
-        The quadratic program corresponding to the model.
+        The quadratic program loading from the provided source.
 
     Raises:
-        QiskitOptimizationError: if no model translator can handle the model.
-
-    Note:
-        The return type is `Any` not `QuadraticProgram` because we need to avoid cyclic import.
-
+        QiskitOptimizationError: if no translator supports the provided source.
     """
-    for trans in translators:
-        if trans.is_installed() and trans.is_compatible(model):
-            return trans.to_qp(model)
-    raise QiskitOptimizationError(
-        "There is no compatible translator to this model: {}".format(type(model))
-    )
+    for trans in _translators:
+        if trans.is_installed() and trans.is_compatible(source):
+            return trans.to_qp(source)
+    raise QiskitOptimizationError(f"There is no compatible translator to this source: {source}")

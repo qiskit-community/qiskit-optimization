@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Model translators between QuadraticProgram and Gurobipy"""
+"""Translator between a gurobipy model and a quadratic program"""
 
 from typing import TYPE_CHECKING, Any, cast
 
@@ -31,23 +31,23 @@ except ImportError:
 
 
 from qiskit.exceptions import MissingOptionalLibraryError
-
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
 
-from .model_translator import ModelTranslator
+from .quadratic_program_translator import QuadraticProgramTranslator
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-class GurobiTranslator(ModelTranslator):
+class GurobiTranslator(QuadraticProgramTranslator):
     """Translator between a gurobipy model and a quadratic program"""
 
-    def is_installed(self) -> bool:
+    @classmethod
+    def is_installed(cls) -> bool:
         return _HAS_GUROBI
 
     @staticmethod
@@ -59,8 +59,9 @@ class GurobiTranslator(ModelTranslator):
                 pip_install="pip install gurobipy",
             )
 
-    def is_compatible(self, source: Any) -> bool:
-        """Checks whether a given model can be translated with this translator.
+    @classmethod
+    def is_compatible(cls, source: Any) -> bool:
+        """Checks whether the supplied model type is supported by translator.
 
         Args:
             source: The gurobipy model to be loaded.

@@ -18,6 +18,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase, requires_ext
 
 from docplex.mp.model import DOcplexException
 
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticObjective, QuadraticProgram, Variable
 from qiskit_optimization.translators import LPFileTranslator
 
@@ -168,4 +169,8 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
 
         with self.assertRaises(DOcplexException):
             translator = LPFileTranslator("")
+            translator.from_qp(q_p)
+
+        with self.assertRaises(QiskitOptimizationError):
+            translator = LPFileTranslator()
             translator.from_qp(q_p)

@@ -23,15 +23,16 @@ from typing import Any, Dict, List, Optional, Tuple, Union, cast
 import numpy as np
 from docplex.mp.model import Model
 from numpy import ndarray, zeros
+from scipy.sparse import spmatrix
+
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
-from scipy.sparse import spmatrix
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from ..translators.lp_file import LPFileTranslator
-from ..translators.model_translator import ModelTranslator
-from ..translators.utils import _load_model
+from ..translators.quadratic_program_translator import QuadraticProgramTranslator
+from ..translators.utils import _load_qp_from_source
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -859,7 +860,9 @@ class QuadraticProgram:
 
     @staticmethod
     def load(source: Any) -> "QuadraticProgram":
-        """Loads this quadratic program from an external source.
+        """Loads this quadratic program from an external source such as optimization models
+        and files supported by
+        :class:`~qiskit_optimization.translators.QuadraticProgramTranslator`s.
 
         Args:
             source: The external source to be loaded.
@@ -868,11 +871,11 @@ class QuadraticProgram:
             the quadratic program corresponding to the source.
 
         Raises:
-            QiskitOptimizationError: if the model contains unsupported elements.
+            QiskitOptimizationError: if the provided source is not supported by any translator.
         """
-        return _load_model(source)
+        return _load_qp_from_source(source)
 
-    def export(self, translator: Optional[Union[ModelTranslator, str]] = None) -> Any:
+    def export(self, translator: Optional[Union[QuadraticProgramTranslator, str]] = None) -> Any:
         """Exports this quadratic program as another object.
 
         Args:
@@ -890,7 +893,7 @@ class QuadraticProgram:
         if translator is None:
             translator = DocplexMpTranslator()
 
-        if isinstance(translator, ModelTranslator):
+        if isinstance(translator, QuadraticProgramTranslator):
             return translator.from_qp(self)
         elif isinstance(translator, str):
             mdl = DocplexMpTranslator().from_qp(self)
