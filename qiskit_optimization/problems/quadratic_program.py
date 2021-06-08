@@ -861,8 +861,7 @@ class QuadraticProgram:
     @staticmethod
     def load(source: Any) -> "QuadraticProgram":
         """Loads this quadratic program from an external source such as optimization models
-        and files supported by
-        :class:`~qiskit_optimization.translators.QuadraticProgramTranslator`s.
+        and files supported by any of ``QuadraticProgramTranslator``.
 
         Args:
             source: The external source to be loaded.
@@ -885,7 +884,7 @@ class QuadraticProgram:
             The object corresponding to this quadratic program.
 
         Raises:
-            TypeError: if the ``translator`` is neither ``ModelTranslator`` nor ``str``.
+            TypeError: if the ``translator`` is neither ``QuadraticProgramTranslator`` nor ``str``.
             QiskitOptimizationError: if the string option is not valid.
         """
         from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
