@@ -80,7 +80,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        return self.export("lp")
+        return self.export_as_lp_string()
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
@@ -867,44 +867,29 @@ class QuadraticProgram:
             source: The external source to be loaded.
 
         Returns:
-            the quadratic program corresponding to the source.
+            the quadratic program of the translation from the source.
 
         Raises:
             QiskitOptimizationError: if the provided source is not supported by any translator.
         """
         return _load_qp_from_source(source)
 
-    def export(self, translator: Optional[Union[QuadraticProgramTranslator, str]] = None) -> Any:
-        """Exports this quadratic program as another object.
+    def export(self, translator: Optional[QuadraticProgramTranslator] = None) -> Any:
+        """Translates this quadratic program to another object and returns the result.
 
         Args:
-            translator: The model translator or string format ('lp' or 'pprint').
+            translator: The quadratic program translator.
+            If ``None``, ``DocplexMpTranslator`` is used.
 
         Returns:
-            The object corresponding to this quadratic program.
-
-        Raises:
-            TypeError: if the ``translator`` is neither ``QuadraticProgramTranslator`` nor ``str``.
-            QiskitOptimizationError: if the string option is not valid.
+            The object of the translation from this quadratic program.
         """
         from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
 
         if translator is None:
             translator = DocplexMpTranslator()
 
-        if isinstance(translator, QuadraticProgramTranslator):
-            return translator.from_qp(self)
-        elif isinstance(translator, str):
-            mdl = DocplexMpTranslator().from_qp(self)
-            string = translator.lower()
-            if string == "lp":
-                return mdl.export_as_lp_string()
-            elif string == "pprint":
-                return mdl.pprint_as_string()
-            else:
-                raise QiskitOptimizationError(f"Invalid string option: {translator}")
-        else:
-            raise TypeError(f"Invalid translator: {translator}")
+        return translator.from_qp(self)
 
     def from_docplex(self, model: Model) -> None:
         """Loads this quadratic program from a docplex model.
@@ -955,13 +940,7 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        warnings.warn(
-            "The export_as_lp_string method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "export() method",
-            DeprecationWarning,
-        )
-        return self.export("lp")
+        return self.export().export_as_lp_string()
 
     def pprint_as_string(self) -> str:
         """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
@@ -975,7 +954,7 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        return self.export("pprint")
+        return self.export().pprint_as_string()
 
     def prettyprint(self, out: Optional[str] = None) -> None:
         """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
