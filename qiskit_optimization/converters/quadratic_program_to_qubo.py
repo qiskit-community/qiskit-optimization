@@ -43,11 +43,13 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
         from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
+        from ..converters.linear_inequality_to_penalty import LinearInequalityToPenalty
         from ..converters.flip_problem_sense import MaximizeToMinimize
 
         self._int_to_bin = IntegerToBinary()
         self._ineq_to_eq = InequalityToEquality(mode="integer")
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
+        self._penalize_lin_ineq_constraints = LinearInequalityToPenalty(penalty=penalty)
         self._max_to_min = MaximizeToMinimize()
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -68,8 +70,11 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         if len(msg) > 0:
             raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
 
+        # Convert inequality constraints into penalty term.
+        problem_ = self._penalize_lin_ineq_constraints.convert(problem)
+
         # Convert inequality constraints into equality constraints by adding slack variables
-        problem_ = self._ineq_to_eq.convert(problem)
+        problem_ = self._ineq_to_eq.convert(problem_)
 
         # Map integer variables to binary variables
         problem_ = self._int_to_bin.convert(problem_)
@@ -96,6 +101,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         x = self._penalize_lin_eq_constraints.interpret(x)
         x = self._int_to_bin.interpret(x)
         x = self._ineq_to_eq.interpret(x)
+        x = self._penalize_lin_ineq_constraints.interpret(x)
         return x
 
     @staticmethod

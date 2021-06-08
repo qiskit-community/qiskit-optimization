@@ -53,11 +53,13 @@ from .flip_problem_sense import MaximizeToMinimize
 from .flip_problem_sense import MinimizeToMaximize
 from .quadratic_program_to_qubo import QuadraticProgramToQubo
 from .quadratic_program_converter import QuadraticProgramConverter
+from .linear_inequality_to_penalty import LinearInequalityToPenalty
 
 __all__ = [
     "InequalityToEquality",
     "IntegerToBinary",
     "LinearEqualityToPenalty",
+    "LinearInequalityToPenalty",
     "MaximizeToMinimize",
     "MinimizeToMaximize",
     "QuadraticProgramConverter",
