@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 
 
 class LinearInequalityToPenalty(QuadraticProgramConverter):
-    """Convert a problem of known constraints to unconstrained with penalty terms.
-    
+    r"""Convert a problem of known constraints to unconstrained with penalty terms.
+
     There are known constraints which do not require to add slack variables to
     construct penalty terms [1].
 
@@ -48,18 +48,18 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
       \hline
       \end{array}
 
-    Where x, y or z are binary variables, and P is penalty constant. In this calss,
+    Where x, y or z are binary variables, and P is penalty constant. In this class,
     value of P is automatically determined, but can be supplied as argument at the timing
     of instantiation.
 
     If the constraint does not match the pattern of classical constraint, the constraint
     is kept as is. Otherwise, constraint is converted into equivalent penalty and added
     to objective function.
-    
+
     References:
-        [1]: Fred Glover, Gary Kochenberger, Yu Du (2019), 
+        [1]: Fred Glover, Gary Kochenberger, Yu Du (2019),
              A Tutorial on Formulating and Using QUBO Models,
-            `arXiv:1811.11538 <https://arxiv.org/abs/1811.11538>`_.    
+            `arXiv:1811.11538 <https://arxiv.org/abs/1811.11538>`_.
     """
 
     def __init__(self, penalty: Optional[float] = None) -> None:
@@ -83,7 +83,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             The converted problem
 
         Raises:
-            QiskitOptimizationError:
+            QiskitOptimizationError: If an unsupported-type variable exists.
         """
 
         # create empty QuadraticProgram model
@@ -117,7 +117,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         for constraint in self._src.linear_constraints:
 
             # special contraint check function here
-            if self._is_special_constraint(constraint) == False:
+            if not self._is_special_constraint(constraint):
                 self._dst.linear_constraints.append(constraint)
                 continue
             #
@@ -130,16 +130,16 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                 offset += sense * penalty * conv_matrix[0][0]
 
             # linear parts of penalty
-            for j in range(len(rowlist)):
+            for (j, x) in enumerate(rowlist):
                 # if j already exists in the linear terms dic, add a penalty term
                 # into existing value else create new key and value in the linear_term dict
                 if conv_matrix[0][j + 1] != 0:
-                    linear[rowlist[j][0]] = (
-                        linear.get(rowlist[j][0], 0.0) + sense * penalty * conv_matrix[0][j + 1]
+                    linear[x[0]] = (
+                        linear.get(x[0], 0.0) + sense * penalty * conv_matrix[0][j + 1]
                     )
 
             # quadratic parts of penalty
-            for j in range(len(rowlist)):
+            for (j, x) in enumerate(rowlist):
                 for k in range(j, len(rowlist)):
                     # if j and k already exist in the quadratic terms dict,
                     # add a penalty term into existing value
@@ -147,7 +147,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
                     if conv_matrix[j + 1][k + 1] != 0:
                         tup = cast(
-                            Union[Tuple[int, int], Tuple[str, str]], (rowlist[j][0], rowlist[k][0])
+                            Union[Tuple[int, int], Tuple[str, str]], (x[0], rowlist[k][0])
                         )
                         quadratic[tup] = (
                             quadratic.get(tup, 0.0) + sense * penalty * conv_matrix[j + 1][k + 1]
@@ -176,11 +176,11 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         """
         vars_dict = constraint.linear.to_dict(use_name=True)
-        vars = list(vars_dict.items())
+        vrs = list(vars_dict.items())
         rhs = constraint.rhs
         sense = constraint.sense
 
-        num_vars = len(vars)
+        num_vars = len(vrs)
         combinations = list(itertools.combinations(np.arange(num_vars), 2))
 
         # conversion matrix
@@ -197,9 +197,9 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                 conv_matrix[index1][index2] = 1
             elif rhs == 0:
                 conv_matrix[0][0] = 0
-                if vars[index1 - 1][1] > 0.0:
+                if vrs[index1 - 1][1] > 0.0:
                     conv_matrix[0][index1] = 1
-                elif vars[index2 - 1][1] > 0.0:
+                elif vrs[index2 - 1][1] > 0.0:
                     conv_matrix[0][index2] = 1
                 conv_matrix[index1][index2] = -1
 
@@ -218,13 +218,13 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         coeff_array = np.array(list(params.values()))
 
         # Binary parameter?
-        if not all([self._src.variables[i].vartype == Variable.Type.BINARY for i in params.keys()]):
+        if not all(self._src.variables[i].vartype == Variable.Type.BINARY for i in params.keys()):
             return False
 
         if len(params) == 2:
             if rhs == 1:
                 if all(i == 1 for i in params.values()):
-                    if sense == Constraint.Sense.LE or sense == Constraint.Sense.GE:
+                    if sense in (Constraint.Sense.LE, Constraint.Sense.GE):
                         # x+y<=1
                         # x+y>=1
                         return True

@@ -14,14 +14,21 @@
 
 import logging
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import (
+    QiskitOptimizationTestCase,
+    requires_extra_library,
+)
 
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit.opflow import Z, I
 from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit_optimization.algorithms import MinimumEigenOptimizer, CplexOptimizer, ADMMOptimizer
+from qiskit_optimization.algorithms import (
+    MinimumEigenOptimizer,
+    CplexOptimizer,
+    ADMMOptimizer,
+)
 from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -637,7 +644,7 @@ class TestConverters(QiskitOptimizationTestCase):
         linear = {"x": 2, "y": 1}
         op.maximize(linear=linear)
         lip.penalty = 5
-        quadratic = {("x", "y"): -lip.penalty}
+        quadratic = {("x", "y"): -1 * lip.penalty}
         op2 = lip.convert(op)
         ldct = op2.objective.linear.to_dict(use_name=True)
         qdct = op2.objective.quadratic.to_dict(use_name=True)
@@ -707,7 +714,7 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(op.get_num_linear_constraints(), 1)
         lip.penalty = 1
         constant = 1
-        linear = {"x": -lip.penalty, "y": -lip.penalty}
+        linear = {"x": -1 * lip.penalty, "y": -1 * lip.penalty}
         quadratic = {("x", "y"): lip.penalty}
         op2 = lip.convert(op)
         cnst = op2.objective.constant
@@ -722,10 +729,10 @@ class TestConverters(QiskitOptimizationTestCase):
         linear = {"x": 2, "y": 1}
         op.maximize(linear=linear)
         lip.penalty = 5
-        constant = -lip.penalty
+        constant = -1 * lip.penalty
         linear["x"] = linear["x"] + lip.penalty
         linear["y"] = linear["y"] + lip.penalty
-        quadratic = {("x", "y"): -lip.penalty}
+        quadratic = {("x", "y"): -1 * lip.penalty}
         op2 = lip.convert(op)
         cnst = op2.objective.constant
         ldct = op2.objective.linear.to_dict(use_name=True)
@@ -808,8 +815,8 @@ class TestConverters(QiskitOptimizationTestCase):
 
         # Test with no max/min
         self.assertEqual(op.get_num_linear_constraints(), 1)
-        P = 1
-        quadratic = {("x", "y"): P, ("x", "z"): P, ("y", "z"): P}
+        penalty = 1
+        quadratic = {("x", "y"): penalty, ("x", "z"): penalty, ("y", "z"): penalty}
         op2 = lip.convert(op)
         qdct = op2.objective.quadratic.to_dict(use_name=True)
         self.assertEqual(qdct, quadratic)
@@ -829,9 +836,9 @@ class TestConverters(QiskitOptimizationTestCase):
 
         # Test with no max/min
         self.assertEqual(op.get_num_linear_constraints(), 1)
-        P = 1
-        linear = {"x": P}
-        quadratic = {("x", "y"): -P}
+        penalty = 1
+        linear = {"x": penalty}
+        quadratic = {("x", "y"): -1 * penalty}
         op2 = lip.convert(op)
         ldct = op2.objective.linear.to_dict(use_name=True)
         qdct = op2.objective.quadratic.to_dict(use_name=True)
@@ -842,9 +849,9 @@ class TestConverters(QiskitOptimizationTestCase):
         # Test maximize
         linear = {"x": 2, "y": 1}
         op.maximize(linear=linear)
-        P = 4
-        linear["x"] = linear["x"] - P
-        quadratic = {("x", "y"): P}
+        penalty = 4
+        linear["x"] = linear["x"] - penalty
+        quadratic = {("x", "y"): penalty}
         op2 = lip.convert(op)
         ldct = op2.objective.linear.to_dict(use_name=True)
         qdct = op2.objective.quadratic.to_dict(use_name=True)
@@ -855,9 +862,9 @@ class TestConverters(QiskitOptimizationTestCase):
         # Test minimize
         linear = {"x": 2, "y": 1}
         op.minimize(linear={"x": 2, "y": 1})
-        P = 4
-        linear["x"] = linear["x"] + P
-        quadratic = {("x", "y"): -P}
+        penalty = 4
+        linear["x"] = linear["x"] + penalty
+        quadratic = {("x", "y"): -1 * penalty}
         op2 = lip.convert(op)
         ldct = op2.objective.linear.to_dict(use_name=True)
         qdct = op2.objective.quadratic.to_dict(use_name=True)
