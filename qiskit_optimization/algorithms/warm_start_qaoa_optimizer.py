@@ -297,7 +297,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         if len(message) > 0:
             raise QiskitOptimizationError(f"Incompatible problem: {message}")
 
-        # convert problem to QUBO or another form if converters are specified
+        # convert problem to minimization QUBO or another form if converters are specified
         converted_problem = self._convert(problem, self._converters)
 
         # if the pre-solver can't solve the problem then it should be relaxed.
@@ -336,7 +336,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
             return results[0]
         else:
             samples = self._aggregator.aggregate(results)
-            samples.sort(key=lambda sample: converted_problem.objective.sense.value * sample.fval)
+            samples.sort(key=lambda sample: problem.objective.sense.value * sample.fval)
 
             # translate result back to the original variables
             return cast(

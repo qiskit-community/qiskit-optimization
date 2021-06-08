@@ -66,6 +66,7 @@ jobs:
         shell: bash
       - name: Run make html
         run:  |
+          make clean_sphinx
           make html SPHINXOPTS=-W
           cd docs/_build/html
           mkdir artifacts
@@ -147,11 +148,11 @@ jobs:
         with:
           name: optimization${{ matrix.python-version }}
           path: ./o${{ matrix.python-version }}/*
-      - name: Optimization Unit Tests without cplex/cvxpy/matplotlib under Python ${{ matrix.python-version }}
+      - name: Optimization Unit Tests without cplex/cvxpy/matplotlib/gurobipy under Python ${{ matrix.python-version }}
         env:
           PYTHONWARNINGS: default
         run: |
-          pip uninstall -y cplex cvxpy matplotlib
+          pip uninstall -y cplex cvxpy matplotlib gurobipy
           if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}" == "true" ]; then
               export QISKIT_TESTS="run_slow"
           fi
@@ -195,6 +196,34 @@ jobs:
         with:
           name: tutorials${{ matrix.python-version }}
           path: docs/_build/html/artifacts/tutorials.tar.gz
+      - name: Run stable tutorials
+        env:
+          QISKIT_PARALLEL: False
+          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
+        run: |
+          # clean last sphinx output
+          make clean_sphinx
+          # get current version
+          version=$(pip show qiskit-optimization | awk -F. '/^Version:/ { print substr($1,10), $2-1 }' OFS=.)
+          # download stable version
+          wget https://codeload.github.com/Qiskit/qiskit-optimization/zip/stable/$version -O /tmp/repo.zip
+          unzip /tmp/repo.zip -d /tmp/
+          # copy stable tutorials to main tutorials
+          rm -rf docs/tutorials/*
+          cp -R /tmp/qiskit-optimization-stable-$version/docs/tutorials/* docs/tutorials
+          # run tutorials and zip results
+          make html SPHINXOPTS=-W
+          cd docs/_build/html
+          mkdir artifacts
+          tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
+        if: ${{ matrix.python-version == 3.8 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+        shell: bash
+      - name: Run upload stable tutorials
+        uses: actions/upload-artifact@v2
+        with:
+          name: tutorials-stable${{ matrix.python-version }}
+          path: docs/_build/html/artifacts/tutorials.tar.gz
+        if: ${{ matrix.python-version == 3.8 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
   Deprecation_Messages_and_Coverage:
     needs: [Checks, Lint, Optimization, Tutorials]
     runs-on: ubuntu-latest

@@ -23,6 +23,7 @@ from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from ..problems.constraint import Constraint
 from ..problems.quadratic_program import QuadraticProgram
+from ..converters import MaximizeToMinimize
 
 
 class CobylaOptimizer(MultiStartOptimizer):
@@ -117,9 +118,10 @@ class CobylaOptimizer(MultiStartOptimizer):
         """
         self._verify_compatibility(problem)
 
-        # construct quadratic objective function
-        def objective(x):
-            return problem.objective.sense.value * problem.objective.evaluate(x)
+        # we deal with minimization in the optimizer, so turn the problem to minimization
+        max2min = MaximizeToMinimize()
+        original_problem = problem
+        problem = self._convert(problem, max2min)
 
         # initialize constraints list
         constraints = []
@@ -164,7 +166,7 @@ class CobylaOptimizer(MultiStartOptimizer):
         # actual minimization function to be called by multi_start_solve
         def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
             x = fmin_cobyla(
-                objective,
+                problem.objective.evaluate,
                 x_0,
                 constraints,
                 rhobeg=self._rhobeg,
@@ -175,4 +177,8 @@ class CobylaOptimizer(MultiStartOptimizer):
             )
             return x, None
 
-        return self.multi_start_solve(_minimize, problem)
+        result = self.multi_start_solve(_minimize, problem)
+        # eventually convert back minimization to maximization
+        return self._interpret(
+            x=result.x, problem=original_problem, converters=max2min, raw_results=result.raw_results
+        )
