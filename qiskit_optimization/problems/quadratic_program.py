@@ -944,7 +944,7 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        from qiskit_optimization.translators.docplex_mp import to_docplex_mp
+        from ..translators.docplex_mp import to_docplex_mp
 
         to_docplex_mp(self).prettyprint(out)
 
