@@ -860,8 +860,8 @@ class QuadraticProgram:
 
     @staticmethod
     def load(source: Any) -> "QuadraticProgram":
-        """Loads this quadratic program from an external source such as optimization models
-        and files supported by any of ``QuadraticProgramTranslator``.
+        """Loads a quadratic program from an optimization models
+        translated by any of ``QuadraticProgramTranslator``.
 
         Args:
             source: The external source to be loaded.
