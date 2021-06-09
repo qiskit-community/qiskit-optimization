@@ -874,7 +874,7 @@ class QuadraticProgram:
         warnings.warn(
             "The from_docplex method is deprecated and will be "
             "removed in a future release. Instead use the "
-            "qiskit_optimization.translators.from_docplex_mp function ",
+            "qiskit_optimization.translators.from_docplex_mp function.",
             DeprecationWarning,
         )
 
@@ -896,7 +896,7 @@ class QuadraticProgram:
         warnings.warn(
             "The to_docplex method is deprecated and will be "
             "removed in a future release. Instead use the "
-            "qiskit_optimization.translators.to_docplex_mp function ",
+            "qiskit_optimization.translators.to_docplex_mp function.",
             DeprecationWarning,
         )
 

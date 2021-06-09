@@ -41,11 +41,11 @@ if TYPE_CHECKING:
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def _check_gurobi_is_installed():
+def _check_gurobi_is_installed(name: str):
     if not _HAS_GUROBI:
         raise MissingOptionalLibraryError(
             libname="GUROBI",
-            name="GurobiTranslator",
+            name=name,
             pip_install="pip install qiskit-optimization[gurobi]",
         )
 
@@ -54,7 +54,7 @@ def to_gurobipy(quadratic_program: "QuadraticProgram") -> Model:
     """Returns a gurobipy model corresponding to a quadratic program.
 
     Args:
-        quadratic_program: The quadratic program to be translated
+        quadratic_program: The quadratic program to be translated.
 
     Returns:
         The gurobipy model corresponding to a quadratic program.
@@ -64,7 +64,7 @@ def to_gurobipy(quadratic_program: "QuadraticProgram") -> Model:
         MissingOptionalLibraryError: if gurobipy is not installed.
     """
 
-    _check_gurobi_is_installed()
+    _check_gurobi_is_installed("to_gurobipy")
 
     # initialize model
     mdl = gp.Model(quadratic_program.name)
@@ -165,7 +165,7 @@ def from_gurobipy(model: Model) -> "QuadraticProgram":
         MissingOptionalLibraryError: if gurobipy is not installed.
     """
 
-    _check_gurobi_is_installed()
+    _check_gurobi_is_installed("from_gurobipy")
 
     if not isinstance(model, Model):
         raise QiskitOptimizationError(f"The model is not compatible: {model}")

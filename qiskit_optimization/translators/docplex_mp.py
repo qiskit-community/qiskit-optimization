@@ -36,7 +36,7 @@ def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
     """Returns a docplex.mp model corresponding to a quadratic program.
 
     Args:
-        quadratic_program: The quadratic program to be translated
+        quadratic_program: The quadratic program to be translated.
 
     Returns:
         The docplex.mp model corresponding to a quadratic program.
