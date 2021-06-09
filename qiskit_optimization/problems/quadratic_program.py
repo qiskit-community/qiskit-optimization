@@ -18,7 +18,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
 from math import fsum, isclose
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from docplex.mp.model import Model as DocplexModel
