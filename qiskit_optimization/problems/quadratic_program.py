@@ -22,16 +22,13 @@ from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from docplex.mp.model import Model as DocplexModel
+from docplex.mp.model_reader import ModelReader
 from numpy import ndarray, zeros
+from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
 from scipy.sparse import spmatrix
 
-from ..exceptions import QiskitOptimizationError
-from ..infinity import INFINITY
-from ..io import read_lp, write_lp
-from ..translators.gurobi import Model as GurobiModel
-from ..translators.utils import _translator_types
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -39,6 +36,10 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
+from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
+from ..translators.gurobi import Model as GurobiModel
+from ..translators.utils import _translator_types
 
 logger = logging.getLogger(__name__)
 
@@ -892,14 +893,6 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
-
-        warnings.warn(
-            "The from_docplex method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "load() method",
-            DeprecationWarning,
-        )
-
         from ..translators.docplex_mp import DocplexMpTranslator
 
         other = DocplexMpTranslator().to_qp(model)
@@ -978,8 +971,38 @@ class QuadraticProgram:
 
         Raises:
             FileNotFoundError: If the file does not exist.
+            MissingOptionalLibraryError: If CPLEX is not installed.
+
+        Note:
+            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
-        other = read_lp(filename)
+        try:
+            import cplex  # pylint: disable=unused-import
+        except ImportError as ex:
+            raise MissingOptionalLibraryError(
+                libname="CPLEX",
+                name="QuadraticProgram.read_from_lp_file",
+                pip_install="pip install 'qiskit-optimization[cplex]'",
+            ) from ex
+
+        def _parse_problem_name(filename: str) -> str:
+            # Because docplex model reader uses the base name as model name,
+            # we parse the model name in the LP file manually.
+            # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
+            prefix = "\\Problem name:"
+            model_name = ""
+            with open(filename) as file:
+                for line in file:
+                    if line.startswith(prefix):
+                        model_name = line[len(prefix) :].strip()
+                    if not line.startswith("\\"):
+                        break
+            return model_name
+
+        from ..translators.docplex_mp import DocplexMpTranslator
+
+        model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
+        other = DocplexMpTranslator().to_qp(model)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
@@ -995,7 +1018,10 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
-        write_lp(self, filename)
+        from ..translators.docplex_mp import DocplexMpTranslator
+
+        mdl = DocplexMpTranslator().from_qp(self)
+        mdl.export_as_lp(filename)
 
     def substitute_variables(
         self,
