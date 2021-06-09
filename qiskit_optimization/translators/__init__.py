@@ -17,11 +17,7 @@ Quadratic program translators (:mod:`qiskit_optimization.translators`)
 .. currentmodule:: qiskit_optimization.translators
 
 Translators between :class:`~qiskit_optimization.problems.QuadraticProgram` and
-other objects such as optimization models and files.
-Translators allow users to load a quadratic program from an external source
-such as optimization models and files.
-They also allow users to export a quadratic program to optimization models
-and save a quadratic program to a file in a particular format (e.g., LP format).
+other optimization models.
 
 Base class for translators
 =======================================
@@ -40,12 +36,10 @@ Translators
 
    DocplexMpTranslator
    GurobiTranslator
-   LPFileTranslator
 """
 
 from .docplex_mp import DocplexMpTranslator
 from .gurobi import GurobiTranslator
-from .lp_file import LPFileTranslator
 from .quadratic_program_translator import QuadraticProgramTranslator
 
-_all = ["ModelTranslator", "DocplexMpTranslator", "GurobiTranslator", "LPFileTranslator"]
+_all = ["QuadraticProgramTranslator", "DocplexMpTranslator", "GurobiTranslator"]

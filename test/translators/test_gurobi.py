@@ -34,7 +34,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p.minimize(constant=1, linear={"x": 1, "y": 2}, quadratic={("x", "y"): -1, ("z", "z"): 2})
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = QuadraticProgram.load(q_p.export(translator))
+        q_p2 = translator.to_qp(translator.from_qp(q_p))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         import gurobipy as gp

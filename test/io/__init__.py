@@ -9,16 +9,3 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-
-"""Utilities for quadratic program translators"""
-
-from typing import List, Type
-
-from .docplex_mp import DocplexMpTranslator
-from .gurobi import GurobiTranslator
-from .quadratic_program_translator import QuadraticProgramTranslator
-
-_translator_types: List[Type[QuadraticProgramTranslator]] = [
-    DocplexMpTranslator,
-    GurobiTranslator,
-]

@@ -157,6 +157,9 @@ class DocplexMpTranslator(QuadraticProgramTranslator):
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+        if not self.is_compatible(source):
+            raise QiskitOptimizationError(f"The source is not compatible: {source}")
+
         model = source
 
         # pylint: disable=cyclic-import

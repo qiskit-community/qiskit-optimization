@@ -21,18 +21,17 @@ from math import fsum, isclose
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from docplex.mp.model import Model
+from docplex.mp.model import Model as DocplexModel
 from numpy import ndarray, zeros
-from scipy.sparse import spmatrix
-
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
+from scipy.sparse import spmatrix
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
-from ..translators.lp_file import LPFileTranslator
-from ..translators.quadratic_program_translator import QuadraticProgramTranslator
-from ..translators.utils import _load_qp_from_source
+from ..io import read_lp, write_lp
+from ..translators.gurobi import Model as GurobiModel
+from ..translators.utils import _translator_types
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -872,26 +871,14 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the provided source is not supported by any translator.
         """
-        return _load_qp_from_source(source)
+        for trans_type in _translator_types:
+            if trans_type.is_installed() and trans_type.is_compatible(source):
+                return trans_type().to_qp(source)
+        raise QiskitOptimizationError(
+            f"There is no compatible translator for this source: {source}"
+        )
 
-    def export(self, translator: Optional[QuadraticProgramTranslator] = None) -> Any:
-        """Translates this quadratic program to another object and returns the result.
-
-        Args:
-            translator: The quadratic program translator.
-            If ``None``, ``DocplexMpTranslator`` is used.
-
-        Returns:
-            The object of the translation from this quadratic program.
-        """
-        from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
-
-        if translator is None:
-            translator = DocplexMpTranslator()
-
-        return translator.from_qp(self)
-
-    def from_docplex(self, model: Model) -> None:
+    def from_docplex(self, model: DocplexModel) -> None:
         """Loads this quadratic program from a docplex model.
 
         Note that this supports only basic functions of docplex as follows:
@@ -913,11 +900,13 @@ class QuadraticProgram:
             DeprecationWarning,
         )
 
-        other = self.load(model)
+        from ..translators.docplex_mp import DocplexMpTranslator
+
+        other = DocplexMpTranslator().to_qp(model)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
-    def to_docplex(self) -> Model:
+    def to_docplex(self) -> DocplexModel:
         """Returns a docplex model corresponding to this quadratic program.
 
         Returns:
@@ -926,13 +915,22 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
-        warnings.warn(
-            "The to_docplex method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "export() method",
-            DeprecationWarning,
-        )
-        return self.export()
+        from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
+
+        return DocplexMpTranslator().from_qp(self)
+
+    def to_gurobi(self) -> GurobiModel:
+        """Returns a gurobipy model corresponding to this quadratic program.
+
+        Returns:
+            The gurobipy model corresponding to this quadratic program.
+
+        Raises:
+            QiskitOptimizationError: if non-supported elements (should never happen).
+        """
+        from qiskit_optimization.translators.gurobi import GurobiTranslator
+
+        return GurobiTranslator().from_qp(self)
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
@@ -940,7 +938,7 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        return self.export().export_as_lp_string()
+        return self.to_docplex().export_as_lp_string()
 
     def pprint_as_string(self) -> str:
         """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
@@ -954,7 +952,7 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        return self.export().pprint_as_string()
+        return self.to_docplex().pprint_as_string()
 
     def prettyprint(self, out: Optional[str] = None) -> None:
         """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
@@ -970,7 +968,7 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        self.export().prettyprint(out)
+        self.to_docplex().prettyprint(out)
 
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
@@ -981,14 +979,7 @@ class QuadraticProgram:
         Raises:
             FileNotFoundError: If the file does not exist.
         """
-        warnings.warn(
-            "The read_from_lp_file method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "load() method",
-            DeprecationWarning,
-        )
-
-        other = LPFileTranslator().to_qp(filename)
+        other = read_lp(filename)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
@@ -1004,14 +995,7 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
-        warnings.warn(
-            "The write_to_lp_file method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "export() method with LPFileTranslator ",
-            DeprecationWarning,
-        )
-
-        self.export(LPFileTranslator(filename))
+        write_lp(self, filename)
 
     def substitute_variables(
         self,

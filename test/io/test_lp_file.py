@@ -18,9 +18,8 @@ from test.optimization_test_case import QiskitOptimizationTestCase, requires_ext
 
 from docplex.mp.model import DOcplexException
 
-from qiskit_optimization.exceptions import QiskitOptimizationError
+from qiskit_optimization.io import read_lp, write_lp
 from qiskit_optimization.problems import Constraint, QuadraticObjective, QuadraticProgram, Variable
-from qiskit_optimization.translators import LPFileTranslator
 
 
 class TestDocplexMpTranslator(QiskitOptimizationTestCase):
@@ -30,13 +29,12 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
     def test_read_from_lp_file(self):
         """test read lp file"""
         try:
-            translator = LPFileTranslator()
             with self.assertRaises(FileNotFoundError):
-                translator.to_qp("")
+                read_lp("")
             with self.assertRaises(FileNotFoundError):
-                translator.to_qp("no_file.txt")
+                read_lp("no_file.txt")
             lp_file = self.get_resource_path("test_quadratic_program.lp", "translators/resources")
-            q_p = translator.to_qp(lp_file)
+            q_p = read_lp(lp_file)
             self.assertEqual(q_p.name, "my problem")
             self.assertEqual(q_p.get_num_vars(), 3)
             self.assertEqual(q_p.get_num_binary_vars(), 1)
@@ -146,16 +144,14 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             "test_quadratic_program.lp", "translators/resources"
         )
         with tempfile.NamedTemporaryFile(mode="w+t", suffix=".lp") as temp_output_file:
-            translator = LPFileTranslator(temp_output_file.name)
-            translator.from_qp(q_p)
+            write_lp(q_p, temp_output_file.name)
             with open(reference_file_name) as reference:
                 lines1 = temp_output_file.readlines()
                 lines2 = reference.readlines()
                 self.assertListEqual(lines1, lines2)
 
         with tempfile.TemporaryDirectory() as temp_problem_dir:
-            translator = LPFileTranslator(temp_problem_dir)
-            translator.from_qp(q_p)
+            write_lp(q_p, temp_problem_dir)
             with open(path.join(temp_problem_dir, "my_problem.lp")) as file1, open(
                 reference_file_name
             ) as file2:
@@ -164,13 +160,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
                 self.assertListEqual(lines1, lines2)
 
         with self.assertRaises(OSError):
-            translator = LPFileTranslator("/cannot/write/this/file.lp")
-            translator.from_qp(q_p)
+            write_lp(q_p, "/cannot/write/this/file.lp")
 
         with self.assertRaises(DOcplexException):
-            translator = LPFileTranslator("")
-            translator.from_qp(q_p)
-
-        with self.assertRaises(QiskitOptimizationError):
-            translator = LPFileTranslator()
-            translator.from_qp(q_p)
+            write_lp(q_p, "")

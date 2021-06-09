@@ -31,6 +31,7 @@ except ImportError:
 
 
 from qiskit.exceptions import MissingOptionalLibraryError
+
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
@@ -186,6 +187,9 @@ class GurobiTranslator(QuadraticProgramTranslator):
         """
 
         self._check_gurobi_is_installed()
+
+        if not self.is_compatible(source):
+            raise QiskitOptimizationError(f"The source is not compatible: {source}")
 
         model = source
 
