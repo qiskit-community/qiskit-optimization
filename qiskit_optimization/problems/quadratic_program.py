@@ -21,7 +21,7 @@ from math import fsum, isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from docplex.mp.model import Model as DocplexModel
+from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray, zeros
 from scipy.sparse import spmatrix
@@ -857,7 +857,7 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
-    def from_docplex(self, model: DocplexModel) -> None:
+    def from_docplex(self, model: Model) -> None:
         """Loads this quadratic program from a docplex model.
 
         Note that this supports only basic functions of docplex as follows:
@@ -884,7 +884,7 @@ class QuadraticProgram:
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
-    def to_docplex(self) -> DocplexModel:
+    def to_docplex(self) -> Model:
         """Returns a docplex model corresponding to this quadratic program.
 
         Returns:
