@@ -31,22 +31,17 @@ logger = logging.getLogger(__name__)
 
 
 class LinearInequalityToPenalty(QuadraticProgramConverter):
-    r"""Convert a problem of known constraints to unconstrained with penalty terms.
+    """Convert a problem of known constraints to unconstrained with penalty terms.
 
     There are known constraints which do not require to add slack variables to
     construct penalty terms [1].
 
     Supported known constraint in this class is shown below.
 
-    .. math::
-      \begin{array}{|l|l|}
-      \hline \text { Classical Constraint } & \text { Equivalent Penalty } \\
-      \hline x+y \leq 1 & P(x y) \\
-      \hline x+y=1 & P(1-x-y+2 x y) \\
-      \hline x \leq y & P(x-x y) \\
-      \hline x_{1}+x_{2}+x_{3} \leq 1 & P\left(x_{1} x_{2}+x_{1} x_{3}+x_{2} x_{3}\right) \\
-      \hline
-      \end{array}
+          x + y <= 1      => P(x*y)
+          x + y >= 1      => P(1-x-y+x*y)
+          x <= y          => P(x-x*y)
+          x + y + z <= 1  => P(x*y+y*z+z*x)
 
     Where x, y or z are binary variables, and P is penalty constant. In this class,
     value of P is automatically determined, but can be supplied as argument at the timing
@@ -57,7 +52,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
     to objective function.
 
     References:
-        [1]: Fred Glover, Gary Kochenberger, Yu Du (2019),
+        [1]: Fred Glover, et al. (2019),
              A Tutorial on Formulating and Using QUBO Models,
             `arXiv:1811.11538 <https://arxiv.org/abs/1811.11538>`_.
     """
@@ -116,7 +111,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         # convert linear constraints into penalty terms
         for constraint in self._src.linear_constraints:
 
-            # special contraint check function here
+            # special constraint check function here
             if not self._is_special_constraint(constraint):
                 self._dst.linear_constraints.append(constraint)
                 continue
