@@ -21,6 +21,7 @@ from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
+from qiskit_optimization.translators import from_docplex_mp
 
 
 class TestQuadraticProgram(QiskitOptimizationTestCase):
@@ -979,7 +980,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         mod.add(x * x + y <= 10, "c3")
         mod.add(x * x + y >= 5, "c4")
         mod.add(x * x + y * y == 25, "c5")
-        q_p = QuadraticProgram.load(mod)
+        q_p = from_docplex_mp(mod)
 
         self.assertTrue(q_p.is_feasible([0, 5]))
         self.assertFalse(q_p.is_feasible([1, 10]))

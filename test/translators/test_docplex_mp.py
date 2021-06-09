@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test DocplexMpTranslator """
+"""Test from_docplex_mp and to_docplex_mp"""
 
 from test.optimization_test_case import QiskitOptimizationTestCase
 
@@ -18,16 +18,14 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
-from qiskit_optimization.translators import DocplexMpTranslator
+from qiskit_optimization.translators.docplex_mp import from_docplex_mp, to_docplex_mp
 
 
 class TestDocplexMpTranslator(QiskitOptimizationTestCase):
-    """DocplexMpTranslator tests"""
+    """Test from_docplex_mp and to_docplex_mp"""
 
-    def test_load_and_export(self):
-        """test load and export with DocplexMpTranslator"""
-        translator = DocplexMpTranslator()
-
+    def test_from_and_to(self):
+        """test from_docplex_mp and to_docplex_mp"""
         q_p = QuadraticProgram("test")
         q_p.binary_var(name="x")
         q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
@@ -39,7 +37,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         )
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = translator.to_qp(translator.from_qp(q_p))
+        q_p2 = from_docplex_mp(to_docplex_mp(q_p))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = Model("test")
@@ -54,34 +52,34 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             mod.semiinteger_var(lb=1, name="x")
-            QuadraticProgram.load(mod)
+            _ = from_docplex_mp(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             mod.add_range(0, 2 * x, 1)
-            QuadraticProgram.load(mod)
+            _ = from_docplex_mp(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_indicator(x, x + y <= 1, 1)
-            QuadraticProgram.load(mod)
+            _ = from_docplex_mp(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_equivalence(x, x + y <= 1, 1)
-            QuadraticProgram.load(mod)
+            _ = from_docplex_mp(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add(mod.not_equal_constraint(x, y + 1))
-            QuadraticProgram.load(mod)
+            _ = from_docplex_mp(mod)
 
         # test from_docplex without explicit variable names
         mod = Model()
@@ -95,7 +93,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         mod.add_constraint(x * y == z)  # quadratic EQ
         mod.add_constraint(x * y >= z)  # quadratic GE
         mod.add_constraint(x * y <= z)  # quadratic LE
-        q_p = QuadraticProgram.load(mod)
+        q_p = from_docplex_mp(mod)
         var_names = [v.name for v in q_p.variables]
         self.assertListEqual(var_names, ["x0", "x1", "x2"])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]

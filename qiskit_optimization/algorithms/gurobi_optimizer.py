@@ -15,9 +15,11 @@
 import logging
 
 from qiskit.exceptions import MissingOptionalLibraryError
-from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
+
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
+from ..translators.gurobi import to_gurobipy
+from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +65,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
             raise MissingOptionalLibraryError(
                 libname="GUROBI",
                 name="GurobiOptimizer",
-                pip_install="pip install gurobipy",
+                pip_install="pip install qiskit-optimization[gurobi]",
             )
 
         self._disp = disp
@@ -122,7 +124,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
         """
 
         # convert to Gurobi problem
-        model = problem.to_gurobipy()
+        model = to_gurobipy(problem)
 
         # Enable non-convex
         model.Params.NonConvex = 2

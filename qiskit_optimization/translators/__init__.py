@@ -19,27 +19,19 @@ Quadratic program translators (:mod:`qiskit_optimization.translators`)
 Translators between :class:`~qiskit_optimization.problems.QuadraticProgram` and
 other optimization models.
 
-Base class for translators
-=======================================
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   QuadraticProgramTranslator
-
 Translators
 ======================
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
 
-   DocplexMpTranslator
-   GurobiTranslator
+   from_docplex_mp
+   to_docplex_mp
+   from_gurobipy
+   to_gurobipy
 """
 
-from .docplex_mp import DocplexMpTranslator
-from .gurobi import GurobiTranslator
-from .quadratic_program_translator import QuadraticProgramTranslator
+from .docplex_mp import from_docplex_mp, to_docplex_mp
+from .gurobi import from_gurobipy, to_gurobipy
 
-_all = ["QuadraticProgramTranslator", "DocplexMpTranslator", "GurobiTranslator"]
+_all = ["from_docplex_mp", "to_docplex_mp", "from_gurobipy", "to_gurobipy"]

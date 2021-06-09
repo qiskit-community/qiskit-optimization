@@ -24,11 +24,14 @@ import numpy as np
 from docplex.mp.model import Model as DocplexModel
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray, zeros
+from scipy.sparse import spmatrix
+
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
-from scipy.sparse import spmatrix
 
+from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
@@ -36,10 +39,6 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
-from ..exceptions import QiskitOptimizationError
-from ..infinity import INFINITY
-from ..translators.gurobi import Model as GurobiModel
-from ..translators.utils import _translator_types
 
 logger = logging.getLogger(__name__)
 
@@ -858,27 +857,6 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
-    @staticmethod
-    def load(source: Any) -> "QuadraticProgram":
-        """Loads a quadratic program from an optimization models
-        translated by any of ``QuadraticProgramTranslator``.
-
-        Args:
-            source: The external source to be loaded.
-
-        Returns:
-            the quadratic program of the translation from the source.
-
-        Raises:
-            QiskitOptimizationError: if the provided source is not supported by any translator.
-        """
-        for trans_type in _translator_types:
-            if trans_type.is_installed() and trans_type.is_compatible(source):
-                return trans_type().to_qp(source)
-        raise QiskitOptimizationError(
-            f"There is no compatible translator for this source: {source}"
-        )
-
     def from_docplex(self, model: DocplexModel) -> None:
         """Loads this quadratic program from a docplex model.
 
@@ -893,24 +871,18 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
-        from ..translators.docplex_mp import DocplexMpTranslator
+        warnings.warn(
+            "The from_docplex method is deprecated and will be "
+            "removed in a future release. Instead use the "
+            "qiskit_optimization.translators.from_docplex_mp function ",
+            DeprecationWarning,
+        )
 
-        other = DocplexMpTranslator().to_qp(model)
+        from ..translators.docplex_mp import from_docplex_mp
+
+        other = from_docplex_mp(model)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
-
-    def to_gurobipy(self) -> GurobiModel:
-        """Returns a gurobipy model corresponding to this quadratic program.
-
-        Returns:
-            The gurobipy model corresponding to this quadratic program.
-
-        Raises:
-            QiskitOptimizationError: if non-supported elements (should never happen).
-        """
-        from qiskit_optimization.translators.gurobi import GurobiTranslator
-
-        return GurobiTranslator().from_qp(self)
 
     def to_docplex(self) -> DocplexModel:
         """Returns a docplex model corresponding to this quadratic program.
@@ -921,9 +893,16 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
-        from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
+        warnings.warn(
+            "The to_docplex method is deprecated and will be "
+            "removed in a future release. Instead use the "
+            "qiskit_optimization.translators.to_docplex_mp function ",
+            DeprecationWarning,
+        )
 
-        return DocplexMpTranslator().from_qp(self)
+        from ..translators.docplex_mp import to_docplex_mp
+
+        return to_docplex_mp(self)
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
@@ -931,7 +910,9 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        return self.to_docplex().export_as_lp_string()
+        from ..translators.docplex_mp import to_docplex_mp
+
+        return to_docplex_mp(self).export_as_lp_string()
 
     def pprint_as_string(self) -> str:
         """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
@@ -945,7 +926,9 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        return self.to_docplex().pprint_as_string()
+        from ..translators.docplex_mp import to_docplex_mp
+
+        return to_docplex_mp(self).pprint_as_string()
 
     def prettyprint(self, out: Optional[str] = None) -> None:
         """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
@@ -961,7 +944,9 @@ class QuadraticProgram:
             "output",
             DeprecationWarning,
         )
-        self.to_docplex().prettyprint(out)
+        from qiskit_optimization.translators.docplex_mp import to_docplex_mp
+
+        to_docplex_mp(self).prettyprint(out)
 
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
@@ -999,10 +984,10 @@ class QuadraticProgram:
                         break
             return model_name
 
-        from ..translators.docplex_mp import DocplexMpTranslator
+        from ..translators.docplex_mp import from_docplex_mp
 
         model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
-        other = DocplexMpTranslator().to_qp(model)
+        other = from_docplex_mp(model)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
@@ -1018,9 +1003,9 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
-        from ..translators.docplex_mp import DocplexMpTranslator
+        from ..translators.docplex_mp import to_docplex_mp
 
-        mdl = DocplexMpTranslator().from_qp(self)
+        mdl = to_docplex_mp(self)
         mdl.export_as_lp(filename)
 
     def substitute_variables(

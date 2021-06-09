@@ -10,23 +10,21 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test GurobiTranslator """
+"""Test from_gurobipy and to_gurobipy"""
 
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
-from qiskit_optimization.translators import GurobiTranslator
+from qiskit_optimization.translators.gurobi import from_gurobipy, to_gurobipy
 
 
 class TestGurobiTranslator(QiskitOptimizationTestCase):
-    """GurobiTranslator tests"""
+    """Test from_gurobipy and to_gurobipy"""
 
     @requires_extra_library
-    def test_load_and_export(self):
-        """test load and export with GurobiTranslator"""
-        translator = GurobiTranslator()
-
+    def test_from_and_to(self):
+        """test from_gurobipy and to_gurobipy"""
         q_p = QuadraticProgram("test")
         q_p.binary_var(name="x")
         q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
@@ -34,7 +32,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p.minimize(constant=1, linear={"x": 1, "y": 2}, quadratic={("x", "y"): -1, ("z", "z"): 2})
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = translator.to_qp(translator.from_qp(q_p))
+        q_p2 = from_gurobipy(to_gurobipy(q_p))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         import gurobipy as gp
@@ -54,14 +52,14 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()
             mod.addVar(vtype=gp.GRB.SEMIINT, lb=1, name="x")
-            QuadraticProgram.load(mod)
+            _ = from_gurobipy(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()
             x = mod.addVar(vtype=gp.GRB.BINARY, name="x")
             y = mod.addVar(vtype=gp.GRB.BINARY, name="y")
             mod.addConstr((x == 1) >> (x + y <= 1))
-            QuadraticProgram.load(mod)
+            _ = from_gurobipy(mod)
 
         # test from_gurobipy without explicit variable names
         mod = gp.Model()
@@ -76,7 +74,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         mod.addConstr(x * y == z)  # quadratic EQ
         mod.addConstr(x * y >= z)  # quadratic GE
         mod.addConstr(x * y <= z)  # quadratic LE
-        q_p = QuadraticProgram.load(mod)
+        q_p = from_gurobipy(mod)
         var_names = [v.name for v in q_p.variables]
         self.assertListEqual(var_names, ["C0", "C1", "C2"])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
