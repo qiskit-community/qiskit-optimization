@@ -899,19 +899,6 @@ class QuadraticProgram:
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
-    def to_docplex(self) -> DocplexModel:
-        """Returns a docplex model corresponding to this quadratic program.
-
-        Returns:
-            The docplex model corresponding to this quadratic program.
-
-        Raises:
-            QiskitOptimizationError: if non-supported elements (should never happen).
-        """
-        from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
-
-        return DocplexMpTranslator().from_qp(self)
-
     def to_gurobipy(self) -> GurobiModel:
         """Returns a gurobipy model corresponding to this quadratic program.
 
@@ -924,6 +911,19 @@ class QuadraticProgram:
         from qiskit_optimization.translators.gurobi import GurobiTranslator
 
         return GurobiTranslator().from_qp(self)
+
+    def to_docplex(self) -> DocplexModel:
+        """Returns a docplex model corresponding to this quadratic program.
+
+        Returns:
+            The docplex model corresponding to this quadratic program.
+
+        Raises:
+            QiskitOptimizationError: if non-supported elements (should never happen).
+        """
+        from qiskit_optimization.translators.docplex_mp import DocplexMpTranslator
+
+        return DocplexMpTranslator().from_qp(self)
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
