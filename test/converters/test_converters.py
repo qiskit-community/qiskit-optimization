@@ -632,71 +632,75 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(xy)")
 
         # Test with no max/min
-        self.assertEqual(op.get_num_linear_constraints(), 1)
-        lip.penalty = 1
-        quadratic = {("x", "y"): lip.penalty}
-        op2 = lip.convert(op)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("No max/min"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            lip.penalty = 1
+            quadratic = {("x", "y"): lip.penalty}
+            op2 = lip.convert(op)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test maximize
-        linear = {"x": 2, "y": 1}
-        op.maximize(linear=linear)
-        lip.penalty = 5
-        quadratic = {("x", "y"): -1 * lip.penalty}
-        op2 = lip.convert(op)
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("Maximize"):
+            linear = {"x": 2, "y": 1}
+            op.maximize(linear=linear)
+            lip.penalty = 5
+            quadratic = {("x", "y"): -1 * lip.penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test minimize
-        linear = {"x": 2, "y": 1}
-        op.minimize(linear=linear)
-        lip.penalty = 5
-        quadratic = {("x", "y"): lip.penalty}
-        op2 = lip.convert(op)
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("Minimize"):
+            linear = {"x": 2, "y": 1}
+            op.minimize(linear=linear)
+            lip.penalty = 5
+            quadratic = {("x", "y"): lip.penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test combination
-        op = QuadraticProgram()
-        lip = LinearInequalityToPenalty()
+        with self.subTest("Combination"):
+            op = QuadraticProgram()
+            lip = LinearInequalityToPenalty()
 
-        op.binary_var(name="x")
-        op.binary_var(name="y")
-        op.binary_var(name="z")
-        op.binary_var(name="w")
-        linear = {"x": 2, "y": 1, "z": -1, "w": 1}
-        quadratic = {("y", "z"): -2, ("w", "w"): 1}
-        op.minimize(linear=linear, quadratic=quadratic)
+            op.binary_var(name="x")
+            op.binary_var(name="y")
+            op.binary_var(name="z")
+            op.binary_var(name="w")
+            linear = {"x": 2, "y": 1, "z": -1, "w": 1}
+            quadratic = {("y", "z"): -2, ("w", "w"): 1}
+            op.minimize(linear=linear, quadratic=quadratic)
 
-        linear_constraint = {"x": 1, "w": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(xw)")
-        linear_constraint = {"y": 1, "z": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(yz)")
-        linear_constraint = {"y": 2, "z": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "None 1")
-        quadratic_constraint = {("x", "x"): -2, ("y", "w"): 1}
-        op.quadratic_constraint(
-            linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2"
-        )
+            linear_constraint = {"x": 1, "w": 1}
+            op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(xw)")
+            linear_constraint = {"y": 1, "z": 1}
+            op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(yz)")
+            linear_constraint = {"y": 2, "z": 1}
+            op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "None 1")
+            quadratic_constraint = {("x", "x"): -2, ("y", "w"): 1}
+            op.quadratic_constraint(
+                linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2"
+            )
 
-        lip.penalty = 5
-        op2 = lip.convert(op)
-        quadratic[("x", "w")] = lip.penalty
-        quadratic[("y", "z")] = quadratic[("y", "z")] + lip.penalty
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 1)
-        self.assertEqual(op2.get_num_quadratic_constraints(), 1)
+            lip.penalty = 5
+            op2 = lip.convert(op)
+            quadratic[("x", "w")] = lip.penalty
+            quadratic[("y", "z")] = quadratic[("y", "z")] + lip.penalty
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 1)
+            self.assertEqual(op2.get_num_quadratic_constraints(), 1)
 
     def test_linear_inequality_to_penalty2(self):
         """Test special constraint to penalty x+y >= 1 -> P(1-x-y+x*y)"""
@@ -711,94 +715,98 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-x-y+xy)")
 
         # Test with no max/min
-        self.assertEqual(op.get_num_linear_constraints(), 1)
-        lip.penalty = 1
-        constant = 1
-        linear = {"x": -1 * lip.penalty, "y": -1 * lip.penalty}
-        quadratic = {("x", "y"): lip.penalty}
-        op2 = lip.convert(op)
-        cnst = op2.objective.constant
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(cnst, constant)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("No max/min"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            lip.penalty = 1
+            constant = 1
+            linear = {"x": -1 * lip.penalty, "y": -1 * lip.penalty}
+            quadratic = {("x", "y"): lip.penalty}
+            op2 = lip.convert(op)
+            cnst = op2.objective.constant
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(cnst, constant)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test maximize
-        linear = {"x": 2, "y": 1}
-        op.maximize(linear=linear)
-        lip.penalty = 5
-        constant = -1 * lip.penalty
-        linear["x"] = linear["x"] + lip.penalty
-        linear["y"] = linear["y"] + lip.penalty
-        quadratic = {("x", "y"): -1 * lip.penalty}
-        op2 = lip.convert(op)
-        cnst = op2.objective.constant
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(cnst, constant)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("Maximize"):
+            linear = {"x": 2, "y": 1}
+            op.maximize(linear=linear)
+            lip.penalty = 5
+            constant = -1 * lip.penalty
+            linear["x"] = linear["x"] + lip.penalty
+            linear["y"] = linear["y"] + lip.penalty
+            quadratic = {("x", "y"): -1 * lip.penalty}
+            op2 = lip.convert(op)
+            cnst = op2.objective.constant
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(cnst, constant)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test minimize
-        linear = {"x": 2, "y": 1}
-        op.minimize(linear=linear)
-        lip.penalty = 5
-        constant = lip.penalty
-        linear["x"] = linear["x"] - lip.penalty
-        linear["y"] = linear["y"] - lip.penalty
-        quadratic = {("x", "y"): lip.penalty}
-        op2 = lip.convert(op)
-        cnst = op2.objective.constant
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(cnst, constant)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("Minimize"):
+            linear = {"x": 2, "y": 1}
+            op.minimize(linear=linear)
+            lip.penalty = 5
+            constant = lip.penalty
+            linear["x"] = linear["x"] - lip.penalty
+            linear["y"] = linear["y"] - lip.penalty
+            quadratic = {("x", "y"): lip.penalty}
+            op2 = lip.convert(op)
+            cnst = op2.objective.constant
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(cnst, constant)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test combination
-        op = QuadraticProgram()
-        lip = LinearInequalityToPenalty()
+        with self.subTest("Combination"):
+            op = QuadraticProgram()
+            lip = LinearInequalityToPenalty()
 
-        op.binary_var(name="x")
-        op.binary_var(name="y")
-        op.binary_var(name="z")
-        op.binary_var(name="w")
-        linear = {"x": 2, "y": 1, "z": -1, "w": 1}
-        quadratic = {("y", "z"): -2, ("w", "w"): 1}
-        op.minimize(linear=linear, quadratic=quadratic)
+            op.binary_var(name="x")
+            op.binary_var(name="y")
+            op.binary_var(name="z")
+            op.binary_var(name="w")
+            linear = {"x": 2, "y": 1, "z": -1, "w": 1}
+            quadratic = {("y", "z"): -2, ("w", "w"): 1}
+            op.minimize(linear=linear, quadratic=quadratic)
 
-        linear_constraint = {"x": 1, "w": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-x-w+xw)")
-        linear_constraint = {"y": 1, "z": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-y-z+yz)")
-        linear_constraint = {"y": 2, "z": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "None 1")
-        quadratic_constraint = {("x", "x"): -2, ("y", "w"): 1}
-        op.quadratic_constraint(
-            linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2"
-        )
+            linear_constraint = {"x": 1, "w": 1}
+            op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-x-w+xw)")
+            linear_constraint = {"y": 1, "z": 1}
+            op.linear_constraint(linear_constraint, Constraint.Sense.GE, 1, "P(1-y-z+yz)")
+            linear_constraint = {"y": 2, "z": 1}
+            op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "None 1")
+            quadratic_constraint = {("x", "x"): -2, ("y", "w"): 1}
+            op.quadratic_constraint(
+                linear_constraint, quadratic_constraint, Constraint.Sense.LE, 1, "None 2"
+            )
 
-        lip.penalty = 5
-        op2 = lip.convert(op)
-        constant = lip.penalty * 2
-        linear["x"] = linear["x"] - lip.penalty
-        linear["y"] = linear["y"] - lip.penalty
-        linear["z"] = linear["z"] - lip.penalty
-        linear["w"] = linear["w"] - lip.penalty
-        quadratic[("x", "w")] = lip.penalty
-        quadratic[("y", "z")] = quadratic[("y", "z")] + lip.penalty
-        constant = lip.penalty
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(cnst, constant)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 1)
-        self.assertEqual(op2.get_num_quadratic_constraints(), 1)
+            lip.penalty = 5
+            op2 = lip.convert(op)
+            constant = lip.penalty * 2
+            linear["x"] = linear["x"] - lip.penalty
+            linear["y"] = linear["y"] - lip.penalty
+            linear["z"] = linear["z"] - lip.penalty
+            linear["w"] = linear["w"] - lip.penalty
+            quadratic[("x", "w")] = lip.penalty
+            quadratic[("y", "z")] = quadratic[("y", "z")] + lip.penalty
+            constant = lip.penalty
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(cnst, constant)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 1)
+            self.assertEqual(op2.get_num_quadratic_constraints(), 1)
 
     def test_linear_inequality_to_penalty4(self):
         """Test special constraint to penalty x+y+z <= 1 -> P(x*y+y*z+z*x)"""
@@ -814,13 +822,14 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(xy+yz+zx")
 
         # Test with no max/min
-        self.assertEqual(op.get_num_linear_constraints(), 1)
-        penalty = 1
-        quadratic = {("x", "y"): penalty, ("x", "z"): penalty, ("y", "z"): penalty}
-        op2 = lip.convert(op)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("No max/min"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            penalty = 1
+            quadratic = {("x", "y"): penalty, ("x", "z"): penalty, ("y", "z"): penalty}
+            op2 = lip.convert(op)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
     def test_linear_inequality_to_penalty6(self):
         """Test special constraint to penalty 6 x-y <= 0 -> P(x-x*y)"""
@@ -835,42 +844,45 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear_constraint, Constraint.Sense.LE, 0, "P(x-xy)")
 
         # Test with no max/min
-        self.assertEqual(op.get_num_linear_constraints(), 1)
-        penalty = 1
-        linear = {"x": penalty}
-        quadratic = {("x", "y"): -1 * penalty}
-        op2 = lip.convert(op)
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("No max/min"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            penalty = 1
+            linear = {"x": penalty}
+            quadratic = {("x", "y"): -1 * penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test maximize
-        linear = {"x": 2, "y": 1}
-        op.maximize(linear=linear)
-        penalty = 4
-        linear["x"] = linear["x"] - penalty
-        quadratic = {("x", "y"): penalty}
-        op2 = lip.convert(op)
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("Maximize"):
+            linear = {"x": 2, "y": 1}
+            op.maximize(linear=linear)
+            penalty = 4
+            linear["x"] = linear["x"] - penalty
+            quadratic = {("x", "y"): penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
         # Test minimize
-        linear = {"x": 2, "y": 1}
-        op.minimize(linear={"x": 2, "y": 1})
-        penalty = 4
-        linear["x"] = linear["x"] + penalty
-        quadratic = {("x", "y"): -1 * penalty}
-        op2 = lip.convert(op)
-        ldct = op2.objective.linear.to_dict(use_name=True)
-        qdct = op2.objective.quadratic.to_dict(use_name=True)
-        self.assertEqual(ldct, linear)
-        self.assertEqual(qdct, quadratic)
-        self.assertEqual(op2.get_num_linear_constraints(), 0)
+        with self.subTest("Minimize"):
+            linear = {"x": 2, "y": 1}
+            op.minimize(linear={"x": 2, "y": 1})
+            penalty = 4
+            linear["x"] = linear["x"] + penalty
+            quadratic = {("x", "y"): -1 * penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
 
     def test_quadratic_program_to_qubo_inequality_to_penalty(self):
         """Test QuadraticProgramToQubo, passing inequality pattern"""
