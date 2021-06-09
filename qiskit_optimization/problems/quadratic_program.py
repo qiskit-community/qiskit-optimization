@@ -919,7 +919,7 @@ class QuadraticProgram:
 
         return DocplexMpTranslator().from_qp(self)
 
-    def to_gurobi(self) -> GurobiModel:
+    def to_gurobipy(self) -> GurobiModel:
         """Returns a gurobipy model corresponding to this quadratic program.
 
         Returns:
