@@ -809,7 +809,7 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertEqual(op2.get_num_quadratic_constraints(), 1)
 
     def test_linear_inequality_to_penalty4(self):
-        """Test special constraint to penalty x+y+z <= 1 -> P(x*y+y*z+z*x)"""
+        """Test special constraint to penalty x1+x2+x3+... <= 1 -> P(x1*x2+x1*x3+...)"""
 
         op = QuadraticProgram()
         lip = LinearInequalityToPenalty()
@@ -829,6 +829,35 @@ class TestConverters(QiskitOptimizationTestCase):
             op2 = lip.convert(op)
             qdct = op2.objective.quadratic.to_dict(use_name=True)
             self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+
+        op = QuadraticProgram()
+
+        op.binary_var()
+        op.binary_var()
+        op.binary_var()
+        op.binary_var()
+        op.binary_var()
+
+        linear2 = [1, 1, 0, 0, 0]
+        op.maximize(linear=linear2)
+        op.linear_constraint([1, 1, 1, 1, 1], Constraint.Sense.LE, 1, "")
+
+        with self.subTest("Maximum"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            lip.penalty = 5
+            quadratic2 = [
+                [0, 1, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+            ]
+            op2 = lip.convert(op)
+            ldct2 = op2.objective.linear.to_array()
+            qdct2 = op2.objective.quadratic.to_array() / lip.penalty * -1
+            self.assertEqual(ldct2.tolist(), linear2)
+            self.assertEqual(qdct2.tolist(), quadratic2)
             self.assertEqual(op2.get_num_linear_constraints(), 0)
 
     def test_linear_inequality_to_penalty6(self):

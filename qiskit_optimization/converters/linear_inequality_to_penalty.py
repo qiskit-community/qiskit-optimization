@@ -187,7 +187,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             index1 = combination[0] + 1
             index2 = combination[1] + 1
 
-            if rhs == 1 or rhs == num_vars - 1:
+            if rhs in (1, num_vars - 1):
                 if sense == ConstraintSense.GE:
                     conv_matrix[0][0] = conv_matrix[0][0] + 1
                     conv_matrix[0][index1] = conv_matrix[0][index1] - 1
@@ -212,6 +212,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         """
 
         params = constraint.linear.to_dict()
+        num_vars = len(params)
         rhs = constraint.rhs
         sense = constraint.sense
         coeff_array = np.array(list(params.values()))
@@ -220,7 +221,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         if not all(problem.variables[i].vartype == Variable.Type.BINARY for i in params.keys()):
             return False
 
-        if len(params) == 2:
+        if num_vars == 2:
             if rhs == 1:
                 if all(i == 1 for i in params.values()):
                     if sense in (Constraint.Sense.LE, Constraint.Sense.GE):
@@ -228,14 +229,15 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                         # x+y>=1
                         return True
             if rhs == 0:
-                if sense == Constraint.Sense.LE:
+                if sense in (Constraint.Sense.LE, Constraint.Sense.GE):
                     # x-y<=0
+                    # x-y>=0
                     return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
-        elif len(params) == 3:
-            if rhs == 1:
+        elif num_vars > 2:
+            if rhs in (1, num_vars - 1):
                 if all(i == 1 for i in params.values()):
                     if sense == Constraint.Sense.LE:
-                        # x+y+z<=1
+                        # x1+x2+...<=1
                         return True
         return False
 
