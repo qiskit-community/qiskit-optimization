@@ -187,10 +187,11 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             index1 = combination[0] + 1
             index2 = combination[1] + 1
 
-            if rhs == 1:
-                conv_matrix[0][0] = 1 if sense != ConstraintSense.LE else 0
-                conv_matrix[0][index1] = -1 if sense != ConstraintSense.LE else 0
-                conv_matrix[0][index2] = -1 if sense != ConstraintSense.LE else 0
+            if rhs == 1 or rhs == num_vars - 1:
+                if sense == ConstraintSense.GE:
+                    conv_matrix[0][0] = conv_matrix[0][0] + 1
+                    conv_matrix[0][index1] = conv_matrix[0][index1] - 1
+                    conv_matrix[0][index2] = conv_matrix[0][index2] - 1
                 conv_matrix[index1][index2] = 1
             elif rhs == 0:
                 conv_matrix[0][0] = 0
