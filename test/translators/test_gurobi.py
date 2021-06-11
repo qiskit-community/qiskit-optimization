@@ -16,7 +16,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase, requires_ext
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
-from qiskit_optimization.translators.gurobi import from_gurobipy, to_gurobipy
+from qiskit_optimization.translators.gurobipy import from_gurobipy, to_gurobipy
 
 
 class TestGurobiTranslator(QiskitOptimizationTestCase):
