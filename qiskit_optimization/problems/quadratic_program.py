@@ -858,7 +858,7 @@ class QuadraticProgram:
         )
 
     def from_docplex(self, model: Model) -> None:
-        """Loads this quadratic program from a docplex model.
+        """DEPRECATED Loads this quadratic program from a docplex model.
 
         Note that this supports only basic functions of docplex as follows:
         - quadratic objective function
@@ -873,7 +873,7 @@ class QuadraticProgram:
         """
         warnings.warn(
             "The from_docplex method is deprecated and will be "
-            "removed in a future release. Instead use the "
+            "removed no sooner than 3 months after the release. Instead use the "
             "qiskit_optimization.translators.from_docplex_mp function.",
             DeprecationWarning,
         )
@@ -885,7 +885,7 @@ class QuadraticProgram:
             setattr(self, attr, val)
 
     def to_docplex(self) -> Model:
-        """Returns a docplex model corresponding to this quadratic program.
+        """DEPRECATED Returns a docplex model corresponding to this quadratic program.
 
         Returns:
             The docplex model corresponding to this quadratic program.
@@ -895,7 +895,7 @@ class QuadraticProgram:
         """
         warnings.warn(
             "The to_docplex method is deprecated and will be "
-            "removed in a future release. Instead use the "
+            "removed no sooner than 3 months after the release. Instead use the "
             "qiskit_optimization.translators.to_docplex_mp function.",
             DeprecationWarning,
         )
@@ -913,40 +913,6 @@ class QuadraticProgram:
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self).export_as_lp_string()
-
-    def pprint_as_string(self) -> str:
-        """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
-        Returns:
-            A string representing the quadratic program.
-        """
-        warnings.warn(
-            "The pprint_as_string method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "to_docplex() method and run pprint_as_string() on that "
-            "output",
-            DeprecationWarning,
-        )
-        from ..translators.docplex_mp import to_docplex_mp
-
-        return to_docplex_mp(self).pprint_as_string()
-
-    def prettyprint(self, out: Optional[str] = None) -> None:
-        """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
-
-        Args:
-            out: The output stream or file name to print to.
-              if you specify a file name, the output file name is has '.mod' as suffix.
-        """
-        warnings.warn(
-            "The prettyprint method is deprecated and will be "
-            "removed in a future release. Instead use the "
-            "to_docplex() method and run prettyprint() on that "
-            "output",
-            DeprecationWarning,
-        )
-        from ..translators.docplex_mp import to_docplex_mp
-
-        to_docplex_mp(self).prettyprint(out)
 
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.

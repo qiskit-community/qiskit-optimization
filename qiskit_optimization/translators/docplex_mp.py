@@ -42,7 +42,7 @@ def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
         The docplex.mp model corresponding to a quadratic program.
 
     Raises:
-        QiskitOptimizationError: if non-supported elements (should never happen).
+        QiskitOptimizationError: if the model contains non-supported elements (should never happen).
     """
     # initialize model
     mdl = Model(quadratic_program.name)
@@ -58,7 +58,9 @@ def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
             var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
+            raise QiskitOptimizationError(
+                "Internal error: unsupported variable type: {}".format(x.vartype)
+            )
 
     # add objective
     objective = quadratic_program.objective.constant
@@ -89,7 +91,9 @@ def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
             mdl.add_constraint(linear_expr <= rhs, ctname=name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+            raise QiskitOptimizationError(
+                "Internal error: unsupported constraint sense: {}".format(sense)
+            )
 
     # add quadratic constraints
     for i, q_constraint in enumerate(quadratic_program.quadratic_constraints):
@@ -115,7 +119,9 @@ def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
             mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+            raise QiskitOptimizationError(
+                "Internal error: unsupported constraint sense: {}".format(sense)
+            )
 
     return mdl
 
