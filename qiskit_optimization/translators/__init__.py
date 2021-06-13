@@ -32,6 +32,6 @@ Translators
 """
 
 from .docplex_mp import from_docplex_mp, to_docplex_mp
-from .gurobi import from_gurobipy, to_gurobipy
+from .gurobipy import from_gurobipy, to_gurobipy
 
 _all = ["from_docplex_mp", "to_docplex_mp", "from_gurobipy", "to_gurobipy"]
