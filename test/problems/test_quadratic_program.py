@@ -21,7 +21,6 @@ from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
-from qiskit_optimization.translators import from_docplex_mp
 
 
 class TestQuadraticProgram(QiskitOptimizationTestCase):
