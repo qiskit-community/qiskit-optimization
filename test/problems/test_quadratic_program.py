@@ -17,7 +17,6 @@ import unittest
 from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
-import numpy as np
 from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
