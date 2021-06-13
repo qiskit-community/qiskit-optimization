@@ -872,7 +872,7 @@ class QuadraticProgram:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
         warnings.warn(
-            "The from_docplex method is deprecated and will be "
+            "The from_docplex method is deprecated as of version 0.2.0 and will be "
             "removed no sooner than 3 months after the release. Instead use the "
             "qiskit_optimization.translators.from_docplex_mp function.",
             DeprecationWarning,
@@ -894,7 +894,7 @@ class QuadraticProgram:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
         warnings.warn(
-            "The to_docplex method is deprecated and will be "
+            "The to_docplex method is deprecated as of version 0.2.0 and will be "
             "removed no sooner than 3 months after the release. Instead use the "
             "qiskit_optimization.translators.to_docplex_mp function.",
             DeprecationWarning,
