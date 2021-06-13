@@ -96,9 +96,7 @@ class VQEProgram(MinimumEigensolver):
             _ = hasattr(provider, "runtime")
         except QiskitError:
             # pylint: disable=raise-missing-from
-            raise ValueError(
-                f"The provider {provider} does not provide a runtime environment."
-            )
+            raise ValueError(f"The provider {provider} does not provide a runtime environment.")
 
         self._provider = provider
 
@@ -127,8 +125,7 @@ class VQEProgram(MinimumEigensolver):
         """Set the optimizer."""
         if "name" not in settings.keys():
             raise ValueError(
-                "The settings must contain a ``name`` key specifying the type of "
-                "the optimizer."
+                "The settings must contain a ``name`` key specifying the type of " "the optimizer."
             )
 
         _validate_optimizer_settings(settings)
@@ -284,9 +281,7 @@ class VQEProgram(MinimumEigensolver):
         vqe_result.cost_function_evals = result.get("cost_function_evals", None)
         vqe_result.eigenstate = result.get("eigenstate", None)
         vqe_result.eigenvalue = result.get("eigenvalue", None)
-        vqe_result.aux_operator_eigenvalues = result.get(
-            "aux_operator_eigenvalues", None
-        )
+        vqe_result.aux_operator_eigenvalues = result.get("aux_operator_eigenvalues", None)
         vqe_result.optimal_parameters = result.get("optimal_parameters", None)
         vqe_result.optimal_point = result.get("optimal_point", None)
         vqe_result.optimal_value = result.get("optimal_value", None)
