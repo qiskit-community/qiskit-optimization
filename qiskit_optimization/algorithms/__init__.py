@@ -47,6 +47,7 @@ Algorithms and results
    GoemansWilliamsonOptimizationResult
    GroverOptimizationResult
    GroverOptimizer
+   GurobiOptimizer
    IntermediateResult
    MeanAggregator
    MinimumEigenOptimizationResult
@@ -62,29 +63,66 @@ Algorithms and results
 
 """
 
-from .admm_optimizer import ADMMOptimizer, ADMMOptimizationResult, ADMMState, ADMMParameters
+from .admm_optimizer import (
+    ADMMOptimizer,
+    ADMMOptimizationResult,
+    ADMMState,
+    ADMMParameters,
+)
 from .cobyla_optimizer import CobylaOptimizer
 from .cplex_optimizer import CplexOptimizer
-from .goemans_williamson_optimizer import (GoemansWilliamsonOptimizer,
-                                           GoemansWilliamsonOptimizationResult)
+from .goemans_williamson_optimizer import (
+    GoemansWilliamsonOptimizer,
+    GoemansWilliamsonOptimizationResult,
+)
 from .grover_optimizer import GroverOptimizer, GroverOptimizationResult
-from .minimum_eigen_optimizer import (MinimumEigenOptimizer, MinimumEigenOptimizationResult)
+from .gurobi_optimizer import GurobiOptimizer
+from .minimum_eigen_optimizer import (
+    MinimumEigenOptimizer,
+    MinimumEigenOptimizationResult,
+)
 from .multistart_optimizer import MultiStartOptimizer
-from .optimization_algorithm import (OptimizationAlgorithm, OptimizationResult,
-                                     OptimizationResultStatus, SolutionSample)
-from .recursive_minimum_eigen_optimizer import (RecursiveMinimumEigenOptimizer,
-                                                RecursiveMinimumEigenOptimizationResult,
-                                                IntermediateResult)
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+    SolutionSample,
+)
+from .recursive_minimum_eigen_optimizer import (
+    RecursiveMinimumEigenOptimizer,
+    RecursiveMinimumEigenOptimizationResult,
+    IntermediateResult,
+)
 from .slsqp_optimizer import SlsqpOptimizer, SlsqpOptimizationResult
-from .warm_start_qaoa_optimizer import (BaseAggregator, MeanAggregator, WarmStartQAOAFactory,
-                                        WarmStartQAOAOptimizer)
+from .warm_start_qaoa_optimizer import (
+    BaseAggregator,
+    MeanAggregator,
+    WarmStartQAOAFactory,
+    WarmStartQAOAOptimizer,
+)
 
-__all__ = ["ADMMOptimizer", "OptimizationAlgorithm", "OptimizationResult",
-           "OptimizationResultStatus", "BaseAggregator",
-           "CplexOptimizer", "CobylaOptimizer", "GoemansWilliamsonOptimizer",
-           "GoemansWilliamsonOptimizationResult", "GroverOptimizer", "GroverOptimizationResult",
-           "MeanAggregator",
-           "MinimumEigenOptimizer", "MinimumEigenOptimizationResult",
-           "RecursiveMinimumEigenOptimizer", "RecursiveMinimumEigenOptimizationResult",
-           "IntermediateResult", "SlsqpOptimizer", "SlsqpOptimizationResult", "SolutionSample",
-           "WarmStartQAOAOptimizer", "WarmStartQAOAFactory"]
+__all__ = [
+    "ADMMOptimizer",
+    "OptimizationAlgorithm",
+    "OptimizationResult",
+    "OptimizationResultStatus",
+    "BaseAggregator",
+    "CplexOptimizer",
+    "CobylaOptimizer",
+    "GoemansWilliamsonOptimizer",
+    "GoemansWilliamsonOptimizationResult",
+    "GroverOptimizer",
+    "GroverOptimizationResult",
+    "GurobiOptimizer",
+    "MeanAggregator",
+    "MinimumEigenOptimizer",
+    "MinimumEigenOptimizationResult",
+    "RecursiveMinimumEigenOptimizer",
+    "RecursiveMinimumEigenOptimizationResult",
+    "IntermediateResult",
+    "SlsqpOptimizer",
+    "SlsqpOptimizationResult",
+    "SolutionSample",
+    "WarmStartQAOAOptimizer",
+    "WarmStartQAOAFactory",
+]

@@ -1,6 +1,6 @@
 # Qiskit Optimization
 
-[![License](https://img.shields.io/github/license/Qiskit/qiskit-optimization.svg?style=popout-square)](https://opensource.org/licenses/Apache-2.0)[![Build Status](https://github.com/Qiskit/qiskit-optimization/workflows/Optimization%20Unit%20Tests/badge.svg?branch=master)](https://github.com/Qiskit/qiskit-optimization/actions?query=workflow%3A"Optimization%20Unit%20Tests"+branch%3Amaster+event%3Apush)[![](https://img.shields.io/github/release/Qiskit/qiskit-optimization.svg?style=popout-square)](https://github.com/Qiskit/qiskit-optimization/releases)[![](https://img.shields.io/pypi/dm/qiskit-optimization.svg?style=popout-square)](https://pypi.org/project/qiskit-optimization/)[![Coverage Status](https://coveralls.io/repos/github/Qiskit/qiskit-optimization/badge.svg?branch=master)](https://coveralls.io/github/Qiskit/qiskit-optimization?branch=master)
+[![License](https://img.shields.io/github/license/Qiskit/qiskit-optimization.svg?style=popout-square)](https://opensource.org/licenses/Apache-2.0)[![Build Status](https://github.com/Qiskit/qiskit-optimization/workflows/Optimization%20Unit%20Tests/badge.svg?branch=main)](https://github.com/Qiskit/qiskit-optimization/actions?query=workflow%3A"Optimization%20Unit%20Tests"+branch%3Amain+event%3Apush)[![](https://img.shields.io/github/release/Qiskit/qiskit-optimization.svg?style=popout-square)](https://github.com/Qiskit/qiskit-optimization/releases)[![](https://img.shields.io/pypi/dm/qiskit-optimization.svg?style=popout-square)](https://pypi.org/project/qiskit-optimization/)[![Coverage Status](https://coveralls.io/repos/github/Qiskit/qiskit-optimization/badge.svg?branch=main)](https://coveralls.io/github/Qiskit/qiskit-optimization?branch=main)
 
 **Qiskit Optimization** is an open-source framework that covers the whole range from high-level modeling of optimization
 problems, with automatic conversion of problems to different required representations, to a suite
@@ -39,7 +39,17 @@ To do this follow the instructions in the
 
 ### Optional Installs
 
-* **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files.
+* **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files and the usage of
+  the `CplexOptimizer`, wrapper for ``cplex.Cplex``.
+
+* **CVXPY** may be installed using command `pip install 'qiskit-optimization[cvx]'` to install the
+  package. CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
+
+* **Matplotlib** may be installed using command `pip install 'qiskit-optimization[matplotlib]'` to install the
+  package. Matplotlib being installed will enable the usage of the `draw` method in the graph optimization application classes.
+
+* **Gurobipy** may be installed using command `pip install 'qiskit-optimization[gurobi]'` to install the
+  package. Gurobipy being installed will enable the usage of the GurobiOptimizer.
 
 ### Creating Your First Optimization Programming Experiment in Qiskit
 
@@ -83,9 +93,9 @@ problem.maximize(linear=linear, quadratic=quadratic)
 problem.linear_constraint([1, 0, 0, 0], '==', 1)
 
 # Run quantum algorithm QAOA on qasm simulator
-spsa = SPSA(max_trials=250)
+spsa = SPSA(maxiter=250)
 backend = BasicAer.get_backend('qasm_simulator')
-qaoa = QAOA(optimizer=spsa, p=5, quantum_instance=backend)
+qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=backend)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result)  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
@@ -111,13 +121,6 @@ We use [GitHub issues](https://github.com/Qiskit/qiskit-optimization/issues) for
 and for discussion and simple questions.
 For questions that are more suited for a forum, we use the **Qiskit** tag in [Stack Overflow](https://stackoverflow.com/questions/tagged/qiskit).
 
-## Next Steps
-
-Now you're set up and ready to check out some of the other examples from the
-[Qiskit Tutorials](https://github.com/Qiskit/qiskit-tutorials)
-repository, that are used for the IBM Quantum Experience.
-
-
 ## Authors and Citation
 
 Optimization was inspired, authored and brought about by the collective work of a team of researchers.
@@ -128,10 +131,9 @@ If you use Qiskit, please cite as per the provided
 [BibTeX file](https://github.com/Qiskit/qiskit/blob/master/Qiskit.bib).
 
 Please note that if you do not like the way your name is cited in the BibTex file then consult
-the information found in the [.mailmap](https://github.com/Qiskit/qiskit-optimization/blob/master/.mailmap)
+the information found in the [.mailmap](https://github.com/Qiskit/qiskit-optimization/blob/main/.mailmap)
 file.
 
 ## License
 
 This project uses the [Apache License 2.0](LICENSE.txt).
-

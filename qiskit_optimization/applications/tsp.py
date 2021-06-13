@@ -41,12 +41,20 @@ class Tsp(GraphOptimizationApplication):
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
             from the traveling salesman problem instance.
         """
-        mdl = Model(name='TSP')
+        mdl = Model(name="TSP")
         n = self._graph.number_of_nodes()
-        x = {(i, k): mdl.binary_var(name='x_{0}_{1}'.format(i, k))
-             for i in range(n) for k in range(n)}
-        tsp_func = mdl.sum(self._graph.edges[i, j]['weight'] * x[(i, k)] * x[(j, (k+1) % n)]
-                           for i in range(n) for j in range(n) for k in range(n) if i != j)
+        x = {
+            (i, k): mdl.binary_var(name="x_{0}_{1}".format(i, k))
+            for i in range(n)
+            for k in range(n)
+        }
+        tsp_func = mdl.sum(
+            self._graph.edges[i, j]["weight"] * x[(i, k)] * x[(j, (k + 1) % n)]
+            for i in range(n)
+            for j in range(n)
+            for k in range(n)
+            if i != j
+        )
         mdl.minimize(tsp_func)
         for i in range(n):
             mdl.add_constraint(mdl.sum(x[(i, k)] for k in range(n)) == 1)
@@ -56,8 +64,9 @@ class Tsp(GraphOptimizationApplication):
         op.from_docplex(mdl)
         return op
 
-    def interpret(self,
-                  result: Union[OptimizationResult, np.ndarray]) -> List[Union[int, List[int]]]:
+    def interpret(
+        self, result: Union[OptimizationResult, np.ndarray]
+    ) -> List[Union[int, List[int]]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -80,8 +89,11 @@ class Tsp(GraphOptimizationApplication):
                 route.append(p_step)
         return route
 
-    def _draw_result(self, result: Union[OptimizationResult, np.ndarray],
-                     pos: Optional[Dict[int, np.ndarray]] = None) -> None:
+    def _draw_result(
+        self,
+        result: Union[OptimizationResult, np.ndarray],
+        pos: Optional[Dict[int, np.ndarray]] = None,
+    ) -> None:
         """Draw the result with colors
 
         Args:
@@ -94,17 +106,19 @@ class Tsp(GraphOptimizationApplication):
             self._graph,
             pos,
             edgelist=self._edgelist(x),
-            width=8, alpha=0.5, edge_color="tab:red",
-            )
+            width=8,
+            alpha=0.5,
+            edge_color="tab:red",
+        )
 
     def _edgelist(self, x: np.ndarray):
         # Arrange route and return the list of the edges for the edge list of nx.draw_networkx_edges
         route = self.interpret(x)
-        return [(route[i], route[(i+1) % len(route)]) for i in range(len(route))]
+        return [(route[i], route[(i + 1) % len(route)]) for i in range(len(route))]
 
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> 'Tsp':
+    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> "Tsp":
         """Create a random instance of the traveling salesman problem
 
         Args:
@@ -119,15 +133,15 @@ class Tsp(GraphOptimizationApplication):
         if seed:
             algorithm_globals.random_seed = seed
         coord = algorithm_globals.random.uniform(low, high, (n, 2))
-        pos = {i: (coord_[0], coord_[1])for i, coord_ in enumerate(coord)}
-        graph = nx.random_geometric_graph(n, np.hypot(high-low, high-low)+1, pos=pos)
+        pos = {i: (coord_[0], coord_[1]) for i, coord_ in enumerate(coord)}
+        graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
-            delta = [graph.nodes[w]['pos'][i] - graph.nodes[v]['pos'][i] for i in range(2)]
-            graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
+            graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return Tsp(graph)
 
     @staticmethod
-    def parse_tsplib_format(filename: str) -> 'Tsp':
+    def parse_tsplib_format(filename: str) -> "Tsp":
         """Read a graph in TSPLIB format from file and return a Tsp instance.
 
         Args:
@@ -140,30 +154,32 @@ class Tsp(GraphOptimizationApplication):
         Returns:
             A Tsp instance data.
         """
-        name = ''
+        name = ""
         coord = []  # type: ignore
         with open(filename) as infile:
             coord_section = False
             for line in infile:
-                if line.startswith('NAME'):
-                    name = line.split(':')[1]
+                if line.startswith("NAME"):
+                    name = line.split(":")[1]
                     name.strip()
-                elif line.startswith('TYPE'):
-                    typ = line.split(':')[1]
+                elif line.startswith("TYPE"):
+                    typ = line.split(":")[1]
                     typ.strip()
-                    if typ != 'TSP':
+                    if typ != "TSP":
                         raise QiskitOptimizationError(
-                            "This supports only \"TSP\" type. Actual: {}".format(typ))
-                elif line.startswith('DIMENSION'):
-                    dim = int(line.split(':')[1])
+                            'This supports only "TSP" type. Actual: {}'.format(typ)
+                        )
+                elif line.startswith("DIMENSION"):
+                    dim = int(line.split(":")[1])
                     coord = np.zeros((dim, 2))  # type: ignore
-                elif line.startswith('EDGE_WEIGHT_TYPE'):
-                    typ = line.split(':')[1]
+                elif line.startswith("EDGE_WEIGHT_TYPE"):
+                    typ = line.split(":")[1]
                     typ.strip()
-                    if typ != 'EUC_2D':
+                    if typ != "EUC_2D":
                         raise QiskitOptimizationError(
-                            "This supports only \"EUC_2D\" edge weight. Actual: {}".format(typ))
-                elif line.startswith('NODE_COORD_SECTION'):
+                            'This supports only "EUC_2D" edge weight. Actual: {}'.format(typ)
+                        )
+                elif line.startswith("NODE_COORD_SECTION"):
                     coord_section = True
                 elif coord_section:
                     v = line.split()
@@ -176,11 +192,12 @@ class Tsp(GraphOptimizationApplication):
         y_max = max(coord_[1] for coord_ in coord)
         y_min = min(coord_[1] for coord_ in coord)
 
-        graph = nx.random_geometric_graph(len(coord),
-                                          np.hypot(x_max-x_min, y_max-y_min)+1, pos=coord)
+        graph = nx.random_geometric_graph(
+            len(coord), np.hypot(x_max - x_min, y_max - y_min) + 1, pos=coord
+        )
         for w, v in graph.edges:
-            delta = [graph.nodes[w]['pos'][i] - graph.nodes[v]['pos'][i] for i in range(2)]
-            graph.edges[w, v]['weight'] = np.rint(np.hypot(delta[0], delta[1]))
+            delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]
+            graph.edges[w, v]["weight"] = np.rint(np.hypot(delta[0], delta[1]))
         return Tsp(graph)
 
     @staticmethod

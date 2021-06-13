@@ -18,6 +18,7 @@ from typing import Union, List, Dict, Tuple, Any
 from numpy import ndarray
 from scipy.sparse import spmatrix
 
+from ..exceptions import QiskitOptimizationError
 from .linear_constraint import LinearExpression
 from .quadratic_expression import QuadraticExpression
 from .quadratic_program_element import QuadraticProgramElement
@@ -25,6 +26,7 @@ from .quadratic_program_element import QuadraticProgramElement
 
 class ObjSense(Enum):
     """Objective Sense Type."""
+
     MINIMIZE = 1
     MAXIMIZE = -1
 
@@ -36,13 +38,19 @@ class QuadraticObjective(QuadraticProgramElement):
 
     Sense = ObjSense
 
-    def __init__(self, quadratic_program: Any,
-                 constant: float = 0.0,
-                 linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
-                 quadratic: Union[ndarray, spmatrix, List[List[float]],
-                                  Dict[Tuple[Union[int, str], Union[int, str]], float]] = None,
-                 sense: ObjSense = ObjSense.MINIMIZE
-                 ) -> None:
+    def __init__(
+        self,
+        quadratic_program: Any,
+        constant: float = 0.0,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
+        quadratic: Union[
+            ndarray,
+            spmatrix,
+            List[List[float]],
+            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        ] = None,
+        sense: ObjSense = ObjSense.MINIMIZE,
+    ) -> None:
         """Constructs a quadratic objective function.
 
         Args:
@@ -90,8 +98,10 @@ class QuadraticObjective(QuadraticProgramElement):
         return self._linear
 
     @linear.setter
-    def linear(self, linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]]
-               ) -> None:
+    def linear(
+        self,
+        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+    ) -> None:
         """Sets the coefficients of the linear part of the objective function.
 
         Args:
@@ -110,9 +120,15 @@ class QuadraticObjective(QuadraticProgramElement):
         return self._quadratic
 
     @quadratic.setter
-    def quadratic(self, quadratic: Union[ndarray, spmatrix, List[List[float]],
-                                         Dict[Tuple[Union[int, str], Union[int, str]], float]]
-                  ) -> None:
+    def quadratic(
+        self,
+        quadratic: Union[
+            ndarray,
+            spmatrix,
+            List[List[float]],
+            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        ],
+    ) -> None:
         """Sets the coefficients of the quadratic part of the objective function.
 
         Args:
@@ -147,7 +163,17 @@ class QuadraticObjective(QuadraticProgramElement):
 
         Returns:
             The value of the quadratic objective given the variable values.
+
+        Raises:
+            QiskitOptimizationError: if the shape of the objective function does not match with
+                the number of variables.
         """
+        n = self.quadratic_program.get_num_vars()
+        if self.linear.coefficients.shape != (1, n) or self.quadratic.coefficients.shape != (n, n):
+            raise QiskitOptimizationError(
+                "The shape of the objective function does not match with the number of variables. "
+                "Need to define the objective function after defining all variables"
+            )
         return self.constant + self.linear.evaluate(x) + self.quadratic.evaluate(x)
 
     def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
@@ -158,5 +184,15 @@ class QuadraticObjective(QuadraticProgramElement):
 
         Returns:
             The value of the gradient of the quadratic objective given the variable values.
+
+        Raises:
+            QiskitOptimizationError: if the shape of the objective function does not match with
+                the number of variables.
         """
+        n = self.quadratic_program.get_num_vars()
+        if self.linear.coefficients.shape != (1, n) or self.quadratic.coefficients.shape != (n, n):
+            raise QiskitOptimizationError(
+                "The shape of the objective function does not match with the number of variables. "
+                "Need to define the objective function after defining all variables"
+            )
         return self.linear.evaluate_gradient(x) + self.quadratic.evaluate_gradient(x)

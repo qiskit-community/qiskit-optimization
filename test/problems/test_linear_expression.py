@@ -26,7 +26,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
     """Test LinearExpression."""
 
     def test_init(self):
-        """ test init. """
+        """test init."""
 
         quadratic_program = QuadraticProgram()
         for _ in range(5):
@@ -36,13 +36,15 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         coefficients_array = np.array(coefficients_list)
         coefficients_dok = dok_matrix([coefficients_list])
         coefficients_dict_int = {i: i for i in range(1, 5)}
-        coefficients_dict_str = {'x{}'.format(i): i for i in range(1, 5)}
+        coefficients_dict_str = {"x{}".format(i): i for i in range(1, 5)}
 
-        for coeffs in [coefficients_list,
-                       coefficients_array,
-                       coefficients_dok,
-                       coefficients_dict_int,
-                       coefficients_dict_str]:
+        for coeffs in [
+            coefficients_list,
+            coefficients_array,
+            coefficients_dok,
+            coefficients_dict_int,
+            coefficients_dict_str,
+        ]:
             linear = LinearExpression(quadratic_program, coeffs)
             self.assertEqual((linear.coefficients != coefficients_dok).nnz, 0)
             self.assertTrue((linear.to_array() == coefficients_list).all())
@@ -50,7 +52,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             self.assertDictEqual(linear.to_dict(use_name=True), coefficients_dict_str)
 
     def test_get_item(self):
-        """ test get_item. """
+        """test get_item."""
 
         quadratic_program = QuadraticProgram()
         for _ in range(5):
@@ -62,7 +64,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             self.assertEqual(linear[i], v)
 
     def test_setters(self):
-        """ test setters. """
+        """test setters."""
 
         quadratic_program = QuadraticProgram()
         for _ in range(5):
@@ -75,13 +77,15 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         coefficients_array = np.array(coefficients_list)
         coefficients_dok = dok_matrix([coefficients_list])
         coefficients_dict_int = {i: i for i in range(1, 5)}
-        coefficients_dict_str = {'x{}'.format(i): i for i in range(1, 5)}
+        coefficients_dict_str = {"x{}".format(i): i for i in range(1, 5)}
 
-        for coeffs in [coefficients_list,
-                       coefficients_array,
-                       coefficients_dok,
-                       coefficients_dict_int,
-                       coefficients_dict_str]:
+        for coeffs in [
+            coefficients_list,
+            coefficients_array,
+            coefficients_dok,
+            coefficients_dict_int,
+            coefficients_dict_str,
+        ]:
             linear.coefficients = coeffs
             self.assertEqual((linear.coefficients != coefficients_dok).nnz, 0)
             self.assertTrue((linear.to_array() == coefficients_list).all())
@@ -89,7 +93,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             self.assertDictEqual(linear.to_dict(use_name=True), coefficients_dict_str)
 
     def test_evaluate(self):
-        """ test evaluate. """
+        """test evaluate."""
 
         quadratic_program = QuadraticProgram()
         x = [quadratic_program.continuous_var() for _ in range(5)]
@@ -100,13 +104,13 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         values_list = list(range(len(x)))
         values_array = np.array(values_list)
         values_dict_int = {i: i for i in range(len(x))}
-        values_dict_str = {'x{}'.format(i): i for i in range(len(x))}
+        values_dict_str = {"x{}".format(i): i for i in range(len(x))}
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             self.assertEqual(linear.evaluate(values), 30)
 
     def test_evaluate_gradient(self):
-        """ test evaluate gradient. """
+        """test evaluate gradient."""
 
         quadratic_program = QuadraticProgram()
         x = [quadratic_program.continuous_var() for _ in range(5)]
@@ -117,11 +121,11 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         values_list = list(range(len(x)))
         values_array = np.array(values_list)
         values_dict_int = {i: i for i in range(len(x))}
-        values_dict_str = {'x{}'.format(i): i for i in range(len(x))}
+        values_dict_str = {"x{}".format(i): i for i in range(len(x))}
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             np.testing.assert_almost_equal(linear.evaluate_gradient(values), coefficients_list)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

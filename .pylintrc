@@ -74,7 +74,8 @@ disable=no-self-use,        # disabled as it is too verbose
     unnecessary-pass,   # allow for methods with just "pass", for clarity
     no-else-return,     # relax "elif" after a clause with a return
     docstring-first-line-empty, # relax docstring style
-    import-outside-toplevel
+    import-outside-toplevel,
+    bad-continuation, bad-whitespace # differences of opinion with black
 
 
 
@@ -215,7 +216,7 @@ max-nested-blocks=5
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=105
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
@@ -309,7 +310,7 @@ ignored-classes=optparse.Values,thread._local,_thread._local,QuantumCircuit
 # List of members which are set dynamically and missed by pylint inference
 # system, and so shouldn't trigger E1101 when accessed. Python regular
 # expressions are accepted.
-generated-members=
+generated-members=gurobipy.*,gp.*
 
 # List of decorators that produce context managers, such as
 # contextlib.contextmanager. Add to this list to register other decorators that
