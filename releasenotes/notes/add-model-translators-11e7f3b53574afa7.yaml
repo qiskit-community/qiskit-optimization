@@ -7,6 +7,11 @@ features:
     :meth:`~qiskit_optimization.translators.from_gurobipy`, and
     :meth:`~qiskit_optimization.translators.to_gurobipy`
     to :mod:`~qiskit_optimization.translators`.
+upgrade:
+  - |
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.pprint_as_string` and
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.prettyprint` have been removed,
+    which were deprecated in Qiskit Aqua 0.8.0 release (October 2020).
 deprecations:
   - |
     ``QuadraticProgram.from_docplex``, ``QuadraticProgram.to_docplex`` are deprecated because
