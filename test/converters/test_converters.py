@@ -808,6 +808,46 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertEqual(op2.get_num_linear_constraints(), 1)
             self.assertEqual(op2.get_num_quadratic_constraints(), 1)
 
+    def test_linear_inequality_to_penalty3(self):
+        """Test special constraint to penalty x1+x2+x3+... >= n-1 -> P(x1*x2+x1*x3+...)"""
+
+        op = QuadraticProgram()
+        lip = LinearInequalityToPenalty()
+
+        op.binary_var()
+        op.binary_var()
+        op.binary_var()
+        op.binary_var()
+        op.binary_var()
+
+        # Linear constraints
+        n = 5
+        op.linear_constraint([1, 1, 1, 1, 1], Constraint.Sense.GE, n - 1, "")
+
+        # Test with no max/min
+        with self.subTest("No max/min"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            penalty = 5
+            lip.penalty = penalty
+
+            constant = 10
+            linear = [n - 1, n - 1, n - 1, n - 1, n - 1]
+            quadratic = [
+                [0, 1, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+            ]
+            op2 = lip.convert(op)
+            cnst2 = op2.objective.constant / penalty
+            ldct2 = op2.objective.linear.to_array() / penalty * -1
+            qdct2 = op2.objective.quadratic.to_array() / penalty
+            self.assertEqual(cnst2, constant)
+            self.assertEqual(ldct2.tolist(), linear)
+            self.assertEqual(qdct2.tolist(), quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+
     def test_linear_inequality_to_penalty4(self):
         """Test special constraint to penalty x1+x2+x3+... <= 1 -> P(x1*x2+x1*x3+...)"""
 

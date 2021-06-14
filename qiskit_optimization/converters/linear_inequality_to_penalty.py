@@ -234,10 +234,15 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                     # x-y>=0
                     return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
         elif num_vars > 2:
-            if rhs in (1, num_vars - 1):
+            if rhs == 1:
                 if all(i == 1 for i in params.values()):
                     if sense == Constraint.Sense.LE:
                         # x1+x2+...<=1
+                        return True
+            elif rhs == num_vars - 1:
+                if all(i == 1 for i in params.values()):
+                    if sense == Constraint.Sense.GE:
+                        # x1+x2+...>=n-1
                         return True
         return False
 
