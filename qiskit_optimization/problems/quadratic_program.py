@@ -876,6 +876,7 @@ class QuadraticProgram:
             "removed no sooner than 3 months after the release. Instead use the "
             "qiskit_optimization.translators.from_docplex_mp function.",
             DeprecationWarning,
+            stacklevel=2,
         )
 
         from ..translators.docplex_mp import from_docplex_mp
@@ -898,6 +899,7 @@ class QuadraticProgram:
             "removed no sooner than 3 months after the release. Instead use the "
             "qiskit_optimization.translators.to_docplex_mp function.",
             DeprecationWarning,
+            stacklevel=2,
         )
 
         from ..translators.docplex_mp import to_docplex_mp

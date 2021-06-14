@@ -14,6 +14,7 @@
 
 import tempfile
 import unittest
+import warnings
 from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
@@ -897,7 +898,9 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = QuadraticProgram()
-        q_p2.from_docplex(q_p.to_docplex())
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            q_p2.from_docplex(q_p.to_docplex())
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = Model("test")
@@ -912,34 +915,44 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             mod.semiinteger_var(lb=1, name="x")
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             mod.add_range(0, 2 * x, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_indicator(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_equivalence(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add(mod.not_equal_constraint(x, y + 1))
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         # test from_docplex without explicit variable names
         mod = Model()
@@ -954,7 +967,9 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         mod.add_constraint(x * y >= z)  # quadratic GE
         mod.add_constraint(x * y <= z)  # quadratic LE
         q_p = QuadraticProgram()
-        q_p.from_docplex(mod)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            q_p.from_docplex(mod)
         var_names = [v.name for v in q_p.variables]
         self.assertListEqual(var_names, ["x0", "x1", "x2"])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
