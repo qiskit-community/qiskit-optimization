@@ -20,6 +20,7 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 from .graph_optimization_application import GraphOptimizationApplication
 
 
@@ -45,8 +46,7 @@ class VertexCover(GraphOptimizationApplication):
         for w, v in self._graph.edges:
             mdl.add_constraint(x[w] + x[v] >= 1)
         mdl.minimize(objective)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         return op
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:

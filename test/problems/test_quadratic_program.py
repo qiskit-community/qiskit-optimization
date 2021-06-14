@@ -14,6 +14,7 @@
 
 import tempfile
 import unittest
+import warnings
 from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
@@ -881,7 +882,10 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.write_to_lp_file("")
 
     def test_docplex(self):
-        """test from_docplex and to_docplex"""
+        """DEPRECATED test from_docplex and to_docplex
+
+        This test will be removed when `from_docplex` and `to_docplex` are removed.
+        """
         q_p = QuadraticProgram("test")
         q_p.binary_var(name="x")
         q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
@@ -894,7 +898,9 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = QuadraticProgram()
-        q_p2.from_docplex(q_p.to_docplex())
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            q_p2.from_docplex(q_p.to_docplex())
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = Model("test")
@@ -909,34 +915,44 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             mod.semiinteger_var(lb=1, name="x")
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             mod.add_range(0, 2 * x, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_indicator(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_equivalence(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add(mod.not_equal_constraint(x, y + 1))
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         # test from_docplex without explicit variable names
         mod = Model()
@@ -951,7 +967,9 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         mod.add_constraint(x * y >= z)  # quadratic GE
         mod.add_constraint(x * y <= z)  # quadratic LE
         q_p = QuadraticProgram()
-        q_p.from_docplex(mod)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            q_p.from_docplex(mod)
         var_names = [v.name for v in q_p.variables]
         self.assertListEqual(var_names, ["x0", "x1", "x2"])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
@@ -963,76 +981,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(c.rhs, 0)
             self.assertDictEqual(c.linear.to_dict(use_name=True), {"x2": -1})
             self.assertDictEqual(c.quadratic.to_dict(use_name=True), {("x0", "x1"): 1})
-            self.assertEqual(c.sense, senses[i])
-
-    def test_gurobipy(self):
-        """test from_gurobipy and to_gurobipy"""
-        try:
-            import gurobipy as gp
-        except ImportError as ex:
-            self.skipTest("gurobipy not installed: {}".format(str(ex)))
-            return
-        q_p = QuadraticProgram("test")
-        q_p.binary_var(name="x")
-        q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
-        q_p.continuous_var(name="z", lowerbound=-1.5, upperbound=3.2)
-        q_p.minimize(constant=1, linear={"x": 1, "y": 2}, quadratic={("x", "y"): -1, ("z", "z"): 2})
-        q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
-        q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = QuadraticProgram()
-        q_p2.from_gurobipy(q_p.to_gurobipy())
-        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
-
-        mod = gp.Model("test")
-        x = mod.addVar(vtype=gp.GRB.BINARY, name="x")
-        y = mod.addVar(vtype=gp.GRB.INTEGER, lb=-2, ub=4, name="y")
-        z = mod.addVar(vtype=gp.GRB.CONTINUOUS, lb=-1.5, ub=3.2, name="z")
-        mod.setObjective(1 + x + 2 * y - x * y + 2 * z * z)
-        mod.optimize()
-        mod.addConstr(2 * x - z == 1, name="c0")
-        mod.addConstr(2 * x - z + 3 * y * z == 1, name="q0")
-
-        # Here I am unsure what to do, let's come back to it later
-        # self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = gp.Model()
-            mod.addVar(vtype=gp.GRB.SEMIINT, lb=1, name="x")
-            q_p.from_gurobipy(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = gp.Model()
-            x = mod.addVar(vtype=gp.GRB.BINARY, name="x")
-            y = mod.addVar(vtype=gp.GRB.BINARY, name="y")
-            mod.addConstr((x == 1) >> (x + y <= 1))
-            q_p.from_gurobipy(mod)
-
-        # test from_gurobipy without explicit variable names
-        mod = gp.Model()
-        x = mod.addVar(vtype=gp.GRB.BINARY)
-        y = mod.addVar(vtype=gp.GRB.CONTINUOUS)
-        z = mod.addVar(vtype=gp.GRB.INTEGER)
-        mod.setObjective(x + y + z + x * y + y * z + x * z)
-        mod.optimize()
-        mod.addConstr(x + y == z)  # linear EQ
-        mod.addConstr(x + y >= z)  # linear GE
-        mod.addConstr(x + y <= z)  # linear LE
-        mod.addConstr(x * y == z)  # quadratic EQ
-        mod.addConstr(x * y >= z)  # quadratic GE
-        mod.addConstr(x * y <= z)  # quadratic LE
-        q_p = QuadraticProgram()
-        q_p.from_gurobipy(mod)
-        var_names = [v.name for v in q_p.variables]
-        self.assertListEqual(var_names, ["C0", "C1", "C2"])
-        senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
-        for i, c in enumerate(q_p.linear_constraints):
-            self.assertDictEqual(c.linear.to_dict(use_name=True), {"C0": 1, "C1": 1, "C2": -1})
-            self.assertEqual(c.rhs, 0)
-            self.assertEqual(c.sense, senses[i])
-        for i, c in enumerate(q_p.quadratic_constraints):
-            self.assertEqual(c.rhs, 0)
-            self.assertDictEqual(c.linear.to_dict(use_name=True), {"C2": -1})
-            self.assertDictEqual(c.quadratic.to_dict(use_name=True), {("C0", "C1"): 1})
             self.assertEqual(c.sense, senses[i])
 
     def test_substitute_variables(self):
@@ -1119,23 +1067,16 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
     def test_feasibility(self):
         """Tests feasibility methods."""
-        mod = Model("test")
-        # 0, 5
-        x = mod.continuous_var(
-            -1,
-            1,
-            "x",
-        )
-        y = mod.continuous_var(-10, 10, "y")
-        mod.minimize(x + y)
-        mod.add(x + y <= 10, "c0")
-        mod.add(x + y >= -10, "c1")
-        mod.add(x + y == 5, "c2")
-        mod.add(x * x + y <= 10, "c3")
-        mod.add(x * x + y >= 5, "c4")
-        mod.add(x * x + y * y == 25, "c5")
-        q_p = QuadraticProgram()
-        q_p.from_docplex(mod)
+        q_p = QuadraticProgram("test")
+        _ = q_p.continuous_var(-1, 1, "x")
+        _ = q_p.continuous_var(-10, 10, "y")
+        q_p.minimize(linear={"x": 1, "y": 1})
+        q_p.linear_constraint({"x": 1, "y": 1}, "<=", 10, "c0")
+        q_p.linear_constraint({"x": 1, "y": 1}, ">=", -10, "c1")
+        q_p.linear_constraint({"x": 1, "y": 1}, "==", 5, "c2")
+        q_p.quadratic_constraint({"y": 1}, {("x", "x"): 1}, "<=", 10, "c3")
+        q_p.quadratic_constraint({"y": 1}, {("x", "x"): 1}, ">=", 5, "c4")
+        q_p.quadratic_constraint(None, {("x", "x"): 1, ("y", "y"): 1}, "==", 25, "c5")
 
         self.assertTrue(q_p.is_feasible([0, 5]))
         self.assertFalse(q_p.is_feasible([1, 10]))

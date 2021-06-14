@@ -14,7 +14,9 @@
 
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
-from ddt import ddt, data
+
+from ddt import data, ddt
+
 from qiskit_optimization.algorithms import GurobiOptimizer
 from qiskit_optimization.problems import QuadraticProgram
 

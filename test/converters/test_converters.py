@@ -37,6 +37,7 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
 )
 from qiskit_optimization.problems import Constraint, Variable
+from qiskit_optimization.translators import from_docplex_mp
 
 logger = logging.getLogger(__name__)
 
@@ -480,8 +481,7 @@ class TestConverters(QiskitOptimizationTestCase):
         c = mdl.continuous_var(lb=0, ub=10.9, name="c")
         x = mdl.binary_var(name="x")
         mdl.maximize(c + x * x)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         converter = IntegerToBinary()
         op = converter.convert(op)
         admm_params = ADMMParameters()

@@ -34,6 +34,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 
 
 @ddt
@@ -74,8 +75,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         x_0 = model.binary_var(name="x0")
         x_1 = model.binary_var(name="x1")
         model.minimize(0 * x_0 + 0 * x_1)
-        op = QuadraticProgram()
-        op.from_docplex(model)
+        op = from_docplex_mp(model)
 
         # Will not find a negative, should return 0.
         gmf = GroverOptimizer(1, num_iterations=1, quantum_instance=self.sv_simulator)
@@ -92,8 +92,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         x_0 = model.binary_var(name="x0")
         x_1 = model.binary_var(name="x1")
         model.minimize(-x_0 + 2 * x_1)
-        op = QuadraticProgram()
-        op.from_docplex(model)
+        op = from_docplex_mp(model)
 
         # Get the optimum key and value.
         gmf = GroverOptimizer(4, num_iterations=self.n_iter, quantum_instance=self.sv_simulator)
@@ -112,8 +111,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         x_0 = model.binary_var(name="x0")
         x_1 = model.binary_var(name="x1")
         model.maximize(-x_0 + 2 * x_1)
-        op = QuadraticProgram()
-        op.from_docplex(model)
+        op = from_docplex_mp(model)
 
         # Get the optimum key and value.
         gmf = GroverOptimizer(4, num_iterations=self.n_iter, quantum_instance=self.sv_simulator)
@@ -133,8 +131,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         x_1 = model.binary_var(name="x1")
         x_2 = model.binary_var(name="x2")
         model.minimize(-x_0 + 2 * x_1 - 3 * x_2 - 2 * x_0 * x_2 - 1 * x_1 * x_2)
-        op = QuadraticProgram()
-        op.from_docplex(model)
+        op = from_docplex_mp(model)
 
         # Get the optimum key and value.
         q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
@@ -150,8 +147,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         x_0 = model.binary_var(name="x0")
         x_1 = model.binary_var(name="x1")
         model.maximize(-x_0 + 2 * x_1)
-        op = QuadraticProgram()
-        op.from_docplex(model)
+        op = from_docplex_mp(model)
 
         # Get the optimum key and value.
         # a single converter.
@@ -231,8 +227,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         x = mdl.binary_var("x")
         y = mdl.binary_var("y")
         mdl.minimize(x - 2 * y)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         opt_sol = -2
         success = OptimizationResultStatus.SUCCESS
         grover_optimizer = GroverOptimizer(

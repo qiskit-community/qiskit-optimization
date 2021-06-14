@@ -18,9 +18,10 @@ import numpy as np
 from docplex.mp.model import Model
 
 from qiskit.utils import algorithm_globals
-from ..algorithms import OptimizationResult
-from ..exceptions import QiskitOptimizationError
-from ..problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.algorithms import OptimizationResult
+from qiskit_optimization.exceptions import QiskitOptimizationError
+from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 from .graph_optimization_application import GraphOptimizationApplication
 
 
@@ -60,8 +61,7 @@ class Tsp(GraphOptimizationApplication):
             mdl.add_constraint(mdl.sum(x[(i, k)] for k in range(n)) == 1)
         for k in range(n):
             mdl.add_constraint(mdl.sum(x[(i, k)] for i in range(n)) == 1)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         return op
 
     def interpret(
