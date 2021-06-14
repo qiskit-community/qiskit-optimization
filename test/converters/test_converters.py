@@ -953,6 +953,59 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertEqual(qdct, quadratic)
             self.assertEqual(op2.get_num_linear_constraints(), 0)
 
+    def test_linear_inequality_to_penalty7(self):
+        """Test special constraint to penalty 6 x-y >= 0 -> P(y-x*y)"""
+
+        op = QuadraticProgram()
+        lip = LinearInequalityToPenalty()
+
+        op.binary_var(name="x")
+        op.binary_var(name="y")
+        # Linear constraints
+        linear_constraint = {"x": 1, "y": -1}
+        op.linear_constraint(linear_constraint, Constraint.Sense.GE, 0, "P(y-xy)")
+
+        # Test with no max/min
+        with self.subTest("No max/min"):
+            self.assertEqual(op.get_num_linear_constraints(), 1)
+            penalty = 1
+            linear = {"y": penalty}
+            quadratic = {("x", "y"): -1 * penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+
+        # Test maximize
+        with self.subTest("Maximize"):
+            linear = {"x": 2, "y": 1}
+            op.maximize(linear=linear)
+            penalty = 4
+            linear["y"] = linear["y"] - penalty
+            quadratic = {("x", "y"): penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+
+        # Test minimize
+        with self.subTest("Minimize"):
+            linear = {"x": 2, "y": 1}
+            op.minimize(linear={"x": 2, "y": 1})
+            penalty = 4
+            linear["y"] = linear["y"] + penalty
+            quadratic = {("x", "y"): -1 * penalty}
+            op2 = lip.convert(op)
+            ldct = op2.objective.linear.to_dict(use_name=True)
+            qdct = op2.objective.quadratic.to_dict(use_name=True)
+            self.assertEqual(ldct, linear)
+            self.assertEqual(qdct, quadratic)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+
     def test_quadratic_program_to_qubo_inequality_to_penalty(self):
         """Test QuadraticProgramToQubo, passing inequality pattern"""
 

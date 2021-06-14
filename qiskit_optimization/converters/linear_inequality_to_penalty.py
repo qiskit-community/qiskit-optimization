@@ -194,11 +194,17 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                     conv_matrix[0][index2] = conv_matrix[0][index2] - 1
                 conv_matrix[index1][index2] = 1
             elif rhs == 0:
-                conv_matrix[0][0] = 0
-                if vrs[index1 - 1][1] > 0.0:
-                    conv_matrix[0][index1] = 1
-                elif vrs[index2 - 1][1] > 0.0:
-                    conv_matrix[0][index2] = 1
+                if sense == ConstraintSense.GE:
+                    if vrs[index1 - 1][1] < 0.0:
+                        conv_matrix[0][index1] = 1
+                    elif vrs[index2 - 1][1] < 0.0:
+                        conv_matrix[0][index2] = 1
+                elif sense == ConstraintSense.LE:
+                    if vrs[index1 - 1][1] > 0.0:
+                        conv_matrix[0][index1] = 1
+                    elif vrs[index2 - 1][1] > 0.0:
+                        conv_matrix[0][index2] = 1
+
                 conv_matrix[index1][index2] = -1
 
         return conv_matrix
