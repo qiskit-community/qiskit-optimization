@@ -18,6 +18,7 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 from .optimization_application import OptimizationApplication
 
 
@@ -55,8 +56,7 @@ class ExactCover(OptimizationApplication):
             mdl.add_constraint(
                 mdl.sum(x[i] for i, sub in enumerate(self._subsets) if element in sub) == 1
             )
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         return op
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:

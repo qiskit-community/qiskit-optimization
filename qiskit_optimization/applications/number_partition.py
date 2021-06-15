@@ -19,6 +19,7 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 from .optimization_application import OptimizationApplication
 
 
@@ -50,8 +51,7 @@ class NumberPartition(OptimizationApplication):
         mdl.add_constraint(
             mdl.sum(num * (-2 * x[i] + 1) for i, num in enumerate(self._number_set)) == 0
         )
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         return op
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:

@@ -39,6 +39,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 
 
 @ddt
@@ -87,8 +88,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         x = mdl.binary_var("x")
         y = mdl.binary_var("y")
         mdl.minimize(x - 2 * y)
-        self.op_ordering = QuadraticProgram()
-        self.op_ordering.from_docplex(mdl)
+        self.op_ordering = from_docplex_mp(mdl)
 
     @data(
         ("exact", None, "op_ip1.lp"),
