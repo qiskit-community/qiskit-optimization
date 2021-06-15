@@ -57,7 +57,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
         """
         super().__init__()
         if trials <= 0:
-            raise ValueError(f'Number of trials should be 1 or higher, but was {trials}')
+            raise ValueError(f"Number of trials should be 1 or higher, but was {trials}")
         self._trials = trials
         self._clip = clip
 
@@ -128,7 +128,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             ValueError: if the variable trials have a value smaller than 1.
         """
         if trials <= 0:
-            raise ValueError(f'Number of trials should be 1 or higher, but was {trials}')
+            raise ValueError(f"Number of trials should be 1 or higher, but was {trials}")
         self._trials = trials
 
     @property
