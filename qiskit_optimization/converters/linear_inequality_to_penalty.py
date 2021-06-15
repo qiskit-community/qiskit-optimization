@@ -226,29 +226,21 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         if not all(problem.variables[i].vartype == Variable.Type.BINARY for i in params.keys()):
             return False
 
-        if num_vars == 2:
-            if rhs == 1:
+        if num_vars == 2 and rhs == 0:
+            if sense in (Constraint.Sense.LE, Constraint.Sense.GE):
+                # x-y<=0
+                # x-y>=0
+                return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
+        elif num_vars >= 2:
+            if sense == Constraint.Sense.LE and rhs == 1:
                 if all(i == 1 for i in params.values()):
-                    if sense in (Constraint.Sense.LE, Constraint.Sense.GE):
-                        # x+y<=1
-                        # x+y>=1
-                        return True
-            if rhs == 0:
-                if sense in (Constraint.Sense.LE, Constraint.Sense.GE):
-                    # x-y<=0
-                    # x-y>=0
-                    return coeff_array.min() == -1.0 and coeff_array.max() == 1.0
-        elif num_vars > 2:
-            if rhs == 1:
+                    # x1+x2+...<=1
+                    return True
+            elif sense == Constraint.Sense.GE and rhs == num_vars - 1:
                 if all(i == 1 for i in params.values()):
-                    if sense == Constraint.Sense.LE:
-                        # x1+x2+...<=1
-                        return True
-            elif rhs == num_vars - 1:
-                if all(i == 1 for i in params.values()):
-                    if sense == Constraint.Sense.GE:
-                        # x1+x2+...>=n-1
-                        return True
+                    # x1+x2+...>=n-1
+                    return True
+
         return False
 
     def _auto_define_penalty(self, problem) -> float:
