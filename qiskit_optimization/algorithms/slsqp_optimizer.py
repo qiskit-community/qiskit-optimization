@@ -11,7 +11,6 @@
 # that they have been altered from the originals.
 
 """The SLSQP optimizer wrapped to be used within Qiskit's optimization module."""
-import logging
 from typing import List, cast, Tuple, Any, Union, Optional
 
 import numpy as np
@@ -24,8 +23,6 @@ from ..problems import Variable
 from ..problems.constraint import Constraint
 from ..problems.quadratic_program import QuadraticProgram
 from ..converters import MaximizeToMinimize
-
-logger = logging.getLogger(__name__)
 
 
 class SlsqpOptimizationResult(OptimizationResult):

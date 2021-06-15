@@ -12,7 +12,6 @@
 
 """ Test Converters """
 
-import logging
 import unittest
 from test.optimization_test_case import (
     QiskitOptimizationTestCase,
@@ -37,8 +36,8 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
 )
 from qiskit_optimization.problems import Constraint, Variable
+from qiskit_optimization.translators import from_docplex_mp
 
-logger = logging.getLogger(__name__)
 
 QUBIT_OP_MAXIMIZE_SAMPLE = (
     -199999.5 * (I ^ I ^ I ^ Z)
@@ -480,8 +479,7 @@ class TestConverters(QiskitOptimizationTestCase):
         c = mdl.continuous_var(lb=0, ub=10.9, name="c")
         x = mdl.binary_var(name="x")
         mdl.maximize(c + x * x)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         converter = IntegerToBinary()
         op = converter.convert(op)
         admm_params = ADMMParameters()
