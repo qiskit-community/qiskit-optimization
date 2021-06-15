@@ -53,7 +53,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
                 with the ``-clip`` or ``clip`` values correspondingly for the initial guesses.
 
         Raises:
-            ValueError: if the variable trials have a value smaller than 1.
+            ValueError: if the variable trials has a value smaller than 1.
         """
         super().__init__()
         if trials <= 0:
