@@ -14,10 +14,10 @@
 
 import tempfile
 import unittest
+import warnings
 from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
-import numpy as np
 from docplex.mp.model import DOcplexException, Model
 
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
@@ -882,7 +882,10 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.write_to_lp_file("")
 
     def test_docplex(self):
-        """test from_docplex and to_docplex"""
+        """DEPRECATED test from_docplex and to_docplex
+
+        This test will be removed when `from_docplex` and `to_docplex` are removed.
+        """
         q_p = QuadraticProgram("test")
         q_p.binary_var(name="x")
         q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
@@ -895,7 +898,9 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = QuadraticProgram()
-        q_p2.from_docplex(q_p.to_docplex())
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            q_p2.from_docplex(q_p.to_docplex())
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = Model("test")
@@ -910,34 +915,44 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             mod.semiinteger_var(lb=1, name="x")
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             mod.add_range(0, 2 * x, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_indicator(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add_equivalence(x, x + y <= 1, 1)
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
             mod.add(mod.not_equal_constraint(x, y + 1))
-            q_p.from_docplex(mod)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                q_p.from_docplex(mod)
 
         # test from_docplex without explicit variable names
         mod = Model()
@@ -952,7 +967,9 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         mod.add_constraint(x * y >= z)  # quadratic GE
         mod.add_constraint(x * y <= z)  # quadratic LE
         q_p = QuadraticProgram()
-        q_p.from_docplex(mod)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            q_p.from_docplex(mod)
         var_names = [v.name for v in q_p.variables]
         self.assertListEqual(var_names, ["x0", "x1", "x2"])
         senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
@@ -1050,23 +1067,16 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
     def test_feasibility(self):
         """Tests feasibility methods."""
-        mod = Model("test")
-        # 0, 5
-        x = mod.continuous_var(
-            -1,
-            1,
-            "x",
-        )
-        y = mod.continuous_var(-10, 10, "y")
-        mod.minimize(x + y)
-        mod.add(x + y <= 10, "c0")
-        mod.add(x + y >= -10, "c1")
-        mod.add(x + y == 5, "c2")
-        mod.add(x * x + y <= 10, "c3")
-        mod.add(x * x + y >= 5, "c4")
-        mod.add(x * x + y * y == 25, "c5")
-        q_p = QuadraticProgram()
-        q_p.from_docplex(mod)
+        q_p = QuadraticProgram("test")
+        _ = q_p.continuous_var(-1, 1, "x")
+        _ = q_p.continuous_var(-10, 10, "y")
+        q_p.minimize(linear={"x": 1, "y": 1})
+        q_p.linear_constraint({"x": 1, "y": 1}, "<=", 10, "c0")
+        q_p.linear_constraint({"x": 1, "y": 1}, ">=", -10, "c1")
+        q_p.linear_constraint({"x": 1, "y": 1}, "==", 5, "c2")
+        q_p.quadratic_constraint({"y": 1}, {("x", "x"): 1}, "<=", 10, "c3")
+        q_p.quadratic_constraint({"y": 1}, {("x", "x"): 1}, ">=", 5, "c4")
+        q_p.quadratic_constraint(None, {("x", "x"): 1, ("y", "y"): 1}, "==", 25, "c5")
 
         self.assertTrue(q_p.is_feasible([0, 5]))
         self.assertFalse(q_p.is_feasible([1, 10]))

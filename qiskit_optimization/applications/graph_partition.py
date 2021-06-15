@@ -20,6 +20,7 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 from .graph_optimization_application import GraphOptimizationApplication
 
 
@@ -49,8 +50,7 @@ class GraphPartition(GraphOptimizationApplication):
         )
         mdl.minimize(objective)
         mdl.add_constraint(mdl.sum([x[i] for i in x]) == n // 2)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         return op
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:

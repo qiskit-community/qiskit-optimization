@@ -10,13 +10,4 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-name: 'Install Qiskit Optimization'
-description: 'Installs Qiskit Optimization on developer mode'
-
-runs:
-  using: "composite"
-  steps: 
-    - run : |
-        pip install -e .[cplex,cvx,matplotlib,gurobi]
-        pip install -U -c constraints.txt -r requirements-dev.txt
-      shell: bash
+""" Translators test packages """

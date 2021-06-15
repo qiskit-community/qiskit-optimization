@@ -43,7 +43,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         from ..converters.integer_to_binary import IntegerToBinary
         from ..converters.inequality_to_equality import InequalityToEquality
         from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
-        from ..converters.maximize_to_minimize import MaximizeToMinimize
+        from ..converters.flip_problem_sense import MaximizeToMinimize
 
         self._int_to_bin = IntegerToBinary()
         self._ineq_to_eq = InequalityToEquality(mode="integer")
