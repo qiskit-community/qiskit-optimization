@@ -14,12 +14,9 @@
 
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
-import logging
 
 from qiskit_optimization.algorithms import CobylaOptimizer
 from qiskit_optimization.problems import QuadraticProgram
-
-logger = logging.getLogger(__name__)
 
 
 class TestCobylaOptimizer(QiskitOptimizationTestCase):

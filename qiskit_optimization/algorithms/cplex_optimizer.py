@@ -12,7 +12,6 @@
 
 """The CPLEX optimizer wrapped to be used within Qiskit's optimization module."""
 
-import logging
 from typing import Any, Dict, Optional
 from warnings import warn
 
@@ -26,7 +25,6 @@ from .optimization_algorithm import (
     OptimizationResultStatus,
 )
 
-logger = logging.getLogger(__name__)
 
 try:
     from cplex import Cplex  # pylint: disable=unused-import
