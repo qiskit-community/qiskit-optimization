@@ -12,7 +12,6 @@
 """The inequality to equality converter."""
 
 import copy
-import logging
 import math
 from typing import List, Optional, Union
 
@@ -24,8 +23,6 @@ from ..problems.constraint import Constraint
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
-
-logger = logging.getLogger(__name__)
 
 
 class InequalityToEquality(QuadraticProgramConverter):
