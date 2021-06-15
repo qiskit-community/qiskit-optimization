@@ -234,10 +234,10 @@ class _FromDocplexMp:
         binary_var = constraint.binary_var
         active_value = constraint.active_value
         linear_constraint = constraint.linear_constraint
-        linear, sense, rhs = _FromDocplexMp._linear_constraint(var_names, linear_constraint)
-        linear_lb, linear_ub = _FromDocplexMp._linear_bounds(var_bounds, linear)
+        linear, sense, rhs = cls._linear_constraint(var_names, linear_constraint)
+        linear_lb, linear_ub = cls._linear_bounds(var_bounds, linear)
         if sense == "<=":
-            big_m = indicator_big_m or max(0.0, linear_ub - rhs)
+            big_m = max(0.0, linear_ub - rhs) if indicator_big_m is None else indicator_big_m
             if active_value:
                 linear[binary_var.name] = big_m
                 rhs += big_m
@@ -245,7 +245,7 @@ class _FromDocplexMp:
                 linear[binary_var.name] = -big_m
             return [(linear, sense, rhs, name)]
         elif sense == ">=":
-            big_m = indicator_big_m or max(0.0, rhs - linear_lb)
+            big_m = max(0.0, rhs - linear_lb) if indicator_big_m is None else indicator_big_m
             if active_value:
                 linear[binary_var.name] = -big_m
                 rhs -= big_m
@@ -257,8 +257,8 @@ class _FromDocplexMp:
             # linear2, rhs2, and big_m2 are for the GE constraint.
             linear2 = linear.copy()
             rhs2 = rhs
-            big_m = indicator_big_m or max(0.0, linear_ub - rhs)
-            big_m2 = indicator_big_m or max(0.0, rhs - linear_lb)
+            big_m = max(0.0, linear_ub - rhs) if indicator_big_m is None else indicator_big_m
+            big_m2 = max(0.0, rhs - linear_lb) if indicator_big_m is None else indicator_big_m
             if active_value:
                 linear[binary_var.name] = big_m
                 rhs += big_m
@@ -284,7 +284,8 @@ def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> "Q
 
     Args:
         model: The docplex.mp model to be loaded.
-        indicator_big_m: The big-M value for indicator constraints.
+        indicator_big_m: The big-M value used for the big-M formulation to convert
+            indicator constraints into linear constraints.
             If ``None``, it is automatically derived from the model.
 
     Returns:
