@@ -813,12 +813,7 @@ class TestConverters(QiskitOptimizationTestCase):
 
         op = QuadraticProgram()
         lip = LinearInequalityToPenalty()
-
-        op.binary_var()
-        op.binary_var()
-        op.binary_var()
-        op.binary_var()
-        op.binary_var()
+        op.binary_var_list(5)
 
         # Linear constraints
         n = 5
@@ -871,14 +866,9 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertEqual(qdct, quadratic)
             self.assertEqual(op2.get_num_linear_constraints(), 0)
 
+        # Test maximize
         op = QuadraticProgram()
-
-        op.binary_var()
-        op.binary_var()
-        op.binary_var()
-        op.binary_var()
-        op.binary_var()
-
+        op.binary_var_list(5)
         linear2 = [1, 1, 0, 0, 0]
         op.maximize(linear=linear2)
         op.linear_constraint([1, 1, 1, 1, 1], Constraint.Sense.LE, 1, "")

@@ -116,10 +116,9 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         for constraint in problem.linear_constraints:
 
             # special constraint check function here
-            if not self._is_special_constraint(problem, constraint):
+            if not self._is_matched_constraint(problem, constraint):
                 self._dst.linear_constraints.append(constraint)
                 continue
-            #
 
             conv_matrix = self._conversion_matrix(constraint)
             rowlist = list(constraint.linear.to_dict().items())
@@ -209,7 +208,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         return conv_matrix
 
-    def _is_special_constraint(self, problem, constraint) -> bool:
+    def _is_matched_constraint(self, problem, constraint) -> bool:
         """Determine if constraint is special or not.
 
         Returns:
