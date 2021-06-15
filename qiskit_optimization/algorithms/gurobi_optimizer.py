@@ -12,7 +12,6 @@
 
 """The Gurobi optimizer wrapped to be used within Qiskit's optimization module."""
 
-import logging
 
 from qiskit.exceptions import MissingOptionalLibraryError
 
@@ -21,7 +20,6 @@ from ..problems.quadratic_program import QuadraticProgram
 from ..translators.gurobipy import to_gurobipy
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
-logger = logging.getLogger(__name__)
 
 try:
     import gurobipy as gp
