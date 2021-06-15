@@ -13,7 +13,7 @@
 """Test from_gurobipy and to_gurobipy"""
 
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
-
+from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
 from qiskit_optimization.translators.gurobipy import from_gurobipy, to_gurobipy
@@ -35,7 +35,14 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p2 = from_gurobipy(to_gurobipy(q_p))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
-        import gurobipy as gp
+        try:
+            import gurobipy as gp
+        except ImportError as ex:
+            raise MissingOptionalLibraryError(
+                libname="GUROBI",
+                name="GurobiOptimizer",
+                pip_install="pip install qiskit-optimization[gurobi]",
+            ) from ex
 
         mod = gp.Model("test")
         x = mod.addVar(vtype=gp.GRB.BINARY, name="x")
