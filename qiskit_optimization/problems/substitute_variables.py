@@ -24,9 +24,11 @@ from .linear_expression import LinearExpression
 from .quadratic_expression import QuadraticExpression
 
 if TYPE_CHECKING:
+    # type hint for mypy
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 else:
+    # type hint for sphinx
     QuadraticProgam = Any
 
 logger = logging.getLogger(__name__)
