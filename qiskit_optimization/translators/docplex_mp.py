@@ -12,7 +12,7 @@
 
 """Translator between a docplex.mp model and a quadratic program"""
 
-from typing import TYPE_CHECKING, Dict, Optional, Tuple, cast
+from typing import Dict, Optional, Tuple, cast
 
 from docplex.mp.constants import ComparisonType
 from docplex.mp.constr import (
@@ -30,14 +30,11 @@ from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.problems.variable import Variable
 
-if TYPE_CHECKING:
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
-
-def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
+def to_docplex_mp(quadratic_program: QuadraticProgram) -> Model:
     """Returns a docplex.mp model corresponding to a quadratic program.
 
     Args:
@@ -274,7 +271,7 @@ class _FromDocplexMp:
             )
 
 
-def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> "QuadraticProgram":
+def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> QuadraticProgram:
     """Translate a docplex.mp model into a quadratic program.
 
     Note that this supports only basic functions of docplex as follows:
@@ -305,9 +302,6 @@ def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> "Q
 
     if model.number_of_sos > 0:
         raise QiskitOptimizationError("SOS sets are not supported")
-
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
     # get name
     quadratic_program = QuadraticProgram(model.name)
