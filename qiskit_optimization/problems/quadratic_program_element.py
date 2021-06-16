@@ -12,11 +12,13 @@
 
 """Interface for all objects that have a parent QuadraticProgram."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+else:
+    QuadraticProgram = Any
 
 
 class QuadraticProgramElement:

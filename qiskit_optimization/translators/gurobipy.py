@@ -12,7 +12,7 @@
 
 """Translator between a gurobipy model and a quadratic program"""
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 try:
     import gurobipy as gp
@@ -31,6 +31,7 @@ except ImportError:
 
 
 from qiskit.exceptions import MissingOptionalLibraryError
+
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
@@ -39,6 +40,8 @@ from qiskit_optimization.problems.variable import Variable
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+else:
+    QuadraticProgram = Any
 
 
 def _check_gurobipy_is_installed(name: str):

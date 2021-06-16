@@ -12,7 +12,7 @@
 
 """Translator between a docplex.mp model and a quadratic program"""
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
@@ -30,6 +30,8 @@ from qiskit_optimization.problems.variable import Variable
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+else:
+    QuadraticProgram = Any
 
 
 def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
