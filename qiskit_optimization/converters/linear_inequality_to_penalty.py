@@ -43,7 +43,6 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         x+y \geq 1 & \rightarrow & P(1-x-y+x y) \\
         x \leq y & \rightarrow  & P(x-x y) \\
         x \geq y & \rightarrow  & P(y-x y) \\
-        x+y + z \leq 1 & \rightarrow & P\left(x y + y z + z x \right) \\
         \sum_i^n x_i \leq 1 & \rightarrow & P\left(\sum_{i, j : i < j} x_i x_j\right) \\
         \sum_i^n x_i \geq n-1 & \rightarrow & P\left(\sum_{i, j : i < j} (1 - x_i) (1 - x_j) \right) \\
         \end{array}
