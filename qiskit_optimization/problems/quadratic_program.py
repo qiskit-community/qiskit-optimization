@@ -27,7 +27,6 @@ from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import OperatorBase, PauliSumOp
 from scipy.sparse import spmatrix
 
-from ..deprecation import DeprecatedType, deprecate_method
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
@@ -37,6 +36,7 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
+from ..deprecation import DeprecatedType, deprecate_method
 
 logger = logging.getLogger(__name__)
 
@@ -1013,6 +1013,7 @@ class QuadraticProgram:
             QiskitOptimizationError: If a variable type is not binary.
             QiskitOptimizationError: If constraints exist in the problem.
         """
+        # pylint: disable=cyclic-import
         from ..translators.ising import to_ising
 
         return to_ising(self)
@@ -1042,6 +1043,7 @@ class QuadraticProgram:
             QiskitOptimizationError: If there are more than 2 Pauli Zs in any Pauli term
             NotImplementedError: If the input operator is a ListOp
         """
+        # pylint: disable=cyclic-import
         from ..translators.ising import from_ising
 
         other = from_ising(qubit_op, offset, linear)

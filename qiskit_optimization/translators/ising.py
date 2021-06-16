@@ -12,24 +12,17 @@
 
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
-from typing import TYPE_CHECKING, Any, Dict, Tuple, Union
+from typing import Dict, Tuple, Union
 
 from numpy import zeros
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
 from qiskit.quantum_info import Pauli
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
-
-if TYPE_CHECKING:
-    # type hint for mypy
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-else:
-    # type hint for sphinx
-    QuadraticProgram = Any
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def to_ising(quad_prog: "QuadraticProgram") -> Tuple[OperatorBase, float]:
+def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     """Return the Ising Hamiltonian of this problem.
 
     Variables are mapped to qubits in the same order, i.e.,
@@ -138,7 +131,7 @@ def from_ising(
     qubit_op: Union[OperatorBase, PauliSumOp],
     offset: float = 0.0,
     linear: bool = False,
-) -> "QuadraticProgram":
+) -> QuadraticProgram:
     r"""Create a quadratic program from a qubit operator and a shift value.
 
     Variables are mapped to qubits in the same order, i.e.,
@@ -171,9 +164,6 @@ def from_ising(
             "Conversion of a ListOp is not supported, convert each "
             "operator in the ListOp separately."
         )
-
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
     quad_prog = QuadraticProgram()
 
