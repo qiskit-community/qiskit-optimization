@@ -12,7 +12,7 @@
 
 """Translator between a gurobipy model and a quadratic program"""
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 try:
     import gurobipy as gp
@@ -31,17 +31,12 @@ except ImportError:
 
 
 from qiskit.exceptions import MissingOptionalLibraryError
-
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
 
-if TYPE_CHECKING:
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-else:
-    QuadraticProgram = Any
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
 def _check_gurobipy_is_installed(name: str):
@@ -53,7 +48,7 @@ def _check_gurobipy_is_installed(name: str):
         )
 
 
-def to_gurobipy(quadratic_program: "QuadraticProgram") -> Model:
+def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
     """Returns a gurobipy model corresponding to a quadratic program.
 
     Args:
@@ -149,7 +144,7 @@ def to_gurobipy(quadratic_program: "QuadraticProgram") -> Model:
     return mdl
 
 
-def from_gurobipy(model: Model) -> "QuadraticProgram":
+def from_gurobipy(model: Model) -> QuadraticProgram:
     """Translate a gurobipy model into a quadratic program.
 
     Note that this supports only basic functions of gurobipy as follows:
@@ -172,9 +167,6 @@ def from_gurobipy(model: Model) -> "QuadraticProgram":
 
     if not isinstance(model, Model):
         raise QiskitOptimizationError(f"The model is not compatible: {model}")
-
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
     quadratic_program = QuadraticProgram()
 

@@ -872,6 +872,7 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import from_docplex_mp
 
         other = from_docplex_mp(model)
@@ -890,6 +891,7 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self)
@@ -900,6 +902,7 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self).export_as_lp_string()
@@ -940,6 +943,7 @@ class QuadraticProgram:
                         break
             return model_name
 
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import from_docplex_mp
 
         model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
@@ -959,6 +963,7 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
 
         mdl = to_docplex_mp(self)

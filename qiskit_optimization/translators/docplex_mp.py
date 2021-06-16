@@ -12,7 +12,7 @@
 
 """Translator between a docplex.mp model and a quadratic program"""
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import cast
 
 from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
 from docplex.mp.constr import NotEqualConstraint
@@ -27,14 +27,10 @@ from qiskit_optimization.problems.constraint import Constraint
 from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
 
-if TYPE_CHECKING:
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-else:
-    QuadraticProgram = Any
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
+def to_docplex_mp(quadratic_program: QuadraticProgram) -> Model:
     """Returns a docplex.mp model corresponding to a quadratic program.
 
     Args:
@@ -128,7 +124,7 @@ def to_docplex_mp(quadratic_program: "QuadraticProgram") -> Model:
     return mdl
 
 
-def from_docplex_mp(model: Model) -> "QuadraticProgram":
+def from_docplex_mp(model: Model) -> QuadraticProgram:
     """Translate a docplex.mp model into a quadratic program.
 
     Note that this supports only basic functions of docplex as follows:
@@ -147,9 +143,6 @@ def from_docplex_mp(model: Model) -> "QuadraticProgram":
     """
     if not isinstance(model, Model):
         raise QiskitOptimizationError(f"The model is not compatible: {model}")
-
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
     quadratic_program = QuadraticProgram()
 
