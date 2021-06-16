@@ -22,7 +22,6 @@ from qiskit_optimization.algorithms.admm_optimizer import (
     ADMMOptimizationResult,
     ADMMState,
 )
-from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
 
 

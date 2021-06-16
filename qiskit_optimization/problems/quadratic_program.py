@@ -13,7 +13,6 @@
 """Quadratic Program."""
 
 import logging
-import warnings
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
@@ -39,6 +38,7 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
+from ..deprecation import DeprecatedType, deprecate_method
 
 logger = logging.getLogger(__name__)
 
@@ -857,6 +857,9 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
+    @deprecate_method(
+        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.from_docplex_mp"
+    )
     def from_docplex(self, model: Model) -> None:
         """DEPRECATED Loads this quadratic program from a docplex model.
 
@@ -871,20 +874,16 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
-        warnings.warn(
-            "The from_docplex method is deprecated as of version 0.2.0 and will be "
-            "removed no sooner than 3 months after the release. Instead use the "
-            "qiskit_optimization.translators.from_docplex_mp function.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import from_docplex_mp
 
         other = from_docplex_mp(model)
         for attr, val in vars(other).items():
             setattr(self, attr, val)
 
+    @deprecate_method(
+        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.to_docplex_mp"
+    )
     def to_docplex(self) -> Model:
         """DEPRECATED Returns a docplex model corresponding to this quadratic program.
 
@@ -894,14 +893,7 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
-        warnings.warn(
-            "The to_docplex method is deprecated as of version 0.2.0 and will be "
-            "removed no sooner than 3 months after the release. Instead use the "
-            "qiskit_optimization.translators.to_docplex_mp function.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self)
@@ -912,6 +904,7 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self).export_as_lp_string()
@@ -952,6 +945,7 @@ class QuadraticProgram:
                         break
             return model_name
 
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import from_docplex_mp
 
         model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
@@ -971,6 +965,7 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
+        # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
 
         mdl = to_docplex_mp(self)
