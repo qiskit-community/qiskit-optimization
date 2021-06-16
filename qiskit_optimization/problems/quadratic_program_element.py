@@ -12,13 +12,17 @@
 
 """Interface for all objects that have a parent QuadraticProgram."""
 
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # pylint: disable=cyclic-import
+    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
 class QuadraticProgramElement:
     """Interface class for all objects that have a parent QuadraticProgram."""
 
-    def __init__(self, quadratic_program: Any) -> None:
+    def __init__(self, quadratic_program: "QuadraticProgram") -> None:
         """Initialize object with parent QuadraticProgram.
 
         Args:
@@ -34,7 +38,7 @@ class QuadraticProgramElement:
         self._quadratic_program = quadratic_program
 
     @property
-    def quadratic_program(self) -> Any:
+    def quadratic_program(self) -> "QuadraticProgram":
         """Returns the parent QuadraticProgram.
 
         Returns:
@@ -43,7 +47,7 @@ class QuadraticProgramElement:
         return self._quadratic_program
 
     @quadratic_program.setter
-    def quadratic_program(self, quadratic_program: Any) -> None:
+    def quadratic_program(self, quadratic_program: "QuadraticProgram") -> None:
         """Sets the parent QuadraticProgram.
 
         Args:
