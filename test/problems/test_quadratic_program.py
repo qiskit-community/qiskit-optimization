@@ -898,9 +898,33 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = QuadraticProgram()
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            q_p2.from_docplex(q_p.to_docplex())
+        with warnings.catch_warnings(record=True) as c_m:
+            warnings.simplefilter("always")
+            model = q_p.to_docplex()
+            msg = str(c_m[0].message)
+            msg_ref = "The to_docplex method is deprecated as of version "
+            idx = min(len(msg), len(msg_ref))
+            self.assertEqual(msg[:idx], msg_ref)
+            msg_ref = (
+                " and will be removed no sooner than 3 months after the release. "
+                "Instead use the qiskit_optimization.translators.to_docplex_mp function."
+            )
+            idx = min(len(msg), len(msg_ref))
+            self.assertEqual(msg[-idx:], msg_ref)
+        with warnings.catch_warnings(record=True) as c_m:
+            warnings.simplefilter("always")
+            q_p2.from_docplex(model)
+            msg = str(c_m[0].message)
+            msg_ref = "The from_docplex method is deprecated as of version "
+            idx = min(len(msg), len(msg_ref))
+            self.assertEqual(msg[:idx], msg_ref)
+            msg_ref = (
+                " and will be removed no sooner than 3 months after the release. "
+                "Instead use the qiskit_optimization.translators.from_docplex_mp function."
+            )
+            idx = min(len(msg), len(msg_ref))
+            self.assertEqual(msg[-idx:], msg_ref)
+
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
         mod = Model("test")
