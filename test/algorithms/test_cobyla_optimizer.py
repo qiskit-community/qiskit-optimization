@@ -109,6 +109,23 @@ class TestCobylaOptimizer(QiskitOptimizationTestCase):
         # analyze results
         self.assertAlmostEqual(result.fval, 5.8750)
 
+    def test_cobyla_optimizer_with_invalid_num_trials(self):
+        """Cobyla Optimizer Test with an invalid number of trials."""
+
+        with self.assertRaises(ValueError):
+            _ = CobylaOptimizer(trials=0)
+
+        with self.assertRaises(ValueError):
+            _ = CobylaOptimizer(trials=-1)
+
+        with self.assertRaises(ValueError):
+            cobyla = CobylaOptimizer()
+            cobyla.trials = 0
+
+        with self.assertRaises(ValueError):
+            cobyla = CobylaOptimizer()
+            cobyla.trials = -1
+
 
 if __name__ == "__main__":
     unittest.main()
