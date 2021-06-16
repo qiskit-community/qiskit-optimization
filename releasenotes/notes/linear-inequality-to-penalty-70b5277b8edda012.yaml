@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Introduced a new converter class ``LinearInequalityToPenalty`` for ``QuadraticProgram``.
+    It converts some inequality constraints to penalty terms without adding slack variables.
+

@@ -30,24 +30,27 @@ logger = logging.getLogger(__name__)
 
 
 class LinearInequalityToPenalty(QuadraticProgramConverter):
-    r"""Convert a problem of known constraints to unconstrained with penalty terms.
+    r"""Convert a problem of inequality constraints to unconstrained with penalty terms.
 
-    There are known constraints which do not require to add slack variables to
-    construct penalty terms [1].Supported known constraint in this class is shown below.
+    There are some constraints which do not require to add slack variables to
+    construct penalty terms [1].Supported inequality constraint in this class is shown below.
 
     .. math::
 
         \begin{array}{}
-        \text { Classical Constraint } & & \text { Equivalent Penalty } \\
+        \text { Inequality Constraint } & & \text { Equivalent Penalty } \\
         x+y \leq 1 & \rightarrow & P(x y) \\
         x+y \geq 1 & \rightarrow & P(1-x-y+x y) \\
         x \leq y & \rightarrow  & P(x-x y) \\
+        x \geq y & \rightarrow  & P(y-x y) \\
         x+y + z \leq 1 & \rightarrow & P\left(x y + y z + z x \right) \\
+        \sum_i^n x_i \leq 1 & \rightarrow & P\left(\sum_{i, j : i < j} x_i x_j\right) \\
+        \sum_i^n x_i \geq n-1 & \rightarrow & P\left(\sum_{i, j : i < j} (1 - x_i) (1 - x_j) \right) \\
         \end{array}
 
-    Where x, y or z are binary variables, and P is penalty constant. In this class,
-    value of P is automatically determined, but can be supplied as argument at the timing
-    of instantiation.
+    Where x, y, z or :math:`x_i` are binary variables, and P is penalty constant.
+    In this class,value of P is automatically determined, but can be supplied as
+    argument at the timing of instantiation.
 
     If the constraint does not match the pattern of classical constraint, the constraint
     is kept as is. Otherwise, constraint is converted into equivalent penalty and added
@@ -73,7 +76,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         self.penalty = penalty  # type: Optional[float]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem of known inequality constraints into an unconstrained problem.
+        """Convert a problem of inequality constraints into an unconstrained problem.
 
         Args:
             problem: The problem to be solved, that does not contain inequality constraints.
@@ -177,7 +180,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         sense = constraint.sense
 
         num_vars = len(vrs)
-        combinations = list(itertools.combinations(np.arange(num_vars), 2))
+        combinations = itertools.combinations(np.arange(num_vars), 2)
 
         # conversion matrix
         conv_matrix = np.zeros((num_vars + 1, num_vars + 1), dtype=int)
@@ -194,11 +197,13 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                 conv_matrix[index1][index2] = 1
             elif rhs == 0:
                 if sense == ConstraintSense.GE:
+                    # x >= y case
                     if vrs[index1 - 1][1] < 0.0:
                         conv_matrix[0][index1] = 1
                     elif vrs[index2 - 1][1] < 0.0:
                         conv_matrix[0][index2] = 1
                 elif sense == ConstraintSense.LE:
+                    # x <= y case
                     if vrs[index1 - 1][1] > 0.0:
                         conv_matrix[0][index1] = 1
                     elif vrs[index2 - 1][1] > 0.0:
