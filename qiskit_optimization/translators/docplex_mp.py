@@ -28,9 +28,11 @@ from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
 from qiskit_optimization.problems.variable import Variable
 
 if TYPE_CHECKING:
+    # type hint for mypy
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 else:
+    # type hint for sphinx
     QuadraticProgram = Any
 
 
