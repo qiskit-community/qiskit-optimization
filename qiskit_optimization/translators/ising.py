@@ -21,9 +21,11 @@ from qiskit.quantum_info import Pauli
 from qiskit_optimization.exceptions import QiskitOptimizationError
 
 if TYPE_CHECKING:
+    # type hint for mypy
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 else:
+    # type hint for sphinx
     QuadraticProgram = Any
 
 

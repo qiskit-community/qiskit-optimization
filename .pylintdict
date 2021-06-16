@@ -101,6 +101,7 @@ mdl
 minimizer
 minimumeigenoptimizer
 multiset
+mypy
 ndarray
 ndarrays
 noop
