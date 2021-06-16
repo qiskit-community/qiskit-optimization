@@ -15,17 +15,19 @@
 import logging
 from collections import defaultdict
 from math import fsum
-from typing import Dict, List, Optional, Tuple, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
+from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
 from .constraint import ConstraintSense
 from .linear_expression import LinearExpression
 from .quadratic_expression import QuadraticExpression
-from ..exceptions import QiskitOptimizationError
-from ..infinity import INFINITY
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
     from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+else:
+    QuadraticProgam = Any
 
 logger = logging.getLogger(__name__)
 
