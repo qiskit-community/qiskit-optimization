@@ -15,21 +15,14 @@
 import logging
 from collections import defaultdict
 from math import fsum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
-from ..exceptions import QiskitOptimizationError
-from ..infinity import INFINITY
 from .constraint import ConstraintSense
 from .linear_expression import LinearExpression
 from .quadratic_expression import QuadraticExpression
-
-if TYPE_CHECKING:
-    # type hint for mypy
-    # pylint: disable=cyclic-import
-    from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-else:
-    # type hint for sphinx
-    QuadraticProgam = Any
+from .quadratic_program import QuadraticProgram
+from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +40,10 @@ class SubstituteVariables:
 
     def substitute_variables(
         self,
-        src: "QuadraticProgram",
+        src: QuadraticProgram,
         constants: Optional[Dict[Union[str, int], float]] = None,
         variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
-    ) -> "QuadraticProgram":
+    ) -> QuadraticProgram:
         """Substitutes variables with constants or other variables.
 
         Args:
@@ -75,9 +68,6 @@ class SubstituteVariables:
                 - Same variable is substituted multiple times.
                 - Coefficient of variable substitution is zero.
         """
-        # pylint: disable=cyclic-import
-        from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-
         self._src = src
         self._dst = QuadraticProgram(src.name)
         self._subs_dict(constants, variables)

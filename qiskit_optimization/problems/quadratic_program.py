@@ -31,7 +31,6 @@ from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .quadratic_constraint import QuadraticConstraint
 from .quadratic_objective import QuadraticObjective
-from .substitute_variables import SubstituteVariables
 from .variable import Variable, VarType
 from ..deprecation import DeprecatedType, deprecate_method
 from ..exceptions import QiskitOptimizationError
@@ -995,6 +994,9 @@ class QuadraticProgram:
                 - Same variable is substituted multiple times.
                 - Coefficient of variable substitution is zero.
         """
+        # pylint: disable=cyclic-import
+        from .substitute_variables import SubstituteVariables
+
         return SubstituteVariables().substitute_variables(self, constants, variables)
 
     def to_ising(self) -> Tuple[OperatorBase, float]:
