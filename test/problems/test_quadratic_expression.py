@@ -13,12 +13,12 @@
 """ Test QuadraticExpression """
 
 import unittest
-
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import numpy as np
 from scipy.sparse import dok_matrix
 
-from qiskit_optimization import QuadraticProgram
+from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import QuadraticExpression
 
 
@@ -163,6 +163,50 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             quad.to_dict(symmetric=True, use_name=True),
             {("x", "y"): 0.5, ("y", "x"): 0.5, ("x", "z"): 1.5, ("z", "x"): 1.5},
         )
+
+    def test_lowerbound_upperbound(self):
+        """test lowerbound and upperbound"""
+
+        with self.subTest("bounded"):
+            q_p = QuadraticProgram()
+            q_p.continuous_var(1, 2, "x")
+            q_p.continuous_var(-2, -1, "y")
+            q_p.continuous_var(-1, 2, "z")
+            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
+            self.assertAlmostEqual(quad.lowerbound(), -12)
+            self.assertAlmostEqual(quad.upperbound(), 15)
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.continuous_var(1, 2, "x")
+            q_p.continuous_var(-2, -1, "y")
+            q_p.continuous_var(-INFINITY, 2, "z")
+            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
+            _ = quad.lowerbound()
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.continuous_var(1, 2, "x")
+            q_p.continuous_var(-2, -1, "y")
+            q_p.continuous_var(-INFINITY, 2, "z")
+            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
+            _ = quad.upperbound()
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.continuous_var(1, 2, "x")
+            q_p.continuous_var(-2, -1, "y")
+            q_p.continuous_var(-1, INFINITY, "z")
+            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
+            _ = quad.lowerbound()
+
+        with self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.continuous_var(1, 2, "x")
+            q_p.continuous_var(-2, -1, "y")
+            q_p.continuous_var(-1, INFINITY, "z")
+            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
+            _ = quad.upperbound()
 
 
 if __name__ == "__main__":

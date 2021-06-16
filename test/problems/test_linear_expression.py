@@ -13,12 +13,12 @@
 """ Test LinearExpression """
 
 import unittest
-
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import numpy as np
 from scipy.sparse import dok_matrix
 
-from qiskit_optimization import QuadraticProgram
+from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import LinearExpression
 
 
@@ -125,6 +125,45 @@ class TestLinearExpression(QiskitOptimizationTestCase):
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             np.testing.assert_almost_equal(linear.evaluate_gradient(values), coefficients_list)
+
+    def test_lowerbound_upperbound(self):
+        """test lowerbound and upperbound"""
+
+        with self.subTest("bounded"):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=-1, upperbound=2)
+            coefficients_list = list(range(3))
+            linear = LinearExpression(quadratic_program, coefficients_list)
+            self.assertAlmostEqual(linear.lowerbound(), -3)
+            self.assertAlmostEqual(linear.upperbound(), 6)
+
+        with self.assertRaises(QiskitOptimizationError):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=0, upperbound=INFINITY)
+            coefficients_list = list(range(3))
+            linear = LinearExpression(quadratic_program, coefficients_list)
+            _ = linear.lowerbound()
+
+        with self.assertRaises(QiskitOptimizationError):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=0, upperbound=INFINITY)
+            coefficients_list = list(range(3))
+            linear = LinearExpression(quadratic_program, coefficients_list)
+            _ = linear.upperbound()
+
+        with self.assertRaises(QiskitOptimizationError):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=-INFINITY, upperbound=0)
+            coefficients_list = list(range(3))
+            linear = LinearExpression(quadratic_program, coefficients_list)
+            _ = linear.lowerbound()
+
+        with self.assertRaises(QiskitOptimizationError):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=-INFINITY, upperbound=0)
+            coefficients_list = list(range(3))
+            linear = LinearExpression(quadratic_program, coefficients_list)
+            _ = linear.upperbound()
 
 
 if __name__ == "__main__":

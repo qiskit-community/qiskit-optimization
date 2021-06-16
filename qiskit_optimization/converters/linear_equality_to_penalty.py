@@ -14,7 +14,6 @@
 
 import copy
 import logging
-from math import fsum
 from typing import Optional, cast, Union, Tuple, List
 
 import numpy as np
@@ -155,13 +154,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
         # (upper bound - lower bound) can be calculate as the sum of absolute value of coefficients
         # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
-        penalties = [1.0]
-        # add linear terms of the object function.
-        penalties.extend(abs(coef) for coef in self._src.objective.linear.to_dict().values())
-        # add quadratic terms of the object function.
-        penalties.extend(abs(coef) for coef in self._src.objective.quadratic.to_dict().values())
-
-        return fsum(penalties)
+        linear_ub = self._src.objective.linear.upperbound()
+        quadratic_ub = self._src.objective.quadratic.upperbound()
+        return 1.0 + linear_ub + quadratic_ub
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem

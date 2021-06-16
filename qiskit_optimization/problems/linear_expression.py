@@ -12,13 +12,14 @@
 
 """Linear expression interface."""
 
-from typing import List, Union, Dict, Any
+from typing import List, Union, Dict, Any, Tuple
 
 from numpy import ndarray
 from scipy.sparse import spmatrix, dok_matrix
 
 from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
 
 
 class LinearExpression(QuadraticProgramElement):
@@ -172,3 +173,41 @@ class LinearExpression(QuadraticProgramElement):
 
         # extract the coefficients as array and return it
         return self.to_array()
+
+    def _bounds(self) -> Tuple[float, float]:
+        """Returns the lower bound and the upper bound of the linear expression"""
+        l_b = u_b = 0.0
+        for ind, coeff in self.to_dict().items():
+            x = self.quadratic_program.get_variable(ind)
+            if x.lowerbound == -INFINITY or x.upperbound == INFINITY:
+                raise QiskitOptimizationError(
+                    f"Linear expression contains an unbounded variable: {x.name}"
+                )
+            lst = [coeff * x.lowerbound, coeff * x.upperbound]
+            l_b += min(lst)
+            u_b += max(lst)
+        return l_b, u_b
+
+    def lowerbound(self) -> float:
+        """Returns the lower bound of the linear expression
+
+        Returns:
+            The lower bound of the linear expression
+
+        Raises:
+            QiskitOptimizationError: if the linear expression contains any unbounded variable
+        """
+        l_b, _ = self._bounds()
+        return l_b
+
+    def upperbound(self) -> float:
+        """Returns the upper bound of the linear expression
+
+        Returns:
+            The upper bound of the linear expression
+
+        Raises:
+            QiskitOptimizationError: if the linear expression contains any unbounded variable
+        """
+        _, u_b = self._bounds()
+        return u_b
