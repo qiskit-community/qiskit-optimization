@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """
-Qiskit Nature Runtime (:mod:`qiskit_nature.runtime`)
-====================================================
+Qiskit Optimization Runtime (:mod:`qiskit_optimization.runtime`)
+================================================================
 
 .. currentmodule:: qiskit_nature.runtime
 
@@ -25,9 +25,11 @@ algorithms and scripts in the cloud.
 
    VQEProgram
    VQEProgramResult
+   QAOAProgram
 
 """
 
 from .vqe_program import VQEProgram, VQEProgramResult
+from .qaoa_program import QAOAProgram
 
-__all__ = ["VQEProgram", "VQEProgramResult"]
+__all__ = ["VQEProgram", "VQEProgramResult", "QAOAProgram"]

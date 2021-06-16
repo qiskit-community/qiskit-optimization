@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Qiskit Nature VQE Quantum Program."""
+"""The Qiskit Optimization QAOA Quantum Program."""
 
 
 from typing import List, Callable, Optional, Any, Dict, Union
@@ -27,7 +27,7 @@ from .vqe_program import VQEProgram
 
 
 class QAOAProgram(VQEProgram):
-    """The Qiskit Nature VQE Quantum Program to call the VQE runtime as a MinimumEigensolver."""
+    """The Qiskit Optimization QAOA Quantum Program."""
 
     def __init__(
         self,

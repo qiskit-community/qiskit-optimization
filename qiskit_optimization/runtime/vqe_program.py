@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Qiskit Nature VQE Quantum Program."""
+"""The Qiskit Optimization VQE Quantum Program."""
 
 
 from typing import List, Callable, Optional, Any, Dict
@@ -26,7 +26,7 @@ from qiskit.quantum_info import SparsePauliOp
 
 
 class VQEProgram(MinimumEigensolver):
-    """The Qiskit Nature VQE Quantum Program to call the VQE runtime as a MinimumEigensolver."""
+    """The Qiskit Optimization VQE Quantum Program to call the VQE runtime as a MinimumEigensolver."""
 
     def __init__(
         self,
