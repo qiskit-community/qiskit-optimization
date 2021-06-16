@@ -13,7 +13,6 @@
 """The converter to map integer variables in a quadratic program to binary variables."""
 
 import copy
-import logging
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -23,8 +22,6 @@ from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
-
-logger = logging.getLogger(__name__)
 
 
 class IntegerToBinary(QuadraticProgramConverter):
