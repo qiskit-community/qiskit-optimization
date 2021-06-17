@@ -955,15 +955,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
-            mod.add_indicator(x, x + y <= 1, 1)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
             mod.add_equivalence(x, x + y <= 1, 1)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
@@ -973,7 +964,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.binary_var("y")
-            mod.add(mod.not_equal_constraint(x, y + 1))
+            mod.add(x != y)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 q_p.from_docplex(mod)
