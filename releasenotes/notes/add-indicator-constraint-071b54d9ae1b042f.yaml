@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Adds the support of indicator constraints (e.g. x=1 -> y+z=1) in
+    :meth:`~qiskit_optimization.translator.from_docplex_mp` using the big-M formulation.
