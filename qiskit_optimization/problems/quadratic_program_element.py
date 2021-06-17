@@ -12,13 +12,16 @@
 
 """Interface for all objects that have a parent QuadraticProgram."""
 
-from typing import Any
+# We import `problems` module not `QuadraticProgram` class
+# to resolve the circular import issue of sphinx.
+# See https://github.com/agronholm/sphinx-autodoc-typehints#dealing-with-circular-imports
+from qiskit_optimization import problems  # pylint: disable=unused-import, cyclic-import
 
 
 class QuadraticProgramElement:
     """Interface class for all objects that have a parent QuadraticProgram."""
 
-    def __init__(self, quadratic_program: Any) -> None:
+    def __init__(self, quadratic_program: "problems.QuadraticProgram") -> None:
         """Initialize object with parent QuadraticProgram.
 
         Args:
@@ -26,6 +29,7 @@ class QuadraticProgramElement:
         Raises:
             TypeError: QuadraticProgram instance expected.
         """
+        # pylint: disable=cyclic-import
         from .quadratic_program import QuadraticProgram
 
         if not isinstance(quadratic_program, QuadraticProgram):
@@ -34,7 +38,7 @@ class QuadraticProgramElement:
         self._quadratic_program = quadratic_program
 
     @property
-    def quadratic_program(self) -> Any:
+    def quadratic_program(self) -> "problems.QuadraticProgram":
         """Returns the parent QuadraticProgram.
 
         Returns:
@@ -43,7 +47,7 @@ class QuadraticProgramElement:
         return self._quadratic_program
 
     @quadratic_program.setter
-    def quadratic_program(self, quadratic_program: Any) -> None:
+    def quadratic_program(self, quadratic_program: "problems.QuadraticProgram") -> None:
         """Sets the parent QuadraticProgram.
 
         Args:
