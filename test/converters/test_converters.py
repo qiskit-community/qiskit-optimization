@@ -852,7 +852,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.binary_var(name="z")
         # Linear constraints
         linear_constraint = {"x": 1, "y": 1, "z": 1}
-        op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(xy+yz+zx")
+        op.linear_constraint(linear_constraint, Constraint.Sense.LE, 1, "P(xy+yz+zx)")
 
         # Test with no max/min
         with self.subTest("No max/min"):
