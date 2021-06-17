@@ -12,6 +12,9 @@
 
 """Interface for all objects that have a parent QuadraticProgram."""
 
+# We import `problems` module not `QuadraticProgram` class
+# to resolve the circular import issue of sphinx.
+# See https://github.com/agronholm/sphinx-autodoc-typehints#dealing-with-circular-imports
 from qiskit_optimization import problems  # pylint: disable=unused-import, cyclic-import
 
 
