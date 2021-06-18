@@ -12,6 +12,7 @@
 
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
+import math
 from typing import Tuple, Union
 
 import numpy as np
@@ -138,7 +139,7 @@ def from_ising(
     Raises:
         QiskitOptimizationError: if there are Pauli Xs or Ys in any Pauli term
         QiskitOptimizationError: if there are more than 2 Pauli Zs in any Pauli term
-        QiskitOptimizationError: if any Pauli term has a imaginary coefficient
+        QiskitOptimizationError: if any Pauli term has an imaginary coefficient
         NotImplementedError: If the input operator is a ListOp
     """
     if isinstance(qubit_op, PauliSumOp):
@@ -171,7 +172,7 @@ def from_ising(
         pauli = pauli_op.primitive
         coeff = pauli_op.coeff
 
-        if coeff.imag != 0.0:
+        if not math.isclose(coeff.imag, 0.0, abs_tol=1e-10):
             raise QiskitOptimizationError(f"Imaginary coefficient exists: {pauli_op}")
 
         if np.any(pauli.x):
