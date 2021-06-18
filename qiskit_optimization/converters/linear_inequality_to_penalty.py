@@ -47,8 +47,8 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         \sum_{i=1}^n x_i \geq n-1 & \rightarrow & P\left(\sum_{i, j : i < j} (1 - x_i) (1 - x_j) \right), (n \geq 2)
         \end{array}
 
-    Where x, y, z or :math:`x_i` are binary variables, and P is penalty constant.
-    In this class,value of P is automatically determined, but can be supplied as
+    Note that x, y, z or :math:`x_i` are binary variables, and P is penalty constant.
+    In this class, value of P is automatically determined, but can be supplied as
     argument at the timing of instantiation.
 
     If the constraint does not match the pattern of classical constraint, the constraint
