@@ -43,8 +43,8 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         x+y \geq 1 & \rightarrow & P(1-x-y+x y) \\
         x \leq y & \rightarrow  & P(x-x y) \\
         x \geq y & \rightarrow  & P(y-x y) \\
-        \sum_i^n x_i \leq 1 & \rightarrow & P\left(\sum_{i, j : i < j} x_i x_j\right) \\
-        \sum_i^n x_i \geq n-1 & \rightarrow & P\left(\sum_{i, j : i < j} (1 - x_i) (1 - x_j) \right) \\
+        \sum_{i=1}^n x_i \leq 1 & \rightarrow & P\left(\sum_{i, j : i < j} x_i x_j\right), (n \geq 2) \\
+        \sum_{i=1}^n x_i \geq n-1 & \rightarrow & P\left(\sum_{i, j : i < j} (1 - x_i) (1 - x_j) \right), (n \geq 2)
         \end{array}
 
     Where x, y, z or :math:`x_i` are binary variables, and P is penalty constant.
