@@ -33,7 +33,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
     r"""Convert a problem of inequality constraints to unconstrained with penalty terms.
 
     There are some constraints which do not require to add slack variables to
-    construct penalty terms [1].Supported inequality constraint in this class is shown below.
+    construct penalty terms [1]. Supported inequality constraint in this class is shown below.
 
     .. math::
 
