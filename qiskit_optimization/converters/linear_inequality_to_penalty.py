@@ -188,6 +188,8 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             index1 = combination[0] + 1
             index2 = combination[1] + 1
 
+            # rhs = num_vars - 1 correspond to multiple variable with >= n - 1 case.
+            # Otherwise, converter only supports rhs = 1 or 0 case.
             if rhs in (1, num_vars - 1):
                 if sense == ConstraintSense.GE:
                     conv_matrix[0][0] = conv_matrix[0][0] + 1
