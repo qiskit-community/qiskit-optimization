@@ -994,9 +994,9 @@ class QuadraticProgram:
                 - Coefficient of variable substitution is zero.
         """
         # pylint: disable=cyclic-import
-        from .substitute_variables import SubstituteVariables
+        from .substitute_variables import substitute_variables
 
-        return SubstituteVariables().substitute_variables(self, constants, variables)
+        return substitute_variables(self, constants, variables)
 
     def to_ising(self) -> Tuple[OperatorBase, float]:
         """Return the Ising Hamiltonian of this problem.

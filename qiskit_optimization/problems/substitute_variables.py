@@ -27,59 +27,58 @@ from ..infinity import INFINITY
 logger = logging.getLogger(__name__)
 
 
-class SubstituteVariables:
+def substitute_variables(
+    quadratic_program: QuadraticProgram,
+    constants: Optional[Dict[Union[str, int], float]] = None,
+    variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
+) -> QuadraticProgram:
+    """Substitutes variables with constants or other variables.
+
+    Args:
+        quadratic_program: a quadratic program whose variables are substituted.
+
+        constants: replace variable by constant
+            e.g., {'x': 2} means 'x' is substituted with 2
+
+        variables: replace variables by weighted other variable
+            need to copy everything using name reference to make sure that indices are matched
+            correctly. The lower and upper bounds are updated accordingly.
+            e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
+
+    Returns:
+        An optimization problem by substituting variables with constants or other variables.
+        If the substitution is valid, `QuadraticProgram.status` is still
+        `QuadraticProgram.Status.VALID`.
+        Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
+
+    Raises:
+        QiskitOptimizationError: if the substitution is invalid as follows.
+            - Same variable is substituted multiple times.
+            - Coefficient of variable substitution is zero.
+    """
+    subs = _SubstituteVariables(quadratic_program)
+    subs._subs_dict(constants, variables)
+    results = [
+        subs._variables(),
+        subs._objective(),
+        subs._linear_constraints(),
+        subs._quadratic_constraints(),
+    ]
+    if any(not r for r in results):
+        subs._dst._status = QuadraticProgram.Status.INFEASIBLE
+    return subs._dst
+
+
+class _SubstituteVariables:
     """A class to substitute variables of an optimization problem with constants for other
     variables"""
 
     CONST = "__CONSTANT__"
 
-    def __init__(self):
-        self._src = None  # type: Optional[QuadraticProgram]
-        self._dst = None  # type: Optional[QuadraticProgram]
-        self._subs = {}  # type: Dict[Union[int, str], Tuple[str, float]]
-
-    def substitute_variables(
-        self,
-        src: QuadraticProgram,
-        constants: Optional[Dict[Union[str, int], float]] = None,
-        variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
-    ) -> QuadraticProgram:
-        """Substitutes variables with constants or other variables.
-
-        Args:
-            src: a quadratic program to be substituted.
-
-            constants: replace variable by constant
-                e.g., {'x': 2} means 'x' is substituted with 2
-
-            variables: replace variables by weighted other variable
-                need to copy everything using name reference to make sure that indices are matched
-                correctly. The lower and upper bounds are updated accordingly.
-                e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
-
-        Returns:
-            An optimization problem by substituting variables with constants or other variables.
-            If the substitution is valid, `QuadraticProgram.status` is still
-            `QuadraticProgram.Status.VALID`.
-            Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
-
-        Raises:
-            QiskitOptimizationError: if the substitution is invalid as follows.
-                - Same variable is substituted multiple times.
-                - Coefficient of variable substitution is zero.
-        """
-        self._src = src
-        self._dst = QuadraticProgram(src.name)
-        self._subs_dict(constants, variables)
-        results = [
-            self._variables(),
-            self._objective(),
-            self._linear_constraints(),
-            self._quadratic_constraints(),
-        ]
-        if any(not r for r in results):
-            self._dst._status = QuadraticProgram.Status.INFEASIBLE
-        return self._dst
+    def __init__(self, quadratic_program: QuadraticProgram):
+        self._src = quadratic_program
+        self._dst = QuadraticProgram(quadratic_program.name)
+        self._subs: Dict[Union[int, str], Tuple[str, float]] = {}
 
     @staticmethod
     def _feasible(sense: ConstraintSense, rhs: float) -> bool:
@@ -110,16 +109,16 @@ class SubstituteVariables:
 
     def _subs_dict(self, constants, variables):
         # guarantee that there is no overlap between variables to be replaced and combine input
-        subs = {}  # type: Dict[Union[int, str], Tuple[str, float]]
+        self._subs = {}
         if constants is not None:
             for i, v in constants.items():
                 # substitute i <- v
                 i_2 = self._src.get_variable(i).name
-                if i_2 in subs:
+                if i_2 in self._subs:
                     raise QiskitOptimizationError(
                         "Cannot substitute the same variable twice: {} <- {}".format(i, v)
                     )
-                subs[i_2] = (self.CONST, v)
+                self._subs[i_2] = (self.CONST, v)
 
         if variables is not None:
             for i, (j, v) in variables.items():
@@ -134,18 +133,16 @@ class SubstituteVariables:
                     raise QiskitOptimizationError(
                         "Cannot substitute the same variable: {} <- {} {}".format(i, j, v)
                     )
-                if i_2 in subs:
+                if i_2 in self._subs:
                     raise QiskitOptimizationError(
                         "Cannot substitute the same variable twice: {} <- {} {}".format(i, j, v)
                     )
-                if j_2 in subs:
+                if j_2 in self._subs:
                     raise QiskitOptimizationError(
                         "Cannot substitute by variable that gets substituted itself: "
                         "{} <- {} {}".format(i, j, v)
                     )
-                subs[i_2] = (j_2, v)
-
-        self._subs = subs
+                self._subs[i_2] = (j_2, v)
 
     def _variables(self) -> bool:
         # copy variables that are not replaced
@@ -208,7 +205,7 @@ class SubstituteVariables:
         self, lin_expr: LinearExpression
     ) -> Tuple[List[float], LinearExpression]:
         const = []
-        lin_dict = defaultdict(float)  # type: Dict[Union[int, str], float]
+        lin_dict: Dict[Union[int, str], float] = defaultdict(float)
         for i, w_i in lin_expr.to_dict(use_name=True).items():
             repl_i = self._subs[i] if i in self._subs else (i, 1)
             prod = w_i * repl_i[1]
@@ -226,8 +223,8 @@ class SubstituteVariables:
         self, quad_expr: QuadraticExpression
     ) -> Tuple[List[float], Optional[LinearExpression], Optional[QuadraticExpression]]:
         const = []
-        lin_dict = defaultdict(float)  # type: Dict[Union[int, str], float]
-        quad_dict = defaultdict(float)  # type: Dict[Tuple[Union[int, str], Union[int, str]], float]
+        lin_dict: Dict[Union[int, str], float] = defaultdict(float)
+        quad_dict: Dict[Tuple[Union[int, str], Union[int, str]], float] = defaultdict(float)
         for (i, j), w_ij in quad_expr.to_dict(use_name=True).items():
             repl_i = self._subs[i] if i in self._subs else (i, 1)
             repl_j = self._subs[j] if j in self._subs else (j, 1)
@@ -304,5 +301,4 @@ class SubstituteVariables:
                 if not self._feasible(quad_cst.sense, rhs):
                     logger.warning("constraint %s is infeasible due to substitution", quad_cst.name)
                     feasible = False
-
         return feasible
