@@ -29,9 +29,19 @@ Translators
    to_docplex_mp
    from_gurobipy
    to_gurobipy
+   from_ising
+   to_ising
 """
 
 from .docplex_mp import from_docplex_mp, to_docplex_mp
 from .gurobipy import from_gurobipy, to_gurobipy
+from .ising import from_ising, to_ising
 
-_all = ["from_docplex_mp", "to_docplex_mp", "from_gurobipy", "to_gurobipy"]
+_all = [
+    "from_docplex_mp",
+    "to_docplex_mp",
+    "from_gurobipy",
+    "to_gurobipy",
+    "from_ising",
+    "to_ising",
+]
