@@ -46,6 +46,7 @@ eigen
 eigensolver
 eigenstate
 entangler
+enum
 eq
 et
 exponentiated
@@ -101,6 +102,7 @@ mdl
 minimizer
 minimumeigenoptimizer
 multiset
+mypy
 ndarray
 ndarrays
 noop
