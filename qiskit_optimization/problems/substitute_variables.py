@@ -40,11 +40,10 @@ class SubstitutionExpression:
     variable: Optional[str] = None
 
 
-def substitute_variables(
+def _substitute_variables(
     quadratic_program: QuadraticProgram,
     constants: Optional[Dict[Union[str, int], float]] = None,
     variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
-    subs_expr: Optional[Dict[str, SubstitutionExpression]] = None,
 ) -> QuadraticProgram:
     """Substitutes variables with constants or other variables.
 
@@ -59,8 +58,6 @@ def substitute_variables(
             correctly. The lower and upper bounds are updated accordingly.
             e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
 
-        subs_expr: substitution expression.
-
     Returns:
         An optimization problem by substituting variables with constants or other variables.
         If the substitution is valid, `QuadraticProgram.status` is still
@@ -73,7 +70,7 @@ def substitute_variables(
             - Coefficient of variable substitution is zero.
     """
     return _SubstituteVariables(quadratic_program)._substitute_variables(
-        constants=constants, variables=variables, subs_expr=subs_expr
+        constants=constants, variables=variables
     )
 
 
@@ -90,9 +87,8 @@ class _SubstituteVariables:
         self,
         constants: Optional[Dict[Union[str, int], float]] = None,
         variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
-        subs_expr: Optional[Dict[str, SubstitutionExpression]] = None,
     ) -> QuadraticProgram:
-        self._prepare_subs(constants, variables, subs_expr)
+        self._prepare_subs(constants, variables)
         results = [
             self._variables(),
             self._objective(),
@@ -121,7 +117,7 @@ class _SubstituteVariables:
                 return True
         return False
 
-    def _prepare_subs(self, constants, variables, subs_expr):
+    def _prepare_subs(self, constants, variables):
         # guarantee that there is no overlap between variables to be replaced and combine input
         self._subs = {}
         if constants:
@@ -155,18 +151,6 @@ class _SubstituteVariables:
                         f"{i} <- {j} {v}"
                     )
                 self._subs[i_2] = SubstitutionExpression(variable=j_2, coeff=v)
-
-        if subs_expr:
-            for i, expr in subs_expr.items():
-                if i == expr.variable:
-                    raise QiskitOptimizationError(
-                        f"Cannot substitute the same variable: {i} <- {expr}"
-                    )
-                if i in self._subs:
-                    raise QiskitOptimizationError(
-                        f"Cannot substitute the same variable twice: {i} <- {expr}"
-                    )
-            self._subs.update(subs_expr)
 
     def _variables(self) -> bool:
         # copy variables that are not replaced
