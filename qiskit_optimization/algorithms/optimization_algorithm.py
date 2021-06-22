@@ -211,7 +211,7 @@ class OptimizationResult:
         return self._x
 
     @property
-    def fval(self) -> float:
+    def fval(self) -> Optional[float]:
         """Returns the optimal function value.
 
         Returns:
