@@ -15,7 +15,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Union, Any, Optional, Dict, Type, cast
+from typing import List, Union, Any, Optional, Dict, Type, Tuple, cast
 from warnings import warn
 
 import numpy as np
@@ -99,7 +99,7 @@ class OptimizationResult:
     def __init__(
         self,
         x: Optional[Union[List[float], np.ndarray]],
-        fval: float,
+        fval: Optional[float],
         variables: List[Variable],
         status: OptimizationResultStatus,
         raw_results: Optional[Any] = None,
@@ -126,10 +126,8 @@ class OptimizationResult:
         else:
             if len(x) != len(variables):
                 raise QiskitOptimizationError(
-                    "Inconsistent size of optimal value and variables. x: size {} {}, "
-                    "variables: size {} {}".format(
-                        len(x), x, len(variables), [v.name for v in variables]
-                    )
+                    f"Inconsistent size of optimal value and variables. x: size {len(x)} {x}, "
+                    f"variables: size {len(variables)} {[v.name for v in variables]}"
                 )
             self._x = np.asarray(x)
             self._variables_dict = dict(zip(self._variable_names, self._x))
@@ -140,7 +138,7 @@ class OptimizationResult:
         if samples:
             sum_prob = np.sum([e.probability for e in samples])
             if not np.isclose(sum_prob, 1.0):
-                warn("The sum of probability of samples is not close to 1: {}".format(sum_prob))
+                warn("The sum of probability of samples is not close to 1: f{sum_prob}")
             self._samples = samples
         else:
             self._samples = [
@@ -149,9 +147,9 @@ class OptimizationResult:
 
     def __repr__(self) -> str:
         return (
-            "optimal function value: {}\n"
-            "optimal value: {}\n"
-            "status: {}".format(self._fval, self._x, self._status.name)
+            f"optimal function value: {self._fval}\n"
+            f"optimal value: {self._x}\n"
+            f"status: {self._status.name}"
         )
 
     def __getitem__(self, key: Union[int, str]) -> float:
@@ -178,9 +176,7 @@ class OptimizationResult:
             return self._x[key]
         if isinstance(key, str):
             return self._variables_dict[key]
-        raise TypeError(
-            "Integer or string key required," "instead {}({}) provided.".format(type(key), key)
-        )
+        raise TypeError(f"Integer or string key required, instead {type(key)}({key}) provided.")
 
     def get_correlations(self) -> np.ndarray:
         """
@@ -340,7 +336,7 @@ class OptimizationAlgorithm(ABC):
         # check compatibility and raise exception if incompatible
         msg = self.get_compatibility_msg(problem)
         if msg:
-            raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
+            raise QiskitOptimizationError(f"Incompatible problem: {msg}")
 
     @staticmethod
     def _get_feasibility_status(
@@ -417,6 +413,18 @@ class OptimizationAlgorithm(ABC):
 
         return problem_
 
+    @staticmethod
+    def _check_converters(
+        converters: Optional[Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]]
+    ) -> List[QuadraticProgramConverter]:
+        if converters is None:
+            converters = []
+        if not isinstance(converters, list):
+            converters = [converters]
+        if not all(isinstance(conv, QuadraticProgramConverter) for conv in converters):
+            raise TypeError(f"Invalid object of converters: {converters}")
+        return converters
+
     @classmethod
     def _interpret(
         cls,
@@ -448,15 +456,9 @@ class OptimizationAlgorithm(ABC):
         """
         if not issubclass(result_class, OptimizationResult):
             raise QiskitOptimizationError(
-                "Invalid result class, not derived from OptimizationResult: "
-                "{}".format(result_class)
+                f"Invalid result class, not derived from OptimizationResult: {result_class}"
             )
-        if converters is None:
-            converters = []
-        if not isinstance(converters, list):
-            converters = [converters]
-        if not all(isinstance(conv, QuadraticProgramConverter) for conv in converters):
-            raise TypeError("Invalid object of converters: {}".format(converters))
+        converters = cls._check_converters(converters)
 
         for converter in converters[::-1]:
             x = converter.interpret(x)
@@ -474,16 +476,21 @@ class OptimizationAlgorithm(ABC):
         problem: QuadraticProgram,
         raw_samples: List[SolutionSample],
         converters: List[QuadraticProgramConverter],
-    ) -> List[SolutionSample]:
-        prob = {}  # type: dict
+    ) -> Tuple[List[SolutionSample], SolutionSample]:
+        """Interpret and sort all samples and return the raw sample corresponding to the best one"""
+        converters = cls._check_converters(converters)
+
+        prob: Dict[Tuple, float] = {}
         array = {}
-        for sample in raw_samples:
+        index = {}
+        for i, sample in enumerate(raw_samples):
             x = sample.x
             for converter in converters[::-1]:
                 x = converter.interpret(x)
             key = tuple(x)
             prob[key] = prob.get(key, 0.0) + sample.probability
             array[key] = x
+            index[key] = i
 
         samples = []
         for key, x in array.items():
@@ -492,10 +499,12 @@ class OptimizationAlgorithm(ABC):
             status = cls._get_feasibility_status(problem, x)
             samples.append(SolutionSample(x, fval, probability, status))
 
-        return sorted(
+        sorted_samples = sorted(
             samples,
             key=lambda v: (v.status.value, problem.objective.sense.value * v.fval),
         )
+        best_raw = raw_samples[index[tuple(sorted_samples[0].x)]]
+        return sorted_samples, best_raw
 
     @staticmethod
     def _eigenvector_to_solutions(

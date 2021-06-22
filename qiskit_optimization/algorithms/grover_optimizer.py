@@ -261,7 +261,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                         self._circuit_results, problem_init
                     )
                     raw_samples.sort(key=lambda x: x.fval)
-                    samples = self._interpret_samples(problem, raw_samples, self._converters)
+                    samples, _ = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))

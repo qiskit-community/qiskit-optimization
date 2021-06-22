@@ -12,7 +12,6 @@
 
 """Converter to convert a problem with equality constraints to unconstrained with penalty terms."""
 
-import copy
 import logging
 from math import fsum
 from typing import Optional, cast, Union, Tuple, List
@@ -125,7 +124,8 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
         return dst
 
-    def _auto_define_penalty(self, problem: QuadraticProgram) -> float:
+    @staticmethod
+    def _auto_define_penalty(problem: QuadraticProgram) -> float:
         """Automatically define the penalty coefficient.
 
         Returns:

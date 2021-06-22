@@ -12,7 +12,7 @@
 
 """A converter from quadratic program to a QUBO."""
 
-from typing import List, Optional, Union
+from typing import List, Optional, Union, cast
 
 import numpy as np
 
@@ -86,7 +86,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         """
         for conv in self._converters[::-1]:
             x = conv.interpret(x)
-        return x
+        return cast(np.ndarray, x)
 
     @staticmethod
     def get_compatibility_msg(problem: QuadraticProgram) -> str:
