@@ -176,7 +176,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
         problem_init = deepcopy(problem_)
 
-        self._num_key_qubits = len(problem_.objective.linear.to_array())  # type: ignore
+        self._num_key_qubits = len(problem_.objective.linear.to_array())
 
         # Variables for tracking the optimum.
         optimum_found = False
