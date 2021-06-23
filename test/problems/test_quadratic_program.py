@@ -1012,7 +1012,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "<=", -1)
 
-        with self.subTest("x <= -1"):
+        with self.subTest("x <- -1"):
             q_p2 = q_p.substitute_variables(constants={"x": -1})
             self.assertEqual(q_p2.status, QuadraticProgram.Status.INFEASIBLE)
             q_p2 = q_p.substitute_variables(constants={"y": -3})
@@ -1022,7 +1022,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p2.clear()
             self.assertEqual(q_p2.status, QuadraticProgram.Status.VALID)
 
-        with self.subTest("x <= 0"):
+        with self.subTest("x <- 0"):
             q_p2 = q_p.substitute_variables(constants={"x": 0})
             self.assertEqual(q_p2.status, QuadraticProgram.Status.VALID)
             self.assertDictEqual(q_p2.objective.linear.to_dict(use_name=True), {"y": 2})
@@ -1042,7 +1042,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(cst.sense.name, "LE")
             self.assertEqual(cst.rhs, -1)
 
-        with self.subTest("z <= -1"):
+        with self.subTest("z <- -1"):
             q_p2 = q_p.substitute_variables(constants={"z": -1})
             self.assertEqual(q_p2.status, QuadraticProgram.Status.VALID)
             self.assertDictEqual(q_p2.objective.linear.to_dict(use_name=True), {"x": 1, "y": 2})
@@ -1061,7 +1061,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(cst.sense.name, "LE")
             self.assertEqual(cst.rhs, -2)
 
-        with self.subTest("y <= -0.5 * x"):
+        with self.subTest("y <- -0.5 * x"):
             q_p2 = q_p.substitute_variables(variables={"y": ("x", -0.5)})
             self.assertEqual(q_p2.status, QuadraticProgram.Status.VALID)
             self.assertDictEqual(q_p2.objective.linear.to_dict(use_name=True), {})

@@ -22,18 +22,19 @@ import numpy as np
 from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
-from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.opflow import OperatorBase, PauliSumOp
 from scipy.sparse import spmatrix
 
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.opflow import OperatorBase, PauliSumOp
+
+from ..deprecation import DeprecatedType, deprecate_method
+from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .quadratic_constraint import QuadraticConstraint
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
-from ..deprecation import DeprecatedType, deprecate_method
-from ..exceptions import QiskitOptimizationError
-from ..infinity import INFINITY
 
 logger = logging.getLogger(__name__)
 
@@ -994,9 +995,9 @@ class QuadraticProgram:
                 - Coefficient of variable substitution is zero.
         """
         # pylint: disable=cyclic-import
-        from .substitute_variables import _substitute_variables
+        from .substitute_variables import substitute_variables
 
-        return _substitute_variables(self, constants, variables)
+        return substitute_variables(self, constants, variables)
 
     def to_ising(self) -> Tuple[OperatorBase, float]:
         """Return the Ising Hamiltonian of this problem.

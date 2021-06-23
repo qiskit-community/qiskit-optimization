@@ -30,17 +30,21 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class SubstitutionExpression:
-    """Substitution expression
+    """Represents a substitution of a variable with a linear expression.
 
-    const + coeff * new_var
+    If `variable` is `None`, it substitutes a variable with the constant value.
+    Otherwise, it substitutes a variable with (constant + coefficient * new_variable).
     """
 
     const: float = 0.0
+    """Constant value"""
     coeff: float = 0.0
+    """Coefficient of the new variable"""
     variable: Optional[str] = None
+    """Variable name or `None`"""
 
 
-def _substitute_variables(
+def substitute_variables(
     quadratic_program: QuadraticProgram,
     constants: Optional[Dict[Union[str, int], float]] = None,
     variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
@@ -69,26 +73,72 @@ def _substitute_variables(
             - Same variable is substituted multiple times.
             - Coefficient of variable substitution is zero.
     """
-    return _SubstituteVariables(quadratic_program)._substitute_variables(
-        constants=constants, variables=variables
-    )
+    # guarantee that there is no overlap between variables to be replaced and combine input
+    subs = {}
+    if constants:
+        for i, v in constants.items():
+            # substitute i <- v
+            i_2 = quadratic_program.get_variable(i).name
+            if i_2 in subs:
+                raise QiskitOptimizationError(
+                    f"Cannot substitute the same variable twice: {i} <- {v}"
+                )
+            subs[i_2] = SubstitutionExpression(const=v)
+
+    if variables:
+        for i, (j, v) in variables.items():
+            if v == 0:
+                raise QiskitOptimizationError(f"coefficient must be non-zero: {i} {j} {v}")
+            # substitute i <- j * v
+            i_2 = quadratic_program.get_variable(i).name
+            j_2 = quadratic_program.get_variable(j).name
+            if i_2 == j_2:
+                raise QiskitOptimizationError(
+                    f"Cannot substitute the same variable: {i} <- {j} {v}"
+                )
+            if i_2 in subs:
+                raise QiskitOptimizationError(
+                    f"Cannot substitute the same variable twice: {i} <- {j} {v}"
+                )
+            if j_2 in subs:
+                raise QiskitOptimizationError(
+                    "Cannot substitute by variable that gets substituted itself: " f"{i} <- {j} {v}"
+                )
+            subs[i_2] = SubstitutionExpression(variable=j_2, coeff=v)
+
+    return _SubstituteVariables().substitute_variables(quadratic_program, subs)
 
 
 class _SubstituteVariables:
     """A class to substitute variables of an optimization problem with constants for other
     variables"""
 
-    def __init__(self, quadratic_program: QuadraticProgram):
-        self._src = quadratic_program
-        self._dst = QuadraticProgram(quadratic_program.name)
+    def __init__(self):
+        self._src: Optional[QuadraticProgram] = None
+        self._dst: Optional[QuadraticProgram] = None
         self._subs: Dict[str, SubstitutionExpression] = {}
 
-    def _substitute_variables(
-        self,
-        constants: Optional[Dict[Union[str, int], float]] = None,
-        variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
+    def substitute_variables(
+        self, quadratic_program: QuadraticProgram, subs: Dict[str, SubstitutionExpression]
     ) -> QuadraticProgram:
-        self._prepare_subs(constants, variables)
+        """Substitutes variables with constants or other variables.
+
+        Args:
+            quadratic_program: a quadratic program whose variables are substituted.
+
+            subs: substitution expressions as a dictionary.
+                e.g., {'x': SubstitutionExpression(const=1, coeff=2, variable='y'} means
+                `x` is substituted with `1 + 2 * y`.
+
+        Returns:
+            An optimization problem by substituting variables with constants or other variables.
+            If the substitution is valid, `QuadraticProgram.status` is still
+            `QuadraticProgram.Status.VALID`.
+            Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
+        """
+        self._src = quadratic_program
+        self._dst = QuadraticProgram(quadratic_program.name)
+        self._subs = subs
         results = [
             self._variables(),
             self._objective(),
@@ -116,41 +166,6 @@ class _SubstituteVariables:
             if 0 >= rhs:
                 return True
         return False
-
-    def _prepare_subs(self, constants, variables):
-        # guarantee that there is no overlap between variables to be replaced and combine input
-        self._subs = {}
-        if constants:
-            for i, v in constants.items():
-                # substitute i <- v
-                i_2 = self._src.get_variable(i).name
-                if i_2 in self._subs:
-                    raise QiskitOptimizationError(
-                        f"Cannot substitute the same variable twice: {i} <- {v}"
-                    )
-                self._subs[i_2] = SubstitutionExpression(const=v)
-
-        if variables:
-            for i, (j, v) in variables.items():
-                if v == 0:
-                    raise QiskitOptimizationError(f"coefficient must be non-zero: {i} {j} {v}")
-                # substitute i <- j * v
-                i_2 = self._src.get_variable(i).name
-                j_2 = self._src.get_variable(j).name
-                if i_2 == j_2:
-                    raise QiskitOptimizationError(
-                        f"Cannot substitute the same variable: {i} <- {j} {v}"
-                    )
-                if i_2 in self._subs:
-                    raise QiskitOptimizationError(
-                        f"Cannot substitute the same variable twice: {i} <- {j} {v}"
-                    )
-                if j_2 in self._subs:
-                    raise QiskitOptimizationError(
-                        "Cannot substitute by variable that gets substituted itself: "
-                        f"{i} <- {j} {v}"
-                    )
-                self._subs[i_2] = SubstitutionExpression(variable=j_2, coeff=v)
 
     def _variables(self) -> bool:
         # copy variables that are not replaced
