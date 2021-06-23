@@ -18,6 +18,7 @@ from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 from .optimization_application import OptimizationApplication
 
 
@@ -52,8 +53,7 @@ class Knapsack(OptimizationApplication):
         x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._values))}
         mdl.maximize(mdl.sum(self._values[i] * x[i] for i in x))
         mdl.add_constraint(mdl.sum(self._weights[i] * x[i] for i in x) <= self._max_weight)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         return op
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:

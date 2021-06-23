@@ -12,14 +12,14 @@
 
 """The Gurobi optimizer wrapped to be used within Qiskit's optimization module."""
 
-import logging
 
 from qiskit.exceptions import MissingOptionalLibraryError
-from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
+
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
+from ..translators.gurobipy import to_gurobipy
+from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
-logger = logging.getLogger(__name__)
 
 try:
     import gurobipy as gp
@@ -32,7 +32,7 @@ except ImportError:
 class GurobiOptimizer(OptimizationAlgorithm):
     """The Gurobi optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
 
-    This class provides a wrapper for ``gurobipy`` (https://pypi.gurobi.com)
+    This class provides a wrapper for ``gurobipy``
     to be used within the optimization module.
 
     Examples:
@@ -63,7 +63,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
             raise MissingOptionalLibraryError(
                 libname="GUROBI",
                 name="GurobiOptimizer",
-                pip_install="pip install -i https://pypi.gurobi.com gurobipy",
+                pip_install="pip install qiskit-optimization[gurobi]",
             )
 
         self._disp = disp
@@ -122,7 +122,7 @@ class GurobiOptimizer(OptimizationAlgorithm):
         """
 
         # convert to Gurobi problem
-        model = problem.to_gurobipy()
+        model = to_gurobipy(problem)
 
         # Enable non-convex
         model.Params.NonConvex = 2

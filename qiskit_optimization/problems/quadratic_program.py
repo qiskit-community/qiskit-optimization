@@ -13,7 +13,6 @@
 """Quadratic Program."""
 
 import logging
-import warnings
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
@@ -21,43 +20,12 @@ from math import fsum, isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from docplex.mp.constr import LinearConstraint as DocplexLinearConstraint
-from docplex.mp.constr import NotEqualConstraint
-from docplex.mp.constr import QuadraticConstraint as DocplexQuadraticConstraint
-
-try:
-    # new location since docplex 2.16.196
-    from docplex.mp.dvar import Var
-except ImportError:
-    # old location until docplex 2.15.194
-    from docplex.mp.linear import Var
 from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
-from docplex.mp.quad import QuadExpr
-from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
-
-try:
-    import gurobipy as gp
-    from gurobipy import Model as GurobiModel
-
-    _HAS_GUROBI = True
-except ImportError:
-    _HAS_GUROBI = False
-
-    class GurobiModel:  # type: ignore
-        """Empty GurobiModel class
-        Replacement if gurobipy.Model is not present.
-        """
-
-        pass
-
-
-from numpy import ndarray, zeros
-from scipy.sparse import spmatrix
-
+from numpy import ndarray
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
-from qiskit.quantum_info import Pauli
+from qiskit.opflow import OperatorBase, PauliSumOp
+from scipy.sparse import spmatrix
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
@@ -68,6 +36,7 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
+from ..deprecation import DeprecatedType, deprecate_method
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +77,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        return self.to_docplex().export_as_lp_string()
+        return self.export_as_lp_string()
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
@@ -886,147 +855,11 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
-    def from_gurobipy(self, model: GurobiModel) -> None:
-        """Loads this quadratic program from a gurobipy model.
-
-        Note that this supports only basic functions of gurobipy as follows:
-        - quadratic objective function
-        - linear / quadratic constraints
-        - binary / integer / continuous variables
-
-        Args:
-            model: The gurobipy model to be loaded.
-
-        Raises:
-            MissingOptionalLibraryError: gurobipy not installed
-            QiskitOptimizationError: if the model contains unsupported elements.
-        """
-        if not _HAS_GUROBI:
-            raise MissingOptionalLibraryError(
-                libname="GUROBI",
-                name="GurobiOptimizer",
-                pip_install="pip install -i https://pypi.gurobi.com gurobipy",
-            )
-
-        # clear current problem
-        self.clear()
-
-        # Update the model to make sure everything works as expected
-        model.update()
-
-        # get name
-        self.name = model.ModelName
-
-        # get variables
-        # keep track of names separately, since gurobipy allows to have None names.
-        var_names = {}
-        for x in model.getVars():
-            if x.vtype == gp.GRB.CONTINUOUS:
-                x_new = self.continuous_var(x.lb, x.ub, x.VarName)
-            elif x.vtype == gp.GRB.BINARY:
-                x_new = self.binary_var(x.VarName)
-            elif x.vtype == gp.GRB.INTEGER:
-                x_new = self.integer_var(x.lb, x.ub, x.VarName)
-            else:
-                raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.VarName, x.vtype)
-                )
-            var_names[x] = x_new.name
-
-        # objective sense
-        minimize = model.ModelSense == gp.GRB.MINIMIZE
-
-        # Retrieve the objective
-        objective = model.getObjective()
-        has_quadratic_objective = False
-
-        # Retrieve the linear part in case it is a quadratic objective
-        if isinstance(objective, gp.QuadExpr):
-            linear_part = objective.getLinExpr()
-            has_quadratic_objective = True
-        else:
-            linear_part = objective
-
-        # Get the constant
-        constant = linear_part.getConstant()
-
-        # get linear part of objective
-        linear = {}
-        for i in range(linear_part.size()):
-            linear[var_names[linear_part.getVar(i)]] = linear_part.getCoeff(i)
-
-        # get quadratic part of objective
-        quadratic = {}
-        if has_quadratic_objective:
-            for i in range(objective.size()):
-                x = var_names[objective.getVar1(i)]
-                y = var_names[objective.getVar2(i)]
-                v = objective.getCoeff(i)
-                quadratic[x, y] = v
-
-        # set objective
-        if minimize:
-            self.minimize(constant, linear, quadratic)
-        else:
-            self.maximize(constant, linear, quadratic)
-
-        # check whether there are any general constraints
-        if model.NumSOS > 0 or model.NumGenConstrs > 0:
-            raise QiskitOptimizationError("Unsupported constraint: SOS or General Constraint")
-
-        # get linear constraints
-        for constraint in model.getConstrs():
-            name = constraint.ConstrName
-            sense = constraint.Sense
-
-            left_expr = model.getRow(constraint)
-            rhs = constraint.RHS
-
-            lhs = {}
-            for i in range(left_expr.size()):
-                lhs[var_names[left_expr.getVar(i)]] = left_expr.getCoeff(i)
-
-            if sense == gp.GRB.EQUAL:
-                self.linear_constraint(lhs, "==", rhs, name)
-            elif sense == gp.GRB.GREATER_EQUAL:
-                self.linear_constraint(lhs, ">=", rhs, name)
-            elif sense == gp.GRB.LESS_EQUAL:
-                self.linear_constraint(lhs, "<=", rhs, name)
-            else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
-
-        # get quadratic constraints
-        for constraint in model.getQConstrs():
-            name = constraint.QCName
-            sense = constraint.QCSense
-
-            left_expr = model.getQCRow(constraint)
-            rhs = constraint.QCRHS
-
-            linear = {}
-            quadratic = {}
-
-            linear_part = left_expr.getLinExpr()
-            for i in range(linear_part.size()):
-                linear[var_names[linear_part.getVar(i)]] = linear_part.getCoeff(i)
-
-            for i in range(left_expr.size()):
-                x = var_names[left_expr.getVar1(i)]
-                y = var_names[left_expr.getVar2(i)]
-                v = left_expr.getCoeff(i)
-                quadratic[x, y] = v
-
-            if sense == gp.GRB.EQUAL:
-                self.quadratic_constraint(linear, quadratic, "==", rhs, name)
-            elif sense == gp.GRB.GREATER_EQUAL:
-                self.quadratic_constraint(linear, quadratic, ">=", rhs, name)
-            elif sense == gp.GRB.LESS_EQUAL:
-                self.quadratic_constraint(linear, quadratic, "<=", rhs, name)
-            else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
-
+    @deprecate_method(
+        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.from_docplex_mp"
+    )
     def from_docplex(self, model: Model) -> None:
-        """Loads this quadratic program from a docplex model.
+        """DEPRECATED Loads this quadratic program from a docplex model.
 
         Note that this supports only basic functions of docplex as follows:
         - quadratic objective function
@@ -1039,246 +872,18 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if the model contains unsupported elements.
         """
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import from_docplex_mp
 
-        # clear current problem
-        self.clear()
+        other = from_docplex_mp(model)
+        for attr, val in vars(other).items():
+            setattr(self, attr, val)
 
-        # get name
-        self.name = model.name
-
-        # get variables
-        # keep track of names separately, since docplex allows to have None names.
-        var_names = {}
-        for x in model.iter_variables():
-            if isinstance(x.vartype, ContinuousVarType):
-                x_new = self.continuous_var(x.lb, x.ub, x.name)
-            elif isinstance(x.vartype, BinaryVarType):
-                x_new = self.binary_var(x.name)
-            elif isinstance(x.vartype, IntegerVarType):
-                x_new = self.integer_var(x.lb, x.ub, x.name)
-            else:
-                raise QiskitOptimizationError(
-                    "Unsupported variable type: {} {}".format(x.name, x.vartype)
-                )
-            var_names[x] = x_new.name
-
-        # objective sense
-        minimize = model.objective_sense.is_minimize()
-
-        # make sure objective expression is linear or quadratic and not a variable
-        if isinstance(model.objective_expr, Var):
-            model.objective_expr = model.objective_expr + 0
-
-        # get objective offset
-        constant = model.objective_expr.constant
-
-        # get linear part of objective
-        linear = {}
-        linear_part = model.objective_expr.get_linear_part()
-        for x in linear_part.iter_variables():
-            linear[var_names[x]] = linear_part.get_coef(x)
-
-        # get quadratic part of objective
-        quadratic = {}
-        if isinstance(model.objective_expr, QuadExpr):
-            for quad_triplet in model.objective_expr.iter_quad_triplets():
-                i = var_names[quad_triplet[0]]
-                j = var_names[quad_triplet[1]]
-                v = quad_triplet[2]
-                quadratic[i, j] = v
-
-        # set objective
-        if minimize:
-            self.minimize(constant, linear, quadratic)
-        else:
-            self.maximize(constant, linear, quadratic)
-
-        # get linear constraints
-        for constraint in model.iter_constraints():
-            if isinstance(constraint, DocplexQuadraticConstraint):
-                # ignore quadratic constraints here and process them later
-                continue
-            if not isinstance(constraint, DocplexLinearConstraint) or isinstance(
-                constraint, NotEqualConstraint
-            ):
-                # If any constraint is not linear/quadratic constraints, it raises an error.
-                # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
-                # but it cannot be handled by optimization.
-                raise QiskitOptimizationError("Unsupported constraint: {}".format(constraint))
-            name = constraint.name
-            sense = constraint.sense
-
-            left_expr = constraint.get_left_expr()
-            right_expr = constraint.get_right_expr()
-            # for linear constraints we may get an instance of Var instead of expression,
-            # e.g. x + y = z
-            if isinstance(left_expr, Var):
-                left_expr = left_expr + 0
-            if isinstance(right_expr, Var):
-                right_expr = right_expr + 0
-
-            rhs = right_expr.constant - left_expr.constant
-
-            lhs = {}
-            for x in left_expr.iter_variables():
-                lhs[var_names[x]] = left_expr.get_coef(x)
-            for x in right_expr.iter_variables():
-                lhs[var_names[x]] = lhs.get(var_names[x], 0.0) - right_expr.get_coef(x)
-
-            if sense == sense.EQ:
-                self.linear_constraint(lhs, "==", rhs, name)
-            elif sense == sense.GE:
-                self.linear_constraint(lhs, ">=", rhs, name)
-            elif sense == sense.LE:
-                self.linear_constraint(lhs, "<=", rhs, name)
-            else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
-
-        # get quadratic constraints
-        for constraint in model.iter_quadratic_constraints():
-            name = constraint.name
-            sense = constraint.sense
-
-            left_expr = constraint.get_left_expr()
-            right_expr = constraint.get_right_expr()
-
-            rhs = right_expr.constant - left_expr.constant
-            linear = {}
-            quadratic = {}
-
-            if left_expr.is_quad_expr():
-                for x in left_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = left_expr.linear_part.get_coef(x)
-                for quad_triplet in left_expr.iter_quad_triplets():
-                    i = var_names[quad_triplet[0]]
-                    j = var_names[quad_triplet[1]]
-                    v = quad_triplet[2]
-                    quadratic[i, j] = v
-            else:
-                for x in left_expr.iter_variables():
-                    linear[var_names[x]] = left_expr.get_coef(x)
-
-            if right_expr.is_quad_expr():
-                for x in right_expr.linear_part.iter_variables():
-                    linear[var_names[x]] = linear.get(
-                        var_names[x], 0.0
-                    ) - right_expr.linear_part.get_coef(x)
-                for quad_triplet in right_expr.iter_quad_triplets():
-                    i = var_names[quad_triplet[0]]
-                    j = var_names[quad_triplet[1]]
-                    v = quad_triplet[2]
-                    quadratic[i, j] = quadratic.get((i, j), 0.0) - v
-            else:
-                for x in right_expr.iter_variables():
-                    linear[var_names[x]] = linear.get(var_names[x], 0.0) - right_expr.get_coef(x)
-
-            if sense == sense.EQ:
-                self.quadratic_constraint(linear, quadratic, "==", rhs, name)
-            elif sense == sense.GE:
-                self.quadratic_constraint(linear, quadratic, ">=", rhs, name)
-            elif sense == sense.LE:
-                self.quadratic_constraint(linear, quadratic, "<=", rhs, name)
-            else:
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
-
-    def to_gurobipy(self) -> GurobiModel:
-        """Returns a gurobipy model corresponding to this quadratic program
-
-        Returns:
-            The gurobipy model corresponding to this quadratic program.
-
-        Raises:
-            MissingOptionalLibraryError: gurobipy not installed
-            QiskitOptimizationError: if non-supported elements (should never happen).
-        """
-        if not _HAS_GUROBI:
-            raise MissingOptionalLibraryError(
-                libname="GUROBI",
-                name="GurobiOptimizer",
-                pip_install="pip install -i https://pypi.gurobi.com gurobipy",
-            )
-
-        # initialize model
-        mdl = gp.Model(self.name)
-
-        # add variables
-        var = {}
-        for idx, x in enumerate(self.variables):
-            if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.addVar(
-                    vtype=gp.GRB.CONTINUOUS, lb=x.lowerbound, ub=x.upperbound, name=x.name
-                )
-            elif x.vartype == Variable.Type.BINARY:
-                var[idx] = mdl.addVar(vtype=gp.GRB.BINARY, name=x.name)
-            elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.addVar(
-                    vtype=gp.GRB.INTEGER, lb=x.lowerbound, ub=x.upperbound, name=x.name
-                )
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
-
-        # add objective
-        objective = self.objective.constant
-        for i, v in self.objective.linear.to_dict().items():
-            objective += v * var[cast(int, i)]
-        for (i, j), v in self.objective.quadratic.to_dict().items():
-            objective += v * var[cast(int, i)] * var[cast(int, j)]
-        if self.objective.sense == QuadraticObjective.Sense.MINIMIZE:
-            mdl.setObjective(objective, sense=gp.GRB.MINIMIZE)
-        else:
-            mdl.setObjective(objective, sense=gp.GRB.MAXIMIZE)
-
-        # add linear constraints
-        for i, l_constraint in enumerate(self.linear_constraints):
-            name = l_constraint.name
-            rhs = l_constraint.rhs
-            if rhs == 0 and l_constraint.linear.coefficients.nnz == 0:
-                continue
-            linear_expr = 0
-            for j, v in l_constraint.linear.to_dict().items():
-                linear_expr += v * var[cast(int, j)]
-            sense = l_constraint.sense
-            if sense == Constraint.Sense.EQ:
-                mdl.addConstr(linear_expr == rhs, name=name)
-            elif sense == Constraint.Sense.GE:
-                mdl.addConstr(linear_expr >= rhs, name=name)
-            elif sense == Constraint.Sense.LE:
-                mdl.addConstr(linear_expr <= rhs, name=name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
-
-        # add quadratic constraints
-        for i, q_constraint in enumerate(self.quadratic_constraints):
-            name = q_constraint.name
-            rhs = q_constraint.rhs
-            if (
-                rhs == 0
-                and q_constraint.linear.coefficients.nnz == 0
-                and q_constraint.quadratic.coefficients.nnz == 0
-            ):
-                continue
-            quadratic_expr = 0
-            for j, v in q_constraint.linear.to_dict().items():
-                quadratic_expr += v * var[cast(int, j)]
-            for (j, k), v in q_constraint.quadratic.to_dict().items():
-                quadratic_expr += v * var[cast(int, j)] * var[cast(int, k)]
-            sense = q_constraint.sense
-            if sense == Constraint.Sense.EQ:
-                mdl.addConstr(quadratic_expr == rhs, name=name)
-            elif sense == Constraint.Sense.GE:
-                mdl.addConstr(quadratic_expr >= rhs, name=name)
-            elif sense == Constraint.Sense.LE:
-                mdl.addConstr(quadratic_expr <= rhs, name=name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
-
-        return mdl
-
+    @deprecate_method(
+        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.to_docplex_mp"
+    )
     def to_docplex(self) -> Model:
-        """Returns a docplex model corresponding to this quadratic program.
+        """DEPRECATED Returns a docplex model corresponding to this quadratic program.
 
         Returns:
             The docplex model corresponding to this quadratic program.
@@ -1286,81 +891,10 @@ class QuadraticProgram:
         Raises:
             QiskitOptimizationError: if non-supported elements (should never happen).
         """
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import to_docplex_mp
 
-        # initialize model
-        mdl = Model(self.name)
-
-        # add variables
-        var = {}
-        for idx, x in enumerate(self.variables):
-            if x.vartype == Variable.Type.CONTINUOUS:
-                var[idx] = mdl.continuous_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
-            elif x.vartype == Variable.Type.BINARY:
-                var[idx] = mdl.binary_var(name=x.name)
-            elif x.vartype == Variable.Type.INTEGER:
-                var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
-
-        # add objective
-        objective = self.objective.constant
-        for i, v in self.objective.linear.to_dict().items():
-            objective += v * var[cast(int, i)]
-        for (i, j), v in self.objective.quadratic.to_dict().items():
-            objective += v * var[cast(int, i)] * var[cast(int, j)]
-        if self.objective.sense == QuadraticObjective.Sense.MINIMIZE:
-            mdl.minimize(objective)
-        else:
-            mdl.maximize(objective)
-
-        # add linear constraints
-        for i, l_constraint in enumerate(self.linear_constraints):
-            name = l_constraint.name
-            rhs = l_constraint.rhs
-            if rhs == 0 and l_constraint.linear.coefficients.nnz == 0:
-                continue
-            linear_expr = 0
-            for j, v in l_constraint.linear.to_dict().items():
-                linear_expr += v * var[cast(int, j)]
-            sense = l_constraint.sense
-            if sense == Constraint.Sense.EQ:
-                mdl.add_constraint(linear_expr == rhs, ctname=name)
-            elif sense == Constraint.Sense.GE:
-                mdl.add_constraint(linear_expr >= rhs, ctname=name)
-            elif sense == Constraint.Sense.LE:
-                mdl.add_constraint(linear_expr <= rhs, ctname=name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
-
-        # add quadratic constraints
-        for i, q_constraint in enumerate(self.quadratic_constraints):
-            name = q_constraint.name
-            rhs = q_constraint.rhs
-            if (
-                rhs == 0
-                and q_constraint.linear.coefficients.nnz == 0
-                and q_constraint.quadratic.coefficients.nnz == 0
-            ):
-                continue
-            quadratic_expr = 0
-            for j, v in q_constraint.linear.to_dict().items():
-                quadratic_expr += v * var[cast(int, j)]
-            for (j, k), v in q_constraint.quadratic.to_dict().items():
-                quadratic_expr += v * var[cast(int, j)] * var[cast(int, k)]
-            sense = q_constraint.sense
-            if sense == Constraint.Sense.EQ:
-                mdl.add_constraint(quadratic_expr == rhs, ctname=name)
-            elif sense == Constraint.Sense.GE:
-                mdl.add_constraint(quadratic_expr >= rhs, ctname=name)
-            elif sense == Constraint.Sense.LE:
-                mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
-            else:
-                # should never happen
-                raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
-
-        return mdl
+        return to_docplex_mp(self)
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
@@ -1368,37 +902,10 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        return self.to_docplex().export_as_lp_string()
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import to_docplex_mp
 
-    def pprint_as_string(self) -> str:
-        """DEPRECATED Returns the quadratic program as a string in Docplex's pretty print format.
-        Returns:
-            A string representing the quadratic program.
-        """
-        warnings.warn(
-            "The pprint_as_string method is deprecated and will be "
-            "removed in a future release. Instead use the"
-            "to_docplex() method and run pprint_as_string() on that "
-            "output",
-            DeprecationWarning,
-        )
-        return self.to_docplex().pprint_as_string()
-
-    def prettyprint(self, out: Optional[str] = None) -> None:
-        """DEPRECATED Pretty prints the quadratic program to a given output stream (None = default).
-
-        Args:
-            out: The output stream or file name to print to.
-              if you specify a file name, the output file name is has '.mod' as suffix.
-        """
-        warnings.warn(
-            "The prettyprint method is deprecated and will be "
-            "removed in a future release. Instead use the"
-            "to_docplex() method and run prettyprint() on that "
-            "output",
-            DeprecationWarning,
-        )
-        self.to_docplex().prettyprint(out)
+        return to_docplex_mp(self).export_as_lp_string()
 
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
@@ -1436,9 +943,13 @@ class QuadraticProgram:
                         break
             return model_name
 
-        model_reader = ModelReader()
-        model = model_reader.read(filename, model_name=_parse_problem_name(filename))
-        self.from_docplex(model)
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import from_docplex_mp
+
+        model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
+        other = from_docplex_mp(model)
+        for attr, val in vars(other).items():
+            setattr(self, attr, val)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
@@ -1452,7 +963,11 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
-        self.to_docplex().export_as_lp(filename)
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import to_docplex_mp
+
+        mdl = to_docplex_mp(self)
+        mdl.export_as_lp(filename)
 
     def substitute_variables(
         self,
@@ -1498,94 +1013,10 @@ class QuadraticProgram:
             QiskitOptimizationError: If a variable type is not binary.
             QiskitOptimizationError: If constraints exist in the problem.
         """
-        # if problem has variables that are not binary, raise an error
-        if self.get_num_vars() > self.get_num_binary_vars():
-            raise QiskitOptimizationError(
-                "The type of variable must be a binary variable. "
-                "Use a QuadraticProgramToQubo converter to convert "
-                "integer variables to binary variables. "
-                "If the problem contains continuous variables, "
-                "currently we can not apply VQE/QAOA directly. "
-                "you might want to use an ADMM optimizer "
-                "for the problem. "
-            )
+        # pylint: disable=cyclic-import
+        from ..translators.ising import to_ising
 
-        # if constraints exist, raise an error
-        if self.linear_constraints or self.quadratic_constraints:
-            raise QiskitOptimizationError(
-                "An constraint exists. "
-                "The method supports only model with no constraints. "
-                "Use a QuadraticProgramToQubo converter. "
-                "It converts inequality constraints to equality "
-                "constraints, and then, it converters equality "
-                "constraints to penalty terms of the object function."
-            )
-
-        # initialize Hamiltonian.
-        num_nodes = self.get_num_vars()
-        pauli_list = []
-        offset = 0.0
-        zero = zeros(num_nodes, dtype=bool)
-
-        # set a sign corresponding to a maximized or minimized problem.
-        # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
-        sense = self.objective.sense.value
-
-        # convert a constant part of the object function into Hamiltonian.
-        offset += self.objective.constant * sense
-
-        # convert linear parts of the object function into Hamiltonian.
-        for idx, coef in self.objective.linear.to_dict().items():
-            z_p = zeros(num_nodes, dtype=bool)
-            weight = coef * sense / 2
-            z_p[idx] = True
-
-            pauli_list.append([-weight, Pauli((z_p, zero))])
-            offset += weight
-
-        # convert quadratic parts of the object function into Hamiltonian.
-        # first merge coefficients (i, j) and (j, i)
-        coeffs = {}  # type: Dict
-        for (i, j), coeff in self.objective.quadratic.to_dict().items():
-            if j < i:  # type: ignore
-                coeffs[(j, i)] = coeffs.get((j, i), 0.0) + coeff
-            else:
-                coeffs[(i, j)] = coeffs.get((i, j), 0.0) + coeff
-
-        # create Pauli terms
-        for (i, j), coeff in coeffs.items():
-
-            weight = coeff * sense / 4
-
-            if i == j:
-                offset += weight
-            else:
-                z_p = zeros(num_nodes, dtype=bool)
-                z_p[i] = True
-                z_p[j] = True
-                pauli_list.append([weight, Pauli((z_p, zero))])
-
-            z_p = zeros(num_nodes, dtype=bool)
-            z_p[i] = True
-            pauli_list.append([-weight, Pauli((z_p, zero))])
-
-            z_p = zeros(num_nodes, dtype=bool)
-            z_p[j] = True
-            pauli_list.append([-weight, Pauli((z_p, zero))])
-
-            offset += weight
-
-        # Remove paulis whose coefficients are zeros.
-        qubit_op = sum(PauliOp(pauli, coeff=coeff) for coeff, pauli in pauli_list)
-
-        # qubit_op could be the integer 0, in this case return an identity operator of
-        # appropriate size
-        if isinstance(qubit_op, OperatorBase):
-            qubit_op = qubit_op.reduce()
-        else:
-            qubit_op = I ^ num_nodes
-
-        return qubit_op, offset
+        return to_ising(self)
 
     def from_ising(
         self,
@@ -1612,102 +1043,12 @@ class QuadraticProgram:
             QiskitOptimizationError: If there are more than 2 Pauli Zs in any Pauli term
             NotImplementedError: If the input operator is a ListOp
         """
-        if isinstance(qubit_op, PauliSumOp):
-            qubit_op = qubit_op.to_pauli_op()
+        # pylint: disable=cyclic-import
+        from ..translators.ising import from_ising
 
-        # No support for ListOp yet, this can be added in future
-        # pylint: disable=unidiomatic-typecheck
-        if type(qubit_op) == ListOp:
-            raise NotImplementedError(
-                "Conversion of a ListOp is not supported, convert each "
-                "operator in the ListOp separately."
-            )
-
-        # add binary variables
-        for i in range(qubit_op.num_qubits):
-            self.binary_var(name="x_{0}".format(i))
-
-        # Create a QUBO matrix
-        # The Qubo matrix is an upper triangular matrix.
-        # Diagonal elements in the QUBO matrix are for linear terms of the qubit operator.
-        # The other elements in the QUBO matrix are for quadratic terms of the qubit operator.
-        qubo_matrix = zeros((qubit_op.num_qubits, qubit_op.num_qubits))
-
-        if not isinstance(qubit_op, SummedOp):
-            pauli_list = [qubit_op.to_pauli_op()]
-        else:
-            pauli_list = qubit_op.to_pauli_op()
-
-        for pauli_op in pauli_list:
-            pauli_op = pauli_op.to_pauli_op()
-            pauli = pauli_op.primitive
-            coeff = pauli_op.coeff
-            # Count the number of Pauli Zs in a Pauli term
-            lst_z = pauli.z.tolist()
-            z_index = [i for i, z in enumerate(lst_z) if z is True]
-            num_z = len(z_index)
-
-            # Add its weight of the Pauli term to the corresponding element of QUBO matrix
-            if num_z == 1:
-                qubo_matrix[z_index[0], z_index[0]] = coeff.real
-            elif num_z == 2:
-                qubo_matrix[z_index[0], z_index[1]] = coeff.real
-            else:
-                raise QiskitOptimizationError(
-                    "There are more than 2 Pauli Zs in the Pauli term {}".format(pauli.z)
-                )
-
-            # If there are Pauli Xs in the Pauli term, raise an error
-            lst_x = pauli.x.tolist()
-            x_index = [i for i, x in enumerate(lst_x) if x is True]
-            if len(x_index) > 0:
-                raise QiskitOptimizationError("Pauli Xs exist in the Pauli {}".format(pauli.x))
-
-        # Initialize dicts for linear terms and quadratic terms
-        linear_terms = {}
-        quadratic_terms = {}
-
-        # For quadratic pauli terms of operator
-        # x_i * x_ j = (1 - Z_i - Z_j + Z_i * Z_j)/4
-        for i, row in enumerate(qubo_matrix):
-            for j, weight in enumerate(row):
-                # Focus on the upper triangular matrix
-                if j <= i:
-                    continue
-                # Add a quadratic term to the object function of `QuadraticProgram`
-                # The coefficient of the quadratic term in `QuadraticProgram` is
-                # 4 * weight of the pauli
-                coef = weight * 4
-                quadratic_terms[i, j] = coef
-                # Sub the weight of the quadratic pauli term from the QUBO matrix
-                qubo_matrix[i, j] -= weight
-                # Sub the weight of the linear pauli term from the QUBO matrix
-                qubo_matrix[i, i] += weight
-                qubo_matrix[j, j] += weight
-                # Sub the weight from offset
-                offset -= weight
-
-        # After processing quadratic pauli terms, only linear paulis are left
-        # x_i = (1 - Z_i)/2
-        for i in range(qubit_op.num_qubits):
-            weight = qubo_matrix[i, i]
-            # Add a linear term to the object function of `QuadraticProgram`
-            # The coefficient of the linear term in `QuadraticProgram` is
-            # 2 * weight of the pauli
-            coef = weight * 2
-            if linear:
-                # If the linear option is True, add it into linear_terms
-                linear_terms[i] = -coef
-            else:
-                # Else, add it into quadratic_terms as a diagonal element.
-                quadratic_terms[i, i] = -coef
-            # Sub the weight of the linear pauli term from the QUBO matrix
-            qubo_matrix[i, i] -= weight
-            offset += weight
-
-        # Set the objective function
-        self.minimize(constant=offset, linear=linear_terms, quadratic=quadratic_terms)
-        offset -= offset
+        other = from_ising(qubit_op, offset, linear)
+        for attr, val in vars(other).items():
+            setattr(self, attr, val)
 
     def get_feasibility_info(
         self, x: Union[List[float], np.ndarray]
