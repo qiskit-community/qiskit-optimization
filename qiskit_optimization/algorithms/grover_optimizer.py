@@ -176,7 +176,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
         problem_init = deepcopy(problem_)
 
-        self._num_key_qubits = len(problem_.objective.linear.to_array())  # type: ignore
+        self._num_key_qubits = len(problem_.objective.linear.to_array())
 
         # Variables for tracking the optimum.
         optimum_found = False
@@ -261,7 +261,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                         self._circuit_results, problem_init
                     )
                     raw_samples.sort(key=lambda x: x.fval)
-                    samples = self._interpret_samples(problem, raw_samples, self._converters)
+                    samples, _ = self._interpret_samples(problem, raw_samples, self._converters)
                 else:
                     # Using Durr and Hoyer method, increase m.
                     m = int(np.ceil(min(m * 8 / 7, 2 ** (n_key / 2))))

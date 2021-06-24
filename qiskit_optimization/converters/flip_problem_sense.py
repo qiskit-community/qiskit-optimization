@@ -28,7 +28,7 @@ class _FlipProblemSense(QuadraticProgramConverter):
     vice versa, regardless of the current sense."""
 
     def __init__(self) -> None:
-        self._src_num_vars = None  # type: Optional[int]
+        self._src_num_vars: Optional[int] = None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Flip the sense of a problem.
