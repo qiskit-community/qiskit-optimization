@@ -22,9 +22,11 @@ catol
 chu
 chvátal
 cobyla
+coeff
 coeffs
 combinatorial
 conv
+const
 cplex
 cplexoptimizer
 cts
