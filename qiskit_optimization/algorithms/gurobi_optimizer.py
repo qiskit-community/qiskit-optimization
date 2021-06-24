@@ -124,13 +124,12 @@ class GurobiOptimizer(OptimizationAlgorithm):
         # convert to Gurobi problem
         model = to_gurobipy(problem)
 
-        # Enable non-convex
-        model.Params.NonConvex = 2
-
         # set display setting
-
         if not self.disp:
             model.Params.OutputFlag = 0
+
+        # enable non-convex
+        model.Params.NonConvex = 2
 
         # solve problem
         try:
