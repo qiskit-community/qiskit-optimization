@@ -1019,6 +1019,39 @@ class TestConverters(QiskitOptimizationTestCase):
         self.assertEqual(qdct, quadratic)
         self.assertEqual(op2.get_num_linear_constraints(), 0)
 
+    def test_inequality_to_penalty_auto_define_penalty(self):
+        """Test _auto_define_penalty() in InequalityToPenalty"""
+        op = QuadraticProgram()
+        op.integer_var(name="x", lowerbound=1, upperbound=3)
+        op.integer_var(name="y", lowerbound=-1, upperbound=4)
+        op.integer_var(name="z", lowerbound=-5, upperbound=-1)
+        op.maximize(linear={"x": 1, "y": 1, "z": 1})
+        lip = LinearInequalityToPenalty()
+        self.assertEqual(lip._auto_define_penalty(op), 12)
+        op = QuadraticProgram()
+        op.integer_var(name="x", lowerbound=1, upperbound=3)
+        op.integer_var(name="y", lowerbound=-1, upperbound=4)
+        op.integer_var(name="z", lowerbound=-5, upperbound=-1)
+        op.maximize(linear={"x": -1, "y": -1, "z": -1})
+        lip = LinearInequalityToPenalty()
+        self.assertEqual(lip._auto_define_penalty(op), 12)
+        op = QuadraticProgram()
+        op.integer_var(name="x", lowerbound=1, upperbound=3)
+        op.integer_var(name="y", lowerbound=-1, upperbound=4)
+        op.integer_var(name="z", lowerbound=-5, upperbound=-1)
+        op.maximize(quadratic={(0, 0): 1, (0, 1): 1, (0, 2): 1, (1, 1): 1, (1, 2): 1, (2, 2): 1})
+        lip = LinearInequalityToPenalty()
+        self.assertEqual(lip._auto_define_penalty(op), 107)
+        op = QuadraticProgram()
+        op.integer_var(name="x", lowerbound=1, upperbound=3)
+        op.integer_var(name="y", lowerbound=-1, upperbound=4)
+        op.integer_var(name="z", lowerbound=-5, upperbound=-1)
+        op.maximize(
+            quadratic={(0, 0): -1, (0, 1): -1, (0, 2): -1, (1, 1): -1, (1, 2): -1, (2, 2): -1}
+        )
+        lip = LinearInequalityToPenalty()
+        self.assertEqual(lip._auto_define_penalty(op), 107)
+
 
 if __name__ == "__main__":
     unittest.main()

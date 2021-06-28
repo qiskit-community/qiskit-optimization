@@ -278,14 +278,57 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             )
             return default_penalty
 
-        # (upper bound - lower bound) can be calculate as the sum of absolute value of coefficients
+        # (upper bound - lower bound) of each term is calculated
         # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
         penalties = [1.0]
         # add linear terms of the object function.
-        penalties.extend(abs(coef) for coef in problem.objective.linear.to_dict().values())
+        penalties.extend(
+            max(
+                coef * problem.variables[var].lowerbound,
+                coef * problem.variables[var].upperbound,
+            )
+            - min(
+                coef * problem.variables[var].lowerbound,
+                coef * problem.variables[var].upperbound,
+            )
+            for var, coef in problem.objective.linear.to_dict().items()
+        )
         # add quadratic terms of the object function.
-        penalties.extend(abs(coef) for coef in problem.objective.quadratic.to_dict().values())
-
+        penalties.extend(
+            max(
+                (
+                    coef
+                    * problem.variables[var[0]].lowerbound
+                    * problem.variables[var[1]].lowerbound,
+                    coef
+                    * problem.variables[var[0]].lowerbound
+                    * problem.variables[var[1]].upperbound,
+                    coef
+                    * problem.variables[var[0]].upperbound
+                    * problem.variables[var[1]].lowerbound,
+                    coef
+                    * problem.variables[var[0]].upperbound
+                    * problem.variables[var[1]].upperbound,
+                )
+            )
+            - min(
+                (
+                    coef
+                    * problem.variables[var[0]].lowerbound
+                    * problem.variables[var[1]].lowerbound,
+                    coef
+                    * problem.variables[var[0]].lowerbound
+                    * problem.variables[var[1]].upperbound,
+                    coef
+                    * problem.variables[var[0]].upperbound
+                    * problem.variables[var[1]].lowerbound,
+                    coef
+                    * problem.variables[var[0]].upperbound
+                    * problem.variables[var[1]].upperbound,
+                )
+            )
+                for var, coef in problem.objective.quadratic.to_dict().items()
+        )
         return fsum(penalties)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
