@@ -141,6 +141,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             # should never happen
             raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
 
+    mdl.update()
     return mdl
 
 

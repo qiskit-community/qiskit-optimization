@@ -1,0 +1,9 @@
+---
+upgrade:
+  - |
+      Changes :meth:`qiskit_optimization.algorithms.MinimumEigenOptimizer.solve`
+      to return the best solution in terms of the original problem,
+      i.e., ``MinimumEigenOptimizationResult.samples[0]``,
+      as :meth:`qiskit_optimization.algorithms.MinimumEigenOptimizationResult.x`.
+      It used to be the best solution in terms of the converted QUBO problem,
+      i.e., ``MinimumEigenOptimizationResult.raw_samples[0]``.
