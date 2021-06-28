@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test the VQE program."""
+"""Test the QAOA program."""
 
 from test import QiskitOptimizationTestCase
 
@@ -26,7 +26,7 @@ from .fake_vqeruntime import FakeRuntimeProvider
 
 
 class TestQAOAProgram(QiskitOptimizationTestCase):
-    """Test the VQE program."""
+    """Test the QAOA program."""
 
     def setUp(self):
         super().setUp()
@@ -36,7 +36,7 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
         """Test a standard use case."""
         operator = Z ^ I ^ Z
         reps = 2
-        initial_point = np.random.random(2 * reps)
+        initial_point = np.random.RandomState(42).random(2 * reps)
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
 

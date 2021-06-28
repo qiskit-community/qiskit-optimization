@@ -14,7 +14,7 @@
 Qiskit Optimization Runtime (:mod:`qiskit_optimization.runtime`)
 ================================================================
 
-.. currentmodule:: qiskit_nature.runtime
+.. currentmodule:: qiskit_optimization.runtime
 
 Programs that embed Qiskit Runtime in the algorithmic interfaces and facilitate usage of
 algorithms and scripts in the cloud.

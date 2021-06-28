@@ -37,7 +37,7 @@ class TestVQEProgram(QiskitOptimizationTestCase):
         """Test a standard use case."""
         circuit = RealAmplitudes(3)
         operator = Z ^ I ^ Z
-        initial_point = np.random.random(circuit.num_parameters)
+        initial_point = np.random.RandomState(42).random(circuit.num_parameters)
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
 

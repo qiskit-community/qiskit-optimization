@@ -301,8 +301,8 @@ class VQEProgramResult(VQEResult):
 
     def __init__(self) -> None:
         super().__init__()
-        self._job_id = None  # type: str
-        self._optimizer_history = None  # type: Dict[str, Any]
+        self._job_id: Optional[str] = None
+        self._optimizer_history: Optional[Dict[str, Any]] = None 
 
     @property
     def job_id(self) -> str:
