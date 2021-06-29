@@ -17,12 +17,13 @@ from typing import List, Callable, Optional, Any, Dict, Union
 import numpy as np
 
 from qiskit import QuantumCircuit
+from qiskit.algorithms import MinimumEigensolverResult
+from qiskit.circuit.library import QAOAAnsatz
+from qiskit.opflow import OperatorBase
 from qiskit.providers import Provider
 from qiskit.providers.backend import Backend
-from qiskit.algorithms import MinimumEigensolverResult
-from qiskit.opflow import OperatorBase
 
-from qiskit.circuit.library import QAOAAnsatz
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from .vqe_program import VQEProgram
 
 
@@ -92,7 +93,7 @@ class QAOAProgram(VQEProgram):
 
     @ansatz.setter
     def ansatz(self, ansatz: QuantumCircuit) -> None:
-        raise NotImplementedError(
+        raise QiskitOptimizationError(
             "Cannot set the ansatz for QAOA, it is directly inferred from "
             "the problem Hamiltonian."
         )

@@ -26,7 +26,11 @@ from qiskit.quantum_info import SparsePauliOp
 
 
 class VQEProgram(MinimumEigensolver):
-    """The Qiskit Optimization VQE Quantum Program to call the VQE runtime as a MinimumEigensolver."""
+    """The Qiskit Optimization VQE Quantum Program to call the VQE runtime as a MinimumEigensolver.
+
+    This program is equivalent to the ``VQEProgram`` in Qiskit Nature, but here also serves as basis
+    for the Qiskit Optimization's ``QAOAProgram``.
+    """
 
     def __init__(
         self,
@@ -302,7 +306,7 @@ class VQEProgramResult(VQEResult):
     def __init__(self) -> None:
         super().__init__()
         self._job_id: Optional[str] = None
-        self._optimizer_history: Optional[Dict[str, Any]] = None 
+        self._optimizer_history: Optional[Dict[str, Any]] = None
 
     @property
     def job_id(self) -> str:
