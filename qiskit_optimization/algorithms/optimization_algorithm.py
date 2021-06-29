@@ -144,8 +144,14 @@ class OptimizationResult:
 
     def __repr__(self) -> str:
         return (
+            "<OptimizationResult" f"(x={self._x}, fval={self._fval}, status={self._status.name})>"
+        )
+
+    def __str__(self) -> str:
+        optimal_values = ", ".join([f"{var.name}={x}" for var, x in zip(self._variables, self._x)])
+        return (
             f"optimal function value: {self._fval}\n"
-            f"optimal value: {self._x}\n"
+            f"optimal value: {optimal_values}\n"
             f"status: {self._status.name}"
         )
 

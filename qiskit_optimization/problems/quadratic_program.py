@@ -13,6 +13,7 @@
 """Quadratic Program."""
 
 import logging
+from io import StringIO
 from collections.abc import Sequence
 from enum import Enum
 from math import isclose
@@ -74,7 +75,89 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        return self.export_as_lp_string()
+        return (
+            f"<QuadraticProgram: {self.name+', ' if self.name else ''}"
+            f"{self.objective.sense.name.lower()}, "
+            f"variables(bin={self.get_num_binary_vars()}, "
+            f"int={self.get_num_integer_vars()}, cont={self.get_num_continuous_vars()}), "
+            f"constraints(lin={self.get_num_linear_constraints()}, "
+            f"quad={self.get_num_quadratic_constraints()})>"
+        )
+
+    def __str__(self) -> str:
+        sense = {ConstraintSense.EQ: "==", ConstraintSense.LE: "<=", ConstraintSense.GE: ">="}
+
+        def coeff2str(coeff, is_head=False):
+            if coeff < 0.0:
+                sign = "-"
+            else:
+                sign = "" if is_head else "+"
+            ret = []
+            if sign:
+                ret.append(sign)
+            if not isclose(abs(coeff), 1.0):
+                ret.append(f"{abs(coeff)}")
+            return ret
+
+        def expr2str(constant=0.0, lin=None, quad=None):
+            expr = []
+            if not isclose(constant, 0.0, abs_tol=1e-10):
+                expr.append(f"{constant}")
+            elif (lin is None or lin.coefficients.nnz == 0) and (
+                quad is None or quad.coefficients.nnz == 0
+            ):
+                expr.append("0")
+            lin_dict = lin.to_dict(use_name=True) if lin else {}
+            is_head = len(expr) == 0
+            for var, coeff in lin_dict.items():
+                expr.extend(coeff2str(coeff, is_head))
+                expr.append(f"{var}")
+                is_head = False
+            quad_dict = quad.to_dict(use_name=True) if quad else {}
+            for (var1, var2), coeff in quad_dict.items():
+                expr.extend(coeff2str(coeff, is_head))
+                is_head = False
+                if var1 == var2:
+                    expr.append(f"{var1}^2")
+                else:
+                    expr.append(f"{var1} * {var2}")
+            return " ".join(expr)
+
+        with StringIO() as buf:
+            buf.write(f"Problem name: {self.name}\n\n")
+            if self.objective.sense == QuadraticObjective.Sense.MINIMIZE:
+                buf.write("Minimize\n")
+            else:
+                buf.write("Maximize\n")
+            buf.write("  obj: ")
+            buf.write(
+                expr2str(self.objective.constant, self.objective.linear, self.objective.quadratic)
+            )
+            buf.write("\n\nSubject to\n")
+            if self.get_num_linear_constraints() == 0 and self.get_num_quadratic_constraints() == 0:
+                buf.write("  No constraints\n")
+            for cst in self.linear_constraints:
+                buf.write(f"  {cst.name}: ")
+                buf.write(expr2str(lin=cst.linear))
+                buf.write(f" {sense[cst.sense]} {cst.rhs}")
+                buf.write("\n")
+            for cst in self.quadratic_constraints:
+                buf.write(f"  {cst.name}: ")
+                buf.write(expr2str(lin=cst.linear, quad=cst.quadratic))
+                buf.write(f" {sense[cst.sense]} {cst.rhs}")
+                buf.write("\n")
+            buf.write("\nVariables\n")
+            if self.get_num_vars() == 0:
+                buf.write("  No variables\n")
+            for var in self.variables:
+                if var.lowerbound > -INFINITY:
+                    buf.write(f"  {var.lowerbound} <= ")
+                buf.write(var.name)
+                if var.upperbound < INFINITY:
+                    buf.write(f" <= {var.upperbound}")
+                buf.write(f": {var.vartype.name.lower()}\n")
+            ret = buf.getvalue()
+        return ret
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
