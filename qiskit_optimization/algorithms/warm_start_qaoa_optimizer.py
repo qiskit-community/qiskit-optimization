@@ -92,12 +92,12 @@ class MeanAggregator(BaseAggregator):
         # Divide by the number of results to normalize
         aggregated_samples = []
         num_results = len(results)
-        for state in dict_samples:
+        for state, val_prob in dict_samples.items():
             # sample = (state, dict_samples[state][0], dict_samples[state][1] / num_results)
             sample = SolutionSample(
                 x=_from_string(state),
-                fval=dict_samples[state][0],
-                probability=dict_samples[state][1] / num_results,
+                fval=val_prob[0],
+                probability=val_prob[1] / num_results,
                 status=OptimizationResultStatus.SUCCESS,
             )
             aggregated_samples.append(sample)
