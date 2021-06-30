@@ -280,6 +280,7 @@ class QuadraticExpression(QuadraticProgramElement):
                         x.upperbound * y.upperbound,
                     ]
                 )
-            l_b += min(coeff * val for val in lst)
-            u_b += max(coeff * val for val in lst)
+            lst2 = [coeff * val for val in lst]
+            l_b += min(lst2)
+            u_b += max(lst2)
         return ExpressionBounds(lowerbound=l_b, upperbound=u_b)

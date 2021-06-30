@@ -164,7 +164,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             {("x", "y"): 0.5, ("y", "x"): 0.5, ("x", "z"): 1.5, ("z", "x"): 1.5},
         )
 
-    def test_lowerbound_upperbound(self):
+    def test_bounds(self):
         """test lowerbound and upperbound"""
 
         with self.subTest("bounded"):
