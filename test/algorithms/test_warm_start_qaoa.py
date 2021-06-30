@@ -19,7 +19,6 @@ from docplex.mp.model import Model
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA
 
-from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import SlsqpOptimizer
 from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
     GoemansWilliamsonOptimizer,

@@ -22,9 +22,11 @@ catol
 chu
 chvátal
 cobyla
+coeff
 coeffs
 combinatorial
 conv
+const
 cplex
 cplexoptimizer
 cts
@@ -46,6 +48,7 @@ eigen
 eigensolver
 eigenstate
 entangler
+enum
 eq
 et
 exponentiated
@@ -101,6 +104,7 @@ mdl
 minimizer
 minimumeigenoptimizer
 multiset
+mypy
 ndarray
 ndarrays
 noop
@@ -128,6 +132,8 @@ preprint
 presolver
 princeton
 probabilistically
+py
+pxd
 qaoa
 qasm
 qiskit
@@ -188,6 +194,7 @@ wavefunction
 wecker
 williamson
 xs
+ys
 zemlin
 zi
 zj

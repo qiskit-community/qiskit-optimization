@@ -13,32 +13,28 @@
 """Quadratic Program."""
 
 import logging
-from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
-from math import fsum, isclose
+from math import isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
-from numpy import ndarray, zeros
+from numpy import ndarray
 from scipy.sparse import spmatrix
 
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
-from qiskit.quantum_info import Pauli
+from qiskit.opflow import OperatorBase, PauliSumOp
 
+from ..deprecation import DeprecatedType, deprecate_method
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
-from .linear_expression import LinearExpression
 from .quadratic_constraint import QuadraticConstraint
-from .quadratic_expression import QuadraticExpression
 from .quadratic_objective import QuadraticObjective
 from .variable import Variable, VarType
-from ..deprecation import DeprecatedType, deprecate_method
 
 logger = logging.getLogger(__name__)
 
@@ -998,7 +994,10 @@ class QuadraticProgram:
                 - Same variable is substituted multiple times.
                 - Coefficient of variable substitution is zero.
         """
-        return SubstituteVariables().substitute_variables(self, constants, variables)
+        # pylint: disable=cyclic-import
+        from .substitute_variables import substitute_variables
+
+        return substitute_variables(self, constants, variables)
 
     def to_ising(self) -> Tuple[OperatorBase, float]:
         """Return the Ising Hamiltonian of this problem.
@@ -1015,94 +1014,10 @@ class QuadraticProgram:
             QiskitOptimizationError: If a variable type is not binary.
             QiskitOptimizationError: If constraints exist in the problem.
         """
-        # if problem has variables that are not binary, raise an error
-        if self.get_num_vars() > self.get_num_binary_vars():
-            raise QiskitOptimizationError(
-                "The type of variable must be a binary variable. "
-                "Use a QuadraticProgramToQubo converter to convert "
-                "integer variables to binary variables. "
-                "If the problem contains continuous variables, "
-                "currently we can not apply VQE/QAOA directly. "
-                "you might want to use an ADMM optimizer "
-                "for the problem. "
-            )
+        # pylint: disable=cyclic-import
+        from ..translators.ising import to_ising
 
-        # if constraints exist, raise an error
-        if self.linear_constraints or self.quadratic_constraints:
-            raise QiskitOptimizationError(
-                "An constraint exists. "
-                "The method supports only model with no constraints. "
-                "Use a QuadraticProgramToQubo converter. "
-                "It converts inequality constraints to equality "
-                "constraints, and then, it converters equality "
-                "constraints to penalty terms of the object function."
-            )
-
-        # initialize Hamiltonian.
-        num_nodes = self.get_num_vars()
-        pauli_list = []
-        offset = 0.0
-        zero = zeros(num_nodes, dtype=bool)
-
-        # set a sign corresponding to a maximized or minimized problem.
-        # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
-        sense = self.objective.sense.value
-
-        # convert a constant part of the object function into Hamiltonian.
-        offset += self.objective.constant * sense
-
-        # convert linear parts of the object function into Hamiltonian.
-        for idx, coef in self.objective.linear.to_dict().items():
-            z_p = zeros(num_nodes, dtype=bool)
-            weight = coef * sense / 2
-            z_p[idx] = True
-
-            pauli_list.append([-weight, Pauli((z_p, zero))])
-            offset += weight
-
-        # convert quadratic parts of the object function into Hamiltonian.
-        # first merge coefficients (i, j) and (j, i)
-        coeffs = {}  # type: Dict
-        for (i, j), coeff in self.objective.quadratic.to_dict().items():
-            if j < i:  # type: ignore
-                coeffs[(j, i)] = coeffs.get((j, i), 0.0) + coeff
-            else:
-                coeffs[(i, j)] = coeffs.get((i, j), 0.0) + coeff
-
-        # create Pauli terms
-        for (i, j), coeff in coeffs.items():
-
-            weight = coeff * sense / 4
-
-            if i == j:
-                offset += weight
-            else:
-                z_p = zeros(num_nodes, dtype=bool)
-                z_p[i] = True
-                z_p[j] = True
-                pauli_list.append([weight, Pauli((z_p, zero))])
-
-            z_p = zeros(num_nodes, dtype=bool)
-            z_p[i] = True
-            pauli_list.append([-weight, Pauli((z_p, zero))])
-
-            z_p = zeros(num_nodes, dtype=bool)
-            z_p[j] = True
-            pauli_list.append([-weight, Pauli((z_p, zero))])
-
-            offset += weight
-
-        # Remove paulis whose coefficients are zeros.
-        qubit_op = sum(PauliOp(pauli, coeff=coeff) for coeff, pauli in pauli_list)
-
-        # qubit_op could be the integer 0, in this case return an identity operator of
-        # appropriate size
-        if isinstance(qubit_op, OperatorBase):
-            qubit_op = qubit_op.reduce()
-        else:
-            qubit_op = I ^ num_nodes
-
-        return qubit_op, offset
+        return to_ising(self)
 
     def from_ising(
         self,
@@ -1129,102 +1044,12 @@ class QuadraticProgram:
             QiskitOptimizationError: If there are more than 2 Pauli Zs in any Pauli term
             NotImplementedError: If the input operator is a ListOp
         """
-        if isinstance(qubit_op, PauliSumOp):
-            qubit_op = qubit_op.to_pauli_op()
+        # pylint: disable=cyclic-import
+        from ..translators.ising import from_ising
 
-        # No support for ListOp yet, this can be added in future
-        # pylint: disable=unidiomatic-typecheck
-        if type(qubit_op) == ListOp:
-            raise NotImplementedError(
-                "Conversion of a ListOp is not supported, convert each "
-                "operator in the ListOp separately."
-            )
-
-        # add binary variables
-        for i in range(qubit_op.num_qubits):
-            self.binary_var(name="x_{0}".format(i))
-
-        # Create a QUBO matrix
-        # The Qubo matrix is an upper triangular matrix.
-        # Diagonal elements in the QUBO matrix are for linear terms of the qubit operator.
-        # The other elements in the QUBO matrix are for quadratic terms of the qubit operator.
-        qubo_matrix = zeros((qubit_op.num_qubits, qubit_op.num_qubits))
-
-        if not isinstance(qubit_op, SummedOp):
-            pauli_list = [qubit_op.to_pauli_op()]
-        else:
-            pauli_list = qubit_op.to_pauli_op()
-
-        for pauli_op in pauli_list:
-            pauli_op = pauli_op.to_pauli_op()
-            pauli = pauli_op.primitive
-            coeff = pauli_op.coeff
-            # Count the number of Pauli Zs in a Pauli term
-            lst_z = pauli.z.tolist()
-            z_index = [i for i, z in enumerate(lst_z) if z is True]
-            num_z = len(z_index)
-
-            # Add its weight of the Pauli term to the corresponding element of QUBO matrix
-            if num_z == 1:
-                qubo_matrix[z_index[0], z_index[0]] = coeff.real
-            elif num_z == 2:
-                qubo_matrix[z_index[0], z_index[1]] = coeff.real
-            else:
-                raise QiskitOptimizationError(
-                    "There are more than 2 Pauli Zs in the Pauli term {}".format(pauli.z)
-                )
-
-            # If there are Pauli Xs in the Pauli term, raise an error
-            lst_x = pauli.x.tolist()
-            x_index = [i for i, x in enumerate(lst_x) if x is True]
-            if len(x_index) > 0:
-                raise QiskitOptimizationError("Pauli Xs exist in the Pauli {}".format(pauli.x))
-
-        # Initialize dicts for linear terms and quadratic terms
-        linear_terms = {}
-        quadratic_terms = {}
-
-        # For quadratic pauli terms of operator
-        # x_i * x_ j = (1 - Z_i - Z_j + Z_i * Z_j)/4
-        for i, row in enumerate(qubo_matrix):
-            for j, weight in enumerate(row):
-                # Focus on the upper triangular matrix
-                if j <= i:
-                    continue
-                # Add a quadratic term to the object function of `QuadraticProgram`
-                # The coefficient of the quadratic term in `QuadraticProgram` is
-                # 4 * weight of the pauli
-                coef = weight * 4
-                quadratic_terms[i, j] = coef
-                # Sub the weight of the quadratic pauli term from the QUBO matrix
-                qubo_matrix[i, j] -= weight
-                # Sub the weight of the linear pauli term from the QUBO matrix
-                qubo_matrix[i, i] += weight
-                qubo_matrix[j, j] += weight
-                # Sub the weight from offset
-                offset -= weight
-
-        # After processing quadratic pauli terms, only linear paulis are left
-        # x_i = (1 - Z_i)/2
-        for i in range(qubit_op.num_qubits):
-            weight = qubo_matrix[i, i]
-            # Add a linear term to the object function of `QuadraticProgram`
-            # The coefficient of the linear term in `QuadraticProgram` is
-            # 2 * weight of the pauli
-            coef = weight * 2
-            if linear:
-                # If the linear option is True, add it into linear_terms
-                linear_terms[i] = -coef
-            else:
-                # Else, add it into quadratic_terms as a diagonal element.
-                quadratic_terms[i, i] = -coef
-            # Sub the weight of the linear pauli term from the QUBO matrix
-            qubo_matrix[i, i] -= weight
-            offset += weight
-
-        # Set the objective function
-        self.minimize(constant=offset, linear=linear_terms, quadratic=quadratic_terms)
-        offset -= offset
+        other = from_ising(qubit_op, offset, linear)
+        for attr, val in vars(other).items():
+            setattr(self, attr, val)
 
     def get_feasibility_info(
         self, x: Union[List[float], np.ndarray]
@@ -1282,286 +1107,5 @@ class QuadraticProgram:
 
         """
         feasible, _, _ = self.get_feasibility_info(x)
-
-        return feasible
-
-
-class SubstituteVariables:
-    """A class to substitute variables of an optimization problem with constants for other
-    variables"""
-
-    CONST = "__CONSTANT__"
-
-    def __init__(self):
-        self._src = None  # type: Optional[QuadraticProgram]
-        self._dst = None  # type: Optional[QuadraticProgram]
-        self._subs = {}  # type: Dict[Union[int, str], Tuple[str, float]]
-
-    def substitute_variables(
-        self,
-        src: QuadraticProgram,
-        constants: Optional[Dict[Union[str, int], float]] = None,
-        variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
-    ) -> QuadraticProgram:
-        """Substitutes variables with constants or other variables.
-
-        Args:
-            src: a quadratic program to be substituted.
-
-            constants: replace variable by constant
-                e.g., {'x': 2} means 'x' is substituted with 2
-
-            variables: replace variables by weighted other variable
-                need to copy everything using name reference to make sure that indices are matched
-                correctly. The lower and upper bounds are updated accordingly.
-                e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
-
-        Returns:
-            An optimization problem by substituting variables with constants or other variables.
-            If the substitution is valid, `QuadraticProgram.status` is still
-            `QuadraticProgram.Status.VALID`.
-            Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
-
-        Raises:
-            QiskitOptimizationError: if the substitution is invalid as follows.
-                - Same variable is substituted multiple times.
-                - Coefficient of variable substitution is zero.
-        """
-        self._src = src
-        self._dst = QuadraticProgram(src.name)
-        self._subs_dict(constants, variables)
-        results = [
-            self._variables(),
-            self._objective(),
-            self._linear_constraints(),
-            self._quadratic_constraints(),
-        ]
-        if any(not r for r in results):
-            self._dst._status = QuadraticProgram.Status.INFEASIBLE
-        return self._dst
-
-    @staticmethod
-    def _feasible(sense: ConstraintSense, rhs: float) -> bool:
-        """Checks feasibility of the following condition
-        0 `sense` rhs
-        """
-        # I use the following pylint option because `rhs` should come to right
-        # pylint: disable=misplaced-comparison-constant
-        if sense == Constraint.Sense.EQ:
-            if 0 == rhs:
-                return True
-        elif sense == Constraint.Sense.LE:
-            if 0 <= rhs:
-                return True
-        elif sense == Constraint.Sense.GE:
-            if 0 >= rhs:
-                return True
-        return False
-
-    @staticmethod
-    def _replace_dict_keys_with_names(op, dic):
-        key = []
-        val = []
-        for k in sorted(dic.keys()):
-            key.append(op.variables.get_names(k))
-            val.append(dic[k])
-        return key, val
-
-    def _subs_dict(self, constants, variables):
-        # guarantee that there is no overlap between variables to be replaced and combine input
-        subs = {}  # type: Dict[Union[int, str], Tuple[str, float]]
-        if constants is not None:
-            for i, v in constants.items():
-                # substitute i <- v
-                i_2 = self._src.get_variable(i).name
-                if i_2 in subs:
-                    raise QiskitOptimizationError(
-                        "Cannot substitute the same variable twice: {} <- {}".format(i, v)
-                    )
-                subs[i_2] = (self.CONST, v)
-
-        if variables is not None:
-            for i, (j, v) in variables.items():
-                if v == 0:
-                    raise QiskitOptimizationError(
-                        "coefficient must be non-zero: {} {} {}".format(i, j, v)
-                    )
-                # substitute i <- j * v
-                i_2 = self._src.get_variable(i).name
-                j_2 = self._src.get_variable(j).name
-                if i_2 == j_2:
-                    raise QiskitOptimizationError(
-                        "Cannot substitute the same variable: {} <- {} {}".format(i, j, v)
-                    )
-                if i_2 in subs:
-                    raise QiskitOptimizationError(
-                        "Cannot substitute the same variable twice: {} <- {} {}".format(i, j, v)
-                    )
-                if j_2 in subs:
-                    raise QiskitOptimizationError(
-                        "Cannot substitute by variable that gets substituted itself: "
-                        "{} <- {} {}".format(i, j, v)
-                    )
-                subs[i_2] = (j_2, v)
-
-        self._subs = subs
-
-    def _variables(self) -> bool:
-        # copy variables that are not replaced
-        feasible = True
-        for var in self._src.variables:
-            name = var.name
-            vartype = var.vartype
-            lowerbound = var.lowerbound
-            upperbound = var.upperbound
-            if name not in self._subs:
-                self._dst._add_variable(lowerbound, upperbound, vartype, name)
-
-        for i, (j, v) in self._subs.items():
-            lb_i = self._src.get_variable(i).lowerbound
-            ub_i = self._src.get_variable(i).upperbound
-            if j == self.CONST:
-                if not lb_i <= v <= ub_i:
-                    logger.warning("Infeasible substitution for variable: %s", i)
-                    feasible = False
-            else:
-                # substitute i <- j * v
-                # lb_i <= i <= ub_i  -->  lb_i / v <= j <= ub_i / v if v > 0
-                #                         ub_i / v <= j <= lb_i / v if v < 0
-                if v == 0:
-                    raise QiskitOptimizationError(
-                        "Coefficient of variable substitution should be nonzero: "
-                        "{} {} {}".format(i, j, v)
-                    )
-                if abs(lb_i) < INFINITY:
-                    new_lb_i = lb_i / v
-                else:
-                    new_lb_i = lb_i if v > 0 else -lb_i
-                if abs(ub_i) < INFINITY:
-                    new_ub_i = ub_i / v
-                else:
-                    new_ub_i = ub_i if v > 0 else -ub_i
-                var_j = self._dst.get_variable(j)
-                lb_j = var_j.lowerbound
-                ub_j = var_j.upperbound
-                if v > 0:
-                    var_j.lowerbound = max(lb_j, new_lb_i)
-                    var_j.upperbound = min(ub_j, new_ub_i)
-                else:
-                    var_j.lowerbound = max(lb_j, new_ub_i)
-                    var_j.upperbound = min(ub_j, new_lb_i)
-
-        for var in self._dst.variables:
-            if var.lowerbound > var.upperbound:
-                logger.warning(
-                    "Infeasible lower and upper bound: %s %f %f",
-                    var,
-                    var.lowerbound,
-                    var.upperbound,
-                )
-                feasible = False
-
-        return feasible
-
-    def _linear_expression(
-        self, lin_expr: LinearExpression
-    ) -> Tuple[List[float], LinearExpression]:
-        const = []
-        lin_dict = defaultdict(float)  # type: Dict[Union[int, str], float]
-        for i, w_i in lin_expr.to_dict(use_name=True).items():
-            repl_i = self._subs[i] if i in self._subs else (i, 1)
-            prod = w_i * repl_i[1]
-            if repl_i[0] == self.CONST:
-                const.append(prod)
-            else:
-                k = repl_i[0]
-                lin_dict[k] += prod
-        new_lin = LinearExpression(
-            quadratic_program=self._dst, coefficients=lin_dict if lin_dict else {}
-        )
-        return const, new_lin
-
-    def _quadratic_expression(
-        self, quad_expr: QuadraticExpression
-    ) -> Tuple[List[float], Optional[LinearExpression], Optional[QuadraticExpression]]:
-        const = []
-        lin_dict = defaultdict(float)  # type: Dict[Union[int, str], float]
-        quad_dict = defaultdict(float)  # type: Dict[Tuple[Union[int, str], Union[int, str]], float]
-        for (i, j), w_ij in quad_expr.to_dict(use_name=True).items():
-            repl_i = self._subs[i] if i in self._subs else (i, 1)
-            repl_j = self._subs[j] if j in self._subs else (j, 1)
-            idx = tuple(x for x, _ in [repl_i, repl_j] if x != self.CONST)
-            prod = w_ij * repl_i[1] * repl_j[1]
-            if len(idx) == 2:
-                quad_dict[idx] += prod  # type: ignore
-            elif len(idx) == 1:
-                lin_dict[idx[0]] += prod
-            else:
-                const.append(prod)
-        new_lin = LinearExpression(
-            quadratic_program=self._dst, coefficients=lin_dict if lin_dict else {}
-        )
-        new_quad = QuadraticExpression(
-            quadratic_program=self._dst, coefficients=quad_dict if quad_dict else {}
-        )
-        return const, new_lin, new_quad
-
-    def _objective(self) -> bool:
-        obj = self._src.objective
-        const1, lin1 = self._linear_expression(obj.linear)
-        const2, lin2, quadratic = self._quadratic_expression(obj.quadratic)
-
-        constant = fsum([obj.constant] + const1 + const2)
-        linear = lin1.coefficients + lin2.coefficients
-        if obj.sense == obj.sense.MINIMIZE:
-            self._dst.minimize(constant=constant, linear=linear, quadratic=quadratic.coefficients)
-        else:
-            self._dst.maximize(constant=constant, linear=linear, quadratic=quadratic.coefficients)
-        return True
-
-    def _linear_constraints(self) -> bool:
-        feasible = True
-        for lin_cst in self._src.linear_constraints:
-            constant, linear = self._linear_expression(lin_cst.linear)
-            rhs = -fsum([-lin_cst.rhs] + constant)
-            if linear.coefficients.nnz > 0:
-                self._dst.linear_constraint(
-                    name=lin_cst.name,
-                    linear=linear.coefficients,
-                    sense=lin_cst.sense,
-                    rhs=rhs,
-                )
-            else:
-                if not self._feasible(lin_cst.sense, rhs):
-                    logger.warning("constraint %s is infeasible due to substitution", lin_cst.name)
-                    feasible = False
-        return feasible
-
-    def _quadratic_constraints(self) -> bool:
-        feasible = True
-        for quad_cst in self._src.quadratic_constraints:
-            const1, lin1 = self._linear_expression(quad_cst.linear)
-            const2, lin2, quadratic = self._quadratic_expression(quad_cst.quadratic)
-            rhs = -fsum([-quad_cst.rhs] + const1 + const2)
-            linear = lin1.coefficients + lin2.coefficients
-
-            if quadratic.coefficients.nnz > 0:
-                self._dst.quadratic_constraint(
-                    name=quad_cst.name,
-                    linear=linear,
-                    quadratic=quadratic.coefficients,
-                    sense=quad_cst.sense,
-                    rhs=rhs,
-                )
-            elif linear.nnz > 0:
-                name = quad_cst.name
-                lin_names = set(lin.name for lin in self._dst.linear_constraints)
-                while name in lin_names:
-                    name = "_" + name
-                self._dst.linear_constraint(name=name, linear=linear, sense=quad_cst.sense, rhs=rhs)
-            else:
-                if not self._feasible(quad_cst.sense, rhs):
-                    logger.warning("constraint %s is infeasible due to substitution", quad_cst.name)
-                    feasible = False
 
         return feasible
