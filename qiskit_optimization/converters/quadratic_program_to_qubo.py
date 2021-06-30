@@ -12,13 +12,18 @@
 
 """A converter from quadratic program to a QUBO."""
 
-from typing import Optional, Union, List
+from typing import List, Optional, Union, cast
 
 import numpy as np
 
-from .quadratic_program_converter import QuadraticProgramConverter
+from ..converters.flip_problem_sense import MaximizeToMinimize
+from ..converters.inequality_to_equality import InequalityToEquality
+from ..converters.integer_to_binary import IntegerToBinary
+from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
+from ..converters.linear_inequality_to_penalty import LinearInequalityToPenalty
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
+from .quadratic_program_converter import QuadraticProgramConverter
 
 
 class QuadraticProgramToQubo(QuadraticProgramConverter):
@@ -40,17 +45,15 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
                 If None is passed, a penalty factor will be automatically calculated on every
                 conversion.
         """
-        from ..converters.integer_to_binary import IntegerToBinary
-        from ..converters.inequality_to_equality import InequalityToEquality
-        from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
-        from ..converters.linear_inequality_to_penalty import LinearInequalityToPenalty
-        from ..converters.flip_problem_sense import MaximizeToMinimize
-
-        self._int_to_bin = IntegerToBinary()
-        self._ineq_to_eq = InequalityToEquality(mode="integer")
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
         self._penalize_lin_ineq_constraints = LinearInequalityToPenalty(penalty=penalty)
-        self._max_to_min = MaximizeToMinimize()
+        self._converters = [
+            self._penalize_lin_ineq_constraints,
+            InequalityToEquality(mode="integer"),
+            IntegerToBinary(),
+            self._penalize_lin_eq_constraints,
+            MaximizeToMinimize(),
+        ]
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Convert a problem with linear constraints into new one with a QUBO form.
@@ -70,23 +73,9 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         if len(msg) > 0:
             raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
 
-        # Convert inequality constraints into penalty term.
-        problem_ = self._penalize_lin_ineq_constraints.convert(problem)
-
-        # Convert inequality constraints into equality constraints by adding slack variables
-        problem_ = self._ineq_to_eq.convert(problem_)
-
-        # Map integer variables to binary variables
-        problem_ = self._int_to_bin.convert(problem_)
-
-        # Penalize linear equality constraints with only binary variables
-        problem_ = self._penalize_lin_eq_constraints.convert(problem_)
-
-        # Convert maximization to minimization problem
-        problem_ = self._max_to_min.convert(problem_)
-
-        # Return QUBO
-        return problem_
+        for conv in self._converters:
+            problem = conv.convert(problem)
+        return problem
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
@@ -97,12 +86,9 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         Returns:
             The result of the original problem.
         """
-        x = self._max_to_min.interpret(x)
-        x = self._penalize_lin_eq_constraints.interpret(x)
-        x = self._int_to_bin.interpret(x)
-        x = self._ineq_to_eq.interpret(x)
-        x = self._penalize_lin_ineq_constraints.interpret(x)
-        return x
+        for conv in self._converters[::-1]:
+            x = conv.interpret(x)
+        return cast(np.ndarray, x)
 
     @staticmethod
     def get_compatibility_msg(problem: QuadraticProgram) -> str:
@@ -176,4 +162,5 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
                      If None is passed, a penalty factor will be automatically calculated on every
                      conversion.
         """
+        self._penalize_lin_ineq_constraints.penalty = penalty
         self._penalize_lin_eq_constraints.penalty = penalty

@@ -49,8 +49,8 @@ class InequalityToEquality(QuadraticProgramConverter):
                 - 'auto': Try to use integer variables but if it's not possible,
                    use continuous variables
         """
-        self._src = None  # type: Optional[QuadraticProgram]
-        self._dst = None  # type: Optional[QuadraticProgram]
+        self._src: Optional[QuadraticProgram] = None
+        self._dst: Optional[QuadraticProgram] = None
         self._mode = mode
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:

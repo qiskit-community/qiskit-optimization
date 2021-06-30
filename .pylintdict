@@ -22,9 +22,11 @@ catol
 chu
 chvátal
 cobyla
+coeff
 coeffs
 combinatorial
 conv
+const
 cplex
 cplexoptimizer
 cts
@@ -132,6 +134,8 @@ preprint
 presolver
 princeton
 probabilistically
+py
+pxd
 qaoa
 qasm
 qiskit

@@ -49,7 +49,6 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         y = mod.addVar(vtype=gp.GRB.INTEGER, lb=-2, ub=4, name="y")
         z = mod.addVar(vtype=gp.GRB.CONTINUOUS, lb=-1.5, ub=3.2, name="z")
         mod.setObjective(1 + x + 2 * y - x * y + 2 * z * z)
-        mod.optimize()
         mod.addConstr(2 * x - z == 1, name="c0")
         mod.addConstr(2 * x - z + 3 * y * z == 1, name="q0")
 
@@ -74,7 +73,6 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         y = mod.addVar(vtype=gp.GRB.CONTINUOUS)
         z = mod.addVar(vtype=gp.GRB.INTEGER)
         mod.setObjective(x + y + z + x * y + y * z + x * z)
-        mod.optimize()
         mod.addConstr(x + y == z)  # linear EQ
         mod.addConstr(x + y >= z)  # linear GE
         mod.addConstr(x + y <= z)  # linear LE

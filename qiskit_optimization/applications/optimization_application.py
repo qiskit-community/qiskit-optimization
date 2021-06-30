@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """An abstract class for optimization application classes."""
-from typing import Union
+from typing import Union, Dict
 from collections import OrderedDict
 from abc import ABC, abstractmethod
 
@@ -59,7 +59,7 @@ class OptimizationApplication(ABC):
         return x
 
     @staticmethod
-    def sample_most_likely(state_vector: Union[np.ndarray, dict]) -> np.ndarray:
+    def sample_most_likely(state_vector: Union[np.ndarray, Dict]) -> np.ndarray:
         """Compute the most likely binary string from state vector.
 
         Args:
