@@ -173,8 +173,15 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             q_p.continuous_var(-2, -1, "y")
             q_p.continuous_var(-1, 2, "z")
             quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            self.assertAlmostEqual(quad.lowerbound(), -12)
-            self.assertAlmostEqual(quad.upperbound(), 15)
+            self.assertAlmostEqual(quad.bounds().lowerbound, -12)
+            self.assertAlmostEqual(quad.bounds().upperbound, 15)
+
+        with self.subTest("bounded2"):
+            q_p = QuadraticProgram()
+            q_p.integer_var(-1, 2, "x")
+            quad = QuadraticExpression(q_p, {("x", "x"): 1})
+            self.assertAlmostEqual(quad.bounds().lowerbound, 0)
+            self.assertAlmostEqual(quad.bounds().upperbound, 4)
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
@@ -182,15 +189,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             q_p.continuous_var(-2, -1, "y")
             q_p.continuous_var(-INFINITY, 2, "z")
             quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            _ = quad.lowerbound()
-
-        with self.assertRaises(QiskitOptimizationError):
-            q_p = QuadraticProgram()
-            q_p.continuous_var(1, 2, "x")
-            q_p.continuous_var(-2, -1, "y")
-            q_p.continuous_var(-INFINITY, 2, "z")
-            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            _ = quad.upperbound()
+            _ = quad.bounds()
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
@@ -198,15 +197,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             q_p.continuous_var(-2, -1, "y")
             q_p.continuous_var(-1, INFINITY, "z")
             quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            _ = quad.lowerbound()
-
-        with self.assertRaises(QiskitOptimizationError):
-            q_p = QuadraticProgram()
-            q_p.continuous_var(1, 2, "x")
-            q_p.continuous_var(-2, -1, "y")
-            q_p.continuous_var(-1, INFINITY, "z")
-            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            _ = quad.upperbound()
+            _ = quad.bounds()
 
 
 if __name__ == "__main__":

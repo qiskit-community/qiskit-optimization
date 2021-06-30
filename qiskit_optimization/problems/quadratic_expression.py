@@ -21,6 +21,7 @@ from scipy.sparse import spmatrix, dok_matrix, tril, triu
 from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
+from .linear_expression import ExpressionBounds
 
 
 class QuadraticExpression(QuadraticProgramElement):
@@ -243,7 +244,7 @@ class QuadraticExpression(QuadraticProgramElement):
             x = np.array(x)
         return x
 
-    def _bounds(self) -> Tuple[float, float]:
+    def bounds(self) -> ExpressionBounds:
         """Returns the lower bound and the upper bound of the quadratic expression
 
         Returns:
@@ -281,28 +282,4 @@ class QuadraticExpression(QuadraticProgramElement):
                 )
             l_b += min(coeff * val for val in lst)
             u_b += max(coeff * val for val in lst)
-        return l_b, u_b
-
-    def lowerbound(self) -> float:
-        """Returns the lower bound of the quadratic expression
-
-        Returns:
-            The lower bound of the quadratic expression
-
-        Raises:
-            QiskitOptimizationError: if the quadratic expression contains any unbounded variable
-        """
-        l_b, _ = self._bounds()
-        return l_b
-
-    def upperbound(self) -> float:
-        """Returns the upper bound of the quadratic expression
-
-        Returns:
-            The upper bound of the quadratic expression
-
-        Raises:
-            QiskitOptimizationError: if the quadratic expression contains any unbounded variable
-        """
-        _, u_b = self._bounds()
-        return u_b
+        return ExpressionBounds(lowerbound=l_b, upperbound=u_b)

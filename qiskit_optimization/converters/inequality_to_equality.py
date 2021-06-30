@@ -13,16 +13,17 @@
 
 import copy
 import math
-from typing import List, Optional, Union
+from dataclasses import astuple
+from typing import List, Optional, Union, cast
 
 import numpy as np
 
-from .quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
 from ..problems.constraint import Constraint
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
+from .quadratic_program_converter import QuadraticProgramConverter
 
 
 class InequalityToEquality(QuadraticProgramConverter):
@@ -84,7 +85,7 @@ class InequalityToEquality(QuadraticProgramConverter):
                     name=x.name, lowerbound=x.lowerbound, upperbound=x.upperbound
                 )
             else:
-                raise QiskitOptimizationError("Unsupported variable type {}".format(x.vartype))
+                raise QiskitOptimizationError(f"Unsupported variable type {x.vartype}")
 
         # Copy the objective function
         constant = self._src.objective.constant
@@ -108,21 +109,21 @@ class InequalityToEquality(QuadraticProgramConverter):
             ):
                 if mode == "integer":
                     self._add_integer_slack_var_linear_constraint(
-                        linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
+                        l_constraint.linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
                     )
                 elif mode == "continuous":
                     self._add_continuous_slack_var_linear_constraint(
-                        linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
+                        l_constraint.linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
                     )
                 elif mode == "auto":
                     self._add_auto_slack_var_linear_constraint(
-                        linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
+                        l_constraint.linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
                     )
                 else:
-                    raise QiskitOptimizationError("Unsupported mode is selected: {}".format(mode))
+                    raise QiskitOptimizationError(f"Unsupported mode is selected: {mode}")
             else:
                 raise QiskitOptimizationError(
-                    "Type of sense in {} is not supported".format(l_constraint.name)
+                    f"Type of sense in {l_constraint.name} is not supported"
                 )
 
         # For quadratic constraints
@@ -143,43 +144,43 @@ class InequalityToEquality(QuadraticProgramConverter):
             ):
                 if mode == "integer":
                     self._add_integer_slack_var_quadratic_constraint(
-                        linear,
-                        quadratic,
+                        q_constraint.linear,
+                        q_constraint.quadratic,
                         q_constraint.sense,
                         q_constraint.rhs,
                         q_constraint.name,
                     )
                 elif mode == "continuous":
                     self._add_continuous_slack_var_quadratic_constraint(
-                        linear,
-                        quadratic,
+                        q_constraint.linear,
+                        q_constraint.quadratic,
                         q_constraint.sense,
                         q_constraint.rhs,
                         q_constraint.name,
                     )
                 elif mode == "auto":
                     self._add_auto_slack_var_quadratic_constraint(
-                        linear,
-                        quadratic,
+                        q_constraint.linear,
+                        q_constraint.quadratic,
                         q_constraint.sense,
                         q_constraint.rhs,
                         q_constraint.name,
                     )
                 else:
-                    raise QiskitOptimizationError("Unsupported mode is selected: {}".format(mode))
+                    raise QiskitOptimizationError(f"Unsupported mode is selected: {mode}")
             else:
                 raise QiskitOptimizationError(
-                    "Type of sense in {} is not supported".format(q_constraint.name)
+                    f"Type of sense in {q_constraint.name} is not supported"
                 )
 
         return self._dst
 
     def _add_integer_slack_var_linear_constraint(self, linear, sense, rhs, name):
         # If a coefficient that is not integer exist, raise error
-        if self._contains_any_float_value(linear.values()):
+        if self._contains_any_float_value(linear.to_array()):
             raise QiskitOptimizationError(
-                '"{0}" contains float coefficients. '
-                'We can not use an integer slack variable for "{0}"'.format(name)
+                f'"{name}" contains float coefficients. '
+                'We can not use an integer slack variable for "{name}"'
             )
 
         # If rhs is float number, round up/down to the nearest integer.
@@ -192,7 +193,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         # Add a new integer variable.
         slack_name = name + self._delimiter + "int_slack"
 
-        lhs_lb, lhs_ub = self._calc_linear_bounds(linear)
+        lhs_lb, lhs_ub = astuple(linear.bounds())
 
         var_added = False
 
@@ -209,10 +210,10 @@ class InequalityToEquality(QuadraticProgramConverter):
                 self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
                 var_added = True
         else:
-            raise QiskitOptimizationError("The type of Sense in {} is not supported".format(name))
+            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
         # Add a new equality constraint.
-        new_linear = copy.deepcopy(linear)
+        new_linear = linear.to_dict(use_name=True)
         if var_added:
             new_linear[slack_name] = sign
         self._dst.linear_constraint(new_linear, "==", new_rhs, name)
@@ -220,7 +221,7 @@ class InequalityToEquality(QuadraticProgramConverter):
     def _add_continuous_slack_var_linear_constraint(self, linear, sense, rhs, name):
         slack_name = name + self._delimiter + "continuous_slack"
 
-        lhs_lb, lhs_ub = self._calc_linear_bounds(linear)
+        lhs_lb, lhs_ub = astuple(linear.bounds())
 
         var_added = False
         if sense == Constraint.Sense.LE:
@@ -236,17 +237,17 @@ class InequalityToEquality(QuadraticProgramConverter):
                 self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
                 var_added = True
         else:
-            raise QiskitOptimizationError("The type of Sense in {} is not supported".format(name))
+            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
         # Add a new equality constraint.
-        new_linear = copy.deepcopy(linear)
+        new_linear = linear.to_dict(use_name=True)
         if var_added:
             new_linear[slack_name] = sign
         self._dst.linear_constraint(new_linear, "==", rhs, name)
 
     def _add_auto_slack_var_linear_constraint(self, linear, sense, rhs, name):
         # If a coefficient that is not integer exist, use a continuous slack variable
-        if self._contains_any_float_value(list(linear.values())):
+        if self._contains_any_float_value(linear.to_array()):
             self._add_continuous_slack_var_linear_constraint(linear, sense, rhs, name)
         # Else use an integer slack variable
         else:
@@ -254,12 +255,12 @@ class InequalityToEquality(QuadraticProgramConverter):
 
     def _add_integer_slack_var_quadratic_constraint(self, linear, quadratic, sense, rhs, name):
         # If a coefficient that is not integer exist, raise an error
-        if self._contains_any_float_value(list(linear.values())) or self._contains_any_float_value(
-            list(quadratic.values())
+        if self._contains_any_float_value(linear.to_array()) or self._contains_any_float_value(
+            quadratic.to_array()
         ):
             raise QiskitOptimizationError(
-                '"{0}" contains float coefficients. '
-                'We can not use an integer slack variable for "{0}"'.format(name)
+                f'"{name}" contains float coefficients. '
+                f'We can not use an integer slack variable for "{name}"'
             )
 
         # If rhs is float number, round up/down to the nearest integer.
@@ -272,7 +273,10 @@ class InequalityToEquality(QuadraticProgramConverter):
         # Add a new integer variable.
         slack_name = name + self._delimiter + "int_slack"
 
-        lhs_lb, lhs_ub = self._calc_quadratic_bounds(linear, quadratic)
+        lin_bounds = linear.bounds()
+        quad_bounds = quadratic.bounds()
+        lhs_lb = lin_bounds.lowerbound + quad_bounds.lowerbound
+        lhs_ub = lin_bounds.upperbound + quad_bounds.upperbound
 
         var_added = False
 
@@ -289,19 +293,22 @@ class InequalityToEquality(QuadraticProgramConverter):
                 self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
                 var_added = True
         else:
-            raise QiskitOptimizationError("The type of Sense in {} is not supported".format(name))
+            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
         # Add a new equality constraint.
-        new_linear = copy.deepcopy(linear)
+        new_linear = linear.to_dict()
         if var_added:
             new_linear[slack_name] = sign
-        self._dst.quadratic_constraint(new_linear, quadratic, "==", new_rhs, name)
+        self._dst.quadratic_constraint(new_linear, quadratic.to_dict(), "==", new_rhs, name)
 
     def _add_continuous_slack_var_quadratic_constraint(self, linear, quadratic, sense, rhs, name):
         # Add a new continuous variable.
         slack_name = name + self._delimiter + "continuous_slack"
 
-        lhs_lb, lhs_ub = self._calc_quadratic_bounds(linear, quadratic)
+        lin_bounds = linear.bounds()
+        quad_bounds = quadratic.bounds()
+        lhs_lb = lin_bounds.lowerbound + quad_bounds.lowerbound
+        lhs_ub = lin_bounds.upperbound + quad_bounds.upperbound
 
         var_added = False
 
@@ -318,57 +325,23 @@ class InequalityToEquality(QuadraticProgramConverter):
                 self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=lhs_ub - rhs)
                 var_added = True
         else:
-            raise QiskitOptimizationError("The type of Sense in {} is not supported".format(name))
+            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
         # Add a new equality constraint.
         new_linear = copy.deepcopy(linear)
         if var_added:
             new_linear[slack_name] = sign
-        self._dst.quadratic_constraint(new_linear, quadratic, "==", rhs, name)
+        self._dst.quadratic_constraint(new_linear, quadratic.to_dict(), "==", rhs, name)
 
     def _add_auto_slack_var_quadratic_constraint(self, linear, quadratic, sense, rhs, name):
         # If a coefficient that is not integer exist, use a continuous slack variable
-        if self._contains_any_float_value(list(linear.values())) or self._contains_any_float_value(
-            list(quadratic.values())
+        if self._contains_any_float_value(linear.to_array()) or self._contains_any_float_value(
+            quadratic.to_array()
         ):
             self._add_continuous_slack_var_quadratic_constraint(linear, quadratic, sense, rhs, name)
         # Else use an integer slack variable
         else:
             self._add_integer_slack_var_quadratic_constraint(linear, quadratic, sense, rhs, name)
-
-    def _calc_linear_bounds(self, linear):
-        lhs_lb, lhs_ub = 0, 0
-        for var_name, v in linear.items():
-            x = self._src.get_variable(var_name)
-            lhs_lb += min(x.lowerbound * v, x.upperbound * v)
-            lhs_ub += max(x.lowerbound * v, x.upperbound * v)
-        return lhs_lb, lhs_ub
-
-    def _calc_quadratic_bounds(self, linear, quadratic):
-        lhs_lb, lhs_ub = 0, 0
-        # Calculate the lowerbound and the upperbound of the linear part
-        linear_lb, linear_ub = self._calc_linear_bounds(linear)
-        lhs_lb += linear_lb
-        lhs_ub += linear_ub
-
-        # Calculate the lowerbound and the upperbound of the quadratic part
-        for (name_i, name_j), v in quadratic.items():
-            x = self._src.get_variable(name_i)
-            y = self._src.get_variable(name_j)
-
-            lhs_lb += min(
-                x.lowerbound * y.lowerbound * v,
-                x.lowerbound * y.upperbound * v,
-                x.upperbound * y.lowerbound * v,
-                x.upperbound * y.upperbound * v,
-            )
-            lhs_ub += max(
-                x.lowerbound * y.lowerbound * v,
-                x.lowerbound * y.upperbound * v,
-                x.upperbound * y.lowerbound * v,
-                x.upperbound * y.upperbound * v,
-            )
-        return lhs_lb, lhs_ub
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
@@ -390,7 +363,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         return new_x
 
     @staticmethod
-    def _contains_any_float_value(values: List[Union[int, float]]) -> bool:
+    def _contains_any_float_value(values: np.ndarray) -> bool:
         """Check whether the list contains float or not.
         This method is used to check whether a constraint contain float coefficients or not.
 
@@ -400,7 +373,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         Returns:
             bool: If the constraint contains float coefficients, this returns True, else False.
         """
-        return any(isinstance(v, float) and not v.is_integer() for v in values)  # type: ignore
+        return any(isinstance(v, float) and not cast(float, v).is_integer() for v in values)
 
     @property
     def mode(self) -> str:

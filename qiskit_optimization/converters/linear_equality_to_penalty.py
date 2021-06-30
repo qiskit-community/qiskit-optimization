@@ -154,8 +154,8 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
         # (upper bound - lower bound) can be calculate as the sum of absolute value of coefficients
         # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
-        linear_ub = problem.objective.linear.upperbound()
-        quadratic_ub = problem.objective.quadratic.upperbound()
+        linear_ub = problem.objective.linear.bounds().upperbound
+        quadratic_ub = problem.objective.quadratic.bounds().upperbound
         return 1.0 + linear_ub + quadratic_ub
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:

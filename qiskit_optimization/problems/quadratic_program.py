@@ -533,7 +533,7 @@ class QuadraticProgram:
         Returns:
             The corresponding variable.
         """
-        if isinstance(i, (int, np.int32)):
+        if isinstance(i, (int, np.integer)):
             return self.variables[i]
         else:
             return self.variables[self._variables_index[i]]
