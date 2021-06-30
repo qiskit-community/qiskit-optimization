@@ -29,8 +29,12 @@ SENSE = {ConstraintSense.EQ: "==", ConstraintSense.LE: "<=", ConstraintSense.GE:
 
 
 def _f2i(val: Union[int, float]) -> Union[int, float]:
-    """Convert a value into an integer if possible"""
-    if isinstance(val, float) and cast(float, val).is_integer():
+    """Convert a value into an integer if possible
+
+    Note: if abs(val) >= 1e23, int(val) is not correct
+          e.g., int(1e23) -> 99999999999999991611392
+    """
+    if isinstance(val, float) and abs(val) <= 1e20 and cast(float, val).is_integer():
         return int(val)
     return val
 

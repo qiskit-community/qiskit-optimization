@@ -148,14 +148,18 @@ class OptimizationResult:
         )
 
     def __str__(self) -> str:
+        def _f2i(val):
+            # Note: if abs(val) >= 1e23, int(val) is not correct,
+            #       e.g., int(1e23) -> 99999999999999991611392
+            if isinstance(val, float) and abs(val) <= 1e20 and val.is_integer():
+                return int(val)
+            return val
+
         optimal_value = ", ".join(
-            [
-                f"{var.name}={int(x) if isinstance(x, float) and x.is_integer() else x}"
-                for var, x in zip(self._variables, self._x)
-            ]
+            [f"{var.name}={_f2i(x)}" for var, x in zip(self._variables, self._x)]
         )
         return (
-            f"optimal function value: {self._fval}\n"
+            f"optimal function value: {_f2i(self._fval)}\n"
             f"optimal value: {optimal_value}\n"
             f"status: {self._status.name}"
         )
