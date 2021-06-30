@@ -149,9 +149,9 @@ class OptimizationResult:
 
     def __str__(self) -> str:
         def _f2i(val):
-            # Note: if abs(val) >= 1e23, int(val) is not correct,
-            #       e.g., int(1e23) -> 99999999999999991611392
-            if isinstance(val, float) and abs(val) <= 1e20 and val.is_integer():
+            # Note: if abs(val) is too large, int(val) is not correct,
+            #       e.g., int(1e16 - 1) -> 10000000000000000
+            if isinstance(val, float) and abs(val) <= 1e10 and val.is_integer():
                 return int(val)
             return val
 
