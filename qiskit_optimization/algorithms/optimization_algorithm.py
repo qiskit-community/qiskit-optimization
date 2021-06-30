@@ -148,10 +148,15 @@ class OptimizationResult:
         )
 
     def __str__(self) -> str:
-        optimal_values = ", ".join([f"{var.name}={x}" for var, x in zip(self._variables, self._x)])
+        optimal_value = ", ".join(
+            [
+                f"{var.name}={int(x) if isinstance(x, float) and x.is_integer() else x}"
+                for var, x in zip(self._variables, self._x)
+            ]
+        )
         return (
             f"optimal function value: {self._fval}\n"
-            f"optimal value: {optimal_values}\n"
+            f"optimal value: {optimal_value}\n"
             f"status: {self._status.name}"
         )
 

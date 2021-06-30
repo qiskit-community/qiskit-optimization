@@ -14,18 +14,25 @@
 
 from io import StringIO
 from math import isclose
-from typing import List, Optional
+from typing import List, Optional, Union, cast
 
 from qiskit_optimization import INFINITY
 from qiskit_optimization.problems import (
-    QuadraticProgram,
     LinearExpression,
     QuadraticExpression,
     QuadraticObjective,
+    QuadraticProgram,
 )
 from qiskit_optimization.problems.constraint import ConstraintSense
 
 SENSE = {ConstraintSense.EQ: "==", ConstraintSense.LE: "<=", ConstraintSense.GE: ">="}
+
+
+def _f2i(val: Union[int, float]) -> Union[int, float]:
+    """Convert a value into an integer if possible"""
+    if isinstance(val, float) and cast(float, val).is_integer():
+        return int(val)
+    return val
 
 
 def _coeff2str(coeff: float, is_head: bool) -> List[str]:
@@ -45,8 +52,9 @@ def _coeff2str(coeff: float, is_head: bool) -> List[str]:
     ret = []
     if sign:
         ret.append(sign)
-    if not isclose(abs(coeff), 1.0):
-        ret.append(f"{abs(coeff)}")
+    abs_val = abs(coeff)
+    if not isclose(abs_val, 1.0):
+        ret.append(f"{_f2i(abs_val)}")
     return ret
 
 
@@ -72,7 +80,7 @@ def _expr2str(
 
     # constant
     if not isclose(constant, 0.0, abs_tol=1e-10):
-        expr.append(f"{constant}")
+        expr.append(f"{_f2i(constant)}")
         is_head = False
     elif not lin_dict and not quad_dict:
         expr.append("0")
@@ -129,22 +137,22 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
         for cst in quadratic_program.linear_constraints:
             buf.write(f"  {cst.name}: ")
             buf.write(_expr2str(lin=cst.linear))
-            buf.write(f" {SENSE[cst.sense]} {cst.rhs}")
+            buf.write(f" {SENSE[cst.sense]} {_f2i(cst.rhs)}")
             buf.write("\n")
         for cst2 in quadratic_program.quadratic_constraints:
             buf.write(f"  {cst2.name}: ")
             buf.write(_expr2str(lin=cst2.linear, quad=cst2.quadratic))
-            buf.write(f" {SENSE[cst2.sense]} {cst2.rhs}")
+            buf.write(f" {SENSE[cst2.sense]} {_f2i(cst2.rhs)}")
             buf.write("\n")
         buf.write("\nVariables\n")
         if quadratic_program.get_num_vars() == 0:
             buf.write("  No variables\n")
         for var in quadratic_program.variables:
             if var.lowerbound > -INFINITY:
-                buf.write(f"  {var.lowerbound} <= ")
+                buf.write(f"  {_f2i(var.lowerbound)} <= ")
             buf.write(var.name)
             if var.upperbound < INFINITY:
-                buf.write(f" <= {var.upperbound}")
+                buf.write(f" <= {_f2i(var.upperbound)}")
             buf.write(f": {var.vartype.name.lower()}\n")
         ret = buf.getvalue()
     return ret
