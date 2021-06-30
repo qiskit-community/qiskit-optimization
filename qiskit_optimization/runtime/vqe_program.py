@@ -280,6 +280,11 @@ class VQEProgram(MinimumEigensolver):
             raise RuntimeError(f"The job {job.job_id()} failed unexpectedly.") from exc
 
         # re-build result from serialized return value
+        vqe_result = self._parse_job_result(job, result)
+        return vqe_result
+
+    def _parse_job_result(self, job, result):
+        """Build the VQE result object from the job result."""
         vqe_result = VQEProgramResult()
         vqe_result.job_id = job.job_id()
         vqe_result.cost_function_evals = result.get("cost_function_evals", None)
@@ -292,7 +297,6 @@ class VQEProgram(MinimumEigensolver):
         vqe_result.optimizer_evals = result.get("optimizer_evals", None)
         vqe_result.optimizer_time = result.get("optimizer_time", None)
         vqe_result.optimizer_history = result.get("optimizer_history", None)
-
         return vqe_result
 
 

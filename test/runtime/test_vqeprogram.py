@@ -17,11 +17,10 @@ from test import QiskitOptimizationTestCase
 import unittest
 import numpy as np
 from qiskit.providers.basicaer import QasmSimulatorPy
-from qiskit.algorithms import VQEResult
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import VQEProgram
+from qiskit_optimization.runtime import VQEProgram, VQEProgramResult
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
@@ -50,7 +49,7 @@ class TestVQEProgram(QiskitOptimizationTestCase):
         )
         result = vqe.compute_minimum_eigenvalue(operator)
 
-        self.assertIsInstance(result, VQEResult)
+        self.assertIsInstance(result, VQEProgramResult)
 
 
 if __name__ == "__main__":

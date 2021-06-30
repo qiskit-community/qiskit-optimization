@@ -17,10 +17,9 @@ from test import QiskitOptimizationTestCase
 import unittest
 import numpy as np
 from qiskit.providers.basicaer import QasmSimulatorPy
-from qiskit.algorithms import VQEResult
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import QAOAProgram
+from qiskit_optimization.runtime import QAOAProgram, VQEProgramResult
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
@@ -40,16 +39,16 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
 
-        vqe = QAOAProgram(
+        qaoa = QAOAProgram(
             optimizer=optimizer,
             reps=reps,
             initial_point=initial_point,
             backend=backend,
             provider=self.provider,
         )
-        result = vqe.compute_minimum_eigenvalue(operator)
+        result = qaoa.compute_minimum_eigenvalue(operator)
 
-        self.assertIsInstance(result, VQEResult)
+        self.assertIsInstance(result, VQEProgramResult)
 
 
 if __name__ == "__main__":
