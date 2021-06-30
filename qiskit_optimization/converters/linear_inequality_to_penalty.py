@@ -294,41 +294,36 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             for var, coef in problem.objective.linear.to_dict().items()
         )
         # add quadratic terms of the object function.
-        penalties.extend(
-            max(
-                (
-                    coef
-                    * problem.variables[var[0]].lowerbound
-                    * problem.variables[var[1]].lowerbound,
-                    coef
-                    * problem.variables[var[0]].lowerbound
-                    * problem.variables[var[1]].upperbound,
-                    coef
-                    * problem.variables[var[0]].upperbound
-                    * problem.variables[var[1]].lowerbound,
-                    coef
-                    * problem.variables[var[0]].upperbound
-                    * problem.variables[var[1]].upperbound,
+        for var, coef in problem.objective.quadratic.to_dict().items():
+            lst = []
+            if var[0] == var[1]:
+                # add 0, if the domain of the variable includes 0.
+                if problem.variables[var[0]].lowerbound * problem.variables[var[1]].upperbound < 0:
+                    lst.append(0)
+                lst.extend(
+                    [
+                        coef * problem.variables[var[0]].lowerbound ** 2,
+                        coef * problem.variables[var[1]].upperbound ** 2,
+                    ]
                 )
-            )
-            - min(
-                (
-                    coef
-                    * problem.variables[var[0]].lowerbound
-                    * problem.variables[var[1]].lowerbound,
-                    coef
-                    * problem.variables[var[0]].lowerbound
-                    * problem.variables[var[1]].upperbound,
-                    coef
-                    * problem.variables[var[0]].upperbound
-                    * problem.variables[var[1]].lowerbound,
-                    coef
-                    * problem.variables[var[0]].upperbound
-                    * problem.variables[var[1]].upperbound,
+            else:
+                lst.extend(
+                    [
+                        coef
+                        * problem.variables[var[0]].lowerbound
+                        * problem.variables[var[1]].lowerbound,
+                        coef
+                        * problem.variables[var[0]].lowerbound
+                        * problem.variables[var[1]].upperbound,
+                        coef
+                        * problem.variables[var[0]].upperbound
+                        * problem.variables[var[1]].lowerbound,
+                        coef
+                        * problem.variables[var[0]].upperbound
+                        * problem.variables[var[1]].upperbound,
+                    ]
                 )
-            )
-                for var, coef in problem.objective.quadratic.to_dict().items()
-        )
+            penalties.append(max(lst) - min(lst))
         return fsum(penalties)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
