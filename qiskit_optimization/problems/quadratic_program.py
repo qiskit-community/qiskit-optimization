@@ -502,7 +502,7 @@ class QuadraticProgram:
         key_format: str = "{}",
     ) -> List[Variable]:
         """
-        Uses 'var_list' to construct a dictionary of integer variables
+        Uses 'var_list' to construct a list of integer variables
 
         Args:
             lowerbound: The lower bound of the variable(s).
