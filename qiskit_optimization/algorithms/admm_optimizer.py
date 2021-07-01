@@ -676,7 +676,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # set quadratic objective y
         quadratic_y = self._params.beta / 2 * np.eye(binary_size) + \
             self._state.rho / 2 * np.eye(binary_size)
-        op3.objective.quadratic = quadratic_y
+        op3.objective.quadratic = quadratic_y  # type: ignore
 
         # set linear objective for y
         linear_y = - self._state.lambda_mult - self._state.rho * (self._state.x0 - self._state.z)
