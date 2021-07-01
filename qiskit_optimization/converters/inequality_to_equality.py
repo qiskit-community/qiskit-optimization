@@ -175,7 +175,8 @@ class InequalityToEquality(QuadraticProgramConverter):
         new_linear = linear.to_dict(use_name=True)
         if var_ub > 0:
             # Add a slack variable.
-            slack_name = f"{name}{self._delimiter}{mode}_slack"
+            mode_name = {"integer": "int", "continuous": "continuous"}
+            slack_name = f"{name}{self._delimiter}{mode_name[mode]}_slack"
             if mode == "integer":
                 self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
             elif mode == "continuous":
@@ -227,7 +228,8 @@ class InequalityToEquality(QuadraticProgramConverter):
         new_linear = linear.to_dict(use_name=True)
         if var_ub > 0:
             # Add a slack variable.
-            slack_name = f"{name}{self._delimiter}{mode}_slack"
+            mode_name = {"integer": "int", "continuous": "continuous"}
+            slack_name = f"{name}{self._delimiter}{mode_name[mode]}_slack"
             if mode == "integer":
                 self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
             elif mode == "continuous":

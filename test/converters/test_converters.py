@@ -110,10 +110,10 @@ class TestConverters(QiskitOptimizationTestCase):
                 "x0",
                 "x1",
                 "x2",
-                "x1x2@integer_slack",
-                "x0x2@integer_slack",
-                "x0x1_x1x2LE@integer_slack",
-                "x0x1_x1x2GE@integer_slack",
+                "x1x2@int_slack",
+                "x0x2@int_slack",
+                "x0x1_x1x2LE@int_slack",
+                "x0x1_x1x2GE@int_slack",
             ],
         )
         # Check names and objective senses
@@ -190,10 +190,10 @@ class TestConverters(QiskitOptimizationTestCase):
                 "x0",
                 "x1",
                 "x2",
-                "x1x2@integer_slack",
-                "x0x2@integer_slack",
-                "x0x1_x1x2LE@integer_slack",
-                "x0x1_x1x2GE@integer_slack",
+                "x1x2@int_slack",
+                "x0x2@int_slack",
+                "x0x1_x1x2LE@int_slack",
+                "x0x1_x1x2GE@int_slack",
             ],
         )
         # For linear constraints
