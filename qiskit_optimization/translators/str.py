@@ -143,28 +143,28 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
         ):
             buf.write("  No constraints\n")
         for cst in quadratic_program.linear_constraints:
-            buf.write(f"  {cst.name}: ")
-            buf.write(_expr2str(lin=cst.linear))
-            buf.write(f" {SENSE[cst.sense]} {_f2i(cst.rhs)}")
-            buf.write("\n")
+            buf.write(f"  {_expr2str(lin=cst.linear)}"
+                      f" {SENSE[cst.sense]} {_f2i(cst.rhs)}"
+                      f"  ({cst.name})\n")
         for cst2 in quadratic_program.quadratic_constraints:
-            buf.write(f"  {cst2.name}: ")
-            buf.write(_expr2str(lin=cst2.linear, quad=cst2.quadratic))
-            buf.write(f" {SENSE[cst2.sense]} {_f2i(cst2.rhs)}")
-            buf.write("\n")
+            buf.write(f"  {_expr2str(lin=cst2.linear, quad=cst2.quadratic)}"
+                      f" {SENSE[cst2.sense]} {_f2i(cst2.rhs)}"
+                      f"  ({cst2.name})\n")
         buf.write("\nVariables\n")
         if quadratic_program.get_num_vars() == 0:
             buf.write("  No variables\n")
+        bin_vars = []
         for var in quadratic_program.variables:
-            buf.write(f"  {var.vartype.name.lower()+':':<12}")
             if var.vartype == var.vartype.BINARY:
-                buf.write(f"{var.name}")
+                bin_vars.append(var.name)
             else:
+                buf.write("  ")
                 if var.lowerbound > -INFINITY:
                     buf.write(f"{_f2i(var.lowerbound)} <= ")
                 buf.write(var.name)
                 if var.upperbound < INFINITY:
                     buf.write(f" <= {_f2i(var.upperbound)}")
-            buf.write("\n")
+                buf.write(f"  ({var.vartype.name.lower()})\n")
+        buf.write(f"  {' '.join(bin_vars)}  (binary)\n")
         ret = buf.getvalue()
     return ret

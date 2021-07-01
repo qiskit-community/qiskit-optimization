@@ -77,10 +77,9 @@ class QuadraticProgram:
         return (
             f"<QuadraticProgram: {'name=' + self.name+', ' if self.name else ''}"
             f"sense={self.objective.sense.name.lower()}, "
-            f"num_variables=(bin={self.get_num_binary_vars()}, "
-            f"int={self.get_num_integer_vars()}, cont={self.get_num_continuous_vars()}), "
-            f"num_constraints=(lin={self.get_num_linear_constraints()}, "
-            f"quad={self.get_num_quadratic_constraints()})>"
+            f"num_vars={self.get_num_vars()}, "
+            f"num_lin_cons={self.get_num_linear_constraints()}, "
+            f"num_quad_cons={self.get_num_quadratic_constraints()}>"
         )
 
     def __str__(self) -> str:
