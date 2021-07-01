@@ -13,13 +13,14 @@
 
 import copy
 import math
-from dataclasses import astuple
 from typing import List, Optional, Union, cast
 
 import numpy as np
 
 from ..exceptions import QiskitOptimizationError
 from ..problems.constraint import Constraint
+from ..problems.linear_constraint import LinearConstraint
+from ..problems.quadratic_constraint import QuadraticConstraint
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
@@ -73,6 +74,8 @@ class InequalityToEquality(QuadraticProgramConverter):
 
         # set a converting mode
         mode = self._mode
+        if mode not in ["integer", "continuous", "auto"]:
+            raise QiskitOptimizationError(f"Unsupported mode is selected: {mode}")
 
         # Copy variables
         for x in self._src.variables:
@@ -97,251 +100,140 @@ class InequalityToEquality(QuadraticProgramConverter):
             self._dst.maximize(constant, linear, quadratic)
 
         # For linear constraints
-        for l_constraint in self._src.linear_constraints:
-            linear = l_constraint.linear.to_dict(use_name=True)
-            if l_constraint.sense == Constraint.Sense.EQ:
+        for lin_const in self._src.linear_constraints:
+            if lin_const.sense == Constraint.Sense.EQ:
                 self._dst.linear_constraint(
-                    linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
+                    lin_const.linear.coefficients, lin_const.sense, lin_const.rhs, lin_const.name
                 )
-            elif (
-                l_constraint.sense == Constraint.Sense.LE
-                or l_constraint.sense == Constraint.Sense.GE
-            ):
-                if mode == "integer":
-                    self._add_integer_slack_var_linear_constraint(
-                        l_constraint.linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
-                    )
-                elif mode == "continuous":
-                    self._add_continuous_slack_var_linear_constraint(
-                        l_constraint.linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
-                    )
-                elif mode == "auto":
-                    self._add_auto_slack_var_linear_constraint(
-                        l_constraint.linear, l_constraint.sense, l_constraint.rhs, l_constraint.name
-                    )
-                else:
-                    raise QiskitOptimizationError(f"Unsupported mode is selected: {mode}")
+            elif lin_const.sense in [Constraint.Sense.LE, Constraint.Sense.GE]:
+                self._add_slack_var_linear_constraint(lin_const)
             else:
                 raise QiskitOptimizationError(
-                    f"Type of sense in {l_constraint.name} is not supported"
+                    f"Internal error: type of sense in {lin_const.name} is not supported: "
+                    f"{lin_const.sense}"
                 )
 
         # For quadratic constraints
-        for q_constraint in self._src.quadratic_constraints:
-            linear = q_constraint.linear.to_dict(use_name=True)
-            quadratic = q_constraint.quadratic.to_dict(use_name=True)
-            if q_constraint.sense == Constraint.Sense.EQ:
+        for quad_const in self._src.quadratic_constraints:
+            if quad_const.sense == Constraint.Sense.EQ:
                 self._dst.quadratic_constraint(
-                    linear,
-                    quadratic,
-                    q_constraint.sense,
-                    q_constraint.rhs,
-                    q_constraint.name,
+                    quad_const.linear.coefficients,
+                    quad_const.quadratic.coefficients,
+                    quad_const.sense,
+                    quad_const.rhs,
+                    quad_const.name,
                 )
-            elif (
-                q_constraint.sense == Constraint.Sense.LE
-                or q_constraint.sense == Constraint.Sense.GE
-            ):
-                if mode == "integer":
-                    self._add_integer_slack_var_quadratic_constraint(
-                        q_constraint.linear,
-                        q_constraint.quadratic,
-                        q_constraint.sense,
-                        q_constraint.rhs,
-                        q_constraint.name,
-                    )
-                elif mode == "continuous":
-                    self._add_continuous_slack_var_quadratic_constraint(
-                        q_constraint.linear,
-                        q_constraint.quadratic,
-                        q_constraint.sense,
-                        q_constraint.rhs,
-                        q_constraint.name,
-                    )
-                elif mode == "auto":
-                    self._add_auto_slack_var_quadratic_constraint(
-                        q_constraint.linear,
-                        q_constraint.quadratic,
-                        q_constraint.sense,
-                        q_constraint.rhs,
-                        q_constraint.name,
-                    )
-                else:
-                    raise QiskitOptimizationError(f"Unsupported mode is selected: {mode}")
+            elif quad_const.sense in [Constraint.Sense.LE, Constraint.Sense.GE]:
+                self._add_slack_var_quadratic_constraint(quad_const)
             else:
                 raise QiskitOptimizationError(
-                    f"Type of sense in {q_constraint.name} is not supported"
+                    f"Internal error: type of sense in {quad_const.name} is not supported: "
+                    f"{quad_const.sense}"
                 )
 
         return self._dst
 
-    def _add_integer_slack_var_linear_constraint(self, linear, sense, rhs, name):
-        # If a coefficient that is not integer exist, raise error
-        if self._contains_any_float_value(linear.to_array()):
-            raise QiskitOptimizationError(
-                f'"{name}" contains float coefficients. '
-                'We can not use an integer slack variable for "{name}"'
-            )
+    def _add_slack_var_linear_constraint(self, constraint: LinearConstraint):
+        linear = constraint.linear
+        sense = constraint.sense
+        name = constraint.name
 
-        # If rhs is float number, round up/down to the nearest integer.
-        new_rhs = rhs
-        if sense == Constraint.Sense.LE:
-            new_rhs = math.floor(rhs)
-        if sense == Constraint.Sense.GE:
-            new_rhs = math.ceil(rhs)
+        any_float = self._any_float(linear.to_array())
+        mode = self._mode
+        if mode == "integer":
+            if any_float:
+                raise QiskitOptimizationError(
+                    f'"{name}" contains float coefficients. '
+                    'We can not use an integer slack variable for "{name}"'
+                )
+        elif mode == "auto":
+            mode = "continuous" if any_float else "integer"
 
-        # Add a new integer variable.
-        slack_name = name + self._delimiter + "int_slack"
+        new_rhs = constraint.rhs
+        if mode == "integer":
+            # If rhs is float number, round up/down to the nearest integer.
+            if sense == Constraint.Sense.LE:
+                new_rhs = math.floor(new_rhs)
+            if sense == Constraint.Sense.GE:
+                new_rhs = math.ceil(new_rhs)
 
-        lhs_lb, lhs_ub = astuple(linear.bounds)
+        lin_bounds = linear.bounds
+        lhs_lb = lin_bounds.lowerbound
+        lhs_ub = lin_bounds.upperbound
 
-        var_added = False
-
+        var_ub = 0.0
+        sign = 0
         if sense == Constraint.Sense.LE:
             var_ub = new_rhs - lhs_lb
             if var_ub > 0:
                 sign = 1
-                self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
         elif sense == Constraint.Sense.GE:
             var_ub = lhs_ub - new_rhs
             if var_ub > 0:
                 sign = -1
-                self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
-        else:
-            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
-        # Add a new equality constraint.
         new_linear = linear.to_dict(use_name=True)
-        if var_added:
+        if var_ub > 0:
+            # Add a slack variable.
+            slack_name = f"{name}{self._delimiter}{mode}_slack"
+            if mode == "integer":
+                self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
+            elif mode == "continuous":
+                self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
             new_linear[slack_name] = sign
         self._dst.linear_constraint(new_linear, "==", new_rhs, name)
 
-    def _add_continuous_slack_var_linear_constraint(self, linear, sense, rhs, name):
-        slack_name = name + self._delimiter + "continuous_slack"
+    def _add_slack_var_quadratic_constraint(self, constraint: QuadraticConstraint):
+        quadratic = constraint.quadratic
+        linear = constraint.linear
+        sense = constraint.sense
+        name = constraint.name
 
-        lhs_lb, lhs_ub = astuple(linear.bounds)
+        any_float = self._any_float(linear.to_array()) or self._any_float(quadratic.to_array())
+        mode = self._mode
+        if mode == "integer":
+            if any_float:
+                raise QiskitOptimizationError(
+                    f'"{name}" contains float coefficients. '
+                    'We can not use an integer slack variable for "{name}"'
+                )
+        elif mode == "auto":
+            mode = "continuous" if any_float else "integer"
 
-        var_added = False
-        if sense == Constraint.Sense.LE:
-            var_ub = rhs - lhs_lb
-            if var_ub > 0:
-                sign = 1
-                self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
-        elif sense == Constraint.Sense.GE:
-            var_ub = lhs_ub - rhs
-            if var_ub > 0:
-                sign = -1
-                self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
-        else:
-            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
-
-        # Add a new equality constraint.
-        new_linear = linear.to_dict(use_name=True)
-        if var_added:
-            new_linear[slack_name] = sign
-        self._dst.linear_constraint(new_linear, "==", rhs, name)
-
-    def _add_auto_slack_var_linear_constraint(self, linear, sense, rhs, name):
-        # If a coefficient that is not integer exist, use a continuous slack variable
-        if self._contains_any_float_value(linear.to_array()):
-            self._add_continuous_slack_var_linear_constraint(linear, sense, rhs, name)
-        # Else use an integer slack variable
-        else:
-            self._add_integer_slack_var_linear_constraint(linear, sense, rhs, name)
-
-    def _add_integer_slack_var_quadratic_constraint(self, linear, quadratic, sense, rhs, name):
-        # If a coefficient that is not integer exist, raise an error
-        if self._contains_any_float_value(linear.to_array()) or self._contains_any_float_value(
-            quadratic.to_array()
-        ):
-            raise QiskitOptimizationError(
-                f'"{name}" contains float coefficients. '
-                f'We can not use an integer slack variable for "{name}"'
-            )
-
-        # If rhs is float number, round up/down to the nearest integer.
-        new_rhs = rhs
-        if sense == Constraint.Sense.LE:
-            new_rhs = math.floor(rhs)
-        if sense == Constraint.Sense.GE:
-            new_rhs = math.ceil(rhs)
-
-        # Add a new integer variable.
-        slack_name = name + self._delimiter + "int_slack"
+        new_rhs = constraint.rhs
+        if mode == "integer":
+            # If rhs is float number, round up/down to the nearest integer.
+            if sense == Constraint.Sense.LE:
+                new_rhs = math.floor(new_rhs)
+            if sense == Constraint.Sense.GE:
+                new_rhs = math.ceil(new_rhs)
 
         lin_bounds = linear.bounds
         quad_bounds = quadratic.bounds
         lhs_lb = lin_bounds.lowerbound + quad_bounds.lowerbound
         lhs_ub = lin_bounds.upperbound + quad_bounds.upperbound
 
-        var_added = False
-
+        var_ub = 0.0
+        sign = 0
         if sense == Constraint.Sense.LE:
             var_ub = new_rhs - lhs_lb
             if var_ub > 0:
                 sign = 1
-                self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
         elif sense == Constraint.Sense.GE:
             var_ub = lhs_ub - new_rhs
             if var_ub > 0:
                 sign = -1
-                self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
-        else:
-            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
-        # Add a new equality constraint.
-        new_linear = linear.to_dict()
-        if var_added:
-            new_linear[slack_name] = sign
-        self._dst.quadratic_constraint(new_linear, quadratic.to_dict(), "==", new_rhs, name)
-
-    def _add_continuous_slack_var_quadratic_constraint(self, linear, quadratic, sense, rhs, name):
-        # Add a new continuous variable.
-        slack_name = name + self._delimiter + "continuous_slack"
-
-        lin_bounds = linear.bounds
-        quad_bounds = quadratic.bounds
-        lhs_lb = lin_bounds.lowerbound + quad_bounds.lowerbound
-        lhs_ub = lin_bounds.upperbound + quad_bounds.upperbound
-
-        var_added = False
-
-        if sense == Constraint.Sense.LE:
-            var_ub = rhs - lhs_lb
-            if var_ub > 0:
-                sign = 1
-                self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
-                var_added = True
-        elif sense == Constraint.Sense.GE:
-            var_ub = lhs_ub - rhs
-            if var_ub > 0:
-                sign = -1
-                self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=lhs_ub - rhs)
-                var_added = True
-        else:
-            raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
-
-        # Add a new equality constraint.
         new_linear = linear.to_dict(use_name=True)
-        if var_added:
+        if var_ub > 0:
+            # Add a slack variable.
+            slack_name = f"{name}{self._delimiter}{mode}_slack"
+            if mode == "integer":
+                self._dst.integer_var(name=slack_name, lowerbound=0, upperbound=var_ub)
+            elif mode == "continuous":
+                self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
             new_linear[slack_name] = sign
-        self._dst.quadratic_constraint(new_linear, quadratic.to_dict(), "==", rhs, name)
-
-    def _add_auto_slack_var_quadratic_constraint(self, linear, quadratic, sense, rhs, name):
-        # If a coefficient that is not integer exist, use a continuous slack variable
-        if self._contains_any_float_value(linear.to_array()) or self._contains_any_float_value(
-            quadratic.to_array()
-        ):
-            self._add_continuous_slack_var_quadratic_constraint(linear, quadratic, sense, rhs, name)
-        # Else use an integer slack variable
-        else:
-            self._add_integer_slack_var_quadratic_constraint(linear, quadratic, sense, rhs, name)
+        self._dst.quadratic_constraint(new_linear, quadratic.coefficients, "==", new_rhs, name)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
@@ -363,7 +255,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         return new_x
 
     @staticmethod
-    def _contains_any_float_value(values: np.ndarray) -> bool:
+    def _any_float(values: np.ndarray) -> bool:
         """Check whether the list contains float or not.
         This method is used to check whether a constraint contain float coefficients or not.
 
