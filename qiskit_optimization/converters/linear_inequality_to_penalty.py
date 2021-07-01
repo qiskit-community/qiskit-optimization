@@ -164,7 +164,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         return self._dst
 
-    def _conversion_table(self, constraint) -> Tuple(int, np.ndarray, np.ndarray):
+    def _conversion_table(self, constraint) -> Tuple[int, np.ndarray, np.ndarray]:
         """Construct conversion matrix for special constraint.
 
         Returns:
