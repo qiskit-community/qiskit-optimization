@@ -193,7 +193,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         # Add a new integer variable.
         slack_name = name + self._delimiter + "int_slack"
 
-        lhs_lb, lhs_ub = astuple(linear.bounds())
+        lhs_lb, lhs_ub = astuple(linear.bounds)
 
         var_added = False
 
@@ -221,7 +221,7 @@ class InequalityToEquality(QuadraticProgramConverter):
     def _add_continuous_slack_var_linear_constraint(self, linear, sense, rhs, name):
         slack_name = name + self._delimiter + "continuous_slack"
 
-        lhs_lb, lhs_ub = astuple(linear.bounds())
+        lhs_lb, lhs_ub = astuple(linear.bounds)
 
         var_added = False
         if sense == Constraint.Sense.LE:
@@ -273,8 +273,8 @@ class InequalityToEquality(QuadraticProgramConverter):
         # Add a new integer variable.
         slack_name = name + self._delimiter + "int_slack"
 
-        lin_bounds = linear.bounds()
-        quad_bounds = quadratic.bounds()
+        lin_bounds = linear.bounds
+        quad_bounds = quadratic.bounds
         lhs_lb = lin_bounds.lowerbound + quad_bounds.lowerbound
         lhs_ub = lin_bounds.upperbound + quad_bounds.upperbound
 
@@ -305,8 +305,8 @@ class InequalityToEquality(QuadraticProgramConverter):
         # Add a new continuous variable.
         slack_name = name + self._delimiter + "continuous_slack"
 
-        lin_bounds = linear.bounds()
-        quad_bounds = quadratic.bounds()
+        lin_bounds = linear.bounds
+        quad_bounds = quadratic.bounds
         lhs_lb = lin_bounds.lowerbound + quad_bounds.lowerbound
         lhs_ub = lin_bounds.upperbound + quad_bounds.upperbound
 
@@ -328,7 +328,7 @@ class InequalityToEquality(QuadraticProgramConverter):
             raise QiskitOptimizationError(f"The type of Sense in {name} is not supported")
 
         # Add a new equality constraint.
-        new_linear = copy.deepcopy(linear)
+        new_linear = linear.to_dict(use_name=True)
         if var_added:
             new_linear[slack_name] = sign
         self._dst.quadratic_constraint(new_linear, quadratic.to_dict(), "==", rhs, name)

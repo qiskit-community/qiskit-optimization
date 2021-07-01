@@ -172,32 +172,69 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             q_p.continuous_var(1, 2, "x")
             q_p.continuous_var(-2, -1, "y")
             q_p.continuous_var(-1, 2, "z")
-            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            self.assertAlmostEqual(quad.bounds().lowerbound, -12)
-            self.assertAlmostEqual(quad.bounds().upperbound, 15)
+            bounds = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -12)
+            self.assertAlmostEqual(bounds.upperbound, 15)
 
         with self.subTest("bounded2"):
             q_p = QuadraticProgram()
             q_p.integer_var(-1, 2, "x")
-            quad = QuadraticExpression(q_p, {("x", "x"): 1})
-            self.assertAlmostEqual(quad.bounds().lowerbound, 0)
-            self.assertAlmostEqual(quad.bounds().upperbound, 4)
+            bounds = QuadraticExpression(q_p, {("x", "x"): 1}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 0)
+            self.assertAlmostEqual(bounds.upperbound, 4)
+
+            bounds = QuadraticExpression(q_p, {("x", "x"): -1}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -4)
+            self.assertAlmostEqual(bounds.upperbound, 0)
+
+            bounds = QuadraticExpression(q_p, {("x", "x"): 0}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 0)
+            self.assertAlmostEqual(bounds.upperbound, 0)
+
+        with self.subTest("bounded3"):
+            q_p = QuadraticProgram()
+            q_p.integer_var(-2, -1, "x")
+            bounds = QuadraticExpression(q_p, {("x", "x"): 1}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 1)
+            self.assertAlmostEqual(bounds.upperbound, 4)
+
+            bounds = QuadraticExpression(q_p, {("x", "x"): -1}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -4)
+            self.assertAlmostEqual(bounds.upperbound, -1)
+
+            bounds = QuadraticExpression(q_p, {("x", "x"): 0}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 0)
+            self.assertAlmostEqual(bounds.upperbound, 0)
+
+        with self.subTest("bounded4"):
+            q_p = QuadraticProgram()
+            q_p.integer_var(-2, 3, "x")
+            q_p.integer_var(-10, 20, "y")
+            bounds = QuadraticExpression(q_p, {("x", "y"): 1}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -40)
+            self.assertAlmostEqual(bounds.upperbound, 60)
+
+            bounds = QuadraticExpression(q_p, {("x", "y"): -1}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -60)
+            self.assertAlmostEqual(bounds.upperbound, 40)
+
+            bounds = QuadraticExpression(q_p, {("x", "y"): 0}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 0)
+            self.assertAlmostEqual(bounds.upperbound, 0)
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
             q_p.continuous_var(1, 2, "x")
             q_p.continuous_var(-2, -1, "y")
             q_p.continuous_var(-INFINITY, 2, "z")
-            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            _ = quad.bounds()
+            _ = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3}).bounds
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
             q_p.continuous_var(1, 2, "x")
             q_p.continuous_var(-2, -1, "y")
             q_p.continuous_var(-1, INFINITY, "z")
-            quad = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3})
-            _ = quad.bounds()
+            _ = QuadraticExpression(q_p, {("x", "y"): 1, ("y", "z"): 2, ("z", "z"): 3}).bounds
 
 
 if __name__ == "__main__":

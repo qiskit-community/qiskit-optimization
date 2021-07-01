@@ -244,6 +244,7 @@ class QuadraticExpression(QuadraticProgramElement):
             x = np.array(x)
         return x
 
+    @property
     def bounds(self) -> ExpressionBounds:
         """Returns the lower bound and the upper bound of the quadratic expression
 

@@ -141,7 +141,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         terms = []
         for constraint in problem.linear_constraints:
             terms.append(constraint.rhs)
-            terms.extend(coef for coef in constraint.linear.to_dict().values())
+            terms.extend(constraint.linear.to_array().tolist())
         if any(isinstance(term, float) and not term.is_integer() for term in terms):
             logger.warning(
                 "Warning: Using %f for the penalty coefficient because "
@@ -152,11 +152,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             )
             return default_penalty
 
-        # (upper bound - lower bound) can be calculate as the sum of absolute value of coefficients
-        # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
-        linear_ub = problem.objective.linear.bounds().upperbound
-        quadratic_ub = problem.objective.quadratic.bounds().upperbound
-        return 1.0 + linear_ub + quadratic_ub
+        lin_b = problem.objective.linear.bounds
+        quad_b = problem.objective.quadratic.bounds
+        return 1.0 + (lin_b.upperbound - lin_b.lowerbound) + (quad_b.upperbound - quad_b.lowerbound)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem

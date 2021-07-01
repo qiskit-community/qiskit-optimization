@@ -186,6 +186,7 @@ class LinearExpression(QuadraticProgramElement):
         # extract the coefficients as array and return it
         return self.to_array()
 
+    @property
     def bounds(self) -> ExpressionBounds:
         """Returns the lower bound and the upper bound of the linear expression
 
