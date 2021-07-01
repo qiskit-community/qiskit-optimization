@@ -39,26 +39,32 @@ def _f2i(val: Union[int, float]) -> Union[int, float]:
     return val
 
 
-def _coeff2str(coeff: float, is_head: bool) -> List[str]:
+def _term2str(coeff: float, term: str, is_head: bool) -> str:
     """Translate a coefficient to a list of strings.
 
     Args:
         coeff: The coefficient.
+        term: The term.
         is_head: Whether this coefficient appears in the head of the string or not.
 
     Returns:
-        A list of strings consisting of the sign and the absolute value of the coefficient.
+        A strings representing the term.
     """
-    if coeff < 0.0:
-        sign = "-"
+    ret = ""
+    if is_head:
+        if isclose(coeff, 1.0):
+            ret = term
+        elif isclose(coeff, -1.0):
+            ret = f"-{term}"
+        else:
+            ret = f"{_f2i(coeff)}{term}"
     else:
-        sign = "" if is_head else "+"
-    ret = []
-    if sign:
-        ret.append(sign)
-    abs_val = abs(coeff)
-    if not isclose(abs_val, 1.0):
-        ret.append(f"{_f2i(abs_val)}")
+        sign = "-" if coeff < 0.0 else "+"
+        abs_val = abs(coeff)
+        if isclose(abs_val, 1.0):
+            ret = f"{sign} {term}"
+        else:
+            ret = f"{sign} {_f2i(abs_val)}{term}"
     return ret
 
 
@@ -92,17 +98,15 @@ def _expr2str(
 
     # quadratic expression
     for (var1, var2), coeff in quad_dict.items():
-        expr.extend(_coeff2str(coeff, is_head))
-        is_head = False
         if var1 == var2:
-            expr.append(f"{var1}^2")
+            expr.append(_term2str(coeff, f"{var1}^2", is_head))
         else:
-            expr.append(f"{var1} * {var2}")
+            expr.append(_term2str(coeff, f"{var1} * {var2}", is_head))
+        is_head = False
 
     # linear expression
     for var, coeff in lin_dict.items():
-        expr.extend(_coeff2str(coeff, is_head))
-        expr.append(f"{var}")
+        expr.append(_term2str(coeff, f"{var}", is_head))
         is_head = False
 
     return " ".join(expr)
@@ -152,11 +156,15 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
         if quadratic_program.get_num_vars() == 0:
             buf.write("  No variables\n")
         for var in quadratic_program.variables:
-            if var.lowerbound > -INFINITY:
-                buf.write(f"  {_f2i(var.lowerbound)} <= ")
-            buf.write(var.name)
-            if var.upperbound < INFINITY:
-                buf.write(f" <= {_f2i(var.upperbound)}")
-            buf.write(f": {var.vartype.name.lower()}\n")
+            buf.write(f"  {var.vartype.name.lower()+':':<12}")
+            if var.vartype == var.vartype.BINARY:
+                buf.write(f"{var.name}")
+            else:
+                if var.lowerbound > -INFINITY:
+                    buf.write(f"{_f2i(var.lowerbound)} <= ")
+                buf.write(var.name)
+                if var.upperbound < INFINITY:
+                    buf.write(f" <= {_f2i(var.upperbound)}")
+            buf.write("\n")
         ret = buf.getvalue()
     return ret
