@@ -12,7 +12,6 @@
 
 """Converter to convert a problem with inequality constraints to unconstrained with penalty terms."""
 
-import itertools
 import logging
 from math import fsum
 from typing import Optional, cast, Union, Tuple, List
@@ -123,20 +122,20 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                 self._dst.linear_constraints.append(constraint)
                 continue
 
-            conv_matrix = self._conversion_matrix(constraint)
+            conv_offset, conv_linear, conv_quadratic = self._conversion_table(constraint)
             rowlist = list(constraint.linear.to_dict().items())
 
             # constant part
-            if conv_matrix[0][0] != 0:
-                offset += sense * penalty * conv_matrix[0][0]
+            if conv_offset != 0:
+                offset += sense * penalty * conv_offset
 
             # linear parts of penalty
             for (j, z) in enumerate(rowlist):
                 # if j already exists in the linear terms dic, add a penalty term
                 # into existing value else create new key and value in the linear_term dict
 
-                if conv_matrix[0][j + 1] != 0:
-                    linear[z[0]] = linear.get(z[0], 0.0) + sense * penalty * conv_matrix[0][j + 1]
+                if conv_linear[j] != 0:
+                    linear[z[0]] = linear.get(z[0], 0.0) + sense * penalty * conv_linear[j]
 
             # quadratic parts of penalty
             for (j, z) in enumerate(rowlist):
@@ -145,10 +144,10 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                     # add a penalty term into existing value
                     # else create new key and value in the quadratic term dict
 
-                    if conv_matrix[j + 1][k + 1] != 0:
+                    if conv_quadratic[j][k] != 0:
                         tup = cast(Union[Tuple[int, int], Tuple[str, str]], (z[0], rowlist[k][0]))
                         quadratic[tup] = (
-                            quadratic.get(tup, 0.0) + sense * penalty * conv_matrix[j + 1][k + 1]
+                            quadratic.get(tup, 0.0) + sense * penalty * conv_quadratic[j][k]
                         )
 
         # Copy quadratic_constraints
@@ -165,11 +164,11 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         return self._dst
 
-    def _conversion_matrix(self, constraint) -> np.ndarray:
+    def _conversion_table(self, constraint) -> Tuple(int, np.ndarray, np.ndarray):
         """Construct conversion matrix for special constraint.
 
         Returns:
-            Return conversion matrix which is used to construct
+            Return conversion table which is used to construct
             penalty term in main function.
 
         """
@@ -180,40 +179,39 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         sense = constraint.sense
 
         num_vars = len(vrs)
-        combinations = itertools.combinations(np.arange(num_vars), 2)
 
-        # conversion matrix
-        conv_matrix = np.zeros((num_vars + 1, num_vars + 1), dtype=int)
+        # initialize return values, these are used for converted offset, linear
+        # and quadratic terms
+        offset = 0
+        linear = np.zeros(num_vars, dtype=int)
+        quadratic = np.zeros((num_vars, num_vars), dtype=int)
 
-        for combination in combinations:
-            index1 = combination[0] + 1
-            index2 = combination[1] + 1
+        # rhs = num_vars - 1 correspond to multiple variable with >= n - 1 case.
+        if sense == ConstraintSense.GE and rhs == num_vars - 1:
+            # x_1 + ... + x_n >= n - 1
+            # The number of offset is combination ( nC2 )
+            offset = int(num_vars * (num_vars - 1) / 2)
+            linear = np.full(num_vars, 1 - num_vars, dtype=int)
+            quadratic = np.triu(np.ones((num_vars, num_vars), dtype=int), k=1)
+        elif sense == ConstraintSense.LE and rhs == 1:
+            # x_1 + ... + x_n <= 1
+            quadratic = np.triu(np.ones((num_vars, num_vars), dtype=int), k=1)
+        elif rhs == 0:
+            quadratic = np.triu(np.full((num_vars, num_vars), -1, dtype=int), k=1)
+            if sense == ConstraintSense.GE:
+                # x >= y case
+                if vrs[0][1] < 0.0:
+                    linear[0] = 1
+                elif vrs[1][1] < 0.0:
+                    linear[1] = 1
+            elif sense == ConstraintSense.LE:
+                # x <= y case
+                if vrs[0][1] > 0.0:
+                    linear[0] = 1
+                elif vrs[1][1] > 0.0:
+                    linear[1] = 1
 
-            # rhs = num_vars - 1 correspond to multiple variable with >= n - 1 case.
-            # Otherwise, converter only supports rhs = 1 or 0 case.
-            if rhs in (1, num_vars - 1):
-                if sense == ConstraintSense.GE:
-                    conv_matrix[0][0] = conv_matrix[0][0] + 1
-                    conv_matrix[0][index1] = conv_matrix[0][index1] - 1
-                    conv_matrix[0][index2] = conv_matrix[0][index2] - 1
-                conv_matrix[index1][index2] = 1
-            elif rhs == 0:
-                if sense == ConstraintSense.GE:
-                    # x >= y case
-                    if vrs[index1 - 1][1] < 0.0:
-                        conv_matrix[0][index1] = 1
-                    elif vrs[index2 - 1][1] < 0.0:
-                        conv_matrix[0][index2] = 1
-                elif sense == ConstraintSense.LE:
-                    # x <= y case
-                    if vrs[index1 - 1][1] > 0.0:
-                        conv_matrix[0][index1] = 1
-                    elif vrs[index2 - 1][1] > 0.0:
-                        conv_matrix[0][index2] = 1
-
-                conv_matrix[index1][index2] = -1
-
-        return conv_matrix
+        return offset, linear, quadratic
 
     def _is_matched_constraint(self, problem, constraint) -> bool:
         """Determine if constraint is special or not.
