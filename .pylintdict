@@ -5,6 +5,7 @@ aer
 aer's
 al
 annealers
+ansatz
 applegate
 args
 arxiv
@@ -131,6 +132,7 @@ pooya
 pos
 pre
 preprint
+prepend
 presolver
 princeton
 probabilistically
@@ -140,6 +142,7 @@ qaoa
 qasm
 qiskit
 qiskit's
+qn
 qp
 quadratically
 quadraticconstraint
@@ -157,6 +160,7 @@ rhs
 rightarrow
 ronagh
 rtype
+runtime
 ry
 rz
 sahar
@@ -166,6 +170,7 @@ simonetto
 slsqp
 smode
 smoothen
+spsa
 src
 statevector
 stdout
@@ -173,6 +178,7 @@ str
 subcollection
 subgraph
 submodules
+subspaces
 sys
 subproblem
 summands
