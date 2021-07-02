@@ -40,7 +40,7 @@ well as equality and inequality constraints. This class of optimization problems
 of relevant applications, while still being efficiently representable by matrices and vectors.
 This class covers some very interesting sub-classes, from Convex Continuous Quadratic Programs,
 which can be solved efficiently by classical optimization algorithms, to Quadratic Unconstrained
-Binary Optimization QUBO) problems, which cover many NP-complete, i.e., classically intractable,
+Binary Optimization (QUBO) problems, which cover many NP-complete, i.e., classically intractable,
 problems.
 
 .. autosummary::
