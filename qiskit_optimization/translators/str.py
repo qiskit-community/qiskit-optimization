@@ -188,7 +188,7 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
                     buf.write(f" <= {_f2i(var.upperbound)}")
                 buf.write("\n")
         if bin_vars:
-            buf.write(f"\n  Binary variables ({len(bin_vars)})\n"
-                      f"    {' '.join(bin_vars)}\n")
+            buf.write(f"\n  Binary variables ({len(bin_vars)})\n")
+            buf.write(f"    {' '.join(bin_vars)}\n")
         ret = buf.getvalue()
     return ret
