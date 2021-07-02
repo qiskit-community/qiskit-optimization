@@ -462,6 +462,105 @@ class TestLinearInequalityToPenalty(QiskitOptimizationTestCase):
         lip = LinearInequalityToPenalty()
         self.assertEqual(lip._auto_define_penalty(op), 5)
 
+    def test_linear_inequality_to_penalty8(self):
+        """Test combinations of inequality constraints"""
+
+        with self.subTest("minimize 1"):
+            op = QuadraticProgram()
+            op.binary_var("x")
+            op.binary_var("y")
+            op.binary_var("z")
+            op.integer_var(-1, 4, "q")
+            op.minimize(linear={"x": 1, "y": 1, "z": 1}, quadratic={("q", "q"): -1})
+            op.linear_constraint({"x": 1, "y": -1}, "<=", 0)
+            op.linear_constraint({"x": 1, "y": 1, "z": 1}, "<=", 1)
+            op2 = LinearInequalityToPenalty().convert(op)
+            self.assertEqual(op2.get_num_vars(), 4)
+            self.assertEqual(op2.get_num_binary_vars(), 3)
+            self.assertEqual(op2.get_num_integer_vars(), 1)
+            self.assertEqual(op2.get_num_continuous_vars(), 0)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+            self.assertEqual(op2.get_num_quadratic_constraints(), 0)
+            obj = op2.objective
+            self.assertEqual(obj.constant, 0)
+            self.assertDictEqual(obj.linear.to_dict(use_name=True), {"x": 21, "y": 1, "z": 1})
+            self.assertDictEqual(
+                obj.quadratic.to_dict(use_name=True),
+                {("x", "z"): 20, ("y", "z"): 20, ("q", "q"): -1},
+            )
+
+        with self.subTest("maximize 1"):
+            op = QuadraticProgram()
+            op.binary_var("x")
+            op.binary_var("y")
+            op.binary_var("z")
+            op.integer_var(-1, 4, "q")
+            op.maximize(linear={"x": 1, "y": 1, "z": 1}, quadratic={("q", "q"): -1})
+            op.linear_constraint({"x": 1, "y": -1}, "<=", 0)
+            op.linear_constraint({"x": 1, "y": 1, "z": 1}, "<=", 1)
+            op2 = LinearInequalityToPenalty().convert(op)
+            self.assertEqual(op2.get_num_vars(), 4)
+            self.assertEqual(op2.get_num_binary_vars(), 3)
+            self.assertEqual(op2.get_num_integer_vars(), 1)
+            self.assertEqual(op2.get_num_continuous_vars(), 0)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+            self.assertEqual(op2.get_num_quadratic_constraints(), 0)
+            obj = op2.objective
+            self.assertEqual(obj.constant, 0)
+            self.assertDictEqual(obj.linear.to_dict(use_name=True), {"x": -19, "y": 1, "z": 1})
+            self.assertDictEqual(
+                obj.quadratic.to_dict(use_name=True),
+                {("x", "z"): -20, ("y", "z"): -20, ("q", "q"): -1},
+            )
+
+        with self.subTest("minimize 2"):
+            op = QuadraticProgram()
+            op.binary_var("x")
+            op.binary_var("y")
+            op.binary_var("z")
+            op.integer_var(-1, 4, "q")
+            op.minimize(linear={"x": 1, "y": 1, "z": 1}, quadratic={("q", "q"): -1})
+            op.linear_constraint({"x": 1, "y": -1}, ">=", 0)
+            op.linear_constraint({"x": 1, "y": 1, "z": 1}, ">=", 2)
+            op2 = LinearInequalityToPenalty().convert(op)
+            self.assertEqual(op2.get_num_vars(), 4)
+            self.assertEqual(op2.get_num_binary_vars(), 3)
+            self.assertEqual(op2.get_num_integer_vars(), 1)
+            self.assertEqual(op2.get_num_continuous_vars(), 0)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+            self.assertEqual(op2.get_num_quadratic_constraints(), 0)
+            obj = op2.objective
+            self.assertEqual(obj.constant, 60)
+            self.assertDictEqual(obj.linear.to_dict(use_name=True), {"x": -39, "y": -19, "z": -39})
+            self.assertDictEqual(
+                obj.quadratic.to_dict(use_name=True),
+                {("x", "z"): 20, ("y", "z"): 20, ("q", "q"): -1},
+            )
+
+        with self.subTest("maximize 2"):
+            op = QuadraticProgram()
+            op.binary_var("x")
+            op.binary_var("y")
+            op.binary_var("z")
+            op.integer_var(-1, 4, "q")
+            op.maximize(linear={"x": 1, "y": 1, "z": 1}, quadratic={("q", "q"): -1})
+            op.linear_constraint({"x": 1, "y": -1}, ">=", 0)
+            op.linear_constraint({"x": 1, "y": 1, "z": 1}, ">=", 2)
+            op2 = LinearInequalityToPenalty().convert(op)
+            self.assertEqual(op2.get_num_vars(), 4)
+            self.assertEqual(op2.get_num_binary_vars(), 3)
+            self.assertEqual(op2.get_num_integer_vars(), 1)
+            self.assertEqual(op2.get_num_continuous_vars(), 0)
+            self.assertEqual(op2.get_num_linear_constraints(), 0)
+            self.assertEqual(op2.get_num_quadratic_constraints(), 0)
+            obj = op2.objective
+            self.assertEqual(obj.constant, -60)
+            self.assertDictEqual(obj.linear.to_dict(use_name=True), {"x": 41, "y": 21, "z": 41})
+            self.assertDictEqual(
+                obj.quadratic.to_dict(use_name=True),
+                {("x", "z"): -20, ("y", "z"): -20, ("q", "q"): -1},
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
