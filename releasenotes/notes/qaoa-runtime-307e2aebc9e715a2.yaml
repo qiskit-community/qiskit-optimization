@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Allow leveraging Qiskit Runtime to execute VQE and QAOA in the cloud using
+    the :class:`~qiskit_optimization.runtime.VQEProgram` and 
+    :class:`~qiskit_optimization.runtime.QAOAProgram`.

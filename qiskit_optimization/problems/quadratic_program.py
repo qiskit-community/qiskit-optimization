@@ -502,7 +502,7 @@ class QuadraticProgram:
         key_format: str = "{}",
     ) -> List[Variable]:
         """
-        Uses 'var_list' to construct a dictionary of integer variables
+        Uses 'var_list' to construct a list of integer variables
 
         Args:
             lowerbound: The lower bound of the variable(s).
@@ -533,7 +533,7 @@ class QuadraticProgram:
         Returns:
             The corresponding variable.
         """
-        if isinstance(i, int):
+        if isinstance(i, (int, np.integer)):
             return self.variables[i]
         else:
             return self.variables[self._variables_index[i]]
@@ -1036,7 +1036,7 @@ class QuadraticProgram:
             offset: The constant value in the Ising Hamiltonian.
             linear: If linear is True, :math:`x^2` is treated as a linear term
                 since :math:`x^2 = x` for :math:`x \in \{0,1\}`.
-                Else, :math:`x^2` is treat as a quadratic term.
+                Else, :math:`x^2` is treated as a quadratic term.
                 The default value is False.
 
         Raises:
