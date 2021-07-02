@@ -13,8 +13,7 @@
 """Converter to convert a problem with inequality constraints to unconstrained with penalty terms."""
 
 import logging
-from math import fsum
-from typing import Optional, cast, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Dict
 
 import numpy as np
 
@@ -29,15 +28,15 @@ logger = logging.getLogger(__name__)
 
 
 class LinearInequalityToPenalty(QuadraticProgramConverter):
-    r"""Convert a problem of inequality constraints to unconstrained with penalty terms.
+    r"""Convert linear inequality constraints to penalty terms of the objective function.
 
-    There are some constraints which do not require to add slack variables to
-    construct penalty terms [1]. Supported inequality constraint in this class is shown below.
+    There are some linear constraints which do not require slack variables to
+    construct penalty terms [1]. This class supports the following inequality constraints.
 
     .. math::
 
         \begin{array}{}
-        \text { Inequality Constraint } & & \text { Equivalent Penalty } \\
+        \text { Inequality constraint } & & \text { Penalty term } \\
         x+y \leq 1 & \rightarrow & P(x y) \\
         x+y \geq 1 & \rightarrow & P(1-x-y+x y) \\
         x \leq y & \rightarrow  & P(x-x y) \\
@@ -47,13 +46,11 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
          (n \geq 2)
         \end{array}
 
-    Note that x, y, z or :math:`x_i` are binary variables, and P is penalty constant.
-    In this class, value of P is automatically determined, but can be supplied as
-    argument at the timing of instantiation.
+    Note that x, y, z and :math:`x_i` are binary variables, and P is a penalty factor,
+    where the value of P is automatically determined or supplied by users.
 
-    If the constraint does not match the pattern of classical constraint, the constraint
-    is kept as is. Otherwise, constraint is converted into equivalent penalty and added
-    to objective function.
+    If constraints match with any of the patterns, they are converted into penalty terms and added
+    to the objective function. Otherwise, constraints are kept as is.
 
     References:
         [1]: Fred Glover, et al. (2019),
@@ -70,15 +67,16 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                      every conversion.
         """
 
-        self._src_num_vars = None  # type: Optional[int]
-        self._dst = None  # type: Optional[QuadraticProgram]
-        self.penalty = penalty  # type: Optional[float]
+        self._src_num_vars: Optional[int] = None
+        self._dst: Optional[QuadraticProgram] = None
+        self._penalty: Optional[float] = penalty
+        self._should_define_penalty: bool = penalty is None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert a problem of inequality constraints into an unconstrained problem.
+        """Convert some inequality constraints into penalty terms of the objective function.
 
         Args:
-            problem: The problem to be solved, that does not contain inequality constraints.
+            problem: The problem to be solved.
 
         Returns:
             The converted problem
@@ -106,7 +104,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             elif x.vartype == Variable.Type.INTEGER:
                 self._dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
-                raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
+                raise QiskitOptimizationError(f"Unsupported vartype: {x.vartype}")
 
         # get original objective terms
         offset = problem.objective.constant
@@ -119,40 +117,49 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
             # special constraint check function here
             if not self._is_matched_constraint(problem, constraint):
-                self._dst.linear_constraints.append(constraint)
+                self._dst.linear_constraint(
+                    constraint.linear.coefficients,
+                    constraint.sense,
+                    constraint.rhs,
+                    constraint.name,
+                )
                 continue
 
-            conv_offset, conv_linear, conv_quadratic = self._conversion_table(constraint)
-            rowlist = list(constraint.linear.to_dict().items())
+            conv_offset, conv_linear, conv_quadratic, varmap = self._conversion_table(constraint)
 
             # constant part
-            if conv_offset != 0:
-                offset += sense * penalty * conv_offset
+            offset += sense * penalty * conv_offset
 
             # linear parts of penalty
-            for (j, z) in enumerate(rowlist):
+            for j, j_2 in varmap.items():
                 # if j already exists in the linear terms dic, add a penalty term
                 # into existing value else create new key and value in the linear_term dict
 
                 if conv_linear[j] != 0:
-                    linear[z[0]] = linear.get(z[0], 0.0) + sense * penalty * conv_linear[j]
+                    linear[j_2] = linear.get(j_2, 0.0) + sense * penalty * conv_linear[j]
 
             # quadratic parts of penalty
-            for (j, z) in enumerate(rowlist):
-                for k in range(j, len(rowlist)):
+            for j, j_2 in varmap.items():
+                for k in range(j, len(varmap)):
                     # if j and k already exist in the quadratic terms dict,
                     # add a penalty term into existing value
                     # else create new key and value in the quadratic term dict
 
                     if conv_quadratic[j][k] != 0:
-                        tup = cast(Union[Tuple[int, int], Tuple[str, str]], (z[0], rowlist[k][0]))
+                        tup = (j_2, varmap[k])
                         quadratic[tup] = (
                             quadratic.get(tup, 0.0) + sense * penalty * conv_quadratic[j][k]
                         )
 
         # Copy quadratic_constraints
         for quadratic_constraint in problem.quadratic_constraints:
-            self._dst.quadratic_constraints.append(quadratic_constraint)
+            self._dst.quadratic_constraint(
+                quadratic_constraint.linear.coefficients,
+                quadratic_constraint.quadratic.coefficients,
+                quadratic_constraint.sense,
+                quadratic_constraint.rhs,
+                quadratic_constraint.name,
+            )
 
         if problem.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             self._dst.minimize(offset, linear, quadratic)
@@ -160,25 +167,31 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             self._dst.maximize(offset, linear, quadratic)
 
         # Update the penalty to the one just used
-        self._penalty = penalty  # type: float
+        self._penalty = penalty
 
         return self._dst
 
-    def _conversion_table(self, constraint) -> Tuple[int, np.ndarray, np.ndarray]:
+    @staticmethod
+    def _conversion_table(
+        constraint,
+    ) -> Tuple[int, np.ndarray, np.ndarray, Dict[int, int]]:
         """Construct conversion matrix for special constraint.
 
         Returns:
             Return conversion table which is used to construct
             penalty term in main function.
 
+        Raises:
+            QiskitOptimizationError: if the constraint is invalid.
         """
 
-        vars_dict = constraint.linear.to_dict(use_name=True)
-        vrs = list(vars_dict.items())
+        vars_dict = constraint.linear.to_dict()
+        coeffs = list(vars_dict.values())
+        varmap = dict(enumerate(vars_dict.keys()))
         rhs = constraint.rhs
         sense = constraint.sense
 
-        num_vars = len(vrs)
+        num_vars = len(vars_dict)
 
         # initialize return values, these are used for converted offset, linear
         # and quadratic terms
@@ -190,30 +203,37 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         if sense == ConstraintSense.GE and rhs == num_vars - 1:
             # x_1 + ... + x_n >= n - 1
             # The number of offset is combination ( nC2 )
-            offset = int(num_vars * (num_vars - 1) / 2)
+            offset = num_vars * (num_vars - 1) // 2
             linear = np.full(num_vars, 1 - num_vars, dtype=int)
             quadratic = np.triu(np.ones((num_vars, num_vars), dtype=int), k=1)
         elif sense == ConstraintSense.LE and rhs == 1:
             # x_1 + ... + x_n <= 1
             quadratic = np.triu(np.ones((num_vars, num_vars), dtype=int), k=1)
         elif rhs == 0:
-            quadratic = np.triu(np.full((num_vars, num_vars), -1, dtype=int), k=1)
+            if num_vars != 2:
+                raise QiskitOptimizationError(
+                    f"Internal error: invalid number of variables {num_vars} {constraint.name}"
+                )
+            quadratic = np.array([[0, -1], [0, 0]])
             if sense == ConstraintSense.GE:
                 # x >= y case
-                if vrs[0][1] < 0.0:
+                if coeffs[0] < 0.0:
                     linear[0] = 1
-                elif vrs[1][1] < 0.0:
+                else:
                     linear[1] = 1
             elif sense == ConstraintSense.LE:
                 # x <= y case
-                if vrs[0][1] > 0.0:
+                if coeffs[0] > 0.0:
                     linear[0] = 1
-                elif vrs[1][1] > 0.0:
+                else:
                     linear[1] = 1
+        else:
+            raise QiskitOptimizationError(f"Internal error: invalid constraint {constraint.name}")
 
-        return offset, linear, quadratic
+        return offset, linear, quadratic, varmap
 
-    def _is_matched_constraint(self, problem, constraint) -> bool:
+    @staticmethod
+    def _is_matched_constraint(problem, constraint) -> bool:
         """Determine if constraint is special or not.
 
         Returns:
@@ -228,7 +248,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         coeff_array = np.array(list(params.values()))
 
         # Binary parameter?
-        if not all(problem.variables[i].vartype == Variable.Type.BINARY for i in params.keys()):
+        if any(problem.variables[i].vartype != Variable.Type.BINARY for i in params.keys()):
             return False
 
         if num_vars == 2 and rhs == 0:
@@ -248,7 +268,8 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         return False
 
-    def _auto_define_penalty(self, problem) -> float:
+    @staticmethod
+    def _auto_define_penalty(problem) -> float:
         """Automatically define the penalty coefficient.
 
         Returns:
@@ -265,7 +286,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         terms = []
         for constraint in problem.linear_constraints:
             terms.append(constraint.rhs)
-            terms.extend(coef for coef in constraint.linear.to_dict().values())
+            terms.extend(constraint.linear.to_array().tolist())
         if any(isinstance(term, float) and not term.is_integer() for term in terms):
             logger.warning(
                 "Warning: Using %f for the penalty coefficient because "
@@ -276,53 +297,9 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
             )
             return default_penalty
 
-        # (upper bound - lower bound) of each term is calculated
-        # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
-        penalties = [1.0]
-        # add linear terms of the object function.
-        penalties.extend(
-            max(
-                coef * problem.variables[var].lowerbound,
-                coef * problem.variables[var].upperbound,
-            )
-            - min(
-                coef * problem.variables[var].lowerbound,
-                coef * problem.variables[var].upperbound,
-            )
-            for var, coef in problem.objective.linear.to_dict().items()
-        )
-        # add quadratic terms of the object function.
-        for var, coef in problem.objective.quadratic.to_dict().items():
-            lst = []
-            if var[0] == var[1]:
-                # add 0, if the domain of the variable includes 0.
-                if problem.variables[var[0]].lowerbound * problem.variables[var[1]].upperbound < 0:
-                    lst.append(0)
-                lst.extend(
-                    [
-                        coef * problem.variables[var[0]].lowerbound ** 2,
-                        coef * problem.variables[var[1]].upperbound ** 2,
-                    ]
-                )
-            else:
-                lst.extend(
-                    [
-                        coef
-                        * problem.variables[var[0]].lowerbound
-                        * problem.variables[var[1]].lowerbound,
-                        coef
-                        * problem.variables[var[0]].lowerbound
-                        * problem.variables[var[1]].upperbound,
-                        coef
-                        * problem.variables[var[0]].upperbound
-                        * problem.variables[var[1]].lowerbound,
-                        coef
-                        * problem.variables[var[0]].upperbound
-                        * problem.variables[var[1]].upperbound,
-                    ]
-                )
-            penalties.append(max(lst) - min(lst))
-        return fsum(penalties)
+        lin_b = problem.objective.linear.bounds
+        quad_b = problem.objective.quadratic.bounds
+        return 1.0 + (lin_b.upperbound - lin_b.lowerbound) + (quad_b.upperbound - quad_b.lowerbound)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem
@@ -366,4 +343,4 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         """
 
         self._penalty = penalty
-        self._should_define_penalty = penalty is None  # type: bool
+        self._should_define_penalty = penalty is None

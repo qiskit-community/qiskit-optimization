@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,16 +13,10 @@
 """ Test LinearInequalityToPenalty converter """
 
 import unittest
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-)
+from test.optimization_test_case import QiskitOptimizationTestCase
 
-import numpy as np
 from qiskit_optimization import QuadraticProgram
-from qiskit_optimization.converters import (
-    LinearInequalityToPenalty,
-    QuadraticProgramToQubo,
-)
+from qiskit_optimization.converters import LinearInequalityToPenalty, QuadraticProgramToQubo
 from qiskit_optimization.problems import Constraint
 
 
@@ -202,7 +196,6 @@ class TestLinearInequalityToPenalty(QiskitOptimizationTestCase):
 
             lip.penalty = 5
             op2 = lip.convert(op)
-            constant = lip.penalty * 2
             linear["x"] = linear["x"] - lip.penalty
             linear["y"] = linear["y"] - lip.penalty
             linear["z"] = linear["z"] - lip.penalty
