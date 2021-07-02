@@ -14,7 +14,7 @@
 
 from io import StringIO
 from math import isclose
-from typing import List, Optional, Union, cast
+from typing import Optional, Union, cast
 
 from qiskit_optimization import INFINITY
 from qiskit_optimization.problems import (
@@ -88,14 +88,6 @@ def _expr2str(
     lin_dict = lin.to_dict(use_name=True) if lin else {}
     quad_dict = quad.to_dict(use_name=True) if quad else {}
 
-    # constant
-    if not isclose(constant, 0.0, abs_tol=1e-10):
-        expr.append(f"{_f2i(constant)}")
-        is_head = False
-    elif not lin_dict and not quad_dict:
-        expr.append("0")
-        is_head = False
-
     # quadratic expression
     for (var1, var2), coeff in quad_dict.items():
         if var1 == var2:
@@ -108,6 +100,12 @@ def _expr2str(
     for var, coeff in lin_dict.items():
         expr.append(_term2str(coeff, f"{var}", is_head))
         is_head = False
+
+    # constant
+    if not isclose(constant, 0.0, abs_tol=1e-10):
+        expr.append(_term2str(constant, "", is_head))
+    elif not lin_dict and not quad_dict:
+        expr.append(_term2str(0, "", is_head))
 
     return " ".join(expr)
 
@@ -136,31 +134,29 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
                 quadratic_program.objective.quadratic,
             )
         )
-        buf.write("\n\nSubject to\n")
+        buf.write("\n\nSubject to")
         num_lin_csts = quadratic_program.get_num_linear_constraints()
         num_quad_csts = quadratic_program.get_num_quadratic_constraints()
         if num_lin_csts == 0 and num_quad_csts == 0:
-            buf.write("  No constraints\n")
+            buf.write("\n  No constraints\n")
         if num_lin_csts > 0:
-            buf.write(f"  Linear constraints ({num_lin_csts})\n")
+            buf.write(f"\n  Linear constraints ({num_lin_csts})\n")
             for cst in quadratic_program.linear_constraints:
                 buf.write(
                     f"    {_expr2str(lin=cst.linear)}"
                     f" {SENSE[cst.sense]} {_f2i(cst.rhs)}"
                     f"  '{cst.name}'\n"
                 )
-            buf.write("\n")
         if num_quad_csts > 0:
-            buf.write(f"  Quadratic constraints ({num_quad_csts})\n")
+            buf.write(f"\n  Quadratic constraints ({num_quad_csts})\n")
             for cst2 in quadratic_program.quadratic_constraints:
                 buf.write(
                     f"    {_expr2str(lin=cst2.linear, quad=cst2.quadratic)}"
                     f" {SENSE[cst2.sense]} {_f2i(cst2.rhs)}"
                     f"  '{cst2.name}'\n"
                 )
-            buf.write("\n")
         if quadratic_program.get_num_vars() == 0:
-            buf.write("  No variables\n")
+            buf.write("\n  No variables\n")
         bin_vars = []
         int_vars = []
         con_vars = []
@@ -172,7 +168,7 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
             else:
                 con_vars.append(var)
         if int_vars:
-            buf.write(f"  Integer variables ({len(int_vars)})\n")
+            buf.write(f"\n  Integer variables ({len(int_vars)})\n")
             for var in int_vars:
                 buf.write("    ")
                 if var.lowerbound > -INFINITY:
@@ -181,9 +177,8 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
                 if var.upperbound < INFINITY:
                     buf.write(f" <= {_f2i(var.upperbound)}")
                 buf.write("\n")
-            buf.write("\n")
         if con_vars:
-            buf.write(f"  Continuous variables ({len(con_vars)})\n")
+            buf.write(f"\n  Continuous variables ({len(con_vars)})\n")
             for var in con_vars:
                 buf.write("    ")
                 if var.lowerbound > -INFINITY:
@@ -192,9 +187,8 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
                 if var.upperbound < INFINITY:
                     buf.write(f" <= {_f2i(var.upperbound)}")
                 buf.write("\n")
-            buf.write("\n")
         if bin_vars:
-            buf.write(f"  Binary variables ({len(bin_vars)})\n")
-            buf.write(f"    {' '.join(bin_vars)}\n")
+            buf.write(f"\n  Binary variables ({len(bin_vars)})\n"
+                      f"    {' '.join(bin_vars)}\n")
         ret = buf.getvalue()
     return ret

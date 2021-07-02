@@ -77,7 +77,7 @@ class QuadraticProgram:
         num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
         return (
             f"<QuadraticProgram: {'name=' + self.name+', ' if self.name else ''}"
-            f"sense={self.objective.sense.name.lower()}, "
+            f"obj_sense={self.objective.sense.name.lower()}, "
             f"num_variables={self.get_num_vars()}, "
             f"num_constraints={num_constraints}>"
         )
