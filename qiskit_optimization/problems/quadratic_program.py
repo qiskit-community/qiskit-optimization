@@ -845,7 +845,10 @@ class QuadraticProgram:
         )
 
     def _copy_from(self, other: "QuadraticProgram") -> None:
-        """Copy another QuadraticProgram to this updating QuadraticProgramElement"""
+        """Copy another QuadraticProgram to this updating QuadraticProgramElement
+
+        Note: this breaks the consistency of `other`. You cannot use `other` after the copy.
+        """
         for attr, val in vars(other).items():
             if isinstance(val, QuadraticProgramElement):
                 val.quadratic_program = self
