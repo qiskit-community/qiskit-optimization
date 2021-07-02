@@ -76,7 +76,7 @@ class QuadraticProgram:
     def __repr__(self) -> str:
         num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
         return (
-            f"<QuadraticProgram: {'name=' + self.name+', ' if self.name else ''}"
+            f"<QuadraticProgram at {hex(id(self))}: name='{self._name}', "
             f"obj_sense={self.objective.sense.name.lower()}, "
             f"num_variables={self.get_num_vars()}, "
             f"num_constraints={num_constraints}>"
