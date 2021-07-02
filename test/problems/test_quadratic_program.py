@@ -20,6 +20,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase, requires_ext
 
 from docplex.mp.model import DOcplexException, Model
 
+from qiskit.opflow import PauliSumOp
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
 
@@ -1116,6 +1117,33 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertEqual("c2", constraints[0].name)
         self.assertEqual("c3", constraints[1].name)
         self.assertEqual("c5", constraints[2].name)
+
+    @requires_extra_library
+    def test_quadratic_program_element_when_loaded_from_source(self):
+        """Test QuadraticProgramElement when QuadraticProgram is loaded from an external source"""
+        with self.subTest("from_ising"):
+            q_p = QuadraticProgram()
+            q_p.from_ising(PauliSumOp.from_list([("IZ", 1), ("ZZ", 2)]))
+            self.assertEqual(id(q_p.objective.quadratic_program), id(q_p))
+            for elem in q_p.variables:
+                self.assertEqual(id(elem.quadratic_program), id(q_p))
+            for elem in q_p.linear_constraints:
+                self.assertEqual(id(elem.quadratic_program), id(q_p))
+            for elem in q_p.quadratic_constraints:
+                self.assertEqual(id(elem.quadratic_program), id(q_p))
+        try:
+            lp_file = self.get_resource_path("test_quadratic_program.lp", "problems/resources")
+            q_p = QuadraticProgram()
+            q_p.read_from_lp_file(lp_file)
+            self.assertEqual(id(q_p.objective.quadratic_program), id(q_p))
+            for elem in q_p.variables:
+                self.assertEqual(id(elem.quadratic_program), id(q_p))
+            for elem in q_p.linear_constraints:
+                self.assertEqual(id(elem.quadratic_program), id(q_p))
+            for elem in q_p.quadratic_constraints:
+                self.assertEqual(id(elem.quadratic_program), id(q_p))
+        except RuntimeError as ex:
+            self.fail(str(ex))
 
 
 if __name__ == "__main__":
