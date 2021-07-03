@@ -844,12 +844,18 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
-    def _copy_from(self, other: "QuadraticProgram") -> None:
+    def _copy_from(self, other: "QuadraticProgram", include_name: bool) -> None:
         """Copy another QuadraticProgram to this updating QuadraticProgramElement
 
         Note: this breaks the consistency of `other`. You cannot use `other` after the copy.
+
+        Args:
+            other: The quadratic program to be copied from.
+            include_name: Whether this method copies the problem name or not.
         """
         for attr, val in vars(other).items():
+            if attr == "_name" and not include_name:
+                continue
             if isinstance(val, QuadraticProgramElement):
                 val.quadratic_program = self
             if isinstance(val, list):
@@ -879,7 +885,7 @@ class QuadraticProgram:
         from ..translators.docplex_mp import from_docplex_mp
 
         other = from_docplex_mp(model)
-        self._copy_from(other)
+        self._copy_from(other, include_name=True)
 
     @deprecate_method(
         "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.to_docplex_mp"
@@ -950,7 +956,7 @@ class QuadraticProgram:
 
         model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
         other = from_docplex_mp(model)
-        self._copy_from(other)
+        self._copy_from(other, include_name=True)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
@@ -1051,7 +1057,7 @@ class QuadraticProgram:
         from ..translators.ising import from_ising
 
         other = from_ising(qubit_op, offset, linear)
-        self._copy_from(other)
+        self._copy_from(other, include_name=False)
 
     def get_feasibility_info(
         self, x: Union[List[float], np.ndarray]
