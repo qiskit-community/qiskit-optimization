@@ -412,9 +412,10 @@ class TestConverters(QiskitOptimizationTestCase):
         op = QUBIT_OP_MAXIMIZE_SAMPLE
         offset = OFFSET_MAXIMIZE_SAMPLE
 
-        quadratic = QuadraticProgram()
+        quadratic = QuadraticProgram("test")
         quadratic.from_ising(op, offset, linear=True)
 
+        self.assertEqual(quadratic.name, "test")
         self.assertEqual(quadratic.get_num_vars(), 4)
         self.assertEqual(quadratic.get_num_linear_constraints(), 0)
         self.assertEqual(quadratic.get_num_quadratic_constraints(), 0)
@@ -447,9 +448,10 @@ class TestConverters(QiskitOptimizationTestCase):
         op = QUBIT_OP_MAXIMIZE_SAMPLE
         offset = OFFSET_MAXIMIZE_SAMPLE
 
-        quadratic = QuadraticProgram()
+        quadratic = QuadraticProgram("test")
         quadratic.from_ising(op, offset, linear=False)
 
+        self.assertEqual(quadratic.name, "test")
         self.assertEqual(quadratic.get_num_vars(), 4)
         self.assertEqual(quadratic.get_num_linear_constraints(), 0)
         self.assertEqual(quadratic.get_num_quadratic_constraints(), 0)
