@@ -317,8 +317,8 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         if len(x) != self._src_num_vars:
             raise QiskitOptimizationError(
-                "The number of variables in the passed result differs from "
-                "that of the original problem."
+                f"The number of variables in the passed result ({len(x)}) differs from "
+                f"that of the original problem ({self._src_num_vars})."
             )
         return np.asarray(x)
 
