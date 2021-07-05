@@ -34,6 +34,7 @@ from .constraint import Constraint, ConstraintSense
 from .linear_constraint import LinearConstraint
 from .quadratic_constraint import QuadraticConstraint
 from .quadratic_objective import QuadraticObjective
+from .quadratic_program_element import QuadraticProgramElement
 from .variable import Variable, VarType
 
 logger = logging.getLogger(__name__)
@@ -63,14 +64,14 @@ class QuadraticProgram:
         self._name = name
         self._status = QuadraticProgram.Status.VALID
 
-        self._variables = []  # type: List[Variable]
-        self._variables_index = {}  # type: Dict[str, int]
+        self._variables: List[Variable] = []
+        self._variables_index: Dict[str, int] = {}
 
-        self._linear_constraints = []  # type: List[LinearConstraint]
-        self._linear_constraints_index = {}  # type: Dict[str, int]
+        self._linear_constraints: List[LinearConstraint] = []
+        self._linear_constraints_index: Dict[str, int] = {}
 
-        self._quadratic_constraints = []  # type: List[QuadraticConstraint]
-        self._quadratic_constraints_index = {}  # type: Dict[str, int]
+        self._quadratic_constraints: List[QuadraticConstraint] = []
+        self._quadratic_constraints_index: Dict[str, int] = {}
 
         self._objective = QuadraticObjective(self)
 
@@ -165,18 +166,16 @@ class QuadraticProgram:
         key_format: str,
     ) -> Tuple[List[str], List[Variable]]:
         if isinstance(keys, int) and keys < 1:
-            raise QiskitOptimizationError(
-                "Cannot create non-positive number of variables: {}".format(keys)
-            )
+            raise QiskitOptimizationError(f"Cannot create non-positive number of variables: {keys}")
         if name is None:
             name = "x"
         if "{{}}" in key_format:
             raise QiskitOptimizationError(
-                "Formatter cannot contain nested substitutions: {}".format(key_format)
+                f"Formatter cannot contain nested substitutions: {key_format}"
             )
         if key_format.count("{}") > 1:
             raise QiskitOptimizationError(
-                "Formatter cannot contain more than one substitution: {}".format(key_format)
+                f"Formatter cannot contain more than one substitution: {key_format}"
             )
 
         def _find_name(name, key_format, k):
@@ -184,9 +183,7 @@ class QuadraticProgram:
             while True:
                 new_name = name + key_format.format(k)
                 if new_name == prev:
-                    raise QiskitOptimizationError(
-                        "Variable name already exists: {}".format(new_name)
-                    )
+                    raise QiskitOptimizationError(f"Variable name already exists: {new_name}")
                 if new_name in self._variables_index:
                     k += 1
                     prev = new_name
@@ -204,9 +201,7 @@ class QuadraticProgram:
             else:
                 indexed_name, k = _find_name(name, key_format, k)
             if indexed_name in self._variables_index:
-                raise QiskitOptimizationError(
-                    "Variable name already exists: {}".format(indexed_name)
-                )
+                raise QiskitOptimizationError(f"Variable name already exists: {indexed_name}")
             names.append(indexed_name)
             self._variables_index[indexed_name] = self.get_num_vars()
             variable = Variable(self, indexed_name, lowerbound, upperbound, vartype)
@@ -502,7 +497,7 @@ class QuadraticProgram:
         key_format: str = "{}",
     ) -> List[Variable]:
         """
-        Uses 'var_list' to construct a dictionary of integer variables
+        Uses 'var_list' to construct a list of integer variables
 
         Args:
             lowerbound: The lower bound of the variable(s).
@@ -622,14 +617,12 @@ class QuadraticProgram:
         """
         if name:
             if name in self.linear_constraints_index:
-                raise QiskitOptimizationError(
-                    "Linear constraint's name already exists: {}".format(name)
-                )
+                raise QiskitOptimizationError(f"Linear constraint's name already exists: {name}")
         else:
             k = self.get_num_linear_constraints()
-            while "c{}".format(k) in self.linear_constraints_index:
+            while f"c{k}" in self.linear_constraints_index:
                 k += 1
-            name = "c{}".format(k)
+            name = f"c{k}"
         self.linear_constraints_index[name] = len(self.linear_constraints)
         if linear is None:
             linear = {}
@@ -715,14 +708,12 @@ class QuadraticProgram:
         """
         if name:
             if name in self.quadratic_constraints_index:
-                raise QiskitOptimizationError(
-                    "Quadratic constraint name already exists: {}".format(name)
-                )
+                raise QiskitOptimizationError(f"Quadratic constraint name already exists: {name}")
         else:
             k = self.get_num_quadratic_constraints()
-            while "q{}".format(k) in self.quadratic_constraints_index:
+            while f"q{k}" in self.quadratic_constraints_index:
                 k += 1
-            name = "q{}".format(k)
+            name = f"q{k}"
         self.quadratic_constraints_index[name] = len(self.quadratic_constraints)
         if linear is None:
             linear = {}
@@ -853,6 +844,26 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
+    def _copy_from(self, other: "QuadraticProgram", include_name: bool) -> None:
+        """Copy another QuadraticProgram to this updating QuadraticProgramElement
+
+        Note: this breaks the consistency of `other`. You cannot use `other` after the copy.
+
+        Args:
+            other: The quadratic program to be copied from.
+            include_name: Whether this method copies the problem name or not.
+        """
+        for attr, val in vars(other).items():
+            if attr == "_name" and not include_name:
+                continue
+            if isinstance(val, QuadraticProgramElement):
+                val.quadratic_program = self
+            if isinstance(val, list):
+                for elem in val:
+                    if isinstance(elem, QuadraticProgramElement):
+                        elem.quadratic_program = self
+            setattr(self, attr, val)
+
     @deprecate_method(
         "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.from_docplex_mp"
     )
@@ -874,8 +885,7 @@ class QuadraticProgram:
         from ..translators.docplex_mp import from_docplex_mp
 
         other = from_docplex_mp(model)
-        for attr, val in vars(other).items():
-            setattr(self, attr, val)
+        self._copy_from(other, include_name=True)
 
     @deprecate_method(
         "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.to_docplex_mp"
@@ -946,8 +956,7 @@ class QuadraticProgram:
 
         model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
         other = from_docplex_mp(model)
-        for attr, val in vars(other).items():
-            setattr(self, attr, val)
+        self._copy_from(other, include_name=True)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
@@ -1036,7 +1045,7 @@ class QuadraticProgram:
             offset: The constant value in the Ising Hamiltonian.
             linear: If linear is True, :math:`x^2` is treated as a linear term
                 since :math:`x^2 = x` for :math:`x \in \{0,1\}`.
-                Else, :math:`x^2` is treat as a quadratic term.
+                Else, :math:`x^2` is treated as a quadratic term.
                 The default value is False.
 
         Raises:
@@ -1048,8 +1057,7 @@ class QuadraticProgram:
         from ..translators.ising import from_ising
 
         other = from_ising(qubit_op, offset, linear)
-        for attr, val in vars(other).items():
-            setattr(self, attr, val)
+        self._copy_from(other, include_name=False)
 
     def get_feasibility_info(
         self, x: Union[List[float], np.ndarray]
@@ -1068,19 +1076,19 @@ class QuadraticProgram:
         # if input `x` is not the same len as the total vars, raise an error
         if len(x) != self.get_num_vars():
             raise QiskitOptimizationError(
-                "The size of solution `x`: {}, does not match the number of problem variables: "
-                "{}".format(len(x), self.get_num_vars())
+                f"The size of solution `x`: {len(x)}, does not match the number of problem variables: "
+                f"{self.get_num_vars()}"
             )
 
         # check whether the input satisfy the bounds of the problem
-        violated_variables = []  # type: List[Variable]
+        violated_variables = []
         for i, val in enumerate(x):
             variable = self.get_variable(i)
             if val < variable.lowerbound or variable.upperbound < val:
                 violated_variables.append(variable)
 
         # check whether the input satisfy the constraints of the problem
-        violated_constraints = []  # type: List[Constraint]
+        violated_constraints = []
         for constraint in cast(List[Constraint], self._linear_constraints) + cast(
             List[Constraint], self._quadratic_constraints
         ):
