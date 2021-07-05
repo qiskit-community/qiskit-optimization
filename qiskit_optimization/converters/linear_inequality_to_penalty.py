@@ -37,13 +37,10 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
         \begin{array}{}
         \text { Inequality constraint } & & \text { Penalty term } \\
-        x+y \leq 1 & \rightarrow & P(x y) \\
-        x+y \geq 1 & \rightarrow & P(1-x-y+x y) \\
         x \leq y & \rightarrow  & P(x-x y) \\
         x \geq y & \rightarrow  & P(y-x y) \\
-        \sum_{i=1}^n x_i \leq 1 & \rightarrow & P\left(\sum_{i, j : i < j} x_i x_j\right), (n \geq 2) \\
-        \sum_{i=1}^n x_i \geq n-1 & \rightarrow & P\left(\sum_{i, j : i < j} (1 - x_i) (1 - x_j) \right),
-         (n \geq 2)
+        \sum_{i=1}^n x_i \leq 1, n \geq 2 & \rightarrow & P \sum_{i, j : i < j} x_i x_j\\
+        \sum_{i=1}^n x_i \geq n-1, n \geq 2 & \rightarrow & P \sum_{i, j : i < j} (1 - x_i) (1 - x_j)
         \end{array}
 
     Note that x, y, z and :math:`x_i` are binary variables, and P is a penalty factor,
@@ -73,7 +70,20 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         self._should_define_penalty: bool = penalty is None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
-        """Convert some inequality constraints into penalty terms of the objective function.
+        r"""Convert inequality constraints into penalty terms of the objective function.
+
+        This methods converts the following patterns where x, y, and :math:`x_i` are binary variables
+        and P is a penalty factor.
+
+        .. math::
+
+            \begin{array}{}
+            \text { Inequality constraint } & & \text { Penalty term } \\
+            x \leq y & \rightarrow  & P(x-x y) \\
+            x \geq y & \rightarrow  & P(y-x y) \\
+            \sum_{i=1}^n x_i \leq 1, n \geq 2 & \rightarrow & P \sum_{i, j : i < j} x_i x_j\\
+            \sum_{i=1}^n x_i \geq n-1, n \geq 2 & \rightarrow & P \sum_{i, j : i < j} (1 - x_i) (1 - x_j)
+            \end{array}
 
         Args:
             problem: The problem to be solved.
