@@ -1,0 +1,16 @@
+---
+features:
+  - |
+    Introduced a new converter class :class:`qiskit_optimization.converters.LinearInequalityToPenalty`.
+    It converts the following inequality constraints to penalty terms where x, y, :math:`x_i`
+    are binary variables and P is a penalty factor.
+
+    .. math::
+
+        \begin{array}{}
+        \text { Inequality constraint } & & \text { Penalty term } \\
+        x \leq y & \rightarrow  & P(x-x y) \\
+        x \geq y & \rightarrow  & P(y-x y) \\
+        \sum_{i=1}^n x_i \leq 1, n \geq 2 & \rightarrow & P \sum_{i, j : i < j} x_i x_j\\
+        \sum_{i=1}^n x_i \geq n-1, n \geq 2 & \rightarrow & P \sum_{i, j : i < j} (1 - x_i) (1 - x_j)
+        \end{array}
