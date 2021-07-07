@@ -1,9 +1,10 @@
 ---
 features:
   - |
-    Introduced a new converter class ``MinimizeToMaximize`` for ``QuadraticProgram``.
+    Introduced a new converter class :class:`qiskit_optimization.converters.MinimizeToMaximize`.
     It converts a problem to a maximization problem.
 fixes:
   - |
-    Fixes the Goemans-Williamson optimizer. If a minimization problem is passed to the optimizer,
+    Fixes :class:`qiskit_optimization.algorithms.GoemansWilliamsonOptimizer`.
+    If a minimization problem is passed to the optimizer,
     then it is converted to a maximization problem and then solved.
