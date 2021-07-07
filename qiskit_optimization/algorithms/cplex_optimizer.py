@@ -57,6 +57,7 @@ class CplexOptimizer(OptimizationAlgorithm):
         Args:
             disp: Whether to print CPLEX output or not.
             cplex_parameters: The parameters for CPLEX.
+                See https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-parameters for details.
 
         Raises:
             MissingOptionalLibraryError: CPLEX is not installed.

@@ -1,5 +1,5 @@
 features:
   - |
-    Adds translators between Ising Hamiltonian and ``QuadraticProgram``,
+    Adds translators between Ising Hamiltonian and :class:`qiskit_optimization.problems.QuadraticProgram`,
     :meth:`~qiskit_optimization.translators.from_ising` and
     :meth:`~qiskit_optimization.translators.to_ising`.

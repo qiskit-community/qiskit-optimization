@@ -1,12 +1,12 @@
 ---
 fixes:
   - |
-    Fixes ``rotation_count`` in :class`qiskit_optimization.algorithms.GroverOptimizer`.
+    Fixes ``rotation_count`` in :class:`qiskit_optimization.algorithms.GroverOptimizer`.
     This fix uses ``algorithm_globals.random.integers(0, m)`` to generate a random integer
-    in a range 0..``m``-1.
+    in a range 0..m-1.
   - |
     Sorts the order of ``result.get_counts(qc)`` by bitstring
-    in :class`qiskit_optimization.algorithms.GroverOptimizer` when ``qasm_simulator`` is used
+    in :class:`qiskit_optimization.algorithms.GroverOptimizer` when ``qasm_simulator`` is used
     so that the algorithm behaves deterministically.
     The previous version sorts the counts by probabilities, but some bitstrings may have
     the same probability and the algorithm could behave probabilistically.
