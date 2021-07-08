@@ -4,5 +4,5 @@ numpy>=1.17
 docplex; sys_platform != 'darwin'
 docplex==2.15.194; sys_platform == 'darwin'
 setuptools>=40.1.0
-networkx>=2.2
+networkx>=2.2,<2.6
 dataclasses; python_version < '3.7'
