@@ -31,7 +31,7 @@ See :ref:`optional_installs` for more information.
         pip install qiskit[optimization]
 
     It is worth pointing out that if you're a zsh user (which is the default shell on newer
-    versions of macOS), you'll need to put ``qiskit[optimizationg]`` in quotes:
+    versions of macOS), you'll need to put ``qiskit[optimization]`` in quotes:
 
     .. code:: sh
 

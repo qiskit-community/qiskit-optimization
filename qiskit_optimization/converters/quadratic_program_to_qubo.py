@@ -20,6 +20,7 @@ from ..converters.flip_problem_sense import MaximizeToMinimize
 from ..converters.inequality_to_equality import InequalityToEquality
 from ..converters.integer_to_binary import IntegerToBinary
 from ..converters.linear_equality_to_penalty import LinearEqualityToPenalty
+from ..converters.linear_inequality_to_penalty import LinearInequalityToPenalty
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
 from .quadratic_program_converter import QuadraticProgramConverter
@@ -44,9 +45,10 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
                 If None is passed, a penalty factor will be automatically calculated on every
                 conversion.
         """
-
         self._penalize_lin_eq_constraints = LinearEqualityToPenalty(penalty=penalty)
+        self._penalize_lin_ineq_constraints = LinearInequalityToPenalty(penalty=penalty)
         self._converters = [
+            self._penalize_lin_ineq_constraints,
             InequalityToEquality(mode="integer"),
             IntegerToBinary(),
             self._penalize_lin_eq_constraints,
@@ -160,4 +162,5 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
                      If None is passed, a penalty factor will be automatically calculated on every
                      conversion.
         """
+        self._penalize_lin_ineq_constraints.penalty = penalty
         self._penalize_lin_eq_constraints.penalty = penalty

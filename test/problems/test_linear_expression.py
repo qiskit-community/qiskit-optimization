@@ -13,12 +13,12 @@
 """ Test LinearExpression """
 
 import unittest
-
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import numpy as np
 from scipy.sparse import dok_matrix
 
-from qiskit_optimization import QuadraticProgram
+from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import LinearExpression
 
 
@@ -125,6 +125,53 @@ class TestLinearExpression(QiskitOptimizationTestCase):
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             np.testing.assert_almost_equal(linear.evaluate_gradient(values), coefficients_list)
+
+    def test_bounds(self):
+        """test lowerbound and upperbound"""
+
+        with self.subTest("bounded"):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=-1, upperbound=2)
+            coefficients_list = list(range(3))
+            bounds = LinearExpression(quadratic_program, coefficients_list).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -3)
+            self.assertAlmostEqual(bounds.upperbound, 6)
+
+        with self.subTest("bounded2"):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.integer_var(lowerbound=-2, upperbound=-1, name="x")
+            quadratic_program.integer_var(lowerbound=2, upperbound=4, name="y")
+            bounds = LinearExpression(quadratic_program, {"x": 1, "y": 10}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 18)
+            self.assertAlmostEqual(bounds.upperbound, 39)
+
+            bounds = LinearExpression(quadratic_program, {"x": -1, "y": 10}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 21)
+            self.assertAlmostEqual(bounds.upperbound, 42)
+
+            bounds = LinearExpression(quadratic_program, {"x": 1, "y": -10}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -42)
+            self.assertAlmostEqual(bounds.upperbound, -21)
+
+            bounds = LinearExpression(quadratic_program, {"x": -1, "y": -10}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, -39)
+            self.assertAlmostEqual(bounds.upperbound, -18)
+
+            bounds = LinearExpression(quadratic_program, {"x": 0, "y": 0}).bounds
+            self.assertAlmostEqual(bounds.lowerbound, 0)
+            self.assertAlmostEqual(bounds.upperbound, 0)
+
+        with self.assertRaises(QiskitOptimizationError):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=0, upperbound=INFINITY)
+            coefficients_list = list(range(3))
+            _ = LinearExpression(quadratic_program, coefficients_list).bounds
+
+        with self.assertRaises(QiskitOptimizationError):
+            quadratic_program = QuadraticProgram()
+            quadratic_program.continuous_var_list(3, lowerbound=-INFINITY, upperbound=0)
+            coefficients_list = list(range(3))
+            _ = LinearExpression(quadratic_program, coefficients_list).bounds
 
 
 if __name__ == "__main__":

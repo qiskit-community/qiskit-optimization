@@ -20,6 +20,8 @@ from scipy.sparse import spmatrix, dok_matrix, tril, triu
 
 from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
+from ..infinity import INFINITY
+from .linear_expression import ExpressionBounds
 
 
 class QuadraticExpression(QuadraticProgramElement):
@@ -241,3 +243,45 @@ class QuadraticExpression(QuadraticProgramElement):
         if isinstance(x, list):
             x = np.array(x)
         return x
+
+    @property
+    def bounds(self) -> ExpressionBounds:
+        """Returns the lower bound and the upper bound of the quadratic expression
+
+        Returns:
+            The lower bound and the upper bound of the quadratic expression
+
+        Raises:
+            QiskitOptimizationError: if the quadratic expression contains any unbounded variable
+        """
+        l_b = u_b = 0.0
+        for (ind1, ind2), coeff in self.to_dict().items():
+            x = self.quadratic_program.get_variable(ind1)
+            if x.lowerbound == -INFINITY or x.upperbound == INFINITY:
+                raise QiskitOptimizationError(
+                    f"Quadratic expression contains an unbounded variable: {x.name}"
+                )
+            y = self.quadratic_program.get_variable(ind2)
+            if y.lowerbound == -INFINITY or y.upperbound == INFINITY:
+                raise QiskitOptimizationError(
+                    f"Quadratic expression contains an unbounded variable: {y.name}"
+                )
+            lst = []
+            if ind1 == ind2:
+                if x.lowerbound * x.upperbound <= 0.0:
+                    # lower bound and upper bound have different signs
+                    lst.append(0.0)
+                lst.extend([x.lowerbound ** 2, x.upperbound ** 2])
+            else:
+                lst.extend(
+                    [
+                        x.lowerbound * y.lowerbound,
+                        x.lowerbound * y.upperbound,
+                        x.upperbound * y.lowerbound,
+                        x.upperbound * y.upperbound,
+                    ]
+                )
+            lst2 = [coeff * val for val in lst]
+            l_b += min(lst2)
+            u_b += max(lst2)
+        return ExpressionBounds(lowerbound=l_b, upperbound=u_b)

@@ -5,6 +5,7 @@ aer
 aer's
 al
 annealers
+ansatz
 applegate
 args
 arxiv
@@ -56,11 +57,13 @@ farhi
 fmin
 formatter
 func
+fred
 fval
 fx
 gambella
 geq
 getter
+glover
 goemans
 goldstone
 grover
@@ -129,13 +132,17 @@ pooya
 pos
 pre
 preprint
+prepend
 presolver
 princeton
 probabilistically
+py
+pxd
 qaoa
 qasm
 qiskit
 qiskit's
+qn
 qp
 quadratically
 quadraticconstraint
@@ -150,8 +157,10 @@ representable
 rhobeg
 rhoend
 rhs
+rightarrow
 ronagh
 rtype
+runtime
 ry
 rz
 sahar
@@ -161,6 +170,7 @@ simonetto
 slsqp
 smode
 smoothen
+spsa
 src
 statevector
 stdout
@@ -168,6 +178,7 @@ str
 subcollection
 subgraph
 submodules
+subspaces
 sys
 subproblem
 summands

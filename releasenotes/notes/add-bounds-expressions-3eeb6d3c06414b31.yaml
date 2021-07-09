@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds :meth:`qiskit_optimization.problems.LinearExpression.bounds` and
+    :meth:`qiskit_optimization.problems.QuadraticExpression.bounds` that
+    return the lower bound and the upper bound of the expressions.

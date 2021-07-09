@@ -13,7 +13,6 @@
 """Converter to convert a problem with equality constraints to unconstrained with penalty terms."""
 
 import logging
-from math import fsum
 from typing import Optional, cast, Union, Tuple, List
 
 import numpy as np
@@ -40,6 +39,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         """
         self._src_num_vars: Optional[int] = None
         self._penalty: Optional[float] = penalty
+        self._should_define_penalty: bool = penalty is None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Convert a problem with equality constraints into an unconstrained problem.
@@ -59,7 +59,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         dst = QuadraticProgram(name=problem.name)
 
         # If no penalty was given, set the penalty coefficient by _auto_define_penalty()
-        if self._penalty is None:
+        if self._should_define_penalty:
             penalty = self._auto_define_penalty(problem)
         else:
             penalty = self._penalty
@@ -141,7 +141,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         terms = []
         for constraint in problem.linear_constraints:
             terms.append(constraint.rhs)
-            terms.extend(coef for coef in constraint.linear.to_dict().values())
+            terms.extend(constraint.linear.to_array().tolist())
         if any(isinstance(term, float) and not term.is_integer() for term in terms):
             logger.warning(
                 "Warning: Using %f for the penalty coefficient because "
@@ -152,15 +152,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             )
             return default_penalty
 
-        # (upper bound - lower bound) can be calculate as the sum of absolute value of coefficients
-        # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
-        penalties = [1.0]
-        # add linear terms of the object function.
-        penalties.extend(abs(coef) for coef in problem.objective.linear.to_dict().values())
-        # add quadratic terms of the object function.
-        penalties.extend(abs(coef) for coef in problem.objective.quadratic.to_dict().values())
-
-        return fsum(penalties)
+        lin_b = problem.objective.linear.bounds
+        quad_b = problem.objective.quadratic.bounds
+        return 1.0 + (lin_b.upperbound - lin_b.lowerbound) + (quad_b.upperbound - quad_b.lowerbound)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem
@@ -201,3 +195,4 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
                      on every conversion.
         """
         self._penalty = penalty
+        self._should_define_penalty = penalty is None

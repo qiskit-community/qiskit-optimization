@@ -1,7 +1,8 @@
 ---
 features:
   - |
-    Adds model translators between modeling libraries (e.g., docplex and gurobipy) and ``QuadraticProgram``.
+    Adds model translators between modeling libraries (e.g., docplex and gurobipy) and
+    :class:`~qiskit_optimization.problems.QuadraticProgram`.
     Adds translator functions :meth:`~qiskit_optimization.translators.from_docplex_mp`,
     :meth:`~qiskit_optimization.translators.to_docplex_mp`,
     :meth:`~qiskit_optimization.translators.from_gurobipy`, and
@@ -9,10 +10,12 @@ features:
     to :mod:`~qiskit_optimization.translators`.
 upgrade:
   - |
-    :meth:`~qiskit_optimization.problems.QuadraticProgram.pprint_as_string` and
-    :meth:`~qiskit_optimization.problems.QuadraticProgram.prettyprint` have been removed,
+    ``QuadraticProgram.pprint_as_string`` and
+    ``QuadraticProgram.prettyprint`` have been removed,
     which were deprecated in Qiskit Aqua 0.8.0 release (October 2020).
 deprecations:
   - |
-    ``QuadraticProgram.from_docplex``, ``QuadraticProgram.to_docplex`` are deprecated because
-    ``from_docplex_mp`` and ``to_docplex_mp`` cover the features.
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.from_docplex`,
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.to_docplex` are deprecated because
+    :meth:`~qiskit_optimization.translators.from_docplex_mp` and
+    :meth:`~qiskit_optimization.translators.to_docplex_mp` cover the features.
