@@ -92,18 +92,3 @@ class GraphOptimizationApplication(OptimizationApplication):
             A graph for a problem
         """
         return self._graph
-
-    @staticmethod
-    def random_graph(num_nodes: int, num_edges: int, seed: Optional[int] = None) -> nx.Graph:
-        """
-
-        Args:
-            num_nodes: The number of nodes in a graph
-            num_edges: The number of edges in a graph
-            seed: seed for a random graph
-
-        Returns:
-            A random graph of NetworkX
-        """
-        graph = nx.gnm_random_graph(num_nodes, num_edges, seed)
-        return graph
