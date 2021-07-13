@@ -56,14 +56,17 @@ git config user.email "qiskit@qiskit.org"
 echo "git rm -rf for the translation po files"
 git rm -rf --ignore-unmatch optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/*.po \
     optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/api \
-    optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/apidoc \
+    optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/apidocs \
+    optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/stubs \
+    optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/release_notes.po \
     optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/theme \
     optimization/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/_*
 
 # Remove api/ and apidoc/ to avoid confusion while translating
 rm -rf $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/api/ \
-    $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/apidoc/ \
-    $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/stubs/ \
+    $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/apidocs \
+    $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/stubs \
+    $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/release_notes.po \
     $SOURCE_DIR/$DOC_DIR_PO/$SOURCE_LANG/LC_MESSAGES/theme/
 
 # Copy the new rendered files and add them to the commit.
@@ -71,6 +74,8 @@ echo "copy directory"
 cp -r $SOURCE_DIR/$DOC_DIR_PO/ optimization/docs
 cp $SOURCE_DIR/setup.py optimization/.
 cp $SOURCE_DIR/requirements-dev.txt optimization/.
+cp $SOURCE_DIR/requirements.txt optimization/.
+cp $SOURCE_DIR/qiskit_optimization/VERSION.txt optimization/qiskit_optimization/.
 
 # git checkout translationDocs
 echo "add to po files to target dir"
