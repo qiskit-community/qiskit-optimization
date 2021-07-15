@@ -106,5 +106,4 @@ class GraphOptimizationApplication(OptimizationApplication):
         Returns:
             A random graph of NetworkX
         """
-        graph = nx.gnm_random_graph(num_nodes, num_edges, seed)
-        return graph
+        return nx.gnm_random_graph(num_nodes, num_edges, seed)
