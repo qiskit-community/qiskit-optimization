@@ -248,6 +248,21 @@
     {
       "cell_type": "markdown",
       "metadata": {
+        "id": "4934a4ba"
+      },
+      "source": [
+        "## References\n",
+        "\n",
+        "- H. Kellerer, U. Pferschy, D. Pisinger (2004). Knapsack Problems. Springer-Verlag Berlin Heidelberg. ISBN 978-3-642-07311-3\n",
+        "- S. Martello, P. Toth (1990). Knapsack Problems: Algorithms and Computer Implementations. John Wiley & Sons Ltd. ISBN 0-471-92420-2\n",
+        "- [A. Lucas, *Ising formulations of many NP problems,* Front. Phys., 12 (2014).](https://arxiv.org/abs/1302.5843)\n",
+        "- [A. Lucas, *Hard combinatorial problems and minor embeddings on lattice graphs,* Quantum Information Processing, vol. 18, no. 7, (2019)](https://arxiv.org/abs/1302.5843)"
+      ],
+      "id": "4934a4ba"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
         "id": "84e7c26e"
       },
       "source": [
@@ -735,21 +750,6 @@
           "name": "stdout"
         }
       ]
-    },
-    {
-      "cell_type": "markdown",
-      "metadata": {
-        "id": "XfDLpTqxGpT8"
-      },
-      "source": [
-        "## References\n",
-        "\n",
-        "- H. Kellerer, U. Pferschy, D. Pisinger (2004). Knapsack Problems. Springer-Verlag Berlin Heidelberg. ISBN 978-3-642-07311-3\n",
-        "- S. Martello, P. Toth (1990). Knapsack Problems: Algorithms and Computer Implementations. John Wiley & Sons Ltd. ISBN 0-471-92420-2\n",
-        "- [A. Lucas, *Ising formulations of many NP problems,* Front. Phys., 12 (2014).](https://arxiv.org/abs/1302.5843)\n",
-        "- [A. Lucas, *Hard combinatorial problems and minor embeddings on lattice graphs,* Quantum Information Processing, vol. 18, no. 7, (2019)](https://arxiv.org/abs/1302.5843)"
-      ],
-      "id": "XfDLpTqxGpT8"
     },
     {
       "cell_type": "code",
