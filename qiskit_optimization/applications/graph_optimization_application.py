@@ -95,7 +95,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         return self._graph
 
     @staticmethod
-    @deprecate_method("0.3.0", DeprecatedType.FUNCTION, "netowrkx.gnm_random_graph", "directly")
+    @deprecate_method("0.3.0", DeprecatedType.FUNCTION, "netowrkx.gnm_random_graph", "in NetworkX, directly")
     def random_graph(num_nodes: int, num_edges: int, seed: Optional[int] = None) -> nx.Graph:
         """
         Args:
