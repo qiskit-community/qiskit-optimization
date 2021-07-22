@@ -91,7 +91,7 @@ class SKModel(OptimizationApplication):
 
     @property
     def graph(self) -> nx.Graph:
-        """Getter of the graph
+        """Getter of the graph.
         Returns:
             A graph for a problem
         """
