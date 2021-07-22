@@ -26,9 +26,9 @@ class SKModel(OptimizationApplication):
     """Optimization application of the "Sherrington Kirkpatrick (SK) model" [1].
 
     The SK Hamiltonian over n spins is given as:
-        H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j, where x_i\in\pm 1
-    and w_{i,j}\in\pm 1 are chosen independently and uniformly at random.
-    Notice that there are other variants e.g., with w_{i,j} chosen from the normal distribution
+        :math:`H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j`, :math:`where x_i\in\{\pm 1\}`
+    and :math:`w_{i,j}\in\{\pm 1\}` are chosen independently and uniformly at random.
+    Notice that there are other variants e.g., with :math:`w_{i,j}` chosen from the normal distribution
     with mean 0 and variance 1.
 
     References:
