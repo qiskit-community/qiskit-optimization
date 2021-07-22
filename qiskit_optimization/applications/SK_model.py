@@ -51,7 +51,7 @@ class SKModel(OptimizationApplication):
         self.new_instance()
 
     def new_instance(self) -> None:
-        """Generate a new instance of the SK model"""
+        """Generate a new instance of the SK model."""
         for _, _, d in self._graph.edges(data=True):
             d['weight'] = self._rng.choice([-1, 1])
 
