@@ -81,7 +81,7 @@ class SKModel(OptimizationApplication):
         """Interpret a result as energy and configuration of spins
 
         Args:
-            result : The calculated result of the problem
+            result : The calculated result of the problem.
 
         Returns:
             [energy, configuration of spins]
