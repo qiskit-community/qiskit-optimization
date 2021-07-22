@@ -49,33 +49,33 @@ class TestSKModel(QiskitOptimizationTestCase):
         qp = problem.to_quadratic_program()
 
         # Test name
-        self.subTest("Test name")
-        self.assertEqual(qp.name, "SK-model")
+        with self.subTest("Test name"):
+            self.assertEqual(qp.name, "SK-model")
 
         # Test variables
-        self.subTest("Test variables")
-        self.assertEqual(qp.get_num_vars(), 2)
-        for var in qp.variables:
-            self.assertEqual(var.vartype, VarType.BINARY)
+        with self.subTest("Test variables"):
+            self.assertEqual(qp.get_num_vars(), 2)
+            for var in qp.variables:
+                self.assertEqual(var.vartype, VarType.BINARY)
 
         # Test objective
-        self.subTest("Test objective")
-        obj = qp.objective
-        self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
-        self.assertAlmostEqual(obj.constant, 1 / np.sqrt(2))
-        obj_lin = obj.linear.to_dict()
-        self.assertAlmostEqual(obj_lin[0], -np.sqrt(2))
-        self.assertAlmostEqual(obj_lin[1], -np.sqrt(2))
-        obj_quad = obj.quadratic.to_dict()
-        self.assertEqual(len(obj_quad), 1)
-        self.assertAlmostEqual(obj_quad[(0, 1)], 2 * np.sqrt(2))
+        with self.subTest("Test objective"):
+            obj = qp.objective
+            self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
+            self.assertAlmostEqual(obj.constant, 1 / np.sqrt(2))
+            obj_lin = obj.linear.to_dict()
+            self.assertAlmostEqual(obj_lin[0], -np.sqrt(2))
+            self.assertAlmostEqual(obj_lin[1], -np.sqrt(2))
+            obj_quad = obj.quadratic.to_dict()
+            self.assertEqual(len(obj_quad), 1)
+            self.assertAlmostEqual(obj_quad[(0, 1)], 2 * np.sqrt(2))
 
         # Test constraint
-        self.subTest("Test constraints")
-        constraints_lin = qp.linear_constraints
-        self.assertEqual(len(constraints_lin), 0)
-        constraints_quad = qp.quadratic_constraints
-        self.assertEqual(len(constraints_quad), 0)
+        with self.subTest("Test constraints"):
+            constraints_lin = qp.linear_constraints
+            self.assertEqual(len(constraints_lin), 0)
+            constraints_quad = qp.quadratic_constraints
+            self.assertEqual(len(constraints_quad), 0)
 
     def test_interpret(self):
         """Test interpret"""
