@@ -75,8 +75,7 @@ class SKModel(OptimizationApplication):
         # we converted the standard H(x)=-1/\sqrt{n} \sum w_{ij}x_ix_j, where x_i\in\pm 1 to binary.
 
         mdl.minimize(objective)
-        op = from_docplex_mp(mdl)
-        return op
+        return from_docplex_mp(mdl)
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as energy and configuration of spins
