@@ -78,7 +78,7 @@ class SKModel(OptimizationApplication):
         return from_docplex_mp(mdl)
 
     def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
-        """Interpret a result as energy and configuration of spins
+        """Interpret a result as energy and configuration of spins.
 
         Args:
             result : The calculated result of the problem.
