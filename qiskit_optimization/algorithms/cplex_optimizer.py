@@ -12,20 +12,19 @@
 
 """The CPLEX optimizer wrapped to be used within Qiskit's optimization module."""
 
-import logging
 from typing import Any, Dict, Optional
 from warnings import warn
 
 from qiskit.exceptions import MissingOptionalLibraryError
 
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit_optimization.translators import to_docplex_mp
 from .optimization_algorithm import (
     OptimizationAlgorithm,
     OptimizationResult,
     OptimizationResultStatus,
 )
-from ..problems.quadratic_program import QuadraticProgram
 
-logger = logging.getLogger(__name__)
 
 try:
     from cplex import Cplex  # pylint: disable=unused-import
@@ -58,6 +57,7 @@ class CplexOptimizer(OptimizationAlgorithm):
         Args:
             disp: Whether to print CPLEX output or not.
             cplex_parameters: The parameters for CPLEX.
+                See https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-parameters for details.
 
         Raises:
             MissingOptionalLibraryError: CPLEX is not installed.
@@ -139,7 +139,7 @@ class CplexOptimizer(OptimizationAlgorithm):
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
 
-        mod = problem.to_docplex()
+        mod = to_docplex_mp(problem)
         sol = mod.solve(log_output=self._disp, cplex_parameters=self._cplex_parameters)
         if sol is None:
             # no solution is found

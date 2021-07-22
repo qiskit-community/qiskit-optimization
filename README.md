@@ -40,13 +40,17 @@ To do this follow the instructions in the
 ### Optional Installs
 
 * **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files and the usage of
-  the `CplexOptimizer`, wrapper for ``cplex.Cplex``.
+  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. Currently there is no python 3.9 version of CPLEX. In this case, the CPLEX install
+  command will have no effect.
 
 * **CVXPY** may be installed using command `pip install 'qiskit-optimization[cvx]'` to install the
   package. CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
 
 * **Matplotlib** may be installed using command `pip install 'qiskit-optimization[matplotlib]'` to install the
   package. Matplotlib being installed will enable the usage of the `draw` method in the graph optimization application classes.
+
+* **Gurobipy** may be installed using command `pip install 'qiskit-optimization[gurobi]'` to install the
+  package. Gurobipy being installed will enable the usage of the GurobiOptimizer.
 
 ### Creating Your First Optimization Programming Experiment in Qiskit
 
@@ -125,7 +129,7 @@ Optimization continues to grow with the help and work of
 [many people](https://github.com/Qiskit/qiskit-optimization/graphs/contributors), who contribute
 to the project at different levels.
 If you use Qiskit, please cite as per the provided
-[BibTeX file](https://github.com/Qiskit/qiskit/blob/main/Qiskit.bib).
+[BibTeX file](https://github.com/Qiskit/qiskit/blob/master/Qiskit.bib).
 
 Please note that if you do not like the way your name is cited in the BibTex file then consult
 the information found in the [.mailmap](https://github.com/Qiskit/qiskit-optimization/blob/main/.mailmap)
@@ -134,4 +138,3 @@ file.
 ## License
 
 This project uses the [Apache License 2.0](LICENSE.txt).
-

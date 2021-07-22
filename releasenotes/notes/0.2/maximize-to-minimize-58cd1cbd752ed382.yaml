@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Introduced a new converter class :class:`qiskit_optimization.converters.MaximizeToMinimize`.
+    It converts a problem to a minimization problem. The converter was added to
+    the default converters in :class:`qiskit_optimization.converters.QuadraticProgramToQubo`.
+    Algorithms that use ``QuadraticProgramToQubo`` apply ``MaximizeToMinimize`` internally.
+

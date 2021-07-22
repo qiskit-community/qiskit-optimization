@@ -13,7 +13,7 @@
 """Quadratic Objective."""
 
 from enum import Enum
-from typing import Union, List, Dict, Tuple, Any
+from typing import Union, List, Dict, Tuple, Any, Optional
 
 from numpy import ndarray
 from scipy.sparse import spmatrix
@@ -42,12 +42,16 @@ class QuadraticObjective(QuadraticProgramElement):
         self,
         quadratic_program: Any,
         constant: float = 0.0,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
+        linear: Optional[
+            Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]]
+        ] = None,
+        quadratic: Optional[
+            Union[
+                ndarray,
+                spmatrix,
+                List[List[float]],
+                Dict[Tuple[Union[int, str], Union[int, str]], float],
+            ]
         ] = None,
         sense: ObjSense = ObjSense.MINIMIZE,
     ) -> None:

@@ -12,7 +12,6 @@
 
 """ Test Converters """
 
-import logging
 import unittest
 from test.optimization_test_case import (
     QiskitOptimizationTestCase,
@@ -37,8 +36,8 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
 )
 from qiskit_optimization.problems import Constraint, Variable
+from qiskit_optimization.translators import from_docplex_mp
 
-logger = logging.getLogger(__name__)
 
 QUBIT_OP_MAXIMIZE_SAMPLE = (
     -199999.5 * (I ^ I ^ I ^ Z)
@@ -413,9 +412,10 @@ class TestConverters(QiskitOptimizationTestCase):
         op = QUBIT_OP_MAXIMIZE_SAMPLE
         offset = OFFSET_MAXIMIZE_SAMPLE
 
-        quadratic = QuadraticProgram()
+        quadratic = QuadraticProgram("test")
         quadratic.from_ising(op, offset, linear=True)
 
+        self.assertEqual(quadratic.name, "test")
         self.assertEqual(quadratic.get_num_vars(), 4)
         self.assertEqual(quadratic.get_num_linear_constraints(), 0)
         self.assertEqual(quadratic.get_num_quadratic_constraints(), 0)
@@ -448,9 +448,10 @@ class TestConverters(QiskitOptimizationTestCase):
         op = QUBIT_OP_MAXIMIZE_SAMPLE
         offset = OFFSET_MAXIMIZE_SAMPLE
 
-        quadratic = QuadraticProgram()
+        quadratic = QuadraticProgram("test")
         quadratic.from_ising(op, offset, linear=False)
 
+        self.assertEqual(quadratic.name, "test")
         self.assertEqual(quadratic.get_num_vars(), 4)
         self.assertEqual(quadratic.get_num_linear_constraints(), 0)
         self.assertEqual(quadratic.get_num_quadratic_constraints(), 0)
@@ -480,8 +481,7 @@ class TestConverters(QiskitOptimizationTestCase):
         c = mdl.continuous_var(lb=0, ub=10.9, name="c")
         x = mdl.binary_var(name="x")
         mdl.maximize(c + x * x)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
         converter = IntegerToBinary()
         op = converter.convert(op)
         admm_params = ADMMParameters()
@@ -556,6 +556,28 @@ class TestConverters(QiskitOptimizationTestCase):
         lineq2penalty.penalty = None
         lineq2penalty.convert(op)
         self.assertEqual(4, lineq2penalty.penalty)
+
+    def test_penalty_recalculation_when_reusing2(self):
+        """Test the penalty retrieval and recalculation of LinearEqualityToPenalty 2"""
+        op = QuadraticProgram()
+        op.binary_var("x")
+        op.binary_var("y")
+        op.binary_var("z")
+        op.minimize(constant=3, linear={"x": 1}, quadratic={("x", "y"): 2})
+        op.linear_constraint(linear={"x": 1, "y": 1, "z": 1}, sense="EQ", rhs=2, name="xyz_eq")
+        # First, create a converter with no penalty
+        lineq2penalty = LinearEqualityToPenalty()
+        self.assertIsNone(lineq2penalty.penalty)
+        # Then converter must calculate the penalty for the problem (should be 4.0)
+        lineq2penalty.convert(op)
+        self.assertEqual(4, lineq2penalty.penalty)
+        # Re-use the converter for a new problem
+        op2 = QuadraticProgram()
+        op2.binary_var("x")
+        op2.minimize(linear={"x": 10})
+        op2.linear_constraint({"x": 1}, "==", 0)
+        lineq2penalty.convert(op2)
+        self.assertEqual(11, lineq2penalty.penalty)
 
     def test_linear_equality_to_penalty_decode(self):
         """Test decode func of LinearEqualityToPenalty"""

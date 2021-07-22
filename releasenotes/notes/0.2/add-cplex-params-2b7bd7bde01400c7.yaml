@@ -1,0 +1,12 @@
+---
+upgrade:
+  - |
+    Simplifies :class:`qiskit_optimization.algorithms.CplexOptimizer` by
+    calling CPLEX from ``docplex.mp.model.Model.solve`` directly.
+    Also adds a fallback code if no solution is found by CPLEX.
+  - |
+    Adds ``cplex_parameters`` as a dictionary to
+    :class:`qiskit_optimization.algorithms.CplexOptimizer`
+    so that users can set
+    `CPLEX parameters <https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-parameters>`_
+    such as time limit and number of threads.

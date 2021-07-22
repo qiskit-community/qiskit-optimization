@@ -12,7 +12,6 @@
 
 """A recursive minimal eigen optimizer in Qiskit's optimization module."""
 
-import logging
 from copy import deepcopy
 from enum import Enum
 from typing import Optional, Union, List, Tuple, Dict, cast
@@ -37,8 +36,6 @@ from ..converters.quadratic_program_to_qubo import (
 from ..exceptions import QiskitOptimizationError
 from ..problems import Variable
 from ..problems.quadratic_program import QuadraticProgram
-
-logger = logging.getLogger(__name__)
 
 
 class IntermediateResult(Enum):

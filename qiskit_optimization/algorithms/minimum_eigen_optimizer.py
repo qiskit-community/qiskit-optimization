@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
-from typing import Optional, Any, Union, List, cast
+from typing import Optional, Union, List, cast
 
 import numpy as np
 
@@ -36,8 +36,8 @@ class MinimumEigenOptimizationResult(OptimizationResult):
 
     def __init__(
         self,
-        x: Union[List[float], np.ndarray],
-        fval: float,
+        x: Optional[Union[List[float], np.ndarray]],
+        fval: Optional[float],
         variables: List[Variable],
         status: OptimizationResultStatus,
         samples: Optional[List[SolutionSample]] = None,
@@ -203,33 +203,25 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         converted_problem: QuadraticProgram,
         original_problem: QuadraticProgram,
     ):
-
         # only try to solve non-empty Ising Hamiltonians
-        x = None  # type: Optional[Any]
-        eigen_result = None  # type: MinimumEigensolverResult
+        eigen_result: Optional[MinimumEigensolverResult] = None
         if operator.num_qubits > 0:
-
             # approximate ground state of operator using min eigen solver
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
-            fval = None
-            x = None
             raw_samples = None
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
                     eigen_result.eigenstate, converted_problem
                 )
                 raw_samples.sort(key=lambda x: x.fval)
-                x = raw_samples[0].x
-                fval = raw_samples[0].fval
-
-        # if Hamiltonian is empty, then the objective function is constant to the offset
         else:
+            # if Hamiltonian is empty, then the objective function is constant to the offset
             x = np.zeros(converted_problem.get_num_binary_vars())
             fval = offset
             raw_samples = [SolutionSample(x, fval, 1.0, OptimizationResultStatus.SUCCESS)]
 
-        if fval is None or x is None:
+        if raw_samples is None:
             # if not function value is given, then something went wrong, e.g., a
             # NumPyMinimumEigensolver has been configured with an infeasible filter criterion.
             return MinimumEigenOptimizationResult(
@@ -243,11 +235,11 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             )
 
         # translate result back to integers and eventually maximization
-        samples = self._interpret_samples(original_problem, raw_samples, self._converters)
+        samples, best_raw = self._interpret_samples(original_problem, raw_samples, self._converters)
         return cast(
             MinimumEigenOptimizationResult,
             self._interpret(
-                x=x,
+                x=best_raw.x,
                 converters=self._converters,
                 problem=original_problem,
                 result_class=MinimumEigenOptimizationResult,

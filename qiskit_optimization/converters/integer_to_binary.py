@@ -13,7 +13,6 @@
 """The converter to map integer variables in a quadratic program to binary variables."""
 
 import copy
-import logging
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -23,8 +22,6 @@ from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
-
-logger = logging.getLogger(__name__)
 
 
 class IntegerToBinary(QuadraticProgramConverter):
@@ -49,9 +46,9 @@ class IntegerToBinary(QuadraticProgramConverter):
     _delimiter = "@"  # users are supposed not to use this character in variable names
 
     def __init__(self) -> None:
-        self._src = None  # type: Optional[QuadraticProgram]
-        self._dst = None  # type: Optional[QuadraticProgram]
-        self._conv = {}  # type: Dict[Variable, List[Tuple[str, int]]]
+        self._src: Optional[QuadraticProgram] = None
+        self._dst: Optional[QuadraticProgram] = None
+        self._conv: Dict[Variable, List[Tuple[str, int]]] = {}
         # e.g., self._conv = {x: [('x@1', 1), ('x@2', 2)]}
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -114,7 +111,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         self, coefficients: Dict[str, float]
     ) -> Tuple[Dict[str, float], float]:
         constant = 0.0
-        linear = {}  # type: Dict[str, float]
+        linear: Dict[str, float] = {}
         for name, v in coefficients.items():
             x = self._src.get_variable(name)
             if x in self._conv:
@@ -130,7 +127,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         self, coefficients: Dict[Tuple[str, str], float]
     ) -> Tuple[Dict[Tuple[str, str], float], Dict[str, float], float]:
         constant = 0.0
-        linear = {}  # type: Dict[str, float]
+        linear: Dict[str, float] = {}
         quadratic = {}
         for (name_i, name_j), v in coefficients.items():
             x = self._src.get_variable(name_i)

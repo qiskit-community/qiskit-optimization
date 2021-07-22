@@ -22,7 +22,7 @@ from qiskit_optimization.algorithms.admm_optimizer import (
     ADMMOptimizationResult,
     ADMMState,
 )
-from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import from_docplex_mp
 
 
 class TestADMMOptimizer(QiskitOptimizationTestCase):
@@ -34,8 +34,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         c = mdl.continuous_var(lb=0, ub=10, name="c")
         x = mdl.binary_var(name="x")
         mdl.maximize(c + x * x)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters()
 
@@ -75,8 +74,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(2 * v + 10 * w + t <= 3, "cons1")
         mdl.add_constraint(v + w + t >= b, "cons2")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
@@ -112,8 +110,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(2 * v + 10 * w + t <= 3, "cons1")
         mdl.add_constraint(v + w + t >= b, "cons2")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
@@ -148,8 +145,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(v + w + t >= 1, "cons2")
         mdl.add_constraint(v + w == 1, "cons3")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
@@ -181,8 +177,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(v + w + t >= 1, "cons2")
         mdl.add_constraint(v + w == 1, "cons3")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001,
@@ -224,8 +219,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(v + w + t >= 1, "cons2")
         mdl.add_constraint(v + w == 1, "cons3")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001,
@@ -264,8 +258,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(v + w + t >= 1, "cons2")
         mdl.add_constraint(v + w == 1, "cons3")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001,
@@ -301,8 +294,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(2 * v + w >= 2, "cons1")
         mdl.add_constraint(w + t == 1, "cons2")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001,
@@ -335,8 +327,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         mdl.add_constraint(v + w >= 1, "cons2")
         mdl.add_constraint(v ** 2 + w ** 2 <= 1, "cons2")
 
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
             rho_initial=1001,
@@ -378,8 +369,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         w = mdl.continuous_var(name="w", lb=0.0)
 
         mdl.minimize(v + w)
-        op = QuadraticProgram()
-        op.from_docplex(mdl)
+        op = from_docplex_mp(mdl)
 
         solver = ADMMOptimizer()
         solution = solver.solve(op)

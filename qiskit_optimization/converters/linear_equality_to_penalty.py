@@ -12,9 +12,7 @@
 
 """Converter to convert a problem with equality constraints to unconstrained with penalty terms."""
 
-import copy
 import logging
-from math import fsum
 from typing import Optional, cast, Union, Tuple, List
 
 import numpy as np
@@ -39,9 +37,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
                      If None is passed, a penalty factor will be automatically calculated on
                      every conversion.
         """
-        self._src = None  # type: Optional[QuadraticProgram]
-        self._dst = None  # type: Optional[QuadraticProgram]
-        self.penalty = penalty  # type: Optional[float]
+        self._src_num_vars: Optional[int] = None
+        self._penalty: Optional[float] = penalty
+        self._should_define_penalty: bool = penalty is None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Convert a problem with equality constraints into an unconstrained problem.
@@ -57,34 +55,34 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         """
 
         # create empty QuadraticProgram model
-        self._src = copy.deepcopy(problem)
-        self._dst = QuadraticProgram(name=problem.name)
+        self._src_num_vars = problem.get_num_vars()
+        dst = QuadraticProgram(name=problem.name)
 
         # If no penalty was given, set the penalty coefficient by _auto_define_penalty()
         if self._should_define_penalty:
-            penalty = self._auto_define_penalty()
+            penalty = self._auto_define_penalty(problem)
         else:
             penalty = self._penalty
 
         # Set variables
-        for x in self._src.variables:
+        for x in problem.variables:
             if x.vartype == Variable.Type.CONTINUOUS:
-                self._dst.continuous_var(x.lowerbound, x.upperbound, x.name)
+                dst.continuous_var(x.lowerbound, x.upperbound, x.name)
             elif x.vartype == Variable.Type.BINARY:
-                self._dst.binary_var(x.name)
+                dst.binary_var(x.name)
             elif x.vartype == Variable.Type.INTEGER:
-                self._dst.integer_var(x.lowerbound, x.upperbound, x.name)
+                dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
                 raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
 
         # get original objective terms
-        offset = self._src.objective.constant
-        linear = self._src.objective.linear.to_dict()
-        quadratic = self._src.objective.quadratic.to_dict()
-        sense = self._src.objective.sense.value
+        offset = problem.objective.constant
+        linear = problem.objective.linear.to_dict()
+        quadratic = problem.objective.quadratic.to_dict()
+        sense = problem.objective.sense.value
 
         # convert linear constraints into penalty terms
-        for constraint in self._src.linear_constraints:
+        for constraint in problem.linear_constraints:
 
             if constraint.sense != Constraint.Sense.EQ:
                 raise QiskitOptimizationError(
@@ -116,17 +114,18 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
                     tup = cast(Union[Tuple[int, int], Tuple[str, str]], (j, k))
                     quadratic[tup] = quadratic.get(tup, 0.0) + sense * penalty * coef_1 * coef_2
 
-        if self._src.objective.sense == QuadraticObjective.Sense.MINIMIZE:
-            self._dst.minimize(offset, linear, quadratic)
+        if problem.objective.sense == QuadraticObjective.Sense.MINIMIZE:
+            dst.minimize(offset, linear, quadratic)
         else:
-            self._dst.maximize(offset, linear, quadratic)
+            dst.maximize(offset, linear, quadratic)
 
         # Update the penalty to the one just used
-        self._penalty = penalty  # type: float
+        self._penalty = penalty
 
-        return self._dst
+        return dst
 
-    def _auto_define_penalty(self) -> float:
+    @staticmethod
+    def _auto_define_penalty(problem: QuadraticProgram) -> float:
         """Automatically define the penalty coefficient.
 
         Returns:
@@ -140,9 +139,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         # Check coefficients of constraints.
         # If a constraint has a float coefficient, return the default value for the penalty factor.
         terms = []
-        for constraint in self._src.linear_constraints:
+        for constraint in problem.linear_constraints:
             terms.append(constraint.rhs)
-            terms.extend(coef for coef in constraint.linear.to_dict().values())
+            terms.extend(constraint.linear.to_array().tolist())
         if any(isinstance(term, float) and not term.is_integer() for term in terms):
             logger.warning(
                 "Warning: Using %f for the penalty coefficient because "
@@ -153,15 +152,9 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             )
             return default_penalty
 
-        # (upper bound - lower bound) can be calculate as the sum of absolute value of coefficients
-        # Firstly, add 1 to guarantee that infeasible answers will be greater than upper bound.
-        penalties = [1.0]
-        # add linear terms of the object function.
-        penalties.extend(abs(coef) for coef in self._src.objective.linear.to_dict().values())
-        # add quadratic terms of the object function.
-        penalties.extend(abs(coef) for coef in self._src.objective.quadratic.to_dict().values())
-
-        return fsum(penalties)
+        lin_b = problem.objective.linear.bounds
+        quad_b = problem.objective.quadratic.bounds
+        return 1.0 + (lin_b.upperbound - lin_b.lowerbound) + (quad_b.upperbound - quad_b.lowerbound)
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem
@@ -176,7 +169,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             QiskitOptimizationError: if the number of variables in the result differs from
                                      that of the original problem.
         """
-        if len(x) != self._src.get_num_vars():
+        if len(x) != self._src_num_vars:
             raise QiskitOptimizationError(
                 "The number of variables in the passed result differs from "
                 "that of the original problem."
@@ -202,4 +195,4 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
                      on every conversion.
         """
         self._penalty = penalty
-        self._should_define_penalty = penalty is None  # type: bool
+        self._should_define_penalty = penalty is None

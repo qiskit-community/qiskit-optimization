@@ -19,7 +19,6 @@ from docplex.mp.model import Model
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA
 
-from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import SlsqpOptimizer
 from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
     GoemansWilliamsonOptimizer,
@@ -29,6 +28,7 @@ from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (
     WarmStartQAOAOptimizer,
 )
 from qiskit_optimization.applications.max_cut import Maxcut
+from qiskit_optimization.translators import from_docplex_mp
 
 
 class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
@@ -80,8 +80,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         model.add_constraint(2 * v + 10 * w + t <= 3, "cons1")
         model.add_constraint(v + w + t >= 2, "cons2")
 
-        problem = QuadraticProgram()
-        problem.from_docplex(model)
+        problem = from_docplex_mp(model)
 
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)
@@ -109,8 +108,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         v = model.binary_var(name="v")
 
         model.minimize((u - v + 2) ** 2)
-        problem = QuadraticProgram()
-        problem.from_docplex(model)
+        problem = from_docplex_mp(model)
 
         backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(quantum_instance=backend, reps=1)

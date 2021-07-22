@@ -1,8 +1,0 @@
----
-features:
-  - |
-    Introduced a new converter class ``MaximizeToMinimize`` for ``QuadraticProgram``.
-    It converts a problem to a minimization problem. The converter was added to 
-    the default converters in ``QuadraticProgramToQubo``. Algorithms that
-    previously did the conversion internally are now using ``MaximizeToMinimize``.
-

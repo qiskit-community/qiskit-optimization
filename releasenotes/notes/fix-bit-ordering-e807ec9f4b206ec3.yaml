@@ -1,8 +1,0 @@
----
-fixes:
-  - |
-    Fix bit ordering in :class`qiskit_optimization.algorithms.minimum_eigen_optimizer.MinimumEigenOptimizer`
-    with qasm_simulator.
-  - |
-    Fix probabilities of solution samples with qasm_simulator.
-    See https://github.com/Qiskit/qiskit-optimization/pull/97 for details.

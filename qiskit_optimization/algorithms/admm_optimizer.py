@@ -14,7 +14,6 @@
 import copy
 import logging
 import time
-import warnings
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
@@ -57,7 +56,6 @@ class ADMMParameters:
         mu_res: float = 10,
         mu_merit: float = 1000,
         warm_start: bool = False,
-        max_iter: Optional[int] = None,
     ) -> None:
         """Defines parameters for ADMM optimizer and their default values.
 
@@ -86,17 +84,8 @@ class ADMMParameters:
                 not guarantee the solution will optimal or even feasible. The option should be
                 used when tuning other options does not help and should be considered as a hint
                 to the optimizer where to start its iterative process.
-            max_iter: Deprecated, use maxiter.
         """
         super().__init__()
-        if max_iter is not None:
-            warnings.warn(
-                "The max_iter parameter is deprecated as of "
-                "0.8.0 and will be removed no sooner than 3 months after the release. "
-                "You should use maxiter instead.",
-                DeprecationWarning,
-            )
-            maxiter = max_iter
         self.mu_merit = mu_merit
         self.mu_res = mu_res
         self.tau_decr = tau_decr
@@ -693,7 +682,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         quadratic_y = self._params.beta / 2 * np.eye(binary_size) + self._state.rho / 2 * np.eye(
             binary_size
         )
-        op3.objective.quadratic = quadratic_y
+        op3.objective.quadratic = quadratic_y  # type: ignore[assignment]
 
         # set linear objective for y
         linear_y = -self._state.lambda_mult - self._state.rho * (self._state.x0 - self._state.z)
