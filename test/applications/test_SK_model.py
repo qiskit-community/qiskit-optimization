@@ -62,13 +62,13 @@ class TestSKModel(QiskitOptimizationTestCase):
         self.subTest("Test objective")
         obj = qp.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
-        self.assertAlmostEqual(obj.constant, 1 / np.sqrt(2), 7)
+        self.assertAlmostEqual(obj.constant, 1 / np.sqrt(2))
         obj_lin = obj.linear.to_dict()
-        self.assertAlmostEqual(obj_lin[0], -np.sqrt(2), 7)
-        self.assertAlmostEqual(obj_lin[1], -np.sqrt(2), 7)
+        self.assertAlmostEqual(obj_lin[0], -np.sqrt(2))
+        self.assertAlmostEqual(obj_lin[1], -np.sqrt(2))
         obj_quad = obj.quadratic.to_dict()
         self.assertEqual(len(obj_quad), 1)
-        self.assertAlmostEqual(obj_quad[(0, 1)], 2 * np.sqrt(2), 7)
+        self.assertAlmostEqual(obj_quad[(0, 1)], 2 * np.sqrt(2))
 
         # Test constraint
         self.subTest("Test constraints")
@@ -82,4 +82,4 @@ class TestSKModel(QiskitOptimizationTestCase):
         sk = SKModel(2, np.random.RandomState(self._seed))
         energy, configuration = sk.interpret(self._result)
         self.assertEqual(configuration, [-1, -1])
-        self.assertAlmostEqual(energy, -1 / np.sqrt(2), 7)
+        self.assertAlmostEqual(energy, -1 / np.sqrt(2))
