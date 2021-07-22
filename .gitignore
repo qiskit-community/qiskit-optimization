@@ -110,8 +110,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-venv2/
-qiskit_optimization.egg-info/
 
 
 # Spyder project settings
