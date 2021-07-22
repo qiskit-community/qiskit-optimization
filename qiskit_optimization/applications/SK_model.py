@@ -23,7 +23,7 @@ from ..translators import from_docplex_mp
 
 
 class SKModel(OptimizationApplication):
-    """Optimization application for the "Sherrington Kirkpatrick (SK) model" [1].
+    """Optimization application of the "Sherrington Kirkpatrick (SK) model" [1].
 
     The SK Hamiltonian over n spins is given as:
         H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j, where x_i\in\pm 1
@@ -53,7 +53,7 @@ class SKModel(OptimizationApplication):
     def new_instance(self) -> None:
         """Generate a new instance of the SK model."""
         for _, _, d in self._graph.edges(data=True):
-            d['weight'] = self._rng.choice([-1, 1])
+            d["weight"] = self._rng.choice([-1, 1])
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert an SK model problem instance into a
@@ -69,7 +69,11 @@ class SKModel(OptimizationApplication):
         }
 
         objective = mdl.sum(
-            -1 / np.sqrt(self._n) * self._graph.edges[i, j]["weight"] * (2 * x[i] - 1) * (2 * x[j] - 1)
+            -1
+            / np.sqrt(self._n)
+            * self._graph.edges[i, j]["weight"]
+            * (2 * x[i] - 1)
+            * (2 * x[j] - 1)
             for i, j in self._graph.edges
         )
         # we converted the standard H(x)=-1/\sqrt{n} \sum w_{ij}x_ix_j, where x_i\in\pm 1 to binary.

@@ -30,7 +30,7 @@ class TestSKModel(QiskitOptimizationTestCase):
         super().setUp()
         self._n = 2
         self._seed = 0
-        self._graph = nx.convert_matrix.from_numpy_matrix(np.array([[0., -1.], [-1., 0.]]))
+        self._graph = nx.convert_matrix.from_numpy_matrix(np.array([[0.0, -1.0], [-1.0, 0.0]]))
 
         op = QuadraticProgram()
         for _ in range(2):
@@ -49,14 +49,17 @@ class TestSKModel(QiskitOptimizationTestCase):
         qp = problem.to_quadratic_program()
 
         # Test name
+        self.subTest("Test name")
         self.assertEqual(qp.name, "SK-model")
 
         # Test variables
+        self.subTest("Test variables")
         self.assertEqual(qp.get_num_vars(), 2)
         for var in qp.variables:
             self.assertEqual(var.vartype, VarType.BINARY)
 
         # Test objective
+        self.subTest("Test objective")
         obj = qp.objective
         self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
         self.assertAlmostEqual(obj.constant, 1 / np.sqrt(2), 7)
@@ -68,6 +71,7 @@ class TestSKModel(QiskitOptimizationTestCase):
         self.assertAlmostEqual(obj_quad[(0, 1)], 2 * np.sqrt(2), 7)
 
         # Test constraint
+        self.subTest("Test constraints")
         constraints_lin = qp.linear_constraints
         self.assertEqual(len(constraints_lin), 0)
         constraints_quad = qp.quadratic_constraints
