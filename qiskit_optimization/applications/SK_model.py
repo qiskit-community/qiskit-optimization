@@ -57,7 +57,7 @@ class SKModel(OptimizationApplication):
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert an SK model problem instance into a
-        :class:`~qiskit_optimization.problems.QuadraticProgram`
+        :class:`~qiskit_optimization.problems.QuadraticProgram`.
 
         Returns:
             The :class:`~qiskit_optimization.problems.QuadraticProgram` created
