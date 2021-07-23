@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Tuple
 
 import networkx as nx
 import numpy as np
@@ -81,17 +81,17 @@ class SKModel(OptimizationApplication):
         mdl.minimize(objective)
         return from_docplex_mp(mdl)
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> Union[float, List[int]]:
-        """Interpret a result as energy and configuration of spins.
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
+        """Interpret a result as configuration of spins.
 
         Args:
             result : The calculated result of the problem.
 
         Returns:
-            [energy, configuration of spins]
+            configuration of spins
         """
         configuration = list(map(lambda x: 2 * x - 1, self._result_to_x(result)))
-        return [result.fval, configuration]
+        return configuration
 
     @property
     def graph(self) -> nx.Graph:
