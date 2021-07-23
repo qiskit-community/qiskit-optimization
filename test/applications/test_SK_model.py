@@ -11,10 +11,9 @@
 # that they have been altered from the originals.
 
 """Test SK model class"""
-import numpy as np
-
 from test.optimization_test_case import QiskitOptimizationTestCase
 
+import numpy as np
 import networkx as nx
 
 from qiskit_optimization import QuadraticProgram
