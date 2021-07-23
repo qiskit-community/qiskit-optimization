@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union, List
 
 import networkx as nx
 import numpy as np
