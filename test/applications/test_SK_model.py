@@ -80,6 +80,5 @@ class TestSKModel(QiskitOptimizationTestCase):
     def test_interpret(self):
         """Test interpret"""
         sk = SKModel(2, np.random.RandomState(self._seed))
-        energy, configuration = sk.interpret(self._result)
+        configuration = sk.interpret(self._result)
         self.assertEqual(configuration, [-1, -1])
-        self.assertAlmostEqual(energy, -1 / np.sqrt(2))
