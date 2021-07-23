@@ -36,7 +36,7 @@ class SKModel(OptimizationApplication):
         https://arxiv.org/abs/1211.1094
     """
 
-    def __init__(self, n: int, rng: np.random.RandomState = np.random):
+    def __init__(self, n: int, rng: np.random.RandomState = np.random.RandomState(0)):
         """
         Constructor for the SK model.
 
