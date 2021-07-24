@@ -60,6 +60,7 @@ from .stable_set import StableSet
 from .tsp import Tsp
 from .vehicle_routing import VehicleRouting
 from .vertex_cover import VertexCover
+from .SK_model import SKModel
 
 _all__ = [
     "Clique",
@@ -74,4 +75,5 @@ _all__ = [
     "Tsp",
     "VehicleRouting",
     "VertexCover",
+    "SKModel"
 ]
