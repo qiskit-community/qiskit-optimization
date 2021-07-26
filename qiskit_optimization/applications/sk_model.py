@@ -13,7 +13,7 @@
 """An application class for the Sherrington Kirkpatrick (SK) model."""
 
 
-from typing import Optional, Union, List
+from typing import Union, List
 
 import networkx as nx
 import numpy as np
