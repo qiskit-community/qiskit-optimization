@@ -41,6 +41,7 @@ Applications
    Maxcut
    NumberPartition
    SetPacking
+   SKModel
    StableSet
    Tsp
    VehicleRouting
@@ -71,9 +72,9 @@ _all__ = [
     "NumberPartition",
     "OptimizationApplication",
     "SetPacking",
+    "SKModel",
     "StableSet",
     "Tsp",
     "VehicleRouting",
     "VertexCover",
-    "SKModel",
 ]
