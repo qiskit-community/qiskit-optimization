@@ -10,6 +10,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""An application class for the Sherrington Kirkpatrick (SK) model."""
+
+
 from typing import Optional, Union, List
 
 import networkx as nx
@@ -23,7 +26,7 @@ from ..translators import from_docplex_mp
 
 
 class SKModel(OptimizationApplication):
-    """Optimization application of the "Sherrington Kirkpatrick (SK) model" [1].
+    r"""Optimization application of the "Sherrington Kirkpatrick (SK) model" [1].
 
     The SK Hamiltonian over n spins is given as:
         :math:`H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j`, :math:`where x_i\in\{\pm 1\}`
@@ -36,24 +39,24 @@ class SKModel(OptimizationApplication):
         https://arxiv.org/abs/1211.1094
     """
 
-    def __init__(self, n: int, rng: np.random.RandomState = np.random.RandomState(0)):
+    def __init__(self, num_of_sites: int, rng: np.random.RandomState = np.random.RandomState(0)):
         """
         Constructor for the SK model.
 
         Args:
-            n: number of sites
+            num_of_sites: number of sites
             rng: numpy pseudo-random number generator
         """
         self._rng = rng
-        self._n = n
-        self._graph = nx.complete_graph(self._n)
+        self._num_of_sites = num_of_sites
+        self._graph = nx.complete_graph(self._num_of_sites)
 
         self.new_instance()
 
     def new_instance(self) -> None:
         """Generate a new instance of the SK model."""
-        for _, _, d in self._graph.edges(data=True):
-            d["weight"] = self._rng.choice([-1, 1])
+        for _, _, edge_data in self._graph.edges(data=True):
+            edge_data["weight"] = self._rng.choice([-1, 1])
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert an SK model problem instance into a
@@ -70,7 +73,7 @@ class SKModel(OptimizationApplication):
 
         objective = mdl.sum(
             -1
-            / np.sqrt(self._n)
+            / np.sqrt(self._num_of_sites)
             * self._graph.edges[i, j]["weight"]
             * (2 * x[i] - 1)
             * (2 * x[j] - 1)
