@@ -93,7 +93,7 @@ class SKModel(OptimizationApplication):
         Returns:
             configuration of spins
         """
-        configuration = list(map(lambda x: 2 * x - 1, self._result_to_x(result)))
+        configuration = [2 * x - 1 for x in self._result_to_x(result)]
         return configuration
 
     @property
