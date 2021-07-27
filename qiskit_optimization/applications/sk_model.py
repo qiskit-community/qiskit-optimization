@@ -67,9 +67,7 @@ class SKModel(OptimizationApplication):
             from the SK problem instance.
         """
         mdl = Model(name="SK-model")
-        x = {
-            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(self._graph.number_of_nodes())
-        }
+        x = mdl.binary_var_list(self._graph.number_of_nodes())
 
         objective = mdl.sum(
             -1
