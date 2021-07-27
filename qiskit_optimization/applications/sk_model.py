@@ -103,8 +103,3 @@ class SKModel(OptimizationApplication):
             A graph for a problem.
         """
         return self._graph
-
-    def _set_rng(self, rng):
-        self._rng = rng
-
-    rng = property(fset=_set_rng)
