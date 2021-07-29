@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    Allow Qiskit's :class:`~qiskit.algorithms.optimizers.Optimizer` classes as input for
+    the ``optimizer`` in the :class:`~qiskit_optimization.runtime.VQEProgram` and 
+    :class:`~qiskit_optimization.runtime.QAOAProgram` instead of only
+    dictionaries.
