@@ -15,7 +15,9 @@
 from test import QiskitOptimizationTestCase
 
 import unittest
+from ddt import ddt, data
 import numpy as np
+from qiskit.algorithms.optimizers import COBYLA
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.opflow import I, Z
@@ -25,6 +27,7 @@ from qiskit_optimization.runtime import VQEProgram, VQEProgramResult
 from .fake_vqeruntime import FakeRuntimeProvider
 
 
+@ddt
 class TestVQEProgram(QiskitOptimizationTestCase):
     """Test the VQE program."""
 
@@ -32,12 +35,15 @@ class TestVQEProgram(QiskitOptimizationTestCase):
         super().setUp()
         self.provider = FakeRuntimeProvider()
 
-    def test_standard_case(self):
+    @data(
+        {"name": "SPSA", "maxiter": 100},
+        COBYLA(),
+    )
+    def test_standard_case(self, optimizer):
         """Test a standard use case."""
         circuit = RealAmplitudes(3)
         operator = Z ^ I ^ Z
         initial_point = np.random.RandomState(42).random(circuit.num_parameters)
-        optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
 
         vqe = VQEProgram(

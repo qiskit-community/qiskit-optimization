@@ -15,7 +15,9 @@
 from test import QiskitOptimizationTestCase
 
 import unittest
+from ddt import ddt, data
 import numpy as np
+from qiskit.algorithms.optimizers import COBYLA
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.opflow import I, Z
 
@@ -24,6 +26,7 @@ from qiskit_optimization.runtime import QAOAProgram, VQEProgramResult
 from .fake_vqeruntime import FakeRuntimeProvider
 
 
+@ddt
 class TestQAOAProgram(QiskitOptimizationTestCase):
     """Test the QAOA program."""
 
@@ -31,12 +34,15 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
         super().setUp()
         self.provider = FakeRuntimeProvider()
 
-    def test_standard_case(self):
+    @data(
+        {"name": "SPSA", "maxiter": 100},
+        COBYLA(),
+    )
+    def test_standard_case(self, optimizer):
         """Test a standard use case."""
         operator = Z ^ I ^ Z
         reps = 2
         initial_point = np.random.RandomState(42).random(2 * reps)
-        optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
 
         qaoa = QAOAProgram(
