@@ -143,9 +143,7 @@ class OptimizationResult:
             ]
 
     def __repr__(self) -> str:
-        return (
-            "<OptimizationResult" f"(x={self._x}, fval={self._fval}, status={self._status.name})>"
-        )
+        return f"<OptimizationResult(x={self._x}, fval={self._fval}, status={self._status.name})>"
 
     def __str__(self) -> str:
         def _f2i(val):
