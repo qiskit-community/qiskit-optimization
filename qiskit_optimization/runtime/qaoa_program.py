@@ -18,6 +18,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.algorithms import MinimumEigensolverResult
+from qiskit.algorithms.optimizers import Optimizer
 from qiskit.circuit.library import QAOAAnsatz
 from qiskit.opflow import OperatorBase
 from qiskit.providers import Provider
@@ -32,7 +33,7 @@ class QAOAProgram(VQEProgram):
 
     def __init__(
         self,
-        optimizer: Optional[Dict[str, Any]] = None,
+        optimizer: Optional[Union[Optimizer, Dict[str, Any]]] = None,
         reps: int = 1,
         initial_state: Optional[QuantumCircuit] = None,
         mixer: Union[QuantumCircuit, OperatorBase] = None,
@@ -46,11 +47,11 @@ class QAOAProgram(VQEProgram):
     ) -> None:
         """
         Args:
-            optimizer: A dictionary specifying a classical optimizer.
-                Currently only SPSA and QN-SPSA are supported. Per default, SPSA is used.
-                The dictionary must contain a key ``name`` for the name of the optimizer and may
-                contain additional keys for the settings.
-                E.g. ``{'name': 'SPSA', 'maxiter': 100}``.
+            optimizer: An optimizer or dictionary specifying a classical optimizer.
+                If a dictionary, only SPSA and QN-SPSA are supported. The dictionary must contain a
+                key ``name`` for the name of the optimizer and may contain additional keys for the
+                settings. E.g. ``{'name': 'SPSA', 'maxiter': 100}``.
+                Per default, SPSA is used.
             reps: the integer parameter :math:`p` as specified in https://arxiv.org/abs/1411.4028,
                 Has a minimum valid value of 1.
             initial_state: An optional initial state to prepend the QAOA circuit with
