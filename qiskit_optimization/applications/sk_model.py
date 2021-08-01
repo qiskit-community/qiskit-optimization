@@ -52,7 +52,7 @@ class SKModel(OptimizationApplication):
         if rng is None:
             self._rng = np.random
         else:
-            self._rng = rng
+            self._rng: np.random.Generator = rng
 
         self._num_of_sites = num_of_sites
         self._graph = nx.complete_graph(self._num_of_sites)
