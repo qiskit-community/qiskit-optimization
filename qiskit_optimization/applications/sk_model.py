@@ -13,7 +13,7 @@
 """An application class for the Sherrington Kirkpatrick (SK) model."""
 
 
-from typing import Union, List
+from typing import Union, List, Optional
 
 import networkx as nx
 import numpy as np
@@ -39,15 +39,21 @@ class SKModel(OptimizationApplication):
         https://arxiv.org/abs/1211.1094
     """
 
-    def __init__(self, num_of_sites: int, rng: np.random.RandomState = np.random.RandomState(0)):
+    def __init__(self, num_of_sites: int, rng: Optional[np.random.Generator] = None):
         """
         Constructor for the SK model.
 
         Args:
             num_of_sites: number of sites
-            rng: numpy pseudo-random number generator
+            rng: numpy pseudo-random number generator or None.
+            For repeatable experiments use e.g. np.random.default_rng(<SEED>).
+            None results in usage of np.random.
         """
-        self._rng = rng
+        if rng is None:
+            self._rng = np.random
+        else:
+            self._rng = rng
+
         self._num_of_sites = num_of_sites
         self._graph = nx.complete_graph(self._num_of_sites)
 

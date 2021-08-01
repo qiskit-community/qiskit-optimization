@@ -44,7 +44,7 @@ class TestSKModel(QiskitOptimizationTestCase):
 
     def test_to_quadratic_program(self):
         """Test to_quadratic_program"""
-        problem = SKModel(self._num_of_sites, np.random.RandomState(self._seed))
+        problem = SKModel(self._num_of_sites, np.random.default_rng(self._seed))
         sk_qp = problem.to_quadratic_program()
 
         # Test name
@@ -61,13 +61,13 @@ class TestSKModel(QiskitOptimizationTestCase):
         with self.subTest("Test objective"):
             obj = sk_qp.objective
             self.assertEqual(obj.sense, QuadraticObjective.Sense.MINIMIZE)
-            self.assertAlmostEqual(obj.constant, 1 / np.sqrt(2))
+            self.assertAlmostEqual(obj.constant, -1 / np.sqrt(2))
             obj_lin = obj.linear.to_dict()
-            self.assertAlmostEqual(obj_lin[0], -np.sqrt(2))
-            self.assertAlmostEqual(obj_lin[1], -np.sqrt(2))
+            self.assertAlmostEqual(obj_lin[0], np.sqrt(2))
+            self.assertAlmostEqual(obj_lin[1], np.sqrt(2))
             obj_quad = obj.quadratic.to_dict()
             self.assertEqual(len(obj_quad), 1)
-            self.assertAlmostEqual(obj_quad[(0, 1)], 2 * np.sqrt(2))
+            self.assertAlmostEqual(obj_quad[(0, 1)], -2 * np.sqrt(2))
 
         # Test constraint
         with self.subTest("Test constraints"):
@@ -78,6 +78,6 @@ class TestSKModel(QiskitOptimizationTestCase):
 
     def test_interpret(self):
         """Test interpret"""
-        sk_model = SKModel(2, np.random.RandomState(self._seed))
+        sk_model = SKModel(2, np.random.default_rng(self._seed))
         configuration = sk_model.interpret(self._result)
         self.assertEqual(configuration, [-1, -1])
