@@ -12,7 +12,6 @@
 
 """An application class for the Sherrington Kirkpatrick (SK) model."""
 
-
 from typing import Union, List, Optional
 
 import networkx as nx
@@ -29,10 +28,10 @@ class SKModel(OptimizationApplication):
     r"""Optimization application of the "Sherrington Kirkpatrick (SK) model" [1].
 
     The SK Hamiltonian over n spins is given as:
-        :math:`H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j`, :math:`where x_i\in\{\pm 1\}`
-    and :math:`w_{i,j}\in\{\pm 1\}` are chosen independently and uniformly at random.
-    Notice that there are other variants e.g., with :math:`w_{i,j}` chosen from the normal distribution
-    with mean 0 and variance 1.
+    :math:`H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j`,
+    where :math:`x_i\in\{\pm 1\}` and :math:`w_{i,j}\in\{\pm 1\}` are chosen independently and uniformly
+    at random. Notice that there are other variants e.g., with :math:`w_{i,j}` chosen from the normal
+    distribution with mean 0 and variance 1.
 
     References:
         [1]: Dmitry Panchenko. "The Sherrington-Kirkpatrick model: an overview",
@@ -52,7 +51,7 @@ class SKModel(OptimizationApplication):
         if rng is None:
             self._rng = np.random
         else:
-            self._rng: np.random.Generator = rng
+            self._rng = rng  # type: ignore
 
         self._num_of_sites = num_of_sites
         self._graph = nx.complete_graph(self._num_of_sites)
