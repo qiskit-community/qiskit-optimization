@@ -13,7 +13,7 @@
 """The Qiskit Optimization VQE Quantum Program."""
 
 
-from typing import List, Callable, Optional, Any, Dict
+from typing import List, Callable, Optional, Any, Dict, Union
 import numpy as np
 
 from qiskit import QuantumCircuit
@@ -21,6 +21,7 @@ from qiskit.exceptions import QiskitError
 from qiskit.providers import Provider
 from qiskit.providers.backend import Backend
 from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult, VQEResult
+from qiskit.algorithms.optimizers import Optimizer, SPSA
 from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 
@@ -35,7 +36,7 @@ class VQEProgram(MinimumEigensolver):
     def __init__(
         self,
         ansatz: QuantumCircuit,
-        optimizer: Optional[Dict[str, Any]] = None,
+        optimizer: Optional[Union[Optimizer, Dict[str, Any]]] = None,
         initial_point: Optional[np.ndarray] = None,
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
@@ -47,11 +48,11 @@ class VQEProgram(MinimumEigensolver):
         """
         Args:
             ansatz: A parameterized circuit used as Ansatz for the wave function.
-            optimizer: A dictionary specifying a classical optimizer.
-                Currently only SPSA and QN-SPSA are supported. Per default, SPSA is used.
-                The dictionary must contain a key ``name`` for the name of the optimizer and may
-                contain additional keys for the settings.
-                E.g. ``{'name': 'SPSA', 'maxiter': 100}``.
+            optimizer: An optimizer or dictionary specifying a classical optimizer.
+                If a dictionary, only SPSA and QN-SPSA are supported. The dictionary must contain a
+                key ``name`` for the name of the optimizer and may contain additional keys for the
+                settings. E.g. ``{'name': 'SPSA', 'maxiter': 100}``.
+                Per default, SPSA is used.
             backend: The backend to run the circuits on.
             initial_point: An optional initial point (i.e. initial parameter values)
                 for the optimizer. If ``None`` a random vector is used.
@@ -66,7 +67,7 @@ class VQEProgram(MinimumEigensolver):
                 steps. Per default False.
         """
         if optimizer is None:
-            optimizer = {"name": "SPSA"}
+            optimizer = SPSA(maxiter=300)
 
         # define program name
         self._program_id = "vqe"
@@ -120,21 +121,25 @@ class VQEProgram(MinimumEigensolver):
         self._ansatz = ansatz
 
     @property
-    def optimizer(self) -> Dict[str, Any]:
+    def optimizer(self) -> Union[Optimizer, Dict[str, Any]]:
         """Return the dictionary describing the optimizer."""
         return self._optimizer
 
     @optimizer.setter
-    def optimizer(self, settings: Dict[str, Any]) -> None:
+    def optimizer(self, optimizer: Union[Optimizer, Dict[str, Any]]) -> None:
         """Set the optimizer."""
-        if "name" not in settings.keys():
-            raise ValueError(
-                "The settings must contain a ``name`` key specifying the type of " "the optimizer."
-            )
+        if isinstance(optimizer, Optimizer):
+            self._optimizer = optimizer
+        else:
+            if "name" not in optimizer.keys():
+                raise ValueError(
+                    "The optimizer dictionary must contain a ``name`` key specifying the type "
+                    "of the optimizer."
+                )
 
-        _validate_optimizer_settings(settings)
+            _validate_optimizer_settings(optimizer)
 
-        self._optimizer = settings
+            self._optimizer = optimizer
 
     @property
     def backend(self) -> Optional[Backend]:
@@ -218,9 +223,7 @@ class VQEProgram(MinimumEigensolver):
             return None
 
     def compute_minimum_eigenvalue(
-        self,
-        operator: OperatorBase,
-        aux_operators: Optional[List[Optional[OperatorBase]]] = None,
+        self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
     ) -> MinimumEigensolverResult:
         """Calls the VQE Runtime to approximate the ground state of the given operator.
 
@@ -280,11 +283,6 @@ class VQEProgram(MinimumEigensolver):
             raise RuntimeError(f"The job {job.job_id()} failed unexpectedly.") from exc
 
         # re-build result from serialized return value
-        vqe_result = self._parse_job_result(job, result)
-        return vqe_result
-
-    def _parse_job_result(self, job, result):
-        """Build the VQE result object from the job result."""
         vqe_result = VQEProgramResult()
         vqe_result.job_id = job.job_id()
         vqe_result.cost_function_evals = result.get("cost_function_evals", None)
@@ -297,6 +295,7 @@ class VQEProgram(MinimumEigensolver):
         vqe_result.optimizer_evals = result.get("optimizer_evals", None)
         vqe_result.optimizer_time = result.get("optimizer_time", None)
         vqe_result.optimizer_history = result.get("optimizer_history", None)
+
         return vqe_result
 
 
@@ -309,8 +308,8 @@ class VQEProgramResult(VQEResult):
 
     def __init__(self) -> None:
         super().__init__()
-        self._job_id: Optional[str] = None
-        self._optimizer_history: Optional[Dict[str, Any]] = None
+        self._job_id = None  # type: str
+        self._optimizer_history = None  # type: Dict[str, Any]
 
     @property
     def job_id(self) -> str:
