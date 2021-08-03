@@ -49,7 +49,7 @@ class SKModel(OptimizationApplication):
             None results in usage of np.random.
         """
         if rng is None:
-            self._rng = np.random
+            self._rng = np.random.default_rng()
         else:
             self._rng = rng  # type: ignore
 
