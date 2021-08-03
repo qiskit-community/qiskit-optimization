@@ -1,19 +1,22 @@
 ---
 features:
   - |
-    Introduced the Sherrington-Kirkpatrick (SK) model (for a rewiev see `Panchenko <https://arxiv.org/abs/1211.1094>`_)
-    :class:`qiskit_optimization.applications.SKModel`. The SK model Hamiltonian on :math:`n` sites is
+    Introduced the Sherrington-Kirkpatrick (SK) model
+    (for a rewiev see `Panchenko <https://arxiv.org/abs/1211.1094>`_)
+    :class:`qiskit_optimization.applications.SKModel`.
+    The SK model Hamiltonian on :math:`n` sites is
 
     .. math::
     \begin{array}{}
     H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j,
     \end{array}
 
-    where :math:`i,j\in [n]`, :math:`x_i\in\{\pm 1\}` are configurations of spins, and :math:`w_{i,j}\in\{\pm 1\}` are called disorder
-    and are chosen independently and uniformly at random.
+    where :math:`i,j\in [n]`, :math:`x_i\in\{\pm 1\}` are configurations of spins,
+    and :math:`w_{i,j}\in\{\pm 1\}` are called disorder and are chosen independently
+    and uniformly at random.
 
-    The computational problem asociated with this class is to find the ground state of the instance of
-    SK Hamiltonian and its energy.
+    The computational problem asociated with this class is to find the ground state
+    of the SK Hamiltonian instance and its energy.
 
     An instance of a 6 site SK Model can be created as::
 
