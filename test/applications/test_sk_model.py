@@ -30,7 +30,7 @@ class TestSKModel(QiskitOptimizationTestCase):
         self._num_of_sites = 2
         self._seed = 0
         self._graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, -1], [-1, 0]]))
-        self._new_instance_graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, 1], [1, 0]]))
+        self._new_disorder_graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, 1], [1, 0]]))
 
         op = QuadraticProgram()
         for _ in range(2):
@@ -43,11 +43,11 @@ class TestSKModel(QiskitOptimizationTestCase):
             status=OptimizationResultStatus.SUCCESS,
         )
 
-    def test_new_instance(self):
-        """Test new_instance"""
+    def test_new_disorder(self):
+        """Test new_disorder"""
         problem = SKModel(self._num_of_sites, np.random.default_rng(self._seed))
         self.assertEqual(
-            list(problem.graph.edges(data=True)), list(self._new_instance_graph.edges(data=True))
+            list(problem.graph.edges(data=True)), list(self._new_disorder_graph.edges(data=True))
         )
 
     def test_to_quadratic_program(self):

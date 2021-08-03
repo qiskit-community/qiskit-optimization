@@ -46,20 +46,20 @@ class SKModel(OptimizationApplication):
             num_of_sites: number of sites
             rng: numpy pseudo-random number generator or None.
             For repeatable experiments use e.g. np.random.default_rng(<SEED>).
-            None results in usage of np.random.
+            None results in usage of np.random.default_rng()
         """
         if rng is None:
             self._rng = np.random.default_rng()
         else:
-            self._rng = rng  # type: ignore
+            self._rng = rng
 
         self._num_of_sites = num_of_sites
         self._graph = nx.complete_graph(self._num_of_sites)
 
-        self.new_instance()
+        self.new_disorder()
 
-    def new_instance(self) -> None:
-        """Generate a new instance of the SK model."""
+    def new_disorder(self) -> None:
+        """Generate a new disorder of the SK model."""
         for _, _, edge_data in self._graph.edges(data=True):
             edge_data["weight"] = self._rng.choice([-1, 1])
 
