@@ -7,9 +7,9 @@ features:
     The SK model Hamiltonian on :math:`n` sites is
 
     .. math::
-    \begin{array}{}
-    H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j,
-    \end{array}
+        \begin{array}{}
+        H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j,
+        \end{array}
 
     where :math:`i,j\in [n]`, :math:`x_i\in\{\pm 1\}` are configurations of spins,
     and :math:`w_{i,j}\in\{\pm 1\}` are called disorder and are chosen independently
@@ -21,10 +21,10 @@ features:
     An instance of a 6 site SK Model can be created as::
 
     .. highlight:: python
-    from qiskit_optimization.applications.sk_model import SKModel
-    sk = SKModel(6)
+        from qiskit_optimization.applications.sk_model import SKModel
+        sk = SKModel(6)
 
     Next, one can generate a new disorder::
 
     .. highlight:: python
-    sk.new_disorder()
+        sk.new_disorder()
