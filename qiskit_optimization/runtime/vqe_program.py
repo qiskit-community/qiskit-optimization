@@ -224,15 +224,6 @@ class VQEProgram(MinimumEigensolver):
 
     @classmethod
     def supports_aux_operators(cls) -> bool:
-        """Whether computing the expectation value of auxiliary operators is supported.
-
-        If the minimum eigensolver computes an eigenstate of the main operator then it
-        can compute the expectation value of the aux_operators for that state. Otherwise
-        they will be ignored.
-
-        Returns:
-            True if aux_operator expectations can be evaluated, False otherwise
-        """
         return True
 
     def compute_minimum_eigenvalue(
