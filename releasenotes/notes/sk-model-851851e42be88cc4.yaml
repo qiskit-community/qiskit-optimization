@@ -1,6 +1,4 @@
 ---
 features:
   - |
-    Introduced the Sherrington-Kirkpatrick (SK) model
-    (for a rewiev see `Panchenko <https://arxiv.org/abs/1211.1094>`_)
-    :class:`qiskit_optimization.applications.SKModel`.
+    Introduced the Sherrington-Kirkpatrick (SK) model :class:`qiskit_optimization.applications.SKModel`.
