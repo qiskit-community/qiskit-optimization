@@ -2,14 +2,3 @@
 features:
   - |
     Introduced the Sherrington-Kirkpatrick (SK) model :class:`qiskit_optimization.applications.SKModel`.
-
-    An instance of a 6 site SK Model can be created as
-
-    .. highlight:: python
-        from qiskit_optimization.applications.sk_model import SKModel
-        sk = SKModel(6)
-
-    Next, one can generate a new disorder
-
-    .. highlight:: python
-        sk.new_disorder()
