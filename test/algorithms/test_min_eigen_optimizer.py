@@ -24,7 +24,11 @@ from qiskit.circuit.library import TwoLocal
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.utils import QuantumInstance, algorithm_globals
 
-from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer, MinimumEigenOptimizationResult
+from qiskit_optimization.algorithms import (
+    CplexOptimizer,
+    MinimumEigenOptimizer,
+    MinimumEigenOptimizationResult,
+)
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationResultStatus,
 )
@@ -369,7 +373,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             optimizer=optimizer,
             initial_point=initial_point,
             backend=backend,
-            provider=provider
+            provider=provider,
         )
 
         vqe = MinimumEigenOptimizer(vqe_program)
@@ -397,6 +401,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         results = qaoa.solve(self.op_minimize)
 
         self.assertIsInstance(results, MinimumEigenOptimizationResult)
+
 
 if __name__ == "__main__":
     unittest.main()
