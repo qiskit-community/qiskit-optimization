@@ -43,7 +43,7 @@ class TestSKModel(QiskitOptimizationTestCase):
             status=OptimizationResultStatus.SUCCESS,
         )
 
-    def test_new_disorder(self):
+    def test_disorder(self):
         """Test new_disorder"""
         problem = SKModel(self._num_of_sites, np.random.default_rng(self._seed))
         self.assertEqual(

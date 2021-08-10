@@ -38,27 +38,31 @@ class SKModel(OptimizationApplication):
         https://arxiv.org/abs/1211.1094
     """
 
-    def __init__(self, num_of_sites: int, rng: Optional[np.random.Generator] = None):
+    def __init__(
+        self, num_of_sites: int, rng_or_seed: Optional[Union[np.random.Generator, int]] = None
+    ):
         """
         Constructor for the SK model.
 
         Args:
             num_of_sites: number of sites
-            rng: numpy pseudo-random number generator or None.
+            rng_or_seed: numpy pseudo-random number generator or seed for default_rng(.) or None.
             For repeatable experiments use e.g. np.random.default_rng(<SEED>).
             None results in usage of np.random.default_rng()
         """
-        if rng is None:
-            self._rng = np.random.default_rng()
+        if isinstance(rng_or_seed, np.random.Generator):
+            self._rng = rng_or_seed
+        elif isinstance(rng_or_seed, int):
+            self._rng = np.random.default_rng(rng_or_seed)
         else:
-            self._rng = rng
+            self._rng = np.random.default_rng()
 
         self._num_of_sites = num_of_sites
         self._graph = nx.complete_graph(self._num_of_sites)
 
-        self.new_disorder()
+        self.disorder()
 
-    def new_disorder(self) -> None:
+    def disorder(self) -> None:
         """Generate a new disorder of the SK model."""
         for _, _, edge_data in self._graph.edges(data=True):
             edge_data["weight"] = self._rng.choice([-1, 1])
