@@ -13,6 +13,11 @@
 """ Test Min Eigen Optimizer """
 
 import unittest
+from test.optimization_test_case import (
+    QiskitOptimizationTestCase,
+    requires_extra_library,
+)
+from test.runtime.fake_vqeruntime import FakeRuntimeProvider
 
 import numpy as np
 from ddt import data, ddt
@@ -23,7 +28,6 @@ from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.utils import QuantumInstance, algorithm_globals
-
 from qiskit_optimization.algorithms import (
     CplexOptimizer,
     MinimumEigenOptimizer,
@@ -42,11 +46,6 @@ from qiskit_optimization.converters import (
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.runtime import VQEProgram, QAOAProgram
 from qiskit_optimization.translators import from_docplex_mp
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
-from test.runtime.fake_vqeruntime import FakeRuntimeProvider
 
 
 @ddt
@@ -360,47 +359,36 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
         self.assertEqual(results.raw_samples[0].status, success)
 
-    def test_vqe_program(self):
-        """Test with VQEProgram"""
-        ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
+    @data('vqe', 'qaoa')
+    def test_runtime(self, subroutine):
         optimizer = {"name": "SPSA", "maxiter": 100}
-        initial_point = np.random.RandomState(42).random(ry_ansatz.num_parameters)
         backend = QasmSimulatorPy()
         provider = FakeRuntimeProvider()
 
-        vqe_program = VQEProgram(
-            ansatz=ry_ansatz,
-            optimizer=optimizer,
-            initial_point=initial_point,
-            backend=backend,
-            provider=provider,
-        )
+        if subroutine == 'vqe':
+            ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
+            initial_point = np.random.RandomState(42).random(ry_ansatz.num_parameters)
+            solver = VQEProgram(
+                ansatz=ry_ansatz,
+                optimizer=optimizer,
+                initial_point=initial_point,
+                backend=backend,
+                provider=provider,
+            )
+        else:
+            reps = 2
+            initial_point = np.random.RandomState(42).random(2 * reps)
+            solver = QAOAProgram(
+                optimizer=optimizer,
+                reps=reps,
+                initial_point=initial_point,
+                backend=backend,
+                provider=provider,
+            )
 
-        vqe = MinimumEigenOptimizer(vqe_program)
-        results = vqe.solve(self.op_ordering)
-
-        self.assertIsInstance(results, MinimumEigenOptimizationResult)
-
-    def test_qaoa_program(self):
-        """Test with QAOAProgram"""
-        optimizer = {"name": "SPSA", "maxiter": 100}
-        reps = 2
-        initial_point = np.random.RandomState(42).random(2 * reps)
-        backend = QasmSimulatorPy()
-        provider = FakeRuntimeProvider()
-
-        qaoa_program = QAOAProgram(
-            optimizer=optimizer,
-            reps=reps,
-            initial_point=initial_point,
-            backend=backend,
-            provider=provider,
-        )
-
-        qaoa = MinimumEigenOptimizer(qaoa_program)
-        results = qaoa.solve(self.op_minimize)
-
-        self.assertIsInstance(results, MinimumEigenOptimizationResult)
+        opt = MinimumEigenOptimizer(solver)
+        result = opt.solve(self.op_ordering)
+        self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
 
 if __name__ == "__main__":
