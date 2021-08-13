@@ -359,14 +359,14 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
         self.assertEqual(results.raw_samples[0].status, success)
 
-    @data('vqe', 'qaoa')
+    @data("vqe", "qaoa")
     def test_runtime(self, subroutine):
         """Test vqe and qaoa runtime"""
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
         provider = FakeRuntimeProvider()
 
-        if subroutine == 'vqe':
+        if subroutine == "vqe":
             ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
             initial_point = np.random.RandomState(42).random(ry_ansatz.num_parameters)
             solver = VQEProgram(
