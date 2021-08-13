@@ -361,6 +361,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
     @data('vqe', 'qaoa')
     def test_runtime(self, subroutine):
+        """Test vqe and qaoa runtime"""
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
         provider = FakeRuntimeProvider()
