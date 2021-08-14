@@ -200,3 +200,17 @@ class QuadraticObjective(QuadraticProgramElement):
                 "Need to define the objective function after defining all variables"
             )
         return self.linear.evaluate_gradient(x) + self.quadratic.evaluate_gradient(x)
+
+    def __repr__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str, DEFAULT_TRUNCATE
+
+        expr_str = _expr2str(self.constant, self.linear, self.quadratic, DEFAULT_TRUNCATE)
+        return f"<QuadraticObjective: {self._sense.name.lower()} {expr_str}>"
+
+    def __str__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str
+
+        expr_str = _expr2str(self.constant, self.linear, self.quadratic)
+        return f"{self._sense.name.lower()} {expr_str}"

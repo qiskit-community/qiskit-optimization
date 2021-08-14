@@ -118,3 +118,17 @@ class QuadraticConstraint(Constraint):
             The left-hand-side of the constraint given the variable values.
         """
         return self.linear.evaluate(x) + self.quadratic.evaluate(x)
+
+    def __repr__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str, SENSE, DEFAULT_TRUNCATE
+
+        lhs = _expr2str(linear=self.linear, quadratic=self.quadratic, truncate=DEFAULT_TRUNCATE)
+        return f"<LinearConstraint: {lhs} {SENSE[self.sense]} {self.rhs} '{self.name}'>"
+
+    def __str__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str, SENSE
+
+        lhs = _expr2str(linear=self.linear, quadratic=self.quadratic)
+        return f"{lhs} {SENSE[self.sense]} {self.rhs} ({self.name})"

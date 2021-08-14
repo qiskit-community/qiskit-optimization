@@ -27,6 +27,8 @@ from qiskit_optimization.problems.constraint import ConstraintSense
 
 SENSE = {ConstraintSense.EQ: "==", ConstraintSense.LE: "<=", ConstraintSense.GE: ">="}
 
+DEFAULT_TRUNCATE = 20
+
 
 def _f2i(val: Union[int, float]) -> Union[int, float]:
     """Convert a value into an integer if possible
@@ -70,23 +72,31 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
 
 def _expr2str(
     constant: float = 0.0,
-    lin: Optional[LinearExpression] = None,
-    quad: Optional[QuadraticExpression] = None,
+    linear: Optional[LinearExpression] = None,
+    quadratic: Optional[QuadraticExpression] = None,
+    truncate: int = 0,
 ) -> str:
-    """Translate the sum of expressions into a string.
+    """Translate a combination of a constant, a linear expression, and a quadratic expression
+    into a string.
 
     Args:
         constant: The constant part.
-        lin: The linear expression.
-        quad: The quadratic expression.
+        linear: The linear expression.
+        quadratic: The quadratic expression.
+        truncate: the threshold of the output string to be truncated. If a string is longer than
+            the threshold, it is truncated and appended "...", e.g., "x^2 + y +...".
+            The default value 0 means no truncation is carried out.
 
     Returns:
-        A string representing the sum of the expressions.
+        A string representing the combination of the expressions.
+
+    Raises:
+        ValueError: if `truncate` is negative.
     """
     expr = []
     is_head = True
-    lin_dict = lin.to_dict(use_name=True) if lin else {}
-    quad_dict = quad.to_dict(use_name=True) if quad else {}
+    lin_dict = linear.to_dict(use_name=True) if linear else {}
+    quad_dict = quadratic.to_dict(use_name=True) if quadratic else {}
 
     # quadratic expression
     for (var1, var2), coeff in quad_dict.items():
@@ -107,7 +117,12 @@ def _expr2str(
     elif not lin_dict and not quad_dict:
         expr.append(_term2str(0, "", is_head))
 
-    return " ".join(expr)
+    ret = " ".join(expr)
+    if truncate < 0:
+        raise ValueError(f"Invalid truncate value: {truncate}")
+    if 0 < truncate < len(ret):
+        ret = ret[:truncate] + "..."
+    return ret
 
 
 def to_str(quadratic_program: QuadraticProgram) -> str:
@@ -143,7 +158,7 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
             buf.write(f"\n  Linear constraints ({num_lin_csts})\n")
             for cst in quadratic_program.linear_constraints:
                 buf.write(
-                    f"    {_expr2str(lin=cst.linear)}"
+                    f"    {_expr2str(linear=cst.linear)}"
                     f" {SENSE[cst.sense]} {_f2i(cst.rhs)}"
                     f"  '{cst.name}'\n"
                 )
@@ -151,7 +166,7 @@ def to_str(quadratic_program: QuadraticProgram) -> str:
             buf.write(f"\n  Quadratic constraints ({num_quad_csts})\n")
             for cst2 in quadratic_program.quadratic_constraints:
                 buf.write(
-                    f"    {_expr2str(lin=cst2.linear, quad=cst2.quadratic)}"
+                    f"    {_expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
                     f" {SENSE[cst2.sense]} {_f2i(cst2.rhs)}"
                     f"  '{cst2.name}'\n"
                 )

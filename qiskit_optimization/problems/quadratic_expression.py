@@ -283,3 +283,15 @@ class QuadraticExpression(QuadraticProgramElement):
             l_b += min(lst2)
             u_b += max(lst2)
         return ExpressionBounds(lowerbound=l_b, upperbound=u_b)
+
+    def __repr__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str, DEFAULT_TRUNCATE
+
+        return f"<LinearExpression: {_expr2str(quadratic=self, truncate=DEFAULT_TRUNCATE)}>"
+
+    def __str__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str
+
+        return f"{_expr2str(quadratic=self)}"

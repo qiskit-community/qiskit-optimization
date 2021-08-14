@@ -74,19 +74,42 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
+        # pylint: disable=cyclic-import
+        from ..translators.str import _expr2str, DEFAULT_TRUNCATE
+
+        objective = _expr2str(
+            constant=self._objective.constant,
+            linear=self.objective.linear,
+            quadratic=self._objective.quadratic,
+            truncate=DEFAULT_TRUNCATE,
+        )
         num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
         return (
-            f"<QuadraticProgram at {hex(id(self))}: name='{self._name}', "
-            f"obj_sense={self.objective.sense.name.lower()}, "
-            f"num_variables={self.get_num_vars()}, "
-            f"num_constraints={num_constraints}>"
+            f"<QuadraticProgram: "
+            f"{self.objective.sense.name.lower()} "
+            f"{objective}, "
+            f"{self.get_num_vars()} variables, "
+            f"{num_constraints} constraints, "
+            f"'{self._name}'>"
         )
 
     def __str__(self) -> str:
         # pylint: disable=cyclic-import
-        from ..translators.str import to_str
+        from ..translators.str import _expr2str
 
-        return to_str(self)
+        objective = _expr2str(
+            constant=self._objective.constant,
+            linear=self.objective.linear,
+            quadratic=self._objective.quadratic,
+        )
+        num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
+        return (
+            f"{self.objective.sense.name.lower()} "
+            f"{objective} "
+            f"({self.get_num_vars()} variables, "
+            f"{num_constraints} constraints, "
+            f"'{self._name}')"
+        )
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
