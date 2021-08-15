@@ -27,7 +27,7 @@ from qiskit_optimization.problems.constraint import ConstraintSense
 
 SENSE = {ConstraintSense.EQ: "==", ConstraintSense.LE: "<=", ConstraintSense.GE: ">="}
 
-DEFAULT_TRUNCATE = 20
+DEFAULT_TRUNCATE = 50
 
 
 def _f2i(val: Union[int, float]) -> Union[int, float]:
@@ -52,7 +52,6 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
     Returns:
         A strings representing the term.
     """
-    ret = ""
     if is_head:
         if isclose(coeff, 1.0):
             ret = term
@@ -125,8 +124,8 @@ def _expr2str(
     return ret
 
 
-def to_str(quadratic_program: QuadraticProgram) -> str:
-    """Translate QuadraticProgram into a string
+def prettyprint(quadratic_program: QuadraticProgram) -> str:
+    """Translate a `QuadraticProgram` into a string of a stylistic format
 
     Args:
         quadratic_program: The optimization problem to be translated into a string

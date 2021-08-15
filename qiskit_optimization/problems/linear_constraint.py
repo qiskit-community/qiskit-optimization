@@ -82,14 +82,14 @@ class LinearConstraint(Constraint):
 
     def __repr__(self):
         # pylint: disable=cyclic-import
-        from ..translators.str import _expr2str, SENSE, DEFAULT_TRUNCATE
+        from ..translators.prettyprint import _expr2str, SENSE, DEFAULT_TRUNCATE
 
         lhs = _expr2str(linear=self.linear, truncate=DEFAULT_TRUNCATE)
         return f"<LinearConstraint: {lhs} {SENSE[self.sense]} {self.rhs} '{self.name}'>"
 
     def __str__(self):
         # pylint: disable=cyclic-import
-        from ..translators.str import _expr2str, SENSE
+        from ..translators.prettyprint import _expr2str, SENSE
 
         lhs = _expr2str(linear=self.linear)
         return f"{lhs} {SENSE[self.sense]} {self.rhs} ({self.name})"

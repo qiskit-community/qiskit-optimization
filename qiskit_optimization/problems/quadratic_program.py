@@ -75,7 +75,7 @@ class QuadraticProgram:
 
     def __repr__(self) -> str:
         # pylint: disable=cyclic-import
-        from ..translators.str import _expr2str, DEFAULT_TRUNCATE
+        from ..translators.prettyprint import _expr2str, DEFAULT_TRUNCATE
 
         objective = _expr2str(
             constant=self._objective.constant,
@@ -95,7 +95,7 @@ class QuadraticProgram:
 
     def __str__(self) -> str:
         # pylint: disable=cyclic-import
-        from ..translators.str import _expr2str
+        from ..translators.prettyprint import _expr2str
 
         objective = _expr2str(
             constant=self._objective.constant,
