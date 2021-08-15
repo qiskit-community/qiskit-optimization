@@ -52,10 +52,8 @@ class SKModel(OptimizationApplication):
         """
         if isinstance(rng_or_seed, np.random.Generator):
             self._rng = rng_or_seed
-        elif isinstance(rng_or_seed, int):
-            self._rng = np.random.default_rng(rng_or_seed)
         else:
-            self._rng = np.random.default_rng()
+            self._rng = np.random.default_rng(rng_or_seed)
 
         self._num_of_sites = num_of_sites
         self._graph = nx.complete_graph(self._num_of_sites)
