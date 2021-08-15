@@ -131,4 +131,4 @@ class QuadraticConstraint(Constraint):
         from ..translators.prettyprint import _expr2str, SENSE
 
         lhs = _expr2str(linear=self.linear, quadratic=self.quadratic)
-        return f"{lhs} {SENSE[self.sense]} {self.rhs} ({self.name})"
+        return f"{lhs} {SENSE[self.sense]} {self.rhs} '{self.name}'"

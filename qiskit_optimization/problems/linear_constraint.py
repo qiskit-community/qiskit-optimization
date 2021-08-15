@@ -92,4 +92,4 @@ class LinearConstraint(Constraint):
         from ..translators.prettyprint import _expr2str, SENSE
 
         lhs = _expr2str(linear=self.linear)
-        return f"{lhs} {SENSE[self.sense]} {self.rhs} ({self.name})"
+        return f"{lhs} {SENSE[self.sense]} {self.rhs} '{self.name}'"
