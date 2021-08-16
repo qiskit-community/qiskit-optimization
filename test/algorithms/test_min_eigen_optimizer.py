@@ -368,7 +368,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         if subroutine == "vqe":
             ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-            initial_point = np.random.RandomState(42).random(ry_ansatz.num_parameters)
+            initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
             solver = VQEProgram(
                 ansatz=ry_ansatz,
                 optimizer=optimizer,
