@@ -378,7 +378,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             )
         else:
             reps = 2
-            initial_point = np.random.RandomState(42).random(2 * reps)
+            initial_point = np.random.default_rng(42).random(2 * reps)
             solver = QAOAProgram(
                 optimizer=optimizer,
                 reps=reps,
