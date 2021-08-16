@@ -17,17 +17,22 @@ from test.optimization_test_case import (
     QiskitOptimizationTestCase,
     requires_extra_library,
 )
+from test.runtime.fake_vqeruntime import FakeRuntimeProvider
 
 import numpy as np
 from ddt import data, ddt
 from docplex.mp.model import Model
-
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA, VQE, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
+from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
+from qiskit_optimization.algorithms import (
+    CplexOptimizer,
+    MinimumEigenOptimizer,
+    MinimumEigenOptimizationResult,
+)
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationResultStatus,
 )
@@ -39,6 +44,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.runtime import VQEProgram, QAOAProgram
 from qiskit_optimization.translators import from_docplex_mp
 
 
@@ -352,6 +358,38 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(results.raw_samples[0].x, [0, 1])
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
         self.assertEqual(results.raw_samples[0].status, success)
+
+    @data("vqe", "qaoa")
+    def test_runtime(self, subroutine):
+        """Test vqe and qaoa runtime"""
+        optimizer = {"name": "SPSA", "maxiter": 100}
+        backend = QasmSimulatorPy()
+        provider = FakeRuntimeProvider()
+
+        if subroutine == "vqe":
+            ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
+            initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
+            solver = VQEProgram(
+                ansatz=ry_ansatz,
+                optimizer=optimizer,
+                initial_point=initial_point,
+                backend=backend,
+                provider=provider,
+            )
+        else:
+            reps = 2
+            initial_point = np.random.default_rng(42).random(2 * reps)
+            solver = QAOAProgram(
+                optimizer=optimizer,
+                reps=reps,
+                initial_point=initial_point,
+                backend=backend,
+                provider=provider,
+            )
+
+        opt = MinimumEigenOptimizer(solver)
+        result = opt.solve(self.op_ordering)
+        self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
 
 if __name__ == "__main__":
