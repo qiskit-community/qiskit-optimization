@@ -9,7 +9,7 @@ features:
 
     .. math::
         \begin{array}{}
-        H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j,\text{ where } :math:`i,j\in [n]`,
+        H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j,\text{ where } i,j\in [n],
         \end{array}
 
     :math:`w_{i,j}\in\{\pm 1\}` are called disorder and are chosen independently
