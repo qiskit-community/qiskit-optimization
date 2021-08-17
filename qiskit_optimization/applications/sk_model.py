@@ -29,9 +29,10 @@ class SKModel(OptimizationApplication):
 
     The SK Hamiltonian over n spins is given as:
     :math:`H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j`,
-    where :math:`x_i\in\{\pm 1\}` is the configuration of spins and :math:`w_{i,j}\in\{\pm 1\}` is disorder chosen
-    independently and uniformly at random. Notice that there are other variants e.g., with :math:`w_{i,j}` chosen
-    from the normal distribution with mean 0 and variance 1.
+    where :math:`x_i\in\{\pm 1\}` is the configuration of spins and
+    :math:`w_{i,j}\in\{\pm 1\}` is a disorder chosen independently and uniformly at random.
+    Notice that there are other variants e.g., with :math:`w_{i,j}` chosen from the normal distribution
+    with mean 0 and variance 1.
 
     References:
         [1]: Dmitry Panchenko. "The Sherrington-Kirkpatrick model: an overview",
@@ -44,9 +45,8 @@ class SKModel(OptimizationApplication):
         """
         Args:
             num_of_sites: number of sites
-            rng_or_seed: NumPy pseudo-random number generator or seed for np.random.default_rng(.) or None.
-                For repeatable experiments use NumPy random Generator or a <SEED>.
-                None results in usage of np.random.default_rng().
+            rng_or_seed: NumPy pseudo-random number generator or seed for np.random.default_rng(.)
+                or None. None results in usage of np.random.default_rng().
         """
         if isinstance(rng_or_seed, np.random.Generator):
             self._rng = rng_or_seed
