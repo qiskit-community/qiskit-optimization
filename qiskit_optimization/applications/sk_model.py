@@ -40,11 +40,11 @@ class SKModel(OptimizationApplication):
     """
 
     def __init__(
-        self, num_of_sites: int, rng_or_seed: Optional[Union[np.random.Generator, int]] = None
+        self, num_sites: int, rng_or_seed: Optional[Union[np.random.Generator, int]] = None
     ):
         """
         Args:
-            num_of_sites: number of sites
+            num_sites: number of sites
             rng_or_seed: NumPy pseudo-random number generator or seed for np.random.default_rng(.)
                 or None. None results in usage of np.random.default_rng().
         """
@@ -53,8 +53,8 @@ class SKModel(OptimizationApplication):
         else:
             self._rng = np.random.default_rng(rng_or_seed)
 
-        self._num_of_sites = num_of_sites
-        self._graph = nx.complete_graph(self._num_of_sites)
+        self._num_sites = num_sites
+        self._graph = nx.complete_graph(self._num_sites)
 
         self.disorder()
 
@@ -76,7 +76,7 @@ class SKModel(OptimizationApplication):
 
         objective = mdl.sum(
             -1
-            / np.sqrt(self._num_of_sites)
+            / np.sqrt(self._num_sites)
             * self._graph.edges[i, j]["weight"]
             * (2 * x[i] - 1)
             * (2 * x[j] - 1)
@@ -108,9 +108,9 @@ class SKModel(OptimizationApplication):
         return self._graph
 
     @property
-    def num_of_sites(self) -> nx.Graph:
+    def num_sites(self) -> int:
         """Getter of the number of sites.
         Returns:
             Number of sites.
         """
-        return self._num_of_sites
+        return self._num_sites
