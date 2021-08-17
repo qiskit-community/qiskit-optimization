@@ -42,8 +42,6 @@ class SKModel(OptimizationApplication):
         self, num_of_sites: int, rng_or_seed: Optional[Union[np.random.Generator, int]] = None
     ):
         """
-        Constructor for the SK model.
-
         Args:
             num_of_sites: number of sites
             rng_or_seed: numpy pseudo-random number generator or seed for default_rng(.) or None.
