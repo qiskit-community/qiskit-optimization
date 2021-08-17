@@ -45,7 +45,7 @@ class SKModel(OptimizationApplication):
         """
         Args:
             num_sites: number of sites
-            rng_or_seed: NumPy pseudo-random number generator or seed for np.random.default_rng(.)
+            rng_or_seed: NumPy pseudo-random number generator or seed for np.random.default_rng(<seed>)
                 or None. None results in usage of np.random.default_rng().
         """
         if isinstance(rng_or_seed, np.random.Generator):
