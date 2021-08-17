@@ -106,3 +106,11 @@ class SKModel(OptimizationApplication):
             A graph for a problem.
         """
         return self._graph
+
+    @property
+    def num_of_sites(self) -> nx.Graph:
+        """Getter of the number of sites.
+        Returns:
+            Number of sites.
+        """
+        return self._num_of_sites
