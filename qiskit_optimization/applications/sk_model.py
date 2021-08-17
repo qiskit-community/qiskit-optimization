@@ -45,8 +45,8 @@ class SKModel(OptimizationApplication):
         Args:
             num_of_sites: number of sites
             rng_or_seed: numpy pseudo-random number generator or seed for default_rng(.) or None.
-            For repeatable experiments use e.g. np.random.default_rng(<SEED>).
-            None results in usage of np.random.default_rng()
+                For repeatable experiments use e.g. np.random.default_rng(<SEED>).
+                None results in usage of np.random.default_rng()
         """
         if isinstance(rng_or_seed, np.random.Generator):
             self._rng = rng_or_seed
