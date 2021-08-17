@@ -31,8 +31,8 @@ class SKModel(OptimizationApplication):
     :math:`H(x)=-1/\sqrt{n} \sum_{i<j} w_{i,j}x_ix_j`,
     where :math:`x_i\in\{\pm 1\}` is the configuration of spins and
     :math:`w_{i,j}\in\{\pm 1\}` is a disorder chosen independently and uniformly at random.
-    Notice that there are other variants e.g., with :math:`w_{i,j}` chosen from the normal distribution
-    with mean 0 and variance 1.
+    Notice that there are other variants of disorders e.g., with :math:`w_{i,j}` chosen from
+    the normal distribution with mean 0 and variance 1.
 
     References:
         [1]: Dmitry Panchenko. "The Sherrington-Kirkpatrick model: an overview",
