@@ -639,6 +639,22 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertDictEqual(cst.linear.to_dict(), cst2.linear.to_dict())
             self.assertDictEqual(cst.quadratic.to_dict(), cst2.quadratic.to_dict())
 
+    def test_integer_to_binary3(self):
+        """Test integer to binary variables 3"""
+        mod = QuadraticProgram()
+        mod.integer_var(name="x", lowerbound=10, upperbound=13)
+        mod.minimize(quadratic={("x", "x"): 1})
+        mod2 = IntegerToBinary().convert(mod)
+        self.assertListEqual([e.name for e in mod2.variables], ["x@0", "x@1"])
+        self.assertEqual(mod.get_num_linear_constraints(), 0)
+        self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+        self.assertAlmostEqual(mod2.objective.constant, 100)
+        self.assertDictEqual(mod2.objective.linear.to_dict(use_name=True), {"x@0": 20, "x@1": 40})
+        self.assertDictEqual(
+            mod2.objective.quadratic.to_dict(use_name=True),
+            {("x@0", "x@0"): 1, ("x@1", "x@1"): 4, ("x@0", "x@1"): 4},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

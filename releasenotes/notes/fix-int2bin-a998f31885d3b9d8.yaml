@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fix :class:`qiskit_optimization.converters.IntegerToBinary` when it converts quadratic terms.
