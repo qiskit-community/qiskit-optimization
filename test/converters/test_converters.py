@@ -639,8 +639,8 @@ class TestConverters(QiskitOptimizationTestCase):
             self.assertDictEqual(cst.linear.to_dict(), cst2.linear.to_dict())
             self.assertDictEqual(cst.quadratic.to_dict(), cst2.quadratic.to_dict())
 
-    def test_integer_to_binary3(self):
-        """Test integer to binary variables 3"""
+    def test_integer_to_binary_quadratic(self):
+        """Test integer to binary variables with quadratic expressions"""
         mod = QuadraticProgram()
         mod.integer_var(name="x", lowerbound=10, upperbound=13)
         mod.minimize(quadratic={("x", "x"): 1})
@@ -654,6 +654,69 @@ class TestConverters(QiskitOptimizationTestCase):
             mod2.objective.quadratic.to_dict(use_name=True),
             {("x@0", "x@0"): 1, ("x@1", "x@1"): 4, ("x@0", "x@1"): 4},
         )
+
+    def test_integer_to_binary_zero_range_variable(self):
+        """Test integer to binary variables with zero range variables"""
+
+        with self.subTest("zero range variable in a linear expression of the objective"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.minimize(linear={"x": 1})
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0"])
+            self.assertEqual(mod.get_num_linear_constraints(), 0)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(mod2.objective.constant, 10)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+
+        with self.subTest("zero range variable in a quadratic expression of the objective"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.minimize(quadratic={("x", "x"): 1})
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0"])
+            self.assertEqual(mod.get_num_linear_constraints(), 0)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(mod2.objective.constant, 100)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+
+        with self.subTest("zero range variable in a linear constraint"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.binary_var(name="y")
+            mod.linear_constraint({"x": 1, "y": 1}, "<=", 100)
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0", "y"])
+            self.assertEqual(mod.get_num_linear_constraints(), 1)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(mod2.objective.constant, 0)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+            cst = mod2.get_linear_constraint(0)
+            self.assertDictEqual(cst.linear.to_dict(use_name=True), {"y": 1})
+            self.assertEqual(cst.sense, Constraint.Sense.LE)
+            self.assertAlmostEqual(cst.rhs, 90)
+            self.assertEqual(cst.name, "c0")
+
+        with self.subTest("zero range variable in a quadratic constraint"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.binary_var(name="y")
+            mod.quadratic_constraint({"x": 1}, {("x", "x"): 2, ("x", "y"): 3}, ">=", 100)
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0", "y"])
+            self.assertEqual(mod.get_num_linear_constraints(), 0)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 1)
+            self.assertAlmostEqual(mod2.objective.constant, 0)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+            cst = mod2.get_quadratic_constraint(0)
+            self.assertDictEqual(cst.linear.to_dict(use_name=True), {"y": 30})
+            self.assertEqual(cst.sense, Constraint.Sense.GE)
+            self.assertAlmostEqual(cst.rhs, -110)
+            self.assertEqual(cst.name, "q0")
 
 
 if __name__ == "__main__":

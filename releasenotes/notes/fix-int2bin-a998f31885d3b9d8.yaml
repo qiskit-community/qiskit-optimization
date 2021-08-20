@@ -1,4 +1,9 @@
 ---
 fixes:
   - |
-    Fix :class:`qiskit_optimization.converters.IntegerToBinary` when it converts quadratic terms.
+    Fix :class:`qiskit_optimization.converters.IntegerToBinary` to convert quadratic terms
+    correctly.
+  - |
+    Fix :class:`qiskit_optimization.converters.IntegerToBinary` to convert variables
+    with zero range, i.e., the lower bound is equal to the upper bound,
+    without raising any error.
