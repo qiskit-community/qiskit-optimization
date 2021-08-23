@@ -156,7 +156,7 @@ class Tsp(GraphOptimizationApplication):
         """
         name = ""
         coord = []  # type: ignore
-        with open(filename) as infile:
+        with open(filename, encoding="utf8") as infile:
             coord_section = False
             for line in infile:
                 if line.startswith("NAME"):
