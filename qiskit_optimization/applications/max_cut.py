@@ -104,7 +104,7 @@ class Maxcut(GraphOptimizationApplication):
             An adjacency matrix as a 2D numpy array.
         """
         n = -1
-        with open(filename) as infile:
+        with open(filename, encoding="utf8") as infile:
             header = True
             m = -1
             count = 0
