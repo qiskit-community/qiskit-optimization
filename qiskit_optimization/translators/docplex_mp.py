@@ -379,10 +379,11 @@ class _FromDocplexMp:
 def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> QuadraticProgram:
     """Translate a docplex.mp model into a quadratic program.
 
-    Note that this supports only basic functions of docplex as follows:
-    - quadratic objective function
+    Note that this supports the following features of docplex:
+    - linear / quadratic objective function
     - linear / quadratic / indicator constraints
     - binary / integer / continuous variables
+    - logical expressions (``logical_not``, ``logical_and``, and ``logical_or``)
 
     Args:
         model: The docplex.mp model to be loaded.
