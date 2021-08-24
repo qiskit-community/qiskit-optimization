@@ -101,7 +101,7 @@ class IntegerToBinary(QuadraticProgramConverter):
         self, name: str, lowerbound: float, upperbound: float
     ) -> List[Tuple[str, int]]:
         var_range = upperbound - lowerbound
-        power = int(np.log2(var_range))
+        power = int(np.log2(var_range)) if var_range > 0 else 0
         bounded_coef = var_range - (2 ** power - 1)
 
         coeffs = [2 ** i for i in range(power)] + [bounded_coef]
@@ -149,9 +149,9 @@ class IntegerToBinary(QuadraticProgramConverter):
                         quadratic[z_x, z_y] = v * coeff_x * coeff_y
 
                 for z_x, coeff_x in self._conv[x]:
-                    linear[z_x] = linear.get(z_x, 0.0) + v * y.lowerbound
+                    linear[z_x] = linear.get(z_x, 0.0) + v * coeff_x * y.lowerbound
                 for z_y, coeff_y in self._conv[y]:
-                    linear[z_y] = linear.get(z_y, 0.0) + v * x.lowerbound
+                    linear[z_y] = linear.get(z_y, 0.0) + v * coeff_y * x.lowerbound
 
                 constant += v * x.lowerbound * y.lowerbound
 
