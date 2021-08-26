@@ -95,6 +95,7 @@ kwargs
 lagrangian
 len
 leq
+lhs
 lin
 linearconstraint
 lowerbound
