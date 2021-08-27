@@ -1,0 +1,41 @@
+---
+features:
+  - |
+    :func:`qiskit_optimization.translators.from_docplex_mp` supports logical
+    expressions of Docplex, i.e.,
+    `logical_and <https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model.html#docplex.mp.model.Model.logical_and>`_,
+    `logical_or <https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model.html#docplex.mp.model.Model.logical_or>`_,
+    and `logical_not <https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model.html#docplex.mp.model.Model.logical_not>`_.
+
+    For example:
+
+    .. code-block:: python
+
+        from docplex.mp.model import Model
+        from qiskit_optimization.translators import from_docplex_mp
+
+        mod = Model()
+        x = mod.binary_var('x')
+        y = mod.binary_var('y')
+        mod.add_constraint(mod.logical_and(x, y) <= 1)
+        qp = from_docplex_mp(mod)
+
+fixes:
+  - |
+    If an indicator constraint of a Docplex model does not have a name,
+    :func:`qiskit_optimization.translators.from_docplex_mp` adds a name ``ind{number}``
+    for sense ``<=`` and ``>=`` or names ``ind{number}_LE`` and ``ind{number}_GE``
+    for sense ``==``.
+  - |
+    If an indicator constraint of a Docplex model includes ``binary_var``
+    as part of ``linear_ct``, :func:`qiskit_optimization.translators.from_docplex_mp`
+    handles the coefficient properly.
+  - |
+    If a trivial constraint is included in a Docplex model,
+    :func:`qiskit_optimization.translators.from_docplex_mp` raises an ``UserWarning``
+    and converts it into a constraint of :class:`qiskit_optimization.problems.QuadraticProgram` as is.
+  - |
+    If a trivial constraint is included in :class:`qiskit_optimization.problems.QuadraticProgram`,
+    :func:`qiskit_optimization.translators.to_docplex_mp` converts it
+    into a constraint of Docplex without any error.
+
