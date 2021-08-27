@@ -37,6 +37,7 @@ deterministically
 dic
 dicts
 disp
+dmitry
 docplex
 docplex's
 doi
@@ -87,11 +88,14 @@ iprint
 ising
 iter
 iteratively
+july
 karimi
+kirkpatrick
 kwargs
 lagrangian
 len
 leq
+lhs
 lin
 linearconstraint
 lowerbound
@@ -108,6 +112,7 @@ minimizer
 minimumeigenoptimizer
 multiset
 mypy
+natively
 ndarray
 ndarrays
 noop
@@ -122,6 +127,7 @@ optimality
 optimizationresult
 optimizationresultstatus
 optimizers
+panchenko
 param
 params
 parikh
@@ -158,6 +164,7 @@ rhobeg
 rhoend
 rhs
 rightarrow
+rng
 ronagh
 rtype
 runtime
@@ -166,6 +173,7 @@ rz
 sahar
 scipy
 sdp
+sherrington
 simonetto
 slsqp
 smode

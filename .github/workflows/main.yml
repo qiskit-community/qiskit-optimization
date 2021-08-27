@@ -31,9 +31,10 @@ concurrency:
 
 jobs:
   Checks:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest]
         python-version: [3.7]
     steps:
       - name: Print Concurrency Group
@@ -49,12 +50,13 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ./.github/actions/install-libraries
-        with:
-          python-version: ${{ matrix.python-version }}
       - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-optimization
+        with:
+          os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
           pip install jupyter sphinx_rtd_theme 'matplotlib<3.3.0' qiskit-terra[visualization]
@@ -62,6 +64,7 @@ jobs:
           sudo apt-get -y install python3-enchant
           sudo apt-get -y install hunspell-en-us
           pip install pyenchant
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - run:  pip check
         if: ${{ !cancelled() }}
@@ -94,58 +97,102 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Optimization:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: [3.6, 3.7, 3.8, 3.9]
+        include:
+          - os: macos-latest
+            python-version: 3.8
+          - os: windows-latest
+            python-version: 3.8
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ./.github/actions/install-libraries
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: install Windows dependencies
+        run: |
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda install -y python=${{ matrix.python-version }}
+          conda activate
+          conda install -y scs lapack cvxpy -c conda-forge
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: bash
       - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-optimization
-      - run: make lint
+        with:
+          os: ${{ matrix.os }}
+      - name: Run lint
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate
+          fi
+          make lint
         shell: bash
-      - run: make mypy
+      - name: Run mypy
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate
+          fi
+          make mypy
         if: ${{ !cancelled() }}
         shell: bash
-      - name: Run make lint latest version
+      - name: Run lint latest version
         run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate
+          fi
           pip install -U pylint
           make lint
         shell: bash
       - name: Optimization Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
         with:
+          os: ${{ matrix.os }}
           event-name: ${{ github.event_name }}
           run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
           python-version: ${{ matrix.python-version }}
         if: ${{ !cancelled() }}
       - name: Deprecation Messages
         run: |
-          mkdir ./o${{ matrix.python-version }}
-          python tools/extract_deprecation.py -file out.txt -output ./o${{ matrix.python-version }}/opt.dep
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate
+          fi
+          mkdir ./ci-artifact-data
+          python tools/extract_deprecation.py -file out.txt -output ./ci-artifact-data/opt.dep
         shell: bash
       - name: Coverage combine
         run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate
+          fi
           coverage3 combine
-          mv .coverage ./o${{ matrix.python-version }}/opt.dat
+          mv .coverage ./ci-artifact-data/opt.dat
         if: ${{ matrix.python-version == 3.7 }}
         shell: bash
       - uses: actions/upload-artifact@v2
         with:
-          name: optimization${{ matrix.python-version }}
-          path: ./o${{ matrix.python-version }}/*
+          name: ${{ matrix.os }}-${{ matrix.python-version }}
+          path: ./ci-artifact-data/*
       - name: Optimization Unit Tests without cplex/cvxpy/matplotlib/gurobipy under Python ${{ matrix.python-version }}
         env:
           PYTHONWARNINGS: default
         run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate
+          fi
           pip uninstall -y cplex cvxpy matplotlib gurobipy
           if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}" == "true" ]; then
               export QISKIT_TESTS="run_slow"
@@ -154,9 +201,10 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Tutorials:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest]
         python-version: [3.7, 3.8]
     steps:
       - uses: actions/checkout@v2
@@ -165,12 +213,13 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ./.github/actions/install-libraries
-        with:
-          python-version: ${{ matrix.python-version }}
       - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-optimization
+        with:
+          os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
           pip install jupyter sphinx_rtd_theme 'matplotlib<3.3.0' qiskit-terra[visualization]
@@ -181,6 +230,7 @@ jobs:
           QISKIT_PARALLEL: False
           QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run: |
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
           make html SPHINXOPTS=-W
           cd docs/_build/html
           mkdir artifacts
@@ -207,6 +257,9 @@ jobs:
           rm -rf docs/tutorials/*
           cp -R /tmp/qiskit-optimization-stable-$version/docs/tutorials/* docs/tutorials
           # run tutorials and zip results
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
+          # ignore unreleased/untagged notes
+          tools/ignore_untagged_notes.sh
           make html SPHINXOPTS=-W
           cd docs/_build/html
           mkdir artifacts
@@ -232,26 +285,34 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v2
         with:
-          name: optimization3.6
+          name:  ubuntu-latest-3.6
           path: /tmp/o36
       - uses: actions/download-artifact@v2
         with:
-          name: optimization3.7
+          name:  ubuntu-latest-3.7
           path: /tmp/o37
       - uses: actions/download-artifact@v2
         with:
-          name: optimization3.8
+          name: ubuntu-latest-3.8
           path: /tmp/o38
       - uses: actions/download-artifact@v2
         with:
-          name: optimization3.9
+          name: ubuntu-latest-3.9
           path: /tmp/o39
+      - uses: actions/download-artifact@v2
+        with:
+          name: macos-latest-3.8
+          path: /tmp/m38
+      - uses: actions/download-artifact@v2
+        with:
+          name: windows-latest-3.8
+          path: /tmp/w38
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o36/opt.dep /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep || true
+          sort -f -u /tmp/o36/opt.dep /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/m38/opt.dep /tmp/w38/opt.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/o37/opt.dat
