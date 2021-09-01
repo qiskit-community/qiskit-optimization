@@ -21,6 +21,10 @@ runs:
   steps:
     - name: Install Dependencies from Main
       run: |
+        if [ "${{ inputs.os }}" == "windows-latest" ]; then
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate
+        fi
         pip install git+https://github.com/Qiskit/qiskit-terra
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
           export DISABLE_CONAN=1
@@ -29,8 +33,6 @@ runs:
           sudo apt-get -y install libmuparserx-dev
         fi
         if [ "${{ inputs.os }}" == "windows-latest" ]; then
-          source "$CONDA/etc/profile.d/conda.sh"
-          conda activate
           git clone https://github.com/Qiskit/qiskit-aer.git /tmp/qiskit-aer
           pushd /tmp/qiskit-aer
           python setup.py bdist_wheel -- -G 'Visual Studio 16 2019'
