@@ -486,7 +486,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op = converter.convert(op)
         admm_params = ADMMParameters()
         qubo_optimizer = MinimumEigenOptimizer(NumPyMinimumEigensolver())
-        continuous_optimizer = CplexOptimizer()
+        continuous_optimizer = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
         solver = ADMMOptimizer(
             qubo_optimizer=qubo_optimizer,
             continuous_optimizer=continuous_optimizer,
