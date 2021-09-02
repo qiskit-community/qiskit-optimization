@@ -122,7 +122,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             problem.read_from_lp_file(lp_file)
 
             # solve problem with cplex
-            cplex = CplexOptimizer()
+            cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
             cplex_result = cplex.solve(problem)
 
             # solve problem
