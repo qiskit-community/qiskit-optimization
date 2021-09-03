@@ -23,7 +23,12 @@ from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import VQERuntimeClient, VQERuntimeResult, VQEProgram, VQEProgramResult
+from qiskit_optimization.runtime import (
+    VQERuntimeClient,
+    VQERuntimeResult,
+    VQEProgram,
+    VQEProgramResult,
+)
 
 from .fake_vqeruntime import FakeRuntimeProvider
 

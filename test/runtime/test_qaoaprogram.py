@@ -22,7 +22,12 @@ from qiskit.algorithms.optimizers import COBYLA
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import QAOARuntimeClient, QAOAProgram, VQERuntimeResult, VQEProgramResult
+from qiskit_optimization.runtime import (
+    QAOARuntimeClient,
+    QAOAProgram,
+    VQERuntimeResult,
+    VQEProgramResult,
+)
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
