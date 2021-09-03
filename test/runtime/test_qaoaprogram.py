@@ -21,7 +21,7 @@ from qiskit.algorithms.optimizers import COBYLA
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import QAOAProgram, VQEProgramResult
+from qiskit_optimization.runtime import QAOARuntimeClient, VQERuntimeResult
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
@@ -45,7 +45,7 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
         initial_point = np.random.RandomState(42).random(2 * reps)
         backend = QasmSimulatorPy()
 
-        qaoa = QAOAProgram(
+        qaoa = QAOARuntimeClient(
             optimizer=optimizer,
             reps=reps,
             initial_point=initial_point,
@@ -54,7 +54,7 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
         )
         result = qaoa.compute_minimum_eigenvalue(operator)
 
-        self.assertIsInstance(result, VQEProgramResult)
+        self.assertIsInstance(result, VQERuntimeResult)
 
 
 if __name__ == "__main__":

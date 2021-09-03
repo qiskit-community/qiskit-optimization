@@ -22,7 +22,7 @@ from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import VQEProgram, VQEProgramResult
+from qiskit_optimization.runtime import VQERuntimeClient, VQERuntimeResult
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
@@ -46,7 +46,7 @@ class TestVQEProgram(QiskitOptimizationTestCase):
         initial_point = np.random.RandomState(42).random(circuit.num_parameters)
         backend = QasmSimulatorPy()
 
-        vqe = VQEProgram(
+        vqe = VQERuntimeClient(
             ansatz=circuit,
             optimizer=optimizer,
             initial_point=initial_point,
@@ -55,7 +55,7 @@ class TestVQEProgram(QiskitOptimizationTestCase):
         )
         result = vqe.compute_minimum_eigenvalue(operator)
 
-        self.assertIsInstance(result, VQEProgramResult)
+        self.assertIsInstance(result, VQERuntimeResult)
 
 
 if __name__ == "__main__":
