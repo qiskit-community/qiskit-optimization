@@ -56,20 +56,20 @@ class TestVQEProgram(QiskitOptimizationTestCase):
                 vqe_cls = VQERuntimeClient
                 result_cls = VQERuntimeResult
 
-        vqe = vqe_cls(
-            ansatz=circuit,
-            optimizer=optimizer,
-            initial_point=initial_point,
-            backend=backend,
-            provider=self.provider,
-        )
+            vqe = vqe_cls(
+                ansatz=circuit,
+                optimizer=optimizer,
+                initial_point=initial_point,
+                backend=backend,
+                provider=self.provider,
+            )
 
-        if use_deprecated:
-            warnings.filterwarnings("always", category=DeprecationWarning)
+            if use_deprecated:
+                warnings.filterwarnings("always", category=DeprecationWarning)
 
-        result = vqe.compute_minimum_eigenvalue(operator)
+            result = vqe.compute_minimum_eigenvalue(operator)
 
-        self.assertIsInstance(result, result_cls)
+            self.assertIsInstance(result, result_cls)
 
 
 if __name__ == "__main__":
