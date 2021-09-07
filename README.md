@@ -105,7 +105,7 @@ print(result)  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
 ### Further examples
 
 Learning path notebooks may be found in the
-[optimization tutorials](https://qiskit.org/documentation/tutorials/optimization/index.html) section
+[optimization tutorials](https://qiskit.org/documentation/optimization/tutorials/index.html) section
 of the documentation and are a great place to start.
 
 ----------------------------------------------------------------------------------------------------
