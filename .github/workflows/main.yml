@@ -116,8 +116,8 @@ jobs:
       - name: install Windows dependencies
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
-          conda install -y python=${{ matrix.python-version }}
-          conda activate
+          conda create -n scsenv python=${{ matrix.python-version }}
+          conda activate scsenv
           conda install -y scs lapack cvxpy -c conda-forge
         if: ${{ matrix.os == 'windows-latest' }}
         shell: bash
@@ -132,7 +132,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
-            conda activate
+            conda activate scsenv
           fi
           make lint
         shell: bash
@@ -140,7 +140,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
-            conda activate
+            conda activate scsenv
           fi
           make mypy
         if: ${{ !cancelled() }}
@@ -149,7 +149,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
-            conda activate
+            conda activate scsenv
           fi
           pip install -U pylint
           make lint
@@ -166,7 +166,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
-            conda activate
+            conda activate scsenv
           fi
           mkdir ./ci-artifact-data
           python tools/extract_deprecation.py -file out.txt -output ./ci-artifact-data/opt.dep
@@ -175,7 +175,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
-            conda activate
+            conda activate scsenv
           fi
           coverage3 combine
           mv .coverage ./ci-artifact-data/opt.dat
@@ -191,7 +191,7 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
-            conda activate
+            conda activate scsenv
           fi
           pip uninstall -y cplex cvxpy matplotlib gurobipy
           if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}" == "true" ]; then
