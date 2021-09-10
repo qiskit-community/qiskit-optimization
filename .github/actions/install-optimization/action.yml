@@ -22,7 +22,7 @@ runs:
     - run : |
         if [ "${{ inputs.os }}" == "windows-latest" ]; then
           source "$CONDA/etc/profile.d/conda.sh"
-          conda activate
+          conda activate scsenv
         fi
         pip install -e .[cplex,cvx,matplotlib,gurobi]
         pip install -U -c constraints.txt -r requirements-dev.txt
