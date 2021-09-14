@@ -34,7 +34,7 @@ runs:
       run: |
         if [ "${{ inputs.os }}" == "windows-latest" ]; then
           source "$CONDA/etc/profile.d/conda.sh"
-          conda activate
+          conda activate scsenv
         fi
         # run slow tests only on scheduled event or if input flag is set
         if [ "${{ inputs.event-name }}" == "schedule" ] || [ "${{ inputs.run-slow }}" == "true" ]; then
