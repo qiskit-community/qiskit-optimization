@@ -41,9 +41,7 @@ class Maxcut(GraphOptimizationApplication):
             from the Max-cut problem instance.
         """
         mdl = Model(name="Max-cut")
-        x = {
-            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(self._graph.number_of_nodes())
-        }
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(self._graph.number_of_nodes())}
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault("weight", 1)
         objective = mdl.sum(

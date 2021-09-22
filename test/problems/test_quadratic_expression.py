@@ -39,9 +39,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         coefficients_array = np.array(coefficients_list)
         coefficients_dok = dok_matrix(coefficients_list)
         coefficients_dict_int = {(i, j): v for (i, j), v in coefficients_dok.items()}
-        coefficients_dict_str = {
-            ("x{}".format(i), "x{}".format(j)): v for (i, j), v in coefficients_dok.items()
-        }
+        coefficients_dict_str = {(f"x{i}", f"x{j}"): v for (i, j), v in coefficients_dok.items()}
 
         for coeffs in [
             coefficients_list,
@@ -93,9 +91,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         coefficients_array = np.array(coefficients_list)
         coefficients_dok = dok_matrix(coefficients_list)
         coefficients_dict_int = {(i, j): v for (i, j), v in coefficients_dok.items()}
-        coefficients_dict_str = {
-            ("x{}".format(i), "x{}".format(j)): v for (i, j), v in coefficients_dok.items()
-        }
+        coefficients_dict_str = {(f"x{i}", f"x{j}"): v for (i, j), v in coefficients_dok.items()}
 
         for coeffs in [
             coefficients_list,
@@ -125,7 +121,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         values_list = list(range(len(x)))
         values_array = np.array(values_list)
         values_dict_int = {i: i for i in range(len(x))}
-        values_dict_str = {"x{}".format(i): i for i in range(len(x))}
+        values_dict_str = {f"x{i}": i for i in range(len(x))}
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             self.assertEqual(quadratic.evaluate(values), 900)
@@ -145,7 +141,7 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
         values_list = list(range(len(x)))
         values_array = np.array(values_list)
         values_dict_int = {i: i for i in range(len(x))}
-        values_dict_str = {"x{}".format(i): i for i in range(len(x))}
+        values_dict_str = {f"x{i}": i for i in range(len(x))}
 
         grad_values = [0.0, 60.0, 120.0, 180.0, 240.0]
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
