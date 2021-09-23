@@ -101,8 +101,8 @@ class ADMMParameters:
         self.warm_start = warm_start
 
     def __repr__(self) -> str:
-        props = ", ".join(["{}={}".format(key, value) for (key, value) in vars(self).items()])
-        return "{0}({1})".format(type(self).__name__, props)
+        props = ", ".join([f"{key}={value}" for (key, value) in vars(self).items()])
+        return f"{type(self).__name__}({props})"
 
 
 class ADMMState:

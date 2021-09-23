@@ -85,7 +85,7 @@ w = nx.adjacency_matrix(graph)
 
 # Formulate the problem as quadratic program
 problem = QuadraticProgram()
-_ = [problem.binary_var('x{}'.format(i)) for i in range(n)]  # create n binary variables
+_ = [problem.binary_var(f"x{i}") for i in range(n)]  # create n binary variables
 linear = w.dot(np.ones(n))
 quadratic = -w
 problem.maximize(linear=linear, quadratic=quadratic)

@@ -41,7 +41,7 @@ class VertexCover(GraphOptimizationApplication):
         """
         mdl = Model(name="Vertex cover")
         n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(n)}
         objective = mdl.sum(x[i] for i in x)
         for w, v in self._graph.edges:
             mdl.add_constraint(x[w] + x[v] >= 1)

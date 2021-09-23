@@ -82,7 +82,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             )
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
+            raise QiskitOptimizationError(f"Unsupported variable type: {x.vartype}")
 
     # add objective
     objective = quadratic_program.objective.constant
@@ -113,7 +113,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             mdl.addConstr(linear_expr <= rhs, name=name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
     # add quadratic constraints
     for i, q_constraint in enumerate(quadratic_program.quadratic_constraints):
@@ -139,7 +139,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             mdl.addConstr(quadratic_expr <= rhs, name=name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
     mdl.update()
     return mdl
@@ -188,9 +188,7 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
         elif x.vtype == gp.GRB.INTEGER:
             x_new = quadratic_program.integer_var(x.lb, x.ub, x.VarName)
         else:
-            raise QiskitOptimizationError(
-                "Unsupported variable type: {} {}".format(x.VarName, x.vtype)
-            )
+            raise QiskitOptimizationError(f"Unsupported variable type: {x.VarName} {x.vtype}")
         var_names[x] = x_new.name
 
     # objective sense
@@ -253,7 +251,7 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
         elif sense == gp.GRB.LESS_EQUAL:
             quadratic_program.linear_constraint(lhs, "<=", rhs, name)
         else:
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {constraint}")
 
     # get quadratic constraints
     for constraint in model.getQConstrs():
@@ -283,6 +281,6 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
         elif sense == gp.GRB.LESS_EQUAL:
             quadratic_program.quadratic_constraint(linear, quadratic, "<=", rhs, name)
         else:
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {constraint}")
 
     return quadratic_program

@@ -51,7 +51,7 @@ class SetPacking(OptimizationApplication):
             from the set packing instance.
         """
         mdl = Model(name="Set packing")
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(len(self._subsets))}
         mdl.maximize(mdl.sum(x[i] for i in x))
         for element in self._set:
             mdl.add_constraint(
