@@ -50,7 +50,7 @@ class ExactCover(OptimizationApplication):
             from the exact cover instance.
         """
         mdl = Model(name="Exact cover")
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(len(self._subsets))}
         mdl.minimize(mdl.sum(x[i] for i in x))
         for element in self._set:
             mdl.add_constraint(

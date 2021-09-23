@@ -88,7 +88,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test InequalityToEqualityConverter with binary variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -169,7 +169,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test InequalityToEqualityConverter with integer variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.integer_var(name="x{}".format(i), lowerbound=-3, upperbound=3)
+            op.integer_var(name=f"x{i}", lowerbound=-3, upperbound=3)
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -246,7 +246,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test integer mode of InequalityToEqualityConverter()"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -263,7 +263,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test continuous mode of InequalityToEqualityConverter()"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -280,7 +280,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test auto mode of InequalityToEqualityConverter()"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -297,7 +297,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test PenalizeLinearEqualityConstraints with senses"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -314,7 +314,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test PenalizeLinearEqualityConstraints with binary variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -334,7 +334,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test PenalizeLinearEqualityConstraints with integer variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.integer_var(name="x{}".format(i), lowerbound=-3, upperbound=3)
+            op.integer_var(name=f"x{i}", lowerbound=-3, upperbound=3)
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -355,7 +355,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test integer to binary"""
         op = QuadraticProgram()
         for i in range(0, 2):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.integer_var(name="x2", lowerbound=0, upperbound=5)
         linear = {}
         for i, x in enumerate(op.variables):
@@ -375,7 +375,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test binary to integer"""
         op = QuadraticProgram()
         for i in range(0, 2):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.integer_var(name="x2", lowerbound=0, upperbound=5)
         linear = {"x0": 1, "x1": 2, "x2": 1}
         op.maximize(0, linear, {})
@@ -392,7 +392,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test optimization problem to operators"""
         op = QuadraticProgram()
         for i in range(4):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         linear = {}
         for x in op.variables:
             linear[x.name] = 1

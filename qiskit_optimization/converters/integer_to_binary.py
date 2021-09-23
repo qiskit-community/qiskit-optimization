@@ -85,9 +85,7 @@ class IntegerToBinary(QuadraticProgramConverter):
                     elif x.vartype == Variable.Type.BINARY:
                         self._dst.binary_var(x.name)
                     else:
-                        raise QiskitOptimizationError(
-                            "Unsupported variable type {}".format(x.vartype)
-                        )
+                        raise QiskitOptimizationError(f"Unsupported variable type {x.vartype}")
 
             self._substitute_int_var()
 

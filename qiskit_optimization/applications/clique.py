@@ -58,7 +58,7 @@ class Clique(GraphOptimizationApplication):
 
         mdl = Model(name="Clique")
         n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(n)}
         for w, v in complement_g.edges:
             mdl.add_constraint(x[w] + x[v] <= 1)
         if self.size is None:

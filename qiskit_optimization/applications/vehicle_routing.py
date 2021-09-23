@@ -65,7 +65,7 @@ class VehicleRouting(GraphOptimizationApplication):
         for i in range(n):
             for j in range(n):
                 if i != j:
-                    x[(i, j)] = mdl.binary_var(name="x_{0}_{1}".format(i, j))
+                    x[(i, j)] = mdl.binary_var(name=f"x_{i}_{j}")
         mdl.minimize(
             mdl.sum(
                 self._graph.edges[i, j]["weight"] * x[(i, j)]

@@ -73,7 +73,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             elif x.vartype == Variable.Type.INTEGER:
                 dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
-                raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
+                raise QiskitOptimizationError(f"Unsupported vartype: {x.vartype}")
 
         # get original objective terms
         offset = problem.objective.constant
