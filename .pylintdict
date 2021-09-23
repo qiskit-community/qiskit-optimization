@@ -106,6 +106,7 @@ makefile
 matplotlib
 maxcut
 maxfun
+maxkcut
 maxiter
 mdl
 minimizer
@@ -146,6 +147,7 @@ py
 pxd
 qaoa
 qasm
+qce
 qiskit
 qiskit's
 qn
@@ -160,6 +162,7 @@ qubits
 qubo
 readme
 representable
+rgba
 rhobeg
 rhoend
 rhs
@@ -190,6 +193,7 @@ subspaces
 sys
 subproblem
 summands
+tabi
 terra
 th
 toctree

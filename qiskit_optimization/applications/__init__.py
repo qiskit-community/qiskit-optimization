@@ -40,6 +40,7 @@ Applications
    GraphPartition
    Knapsack
    Maxcut
+   Maxkcut
    NumberPartition
    SetPacking
    SKModel
@@ -56,6 +57,7 @@ from .graph_optimization_application import GraphOptimizationApplication
 from .graph_partition import GraphPartition
 from .knapsack import Knapsack
 from .max_cut import Maxcut
+from .max_k_cut import Maxkcut
 from .number_partition import NumberPartition
 from .optimization_application import OptimizationApplication
 from .set_packing import SetPacking
@@ -72,6 +74,7 @@ __all__ = [
     "GraphOptimizationApplication",
     "Knapsack",
     "Maxcut",
+    "Maxkcut",
     "NumberPartition",
     "OptimizationApplication",
     "SetPacking",

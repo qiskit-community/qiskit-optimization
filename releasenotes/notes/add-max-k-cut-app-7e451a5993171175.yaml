@@ -1,0 +1,14 @@
+---
+features:
+  - |
+    Adding the Max-k-Cut application :class:`qiskit_optimization.applications.Maxkcut`.
+
+    Problem: Given an undirected graph, find a partition of nodes into at most k subsets such
+    that the total weight of the edges between the k subsets is maximized.
+
+    To solve this problem, the space-efficient quantum optimization representation (or encoding)
+    for the graph coloring problem proposed in [1] is used.
+
+    [1]: Z. Tabi et al., "Quantum Optimization for the Graph Coloring Problem with Space-Efficient
+    Embedding," 2020 IEEE International Conference on Quantum Computing and Engineering (QCE),
+    2020, pp. 56-62, doi: 10.1109/QCE49297.2020.00018., https://ieeexplore.ieee.org/document/9259934
