@@ -54,7 +54,7 @@ class OptimizationApplication(ABC):
         else:
             raise TypeError(
                 "Unsupported format of result. Provide an　OptimizationResult or a",
-                "binary array using np.ndarray instead of {}".format(type(result)),
+                f" binary array using np.ndarray instead of {type(result)}",
             )
         return x
 

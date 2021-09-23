@@ -42,7 +42,7 @@ class StableSet(GraphOptimizationApplication):
         """
         mdl = Model(name="Stable set")
         n = self._graph.number_of_nodes()
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(n)}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(n)}
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault("weight", 1)
         objective = mdl.sum(x[i] for i in x)
