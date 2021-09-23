@@ -36,7 +36,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         coefficients_array = np.array(coefficients_list)
         coefficients_dok = dok_matrix([coefficients_list])
         coefficients_dict_int = {i: i for i in range(1, 5)}
-        coefficients_dict_str = {"x{}".format(i): i for i in range(1, 5)}
+        coefficients_dict_str = {f"x{i}": i for i in range(1, 5)}
 
         for coeffs in [
             coefficients_list,
@@ -77,7 +77,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         coefficients_array = np.array(coefficients_list)
         coefficients_dok = dok_matrix([coefficients_list])
         coefficients_dict_int = {i: i for i in range(1, 5)}
-        coefficients_dict_str = {"x{}".format(i): i for i in range(1, 5)}
+        coefficients_dict_str = {f"x{i}": i for i in range(1, 5)}
 
         for coeffs in [
             coefficients_list,
@@ -104,7 +104,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         values_list = list(range(len(x)))
         values_array = np.array(values_list)
         values_dict_int = {i: i for i in range(len(x))}
-        values_dict_str = {"x{}".format(i): i for i in range(len(x))}
+        values_dict_str = {f"x{i}": i for i in range(len(x))}
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             self.assertEqual(linear.evaluate(values), 30)
@@ -121,7 +121,7 @@ class TestLinearExpression(QiskitOptimizationTestCase):
         values_list = list(range(len(x)))
         values_array = np.array(values_list)
         values_dict_int = {i: i for i in range(len(x))}
-        values_dict_str = {"x{}".format(i): i for i in range(len(x))}
+        values_dict_str = {f"x{i}": i for i in range(len(x))}
 
         for values in [values_list, values_array, values_dict_int, values_dict_str]:
             np.testing.assert_almost_equal(linear.evaluate_gradient(values), coefficients_list)

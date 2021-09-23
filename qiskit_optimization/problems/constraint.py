@@ -60,7 +60,7 @@ class ConstraintSense(Enum):
             ">=",
             ">",
         ]:
-            raise QiskitOptimizationError("Invalid sense: {}".format(sense))
+            raise QiskitOptimizationError(f"Invalid sense: {sense}")
         if sense in ["E", "EQ", "=", "=="]:
             return ConstraintSense.EQ
         elif sense in ["L", "LE", "<=", "<"]:

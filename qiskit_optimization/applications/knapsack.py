@@ -50,7 +50,7 @@ class Knapsack(OptimizationApplication):
             from the knapsack problem instance.
         """
         mdl = Model(name="Knapsack")
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._values))}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(len(self._values))}
         mdl.maximize(mdl.sum(self._values[i] * x[i] for i in x))
         mdl.add_constraint(mdl.sum(self._weights[i] * x[i] for i in x) <= self._max_weight)
         op = from_docplex_mp(mdl)
