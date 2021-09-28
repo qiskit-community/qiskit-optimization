@@ -197,7 +197,7 @@ class VQEProgram(MinimumEigensolver):
 
     @property
     def callback(self) -> Callable[[int, np.ndarray, float, float], None]:
-        """Returns the call:back."""
+        """Returns the callback."""
         return self._callback
 
     @callback.setter
