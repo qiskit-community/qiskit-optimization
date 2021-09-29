@@ -23,7 +23,7 @@ from ..exceptions import QiskitOptimizationError
 
 
 class ConstraintSense(Enum):
-    """Constants Sense Type."""
+    """Constraint Sense Type."""
 
     # pylint: disable=invalid-name
     LE = 0
@@ -67,6 +67,20 @@ class ConstraintSense(Enum):
             return ConstraintSense.LE
         else:
             return ConstraintSense.GE
+
+    @property
+    def label(self) -> str:
+        """Label of the constraint sense
+
+        Returns:
+            The label of the constraint sense ('<=', '>=', or '==')
+        """
+        if self == self.LE:
+            return "<="
+        elif self == self.GE:
+            return ">="
+        else:
+            return "=="
 
 
 class Constraint(QuadraticProgramElement):

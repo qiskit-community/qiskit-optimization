@@ -288,7 +288,7 @@ class QuadraticExpression(QuadraticProgramElement):
         # pylint: disable=cyclic-import
         from ..translators.prettyprint import _expr2str, DEFAULT_TRUNCATE
 
-        return f"<LinearExpression: {_expr2str(quadratic=self, truncate=DEFAULT_TRUNCATE)}>"
+        return f"<QuadraticExpression: {_expr2str(quadratic=self, truncate=DEFAULT_TRUNCATE)}>"
 
     def __str__(self):
         # pylint: disable=cyclic-import

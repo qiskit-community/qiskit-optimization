@@ -146,12 +146,7 @@ class OptimizationResult:
         return f"<OptimizationResult(x={self._x}, fval={self._fval}, status={self._status.name})>"
 
     def __str__(self) -> str:
-        def _f2i(val):
-            # Note: if abs(val) is too large, int(val) is not correct,
-            #       e.g., int(1e16 - 1) -> 10000000000000000
-            if isinstance(val, float) and abs(val) <= 1e10 and val.is_integer():
-                return int(val)
-            return val
+        from qiskit_optimization.translators.prettyprint import _f2i
 
         optimal_value = ", ".join(
             [f"{var.name}={_f2i(x)}" for var, x in zip(self._variables, self._x)]

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -24,8 +24,6 @@ from qiskit_optimization.problems import (
     QuadraticProgram,
 )
 from qiskit_optimization.problems.constraint import ConstraintSense
-
-SENSE = {ConstraintSense.EQ: "==", ConstraintSense.LE: "<=", ConstraintSense.GE: ">="}
 
 DEFAULT_TRUNCATE = 50
 
@@ -158,7 +156,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for cst in quadratic_program.linear_constraints:
                 buf.write(
                     f"    {_expr2str(linear=cst.linear)}"
-                    f" {SENSE[cst.sense]} {_f2i(cst.rhs)}"
+                    f" {cst.sense.label} {_f2i(cst.rhs)}"
                     f"  '{cst.name}'\n"
                 )
         if num_quad_csts > 0:
@@ -166,7 +164,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for cst2 in quadratic_program.quadratic_constraints:
                 buf.write(
                     f"    {_expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
-                    f" {SENSE[cst2.sense]} {_f2i(cst2.rhs)}"
+                    f" {cst2.sense.label} {_f2i(cst2.rhs)}"
                     f"  '{cst2.name}'\n"
                 )
         if quadratic_program.get_num_vars() == 0:
