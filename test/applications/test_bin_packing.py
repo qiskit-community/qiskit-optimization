@@ -61,12 +61,12 @@ class TestBinPacking(QiskitOptimizationTestCase):
         self.assertEqual(lin[0].linear.to_dict(), {3: 1.0, 6: 1.0, 9: 1.0})
         self.assertEqual(lin[3].sense, Constraint.Sense.LE)
         self.assertEqual(lin[3].rhs, 0)
-        self.assertEqual(lin[3].linear.to_dict(), {3: 21.0, 4: 38.0, 5: 4.0, 0: -40.0})
+        self.assertEqual(lin[3].linear.to_dict(), {3: 16.0, 4: 9.0, 5: 23.0, 0: -40.0})
 
     def test_interpret(self):
         """Test interpret"""
         bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight)
-        self.assertEqual(bin_packing.interpret(self.result), [1, 3])
+        self.assertEqual(bin_packing.interpret(self.result), [0, 2, 3, 4, 11])
 
     def test_max_weight(self):
         """Test max_weight"""
