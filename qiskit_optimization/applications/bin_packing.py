@@ -38,12 +38,14 @@ class BinPacking(OptimizationApplication):
         Args:
             weights: A list of the weights of items
             max_weight: The maximum bin weight capacity
-            max_number_of_bins: The maximum number of bins
+            max_number_of_bins: The maximum number of bins by default equal to the number of items
         """
         self._weights = weights
         self._max_weight = max_weight
         if max_number_of_bins is None:
-            self.max_number_of_bins = len(weights)
+            self._max_number_of_bins = len(weights)
+        else:
+            self._max_number_of_bins = max_number_of_bins
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert a bin packing problem instance into a
@@ -54,7 +56,7 @@ class BinPacking(OptimizationApplication):
             from the bin packing problem instance.
         """
         mdl = Model(name="BinPacking")
-        num_bins = self.max_number_of_bins
+        num_bins = self._max_number_of_bins
         num_items = len(self._weights)
         x = mdl.binary_var_list([f"x{i}" for i in range(num_items)])
         mdl.minimize(mdl.sum([x[i] for i in range(num_items)]))

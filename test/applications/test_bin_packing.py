@@ -27,6 +27,7 @@ class TestBinPacking(QiskitOptimizationTestCase):
         super().setUp()
         self.weights = [16, 9, 23]
         self.max_weight = 40
+        self.max_number_of_bins = 2
         op = QuadraticProgram()
         for _ in range(12):
             op.binary_var()
@@ -71,5 +72,9 @@ class TestBinPacking(QiskitOptimizationTestCase):
     def test_max_weight(self):
         """Test max_weight"""
         bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight)
-        bin_packing.max_weight = 5
-        self.assertEqual(bin_packing.max_weight, 5)
+        self.assertEqual(bin_packing._max_weight, 40)
+
+    def test_max_number_of_bins(self):
+        """Test a non-default value of max number of bins."""
+        bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight, max_number_of_bins=self.max_number_of_bins)
+        self.assertEqual(bin_packing._max_number_of_bins, self.max_number_of_bins)
