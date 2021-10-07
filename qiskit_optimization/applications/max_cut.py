@@ -89,7 +89,7 @@ class Maxcut(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ["r" if value == 0 else "b" for value in x]
+        return ["b" if x[node] == 1 else "r" for node in self._graph.nodes]
 
     @staticmethod
     def parse_gset_format(filename: str) -> np.ndarray:
