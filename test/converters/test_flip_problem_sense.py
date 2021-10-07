@@ -25,10 +25,10 @@ class TestFlipProblemSense(QiskitOptimizationTestCase):
         op_max = QuadraticProgram()
         op_min = QuadraticProgram()
         for i in range(2):
-            op_max.binary_var(name="x{}".format(i))
-            op_min.binary_var(name="x{}".format(i))
-        op_max.integer_var(name="x{}".format(2), lowerbound=-3, upperbound=3)
-        op_min.integer_var(name="x{}".format(2), lowerbound=-3, upperbound=3)
+            op_max.binary_var(name=f"x{i}")
+            op_min.binary_var(name=f"x{i}")
+        op_max.integer_var(name="x2", lowerbound=-3, upperbound=3)
+        op_min.integer_var(name="x2", lowerbound=-3, upperbound=3)
         op_max.maximize(constant=3, linear={"x0": 1}, quadratic={("x1", "x2"): 2})
         op_min.minimize(constant=3, linear={"x0": 1}, quadratic={("x1", "x2"): 2})
 
@@ -52,10 +52,10 @@ class TestFlipProblemSense(QiskitOptimizationTestCase):
         op_max = QuadraticProgram()
         op_min = QuadraticProgram()
         for i in range(2):
-            op_max.binary_var(name="x{}".format(i))
-            op_min.binary_var(name="x{}".format(i))
-        op_max.integer_var(name="x{}".format(2), lowerbound=-3, upperbound=3)
-        op_min.integer_var(name="x{}".format(2), lowerbound=-3, upperbound=3)
+            op_max.binary_var(name=f"x{i}")
+            op_min.binary_var(name=f"x{i}")
+        op_max.integer_var(name="x2", lowerbound=-3, upperbound=3)
+        op_min.integer_var(name="x2", lowerbound=-3, upperbound=3)
         op_max.maximize(constant=3, linear={"x0": 1}, quadratic={("x1", "x2"): 2})
         op_min.minimize(constant=3, linear={"x0": 1}, quadratic={("x1", "x2"): 2})
 

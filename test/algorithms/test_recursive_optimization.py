@@ -141,11 +141,11 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
 
         # load optimization problem
         problem = QuadraticProgram()
-        lp_file = self.get_resource_path("op_ip1.lp", "algorithms/resources")
+        lp_file = self.get_resource_path("op_ip3.lp", "algorithms/resources")
         problem.read_from_lp_file(lp_file)
 
         # solve problem with cplex
-        cplex = CplexOptimizer()
+        cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
         cplex_result = cplex.solve(problem)
 
         # solve problem

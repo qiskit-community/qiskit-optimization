@@ -44,11 +44,7 @@ class Tsp(GraphOptimizationApplication):
         """
         mdl = Model(name="TSP")
         n = self._graph.number_of_nodes()
-        x = {
-            (i, k): mdl.binary_var(name="x_{0}_{1}".format(i, k))
-            for i in range(n)
-            for k in range(n)
-        }
+        x = {(i, k): mdl.binary_var(name=f"x_{i}_{k}") for i in range(n) for k in range(n)}
         tsp_func = mdl.sum(
             self._graph.edges[i, j]["weight"] * x[(i, k)] * x[(j, (k + 1) % n)]
             for i in range(n)
@@ -156,7 +152,7 @@ class Tsp(GraphOptimizationApplication):
         """
         name = ""
         coord = []  # type: ignore
-        with open(filename) as infile:
+        with open(filename, encoding="utf8") as infile:
             coord_section = False
             for line in infile:
                 if line.startswith("NAME"):
@@ -167,7 +163,7 @@ class Tsp(GraphOptimizationApplication):
                     typ.strip()
                     if typ != "TSP":
                         raise QiskitOptimizationError(
-                            'This supports only "TSP" type. Actual: {}'.format(typ)
+                            f'This supports only "TSP" type. Actual: {typ}'
                         )
                 elif line.startswith("DIMENSION"):
                     dim = int(line.split(":")[1])
@@ -177,7 +173,7 @@ class Tsp(GraphOptimizationApplication):
                     typ.strip()
                     if typ != "EUC_2D":
                         raise QiskitOptimizationError(
-                            'This supports only "EUC_2D" edge weight. Actual: {}'.format(typ)
+                            f'This supports only "EUC_2D" edge weight. Actual: {typ}'
                         )
                 elif line.startswith("NODE_COORD_SECTION"):
                     coord_section = True

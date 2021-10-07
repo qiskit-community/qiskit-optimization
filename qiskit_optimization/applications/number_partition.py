@@ -47,7 +47,7 @@ class NumberPartition(OptimizationApplication):
             from the number partitioning problem instance.
         """
         mdl = Model(name="Number partitioning")
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._number_set))}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(len(self._number_set))}
         mdl.add_constraint(
             mdl.sum(num * (-2 * x[i] + 1) for i, num in enumerate(self._number_set)) == 0
         )

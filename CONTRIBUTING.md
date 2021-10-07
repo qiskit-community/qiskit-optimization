@@ -220,11 +220,6 @@ it has been tagged::
 
     reno report --version 0.5.0
 
-At release time ``reno report`` is used to generate the release notes for the
-release and the output will be submitted as a pull request to the documentation
-repository's [release notes file](
-https://github.com/Qiskit/qiskit/blob/main/docs/release_notes.rst)
-
 #### Building release notes locally
 
 Building The release notes are part of the standard qiskit-optimization documentation

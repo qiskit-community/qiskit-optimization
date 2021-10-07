@@ -290,7 +290,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         if optimum_value >= 0 and orig_constant == 0:
             optimum_key = 0
 
-        opt_x = np.array([1 if s == "1" else 0 for s in ("{0:%sb}" % n_key).format(optimum_key)])
+        opt_x = np.array([1 if s == "1" else 0 for s in f"{optimum_key:{n_key}b}"])
         # Compute function value of minimization QUBO
         fval = problem_init.objective.evaluate(opt_x)
 

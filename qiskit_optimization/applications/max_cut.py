@@ -41,9 +41,7 @@ class Maxcut(GraphOptimizationApplication):
             from the Max-cut problem instance.
         """
         mdl = Model(name="Max-cut")
-        x = {
-            i: mdl.binary_var(name="x_{0}".format(i)) for i in range(self._graph.number_of_nodes())
-        }
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(self._graph.number_of_nodes())}
         for w, v in self._graph.edges:
             self._graph.edges[w, v].setdefault("weight", 1)
         objective = mdl.sum(
@@ -91,7 +89,7 @@ class Maxcut(GraphOptimizationApplication):
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
-        return ["r" if value == 0 else "b" for value in x]
+        return ["b" if x[node] == 1 else "r" for node in self._graph.nodes]
 
     @staticmethod
     def parse_gset_format(filename: str) -> np.ndarray:
@@ -104,7 +102,7 @@ class Maxcut(GraphOptimizationApplication):
             An adjacency matrix as a 2D numpy array.
         """
         n = -1
-        with open(filename) as infile:
+        with open(filename, encoding="utf8") as infile:
             header = True
             m = -1
             count = 0
