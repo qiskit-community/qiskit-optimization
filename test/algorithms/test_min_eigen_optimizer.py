@@ -246,15 +246,13 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def test_samples_qaoa(self, simulator):
         """Test samples for QAOA"""
         # test minimize
-        algorithm_globals.random_seed = 1
+        algorithm_globals.random_seed = 4
         quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
         success = OptimizationResultStatus.SUCCESS
         opt_sol = 1
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 32)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
@@ -272,11 +270,9 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         opt_sol = 2
-        qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_maximize)
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 16)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(max(s.fval for s in result.samples), 5)
