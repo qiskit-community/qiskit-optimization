@@ -80,7 +80,14 @@ class BinPacking(OptimizationApplication):
             result : The calculated result of the problem
 
         Returns:
-            A list of items whose corresponding variable is 1
+            items_in_bins: A list of lists with the items in each bin
         """
         x = self._result_to_x(result)
-        return [i for i, value in enumerate(x) if value]
+        num_items = len(self._weights)
+        num_bins = self._max_number_of_bins
+        bins = x[:num_bins]
+        items = np.array(x[num_bins:]).reshape((num_bins, num_items))
+        items_in_bins = [
+            [j for j in range(num_items) if bins[i] and items[i, j]] for i in range(num_bins)
+        ]
+        return items_in_bins

@@ -67,7 +67,7 @@ class TestBinPacking(QiskitOptimizationTestCase):
     def test_interpret(self):
         """Test interpret"""
         bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight)
-        self.assertEqual(bin_packing.interpret(self.result), [0, 2, 3, 4, 11])
+        self.assertEqual(bin_packing.interpret(self.result), [[0, 1], [], [2]])
 
     def test_max_weight(self):
         """Test max_weight"""
@@ -76,5 +76,9 @@ class TestBinPacking(QiskitOptimizationTestCase):
 
     def test_max_number_of_bins(self):
         """Test a non-default value of max number of bins."""
-        bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight, max_number_of_bins=self.max_number_of_bins)
+        bin_packing = BinPacking(
+            weights=self.weights,
+            max_weight=self.max_weight,
+            max_number_of_bins=self.max_number_of_bins,
+        )
         self.assertEqual(bin_packing._max_number_of_bins, self.max_number_of_bins)
