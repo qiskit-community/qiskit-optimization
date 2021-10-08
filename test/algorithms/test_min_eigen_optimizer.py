@@ -21,7 +21,6 @@ from test.runtime.fake_vqeruntime import FakeRuntimeProvider
 
 import numpy as np
 from ddt import data, ddt
-from docplex.mp.model import Model
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA, VQE, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA, SPSA
@@ -45,7 +44,6 @@ from qiskit_optimization.converters import (
 )
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.runtime import VQEProgram, QAOAProgram
-from qiskit_optimization.translators import from_docplex_mp
 
 
 @ddt
@@ -90,11 +88,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.op_maximize.linear_constraint(linear={"x": 1, "y": 1}, sense="<=", rhs=1, name="xy")
 
         # test bit ordering
-        mdl = Model("docplex model")
-        x = mdl.binary_var("x")
-        y = mdl.binary_var("y")
-        mdl.minimize(x - 2 * y)
-        self.op_ordering = from_docplex_mp(mdl)
+        self.op_ordering = QuadraticProgram("bit ordering")
+        self.op_ordering.binary_var("x")
+        self.op_ordering.binary_var("y")
+        self.op_ordering.minimize(linear={"x": 1, "y": -2})
 
     @data(
         ("exact", None, "op_ip1.lp"),
@@ -251,13 +248,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         # test minimize
         algorithm_globals.random_seed = 4
         quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
         success = OptimizationResultStatus.SUCCESS
         opt_sol = 1
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 32)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(min(s.fval for s in result.samples), 0)
@@ -275,11 +270,9 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         opt_sol = 2
-        qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_maximize)
-        self.assertEqual(len(result.samples), 8)
-        self.assertEqual(len(result.raw_samples), 16)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(max(s.fval for s in result.samples), 5)
@@ -305,7 +298,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test bit ordering
         opt_sol = -2
-        qaoa = QAOA(quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_ordering)
         self.assertEqual(result.fval, opt_sol)
