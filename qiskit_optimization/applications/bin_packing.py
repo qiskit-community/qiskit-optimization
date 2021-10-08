@@ -58,8 +58,8 @@ class BinPacking(OptimizationApplication):
         mdl = Model(name="BinPacking")
         num_bins = self._max_number_of_bins
         num_items = len(self._weights)
-        x = mdl.binary_var_list([f"x{i}" for i in range(num_items)])
-        mdl.minimize(mdl.sum([x[i] for i in range(num_items)]))
+        x = mdl.binary_var_list([f"x{i}" for i in range(num_bins)])
+        mdl.minimize(mdl.sum([x[i] for i in range(num_bins)]))
         y = mdl.binary_var_matrix(num_bins, num_items, name="y")
         for i in range(num_items):
             # First set of constraints: the items must be in any bin

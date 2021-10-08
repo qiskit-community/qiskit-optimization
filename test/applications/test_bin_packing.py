@@ -69,11 +69,6 @@ class TestBinPacking(QiskitOptimizationTestCase):
         bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight)
         self.assertEqual(bin_packing.interpret(self.result), [[0, 1], [], [2]])
 
-    def test_max_weight(self):
-        """Test max_weight"""
-        bin_packing = BinPacking(weights=self.weights, max_weight=self.max_weight)
-        self.assertEqual(bin_packing._max_weight, 40)
-
     def test_max_number_of_bins(self):
         """Test a non-default value of max number of bins."""
         bin_packing = BinPacking(
@@ -81,4 +76,16 @@ class TestBinPacking(QiskitOptimizationTestCase):
             max_weight=self.max_weight,
             max_number_of_bins=self.max_number_of_bins,
         )
-        self.assertEqual(bin_packing._max_number_of_bins, self.max_number_of_bins)
+        op = bin_packing.to_quadratic_program()
+        self.assertEqual(op.get_num_vars(), 8)
+        # Test objective
+        obj = op.objective
+        self.assertDictEqual(obj.linear.to_dict(), {0: 1.0, 1: 1.0})
+        # Test constraint
+        lin = op.linear_constraints
+        self.assertEqual(len(lin), 5)
+        self.assertEqual(lin[0].linear.to_dict(), {2: 1.0, 5: 1.0})
+        self.assertEqual(lin[1].linear.to_dict(), {3: 1.0, 6: 1.0})
+        self.assertEqual(lin[2].linear.to_dict(), {4: 1.0, 7: 1.0})
+        self.assertEqual(lin[3].linear.to_dict(), {2: 16.0, 3: 9.0, 4: 23.0, 0: -40.0})
+        self.assertEqual(lin[4].linear.to_dict(), {5: 16.0, 6: 9.0, 7: 23.0, 1: -40.0})
