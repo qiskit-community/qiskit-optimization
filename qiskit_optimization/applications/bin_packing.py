@@ -73,7 +73,7 @@ class BinPacking(OptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
         """Interpret a result as item indices
 
         Args:
