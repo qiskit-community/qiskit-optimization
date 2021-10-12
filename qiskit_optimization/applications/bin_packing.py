@@ -58,17 +58,17 @@ class BinPacking(OptimizationApplication):
         mdl = Model(name="BinPacking")
         num_bins = self._max_number_of_bins
         num_items = len(self._weights)
-        x = mdl.binary_var_list([f"x{i}" for i in range(num_bins)])
-        mdl.minimize(mdl.sum([x[i] for i in range(num_bins)]))
-        y = mdl.binary_var_matrix(num_bins, num_items, name="y")
+        y = mdl.binary_var_list(num_bins, name="y")
+        mdl.minimize(mdl.sum(y))
+        x = mdl.binary_var_matrix(num_items, num_bins, name="x")
         for i in range(num_items):
             # First set of constraints: the items must be in any bin
-            mdl.add_constraint(mdl.sum([y[(j, i)] for j in range(num_bins)]) == 1)
-        for i in range(num_bins):
+            mdl.add_constraint(mdl.sum([x[i, j] for j in range(num_bins)]) == 1)
+        for j in range(num_bins):
             # Second set of constraints: weight constraints
             mdl.add_constraint(
-                mdl.sum([self._weights[j] * y[(i, j)] for j in range(num_items)])
-                <= self._max_weight * x[i]
+                mdl.sum(self._weights[i] * x[i, j] for i in range(num_items))
+                <= self._max_weight * y[j]
             )
         op = from_docplex_mp(mdl)
         return op
@@ -86,8 +86,8 @@ class BinPacking(OptimizationApplication):
         num_items = len(self._weights)
         num_bins = self._max_number_of_bins
         bins = x[:num_bins]
-        items = np.array(x[num_bins:]).reshape((num_bins, num_items))
+        items = np.array(x[num_bins:]).reshape((num_items, num_bins))
         items_in_bins = [
-            [j for j in range(num_items) if bins[i] and items[i, j]] for i in range(num_bins)
+            [i for i in range(num_items) if bins[j] and items[i, j]] for j in range(num_bins)
         ]
         return items_in_bins

@@ -32,7 +32,7 @@ class TestBinPacking(QiskitOptimizationTestCase):
         for _ in range(12):
             op.binary_var()
         self.result = OptimizationResult(
-            x=[1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+            x=[1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1],
             fval=2.0,
             variables=op.variables,
             status=OptimizationResultStatus.SUCCESS,
@@ -59,10 +59,10 @@ class TestBinPacking(QiskitOptimizationTestCase):
         self.assertEqual(len(lin), 6)
         self.assertEqual(lin[0].sense, Constraint.Sense.EQ)
         self.assertEqual(lin[0].rhs, 1)
-        self.assertEqual(lin[0].linear.to_dict(), {3: 1.0, 6: 1.0, 9: 1.0})
+        self.assertEqual(lin[0].linear.to_dict(), {3: 1.0, 4: 1.0, 5: 1.0})
         self.assertEqual(lin[3].sense, Constraint.Sense.LE)
         self.assertEqual(lin[3].rhs, 0)
-        self.assertEqual(lin[3].linear.to_dict(), {3: 16.0, 4: 9.0, 5: 23.0, 0: -40.0})
+        self.assertEqual(lin[3].linear.to_dict(), {3: 16.0, 6: 9.0, 9: 23.0, 0: -40.0})
 
     def test_interpret(self):
         """Test interpret"""
@@ -84,8 +84,8 @@ class TestBinPacking(QiskitOptimizationTestCase):
         # Test constraint
         lin = op.linear_constraints
         self.assertEqual(len(lin), 5)
-        self.assertEqual(lin[0].linear.to_dict(), {2: 1.0, 5: 1.0})
-        self.assertEqual(lin[1].linear.to_dict(), {3: 1.0, 6: 1.0})
-        self.assertEqual(lin[2].linear.to_dict(), {4: 1.0, 7: 1.0})
-        self.assertEqual(lin[3].linear.to_dict(), {2: 16.0, 3: 9.0, 4: 23.0, 0: -40.0})
-        self.assertEqual(lin[4].linear.to_dict(), {5: 16.0, 6: 9.0, 7: 23.0, 1: -40.0})
+        self.assertEqual(lin[0].linear.to_dict(), {2: 1.0, 3: 1.0})
+        self.assertEqual(lin[1].linear.to_dict(), {4: 1.0, 5: 1.0})
+        self.assertEqual(lin[2].linear.to_dict(), {6: 1.0, 7: 1.0})
+        self.assertEqual(lin[3].linear.to_dict(), {2: 16.0, 4: 9.0, 6: 23.0, 0: -40.0})
+        self.assertEqual(lin[4].linear.to_dict(), {3: 16.0, 5: 9.0, 7: 23.0, 1: -40.0})
