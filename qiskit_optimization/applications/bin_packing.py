@@ -28,7 +28,8 @@ class BinPacking(OptimizationApplication):
 
     References:
         [1]: "Bin packing",
-        https://en.wikipedia.org/wiki/Bin_packing_problem
+        `https://en.wikipedia.org/wiki/Bin_packing_problem
+        <https://en.wikipedia.org/wiki/Bin_packing_problem>`_
     """
 
     def __init__(
