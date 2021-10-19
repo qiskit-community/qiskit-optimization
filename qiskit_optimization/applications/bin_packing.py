@@ -63,7 +63,7 @@ class BinPacking(OptimizationApplication):
         x = mdl.binary_var_matrix(num_items, num_bins, name="x")
         for i in range(num_items):
             # First set of constraints: the items must be in any bin
-            mdl.add_constraint(mdl.sum([x[i, j] for j in range(num_bins)]) == 1)
+            mdl.add_constraint(mdl.sum(x[i, j] for j in range(num_bins)) == 1)
         for j in range(num_bins):
             # Second set of constraints: weight constraints
             mdl.add_constraint(
