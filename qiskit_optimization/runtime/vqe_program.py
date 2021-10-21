@@ -47,6 +47,28 @@ class VQEProgram(VQEClient):
         callback: Optional[Callable[[int, np.ndarray, float, float], None]] = None,
         store_intermediate: bool = False,
     ) -> None:
+        """
+        Args:
+            ansatz: A parameterized circuit used as Ansatz for the wave function.
+            optimizer: An optimizer or dictionary specifying a classical optimizer.
+                If a dictionary, only SPSA and QN-SPSA are supported. The dictionary must contain a
+                key ``name`` for the name of the optimizer and may contain additional keys for the
+                settings. E.g. ``{'name': 'SPSA', 'maxiter': 100}``.
+                Per default, SPSA is used.
+            backend: The backend to run the circuits on.
+            initial_point: An optional initial point (i.e. initial parameter values)
+                for the optimizer. If ``None`` a random vector is used.
+            provider: Provider that supports the runtime feature.
+            shots: The number of shots to be used
+            measurement_error_mitigation: Whether or not to use measurement error mitigation.
+            callback: a callback that can access the intermediate data during the optimization.
+                Four parameter values are passed to the callback as follows during each evaluation
+                by the optimizer for its current set of parameters as it works towards the minimum.
+                These are: the evaluation count, the optimizer parameters for the
+                ansatz, the evaluated mean and the evaluated standard deviation.
+            store_intermediate: Whether or not to store intermediate values of the optimization
+                steps. Per default False.
+        """
         warn_deprecated(
             version="0.3.0",
             old_type=DeprecatedType.CLASS,
