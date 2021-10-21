@@ -75,6 +75,7 @@ cp -r $SOURCE_DIR/$DOC_DIR_PO/ optimization/docs
 cp $SOURCE_DIR/setup.py optimization/.
 cp $SOURCE_DIR/requirements-dev.txt optimization/.
 cp $SOURCE_DIR/requirements.txt optimization/.
+cp $SOURCE_DIR/README.md optimization/.
 cp $SOURCE_DIR/qiskit_optimization/VERSION.txt optimization/qiskit_optimization/.
 
 # git checkout translationDocs
