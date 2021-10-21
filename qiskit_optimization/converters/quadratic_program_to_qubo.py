@@ -71,7 +71,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         # analyze compatibility of problem
         msg = self.get_compatibility_msg(problem)
         if len(msg) > 0:
-            raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
+            raise QiskitOptimizationError(f"Incompatible problem: {msg}")
 
         for conv in self._converters:
             problem = conv.convert(problem)

@@ -67,6 +67,10 @@ class VQEProgram(VQEClient):
             store_intermediate,
         )
 
+    @classmethod
+    def supports_aux_operators(cls) -> bool:
+        return True
+
     def compute_minimum_eigenvalue(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
     ) -> MinimumEigensolverResult:

@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Qiskit Optimization VQE Quantum Program."""
+"""The Qiskit Optimization QAOA Quantum Program."""
 
 
 from typing import List, Callable, Optional, Any, Dict, Union

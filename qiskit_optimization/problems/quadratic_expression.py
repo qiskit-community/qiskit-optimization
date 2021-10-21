@@ -115,9 +115,7 @@ class QuadraticExpression(QuadraticProgramElement):
                 coeffs[i, j] = value
             coefficients = coeffs
         else:
-            raise QiskitOptimizationError(
-                "Unsupported format for coefficients: {}".format(coefficients)
-            )
+            raise QiskitOptimizationError(f"Unsupported format for coefficients: {coefficients}")
         return self._triangle_matrix(coefficients)
 
     @staticmethod

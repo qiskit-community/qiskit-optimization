@@ -34,7 +34,9 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
     @requires_extra_library
     def test_cplex_optimizer(self, config):
         """Cplex Optimizer Test"""
-        cplex_optimizer = CplexOptimizer(disp=False)
+        cplex_optimizer = CplexOptimizer(
+            disp=False, cplex_parameters={"threads": 1, "randomseed": 1}
+        )
         # unpack configuration
         filename, x, fval = config
 
@@ -59,7 +61,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
     @requires_extra_library
     def test_cplex_optimizer_no_solution(self, config):
         """Cplex Optimizer Test if no solution is found"""
-        cplex_optimizer = CplexOptimizer(disp=False, cplex_parameters={"timelimit": 0})
+        cplex_optimizer = CplexOptimizer(disp=False, cplex_parameters={"dettimelimit": 0})
         # unpack configuration
         filename, _, _ = config
 

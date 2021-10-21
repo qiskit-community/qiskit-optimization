@@ -41,6 +41,7 @@ Applications
    Maxcut
    NumberPartition
    SetPacking
+   SKModel
    StableSet
    Tsp
    VehicleRouting
@@ -60,6 +61,7 @@ from .stable_set import StableSet
 from .tsp import Tsp
 from .vehicle_routing import VehicleRouting
 from .vertex_cover import VertexCover
+from .sk_model import SKModel
 
 _all__ = [
     "Clique",
@@ -70,6 +72,7 @@ _all__ = [
     "NumberPartition",
     "OptimizationApplication",
     "SetPacking",
+    "SKModel",
     "StableSet",
     "Tsp",
     "VehicleRouting",

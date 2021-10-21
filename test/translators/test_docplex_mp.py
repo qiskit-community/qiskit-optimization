@@ -103,13 +103,6 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             mod.add(x != y)
             _ = from_docplex_mp(mod)
 
-        with self.subTest("logical expression"), self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
-            mod.add(mod.logical_and(x, y))
-            _ = from_docplex_mp(mod)
-
         with self.subTest("PWL constraint"), self.assertRaises(QiskitOptimizationError):
             mod = Model()
             x = mod.binary_var("x")
@@ -510,3 +503,273 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
                 ind.linear.to_dict(use_name=True), {"x": -13.0, "y": 1.0, "z": 2.0}
             )
             self.assertEqual(ind.rhs, -3)
+
+        with self.subTest("no name"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.integer_var(lb=-1, ub=2, name="y")
+            mod.add_indicator(binary_var=x, active_value=1, linear_ct=(y == 1))
+            mod.add_indicator(binary_var=x, active_value=1, linear_ct=(y <= 1))
+            mod.add_indicator(binary_var=x, active_value=1, linear_ct=(y >= 1))
+            quad_prog = from_docplex_mp(mod)
+            self.assertEqual(quad_prog.get_num_linear_constraints(), 4)
+
+            ind = quad_prog.get_linear_constraint(0)
+            self.assertEqual(ind.name, "ind0_LE")
+            ind = quad_prog.get_linear_constraint(1)
+            self.assertEqual(ind.name, "ind0_GE")
+            ind = quad_prog.get_linear_constraint(2)
+            self.assertEqual(ind.name, "ind1")
+            ind = quad_prog.get_linear_constraint(3)
+            self.assertEqual(ind.name, "ind2")
+
+        with self.subTest("sense <=, binary_var is included as part of linear_ct too"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.integer_var(lb=-1, ub=2, name="y")
+            z = mod.continuous_var(lb=-1, ub=2, name="z")
+            mod.add_indicator(binary_var=x, linear_ct=(x + y + 2 * z <= -10))
+            quad_prog = from_docplex_mp(mod)
+            self.assertEqual(quad_prog.get_num_linear_constraints(), 1)
+
+            ind = quad_prog.get_linear_constraint(0)
+            self.assertEqual(ind.name, "ind0")
+            self.assertEqual(ind.sense, Constraint.Sense.LE)
+            self.assertDictEqual(ind.linear.to_dict(use_name=True), {"x": 18.0, "y": 1.0, "z": 2.0})
+            self.assertEqual(ind.rhs, 7)
+
+        with self.subTest("sense >=, binary_var is included as part of linear_ct too"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.integer_var(lb=-1, ub=2, name="y")
+            z = mod.continuous_var(lb=-1, ub=2, name="z")
+            mod.add_indicator(binary_var=x, linear_ct=(x + y + 2 * z >= 10))
+            quad_prog = from_docplex_mp(mod)
+            self.assertEqual(quad_prog.get_num_linear_constraints(), 1)
+
+            ind = quad_prog.get_linear_constraint(0)
+            self.assertEqual(ind.name, "ind0")
+            self.assertEqual(ind.sense, Constraint.Sense.GE)
+            self.assertDictEqual(
+                ind.linear.to_dict(use_name=True), {"x": -12.0, "y": 1.0, "z": 2.0}
+            )
+            self.assertEqual(ind.rhs, -3)
+
+        with self.subTest("sense ==, binary_var is included as part of linear_ct too"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.integer_var(lb=-1, ub=2, name="y")
+            z = mod.continuous_var(lb=-1, ub=2, name="z")
+            mod.add_indicator(binary_var=x, linear_ct=(x + y + 2 * z == 0))
+            quad_prog = from_docplex_mp(mod)
+            self.assertEqual(quad_prog.get_num_linear_constraints(), 2)
+
+            ind = quad_prog.get_linear_constraint(0)
+            self.assertEqual(ind.name, "ind0_LE")
+            self.assertEqual(ind.sense, Constraint.Sense.LE)
+            self.assertDictEqual(ind.linear.to_dict(use_name=True), {"x": 8.0, "y": 1.0, "z": 2.0})
+            self.assertEqual(ind.rhs, 7)
+
+            ind = quad_prog.get_linear_constraint(1)
+            self.assertEqual(ind.name, "ind0_GE")
+            self.assertEqual(ind.sense, Constraint.Sense.GE)
+            self.assertDictEqual(ind.linear.to_dict(use_name=True), {"x": -2.0, "y": 1.0, "z": 2.0})
+            self.assertEqual(ind.rhs, -3)
+
+    def test_logical_expressions(self):
+        """test from_docplex_mp with logical expressions"""
+
+        with self.subTest("logical NOT"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.logical_not(x)
+            mod.add_constraint(y <= 1)
+            mod.add_constraint(y ** 2 == 2)
+            q_p = from_docplex_mp(mod)
+            self.assertListEqual([v.name for v in q_p.variables], ["x", "_not1"])
+            self.assertEqual(q_p.get_num_linear_constraints(), 2)
+
+            lin = q_p.get_linear_constraint(0)
+            self.assertEqual(lin.name, "c0")
+            self.assertEqual(lin.sense, Constraint.Sense.EQ)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"x": 1, "_not1": 1})
+            self.assertAlmostEqual(lin.rhs, 1)
+
+            lin = q_p.get_linear_constraint(1)
+            self.assertEqual(lin.name, "c1")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"_not1": 1})
+            self.assertAlmostEqual(lin.rhs, 1)
+
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 1)
+            quad = q_p.get_quadratic_constraint(0)
+            self.assertEqual(quad.name, "q0")
+            self.assertEqual(quad.sense, Constraint.Sense.EQ)
+            self.assertDictEqual(quad.linear.to_dict(), {})
+            self.assertDictEqual(quad.quadratic.to_dict(use_name=True), {("_not1", "_not1"): 1})
+            self.assertAlmostEqual(quad.rhs, 2)
+
+        with self.subTest("logical AND"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.binary_var("y")
+            z = mod.logical_and(x, y)
+            mod.add_constraint(z <= 1)
+            mod.add_constraint(z ** 2 == 2)
+            q_p = from_docplex_mp(mod)
+            self.assertListEqual([v.name for v in q_p.variables], ["x", "y", "_and2"])
+            self.assertEqual(q_p.get_num_linear_constraints(), 4)
+
+            lin = q_p.get_linear_constraint(0)
+            self.assertEqual(lin.name, "c0")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"x": -1, "_and2": 1})
+            self.assertAlmostEqual(lin.rhs, 0)
+
+            lin = q_p.get_linear_constraint(1)
+            self.assertEqual(lin.name, "c1")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"y": -1, "_and2": 1})
+            self.assertAlmostEqual(lin.rhs, 0)
+
+            lin = q_p.get_linear_constraint(2)
+            self.assertEqual(lin.name, "c2")
+            self.assertEqual(lin.sense, Constraint.Sense.GE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"x": -1, "y": -1, "_and2": 1})
+            self.assertAlmostEqual(lin.rhs, -1)
+
+            lin = q_p.get_linear_constraint(3)
+            self.assertEqual(lin.name, "c3")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"_and2": 1})
+            self.assertAlmostEqual(lin.rhs, 1)
+
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 1)
+            quad = q_p.get_quadratic_constraint(0)
+            self.assertEqual(quad.name, "q0")
+            self.assertEqual(quad.sense, Constraint.Sense.EQ)
+            self.assertDictEqual(quad.linear.to_dict(), {})
+            self.assertDictEqual(quad.quadratic.to_dict(use_name=True), {("_and2", "_and2"): 1})
+            self.assertAlmostEqual(quad.rhs, 2)
+
+        with self.subTest("logical OR"):
+            mod = Model()
+            x = mod.binary_var("x")
+            y = mod.binary_var("y")
+            z = mod.logical_or(x, y)
+            mod.add_constraint(z <= 1)
+            mod.add_constraint(z ** 2 == 2)
+            q_p = from_docplex_mp(mod)
+            self.assertListEqual([v.name for v in q_p.variables], ["x", "y", "_or2"])
+            self.assertEqual(q_p.get_num_linear_constraints(), 4)
+
+            lin = q_p.get_linear_constraint(0)
+            self.assertEqual(lin.name, "c0")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"x": 1, "_or2": -1})
+            self.assertAlmostEqual(lin.rhs, 0)
+
+            lin = q_p.get_linear_constraint(1)
+            self.assertEqual(lin.name, "c1")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"y": 1, "_or2": -1})
+            self.assertAlmostEqual(lin.rhs, 0)
+
+            lin = q_p.get_linear_constraint(2)
+            self.assertEqual(lin.name, "c2")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"x": -1, "y": -1, "_or2": 1})
+            self.assertAlmostEqual(lin.rhs, 0)
+
+            lin = q_p.get_linear_constraint(3)
+            self.assertEqual(lin.name, "c3")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(use_name=True), {"_or2": 1})
+            self.assertAlmostEqual(lin.rhs, 1)
+
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 1)
+            quad = q_p.get_quadratic_constraint(0)
+            self.assertEqual(quad.name, "q0")
+            self.assertEqual(quad.sense, Constraint.Sense.EQ)
+            self.assertDictEqual(quad.linear.to_dict(), {})
+            self.assertDictEqual(quad.quadratic.to_dict(use_name=True), {("_or2", "_or2"): 1})
+            self.assertAlmostEqual(quad.rhs, 2)
+
+    def test_trivial_constraints_from_docplex_mp(self):
+        """test trivial constraints of from_docplex_mp"""
+
+        with self.subTest("trivial linear constraint"), self.assertWarns(UserWarning):
+            mod = Model()
+            x = mod.binary_var("x")
+            mod.add_constraint(x + 1 <= x + 1)
+            q_p = from_docplex_mp(mod)
+            self.assertListEqual([v.name for v in q_p.variables], ["x"])
+            self.assertEqual(q_p.get_num_linear_constraints(), 1)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            lin = q_p.get_linear_constraint(0)
+            self.assertEqual(lin.name, "c0")
+            self.assertEqual(lin.sense, Constraint.Sense.LE)
+            self.assertDictEqual(lin.linear.to_dict(), {})
+            self.assertAlmostEqual(lin.rhs, 0)
+
+        with self.subTest("trivial quadratic constraint"), self.assertWarns(UserWarning):
+            mod = Model()
+            x = mod.binary_var("x")
+            mod.add_constraint(x * x == x * x)
+            q_p = from_docplex_mp(mod)
+            self.assertListEqual([v.name for v in q_p.variables], ["x"])
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 1)
+            quad = q_p.get_quadratic_constraint(0)
+            self.assertEqual(quad.name, "q0")
+            self.assertEqual(quad.sense, Constraint.Sense.EQ)
+            self.assertDictEqual(quad.linear.to_dict(), {})
+            self.assertDictEqual(quad.quadratic.to_dict(), {})
+            self.assertAlmostEqual(quad.rhs, 0)
+
+        with self.subTest("trivial indicator constraint"), self.assertWarns(UserWarning):
+            mod = Model()
+            x = mod.binary_var("x")
+            mod.add_indicator(x, x + 1 >= x + 1)
+            q_p = from_docplex_mp(mod)
+            self.assertListEqual([v.name for v in q_p.variables], ["x"])
+            self.assertEqual(q_p.get_num_linear_constraints(), 1)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            ind = q_p.get_linear_constraint(0)
+            self.assertEqual(ind.name, "ind0")
+            self.assertEqual(ind.sense, Constraint.Sense.GE)
+            self.assertDictEqual(ind.linear.to_dict(), {})
+            self.assertAlmostEqual(ind.rhs, 0)
+
+    def test_trivial_constraints_to_docplex_mp(self):
+        """test trivial constraints of to_docplex_mp"""
+
+        with self.subTest("trivial linear constraint"):
+            q_p = QuadraticProgram()
+            q_p.linear_constraint(sense="==", rhs=1.0)
+            mod = to_docplex_mp(q_p)
+            self.assertEqual(mod.number_of_variables, 0)
+            self.assertEqual(mod.number_of_constraints, 1)
+            self.assertEqual(mod.number_of_linear_constraints, 1)
+            cst = mod.get_constraint_by_index(0)
+            left = cst.get_left_expr()
+            self.assertTrue(left.is_constant())
+            self.assertAlmostEqual(left.constant, 0)
+            right = cst.get_right_expr()
+            self.assertTrue(right.is_constant())
+            self.assertAlmostEqual(right.constant, 1)
+
+        with self.subTest("trivial quadratic constraint"):
+            q_p = QuadraticProgram()
+            q_p.quadratic_constraint(sense="==", rhs=1.0)
+            mod = to_docplex_mp(q_p)
+            self.assertEqual(mod.number_of_variables, 0)
+            self.assertEqual(mod.number_of_constraints, 1)
+            self.assertEqual(mod.number_of_linear_constraints, 1)
+            cst = mod.get_constraint_by_index(0)
+            left = cst.get_left_expr()
+            self.assertTrue(left.is_constant())
+            self.assertAlmostEqual(left.constant, 0)
+            right = cst.get_right_expr()
+            self.assertTrue(right.is_constant())
+            self.assertAlmostEqual(right.constant, 1)
