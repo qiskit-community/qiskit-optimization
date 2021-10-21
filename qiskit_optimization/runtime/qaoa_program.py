@@ -47,6 +47,34 @@ class QAOAProgram(QAOAClient):
         callback: Optional[Callable[[int, np.ndarray, float, float], None]] = None,
         store_intermediate: bool = False,
     ) -> None:
+        """
+        Args:
+            optimizer: An optimizer or dictionary specifying a classical optimizer.
+                If a dictionary, only SPSA and QN-SPSA are supported. The dictionary must contain a
+                key ``name`` for the name of the optimizer and may contain additional keys for the
+                settings. E.g. ``{'name': 'SPSA', 'maxiter': 100}``.
+                Per default, SPSA is used.
+            reps: the integer parameter :math:`p` as specified in https://arxiv.org/abs/1411.4028,
+                Has a minimum valid value of 1.
+            initial_state: An optional initial state to prepend the QAOA circuit with
+            mixer: the mixer Hamiltonian to evolve with or a custom quantum circuit. Allows support
+                of optimizations in constrained subspaces as per https://arxiv.org/abs/1709.03489
+                as well as warm-starting the optimization as introduced
+                in http://arxiv.org/abs/2009.10095.
+            initial_point: An optional initial point (i.e. initial parameter values)
+                for the optimizer. If ``None`` a random vector is used.
+            provider: The provider.
+            backend: The backend to run the circuits on.
+            shots: The number of shots to be used
+            measurement_error_mitigation: Whether or not to use measurement error mitigation.
+            callback: a callback that can access the intermediate data during the optimization.
+                Four parameter values are passed to the callback as follows during each evaluation
+                by the optimizer for its current set of parameters as it works towards the minimum.
+                These are: the evaluation count, the optimizer parameters for the
+                ansatz, the evaluated mean and the evaluated standard deviation.
+            store_intermediate: Whether or not to store intermediate values of the optimization
+                steps. Per default False.
+        """
         warn_deprecated(
             version="0.3.0",
             old_type=DeprecatedType.CLASS,
