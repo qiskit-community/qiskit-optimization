@@ -31,10 +31,7 @@ from .vqe_program import VQEProgramResult
 
 
 class QAOAProgram(QAOAClient):
-    """DEPRECATED. This class has been renamed to ``qiskit_optimization.runtime.QAOAClient``.
-
-    This renaming reflects that this class is a client for a program executed in the cloud.
-    """
+    """DEPRECATED. This class has been renamed to ``qiskit_optimization.runtime.QAOAClient``."""
 
     def __init__(
         self,
