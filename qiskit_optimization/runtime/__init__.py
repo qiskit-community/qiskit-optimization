@@ -25,7 +25,7 @@ algorithms and scripts in the cloud.
 
    VQEProgram
    VQEProgramResult
-   VQERClient
+   VQEClient
    VQERuntimeResult
    QAOAProgram
    QAOAClient
