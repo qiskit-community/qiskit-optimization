@@ -24,12 +24,14 @@ from qiskit.algorithms import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import Optimizer
 from qiskit.opflow import OperatorBase
 
-from .qaoa_runtime_client import QAOARuntimeClient
+from ..deprecation import warn_deprecated, DeprecatedType
+
+from .qaoa_client import QAOAClient
 from .vqe_program import VQEProgramResult
 
 
-class QAOAProgram(QAOARuntimeClient):
-    """DEPRECATED. This class has been renamed to ``qiskit_optimization.runtime.VQERuntimeClient``.
+class QAOAProgram(QAOAClient):
+    """DEPRECATED. This class has been renamed to ``qiskit_optimization.runtime.QAOAClient``.
 
     This renaming reflects that this class is a client for a program executed in the cloud.
     """
@@ -48,14 +50,14 @@ class QAOAProgram(QAOARuntimeClient):
         callback: Optional[Callable[[int, np.ndarray, float, float], None]] = None,
         store_intermediate: bool = False,
     ) -> None:
-        warnings.warn(
-            "The qiskit_optimization.runtime.QAOAProgram has been renamed to "
-            "qiskit_optimization.runtime.QAOARuntimeClient to reflect it is a client for a program "
-            "executed in the cloud. The QAOAProgram is deprecated as of Qiskit Nature 0.3.0 and "
-            "be removed no sooner than 3 months after the release date.",
-            DeprecationWarning,
-            stacklevel=2,
+        warn_deprecated(
+            version="0.3.0",
+            old_type=DeprecatedType.CLASS,
+            old_name="QAOAProgram",
+            new_name="QAOAClient",
+            additional_msg="from qiskit_optimization.runtime",
         )
+
         super().__init__(
             optimizer,
             reps,
@@ -80,19 +82,5 @@ class QAOAProgram(QAOARuntimeClient):
             warnings.filterwarnings("ignore", category=DeprecationWarning)
             vqe_result = VQEProgramResult()
 
-        for attr in [
-            "job_id",
-            "cost_function_evals",
-            "eigenstate",
-            "eigenvalue",
-            "aux_operator_eigenvalues",
-            "optimal_parameters",
-            "optimal_point",
-            "optimal_value",
-            "optimizer_evals",
-            "optimizer_time",
-            "optimizer_history",
-        ]:
-            setattr(vqe_result, attr, getattr(result, attr))
-
+        vqe_result.combine(result)
         return vqe_result

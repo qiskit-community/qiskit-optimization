@@ -24,7 +24,7 @@ from qiskit.circuit.library import RealAmplitudes
 from qiskit.opflow import I, Z
 
 from qiskit_optimization.runtime import (
-    VQERuntimeClient,
+    VQEClient,
     VQERuntimeResult,
     VQEProgram,
     VQEProgramResult,
@@ -58,7 +58,7 @@ class TestVQEProgram(QiskitOptimizationTestCase):
                 result_cls = VQEProgramResult
                 warnings.filterwarnings("ignore", category=DeprecationWarning)
             else:
-                vqe_cls = VQERuntimeClient
+                vqe_cls = VQEClient
                 result_cls = VQERuntimeResult
 
             vqe = vqe_cls(

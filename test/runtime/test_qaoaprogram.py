@@ -23,7 +23,7 @@ from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.opflow import I, Z
 
 from qiskit_optimization.runtime import (
-    QAOARuntimeClient,
+    QAOAClient,
     QAOAProgram,
     VQERuntimeResult,
     VQEProgramResult,
@@ -57,7 +57,7 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
                 result_cls = VQEProgramResult
                 warnings.filterwarnings("ignore", category=DeprecationWarning)
             else:
-                qaoa_cls = QAOARuntimeClient
+                qaoa_cls = QAOAClient
                 result_cls = VQERuntimeResult
 
             qaoa = qaoa_cls(

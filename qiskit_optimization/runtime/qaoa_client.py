@@ -25,10 +25,10 @@ from qiskit.providers import Provider
 from qiskit.providers.backend import Backend
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
-from .vqe_runtime_client import VQERuntimeClient
+from .vqe_client import VQEClient
 
 
-class QAOARuntimeClient(VQERuntimeClient):
+class QAOAClient(VQEClient):
     """The Qiskit Optimization QAOA Runtime Client."""
 
     def __init__(

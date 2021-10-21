@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Qiskit Optimization VQE Quantum Program."""
+"""The Qiskit Optimization VQE Runtime Client."""
 
 
 from typing import List, Callable, Optional, Any, Dict, Union
@@ -26,11 +26,11 @@ from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 
 
-class VQERuntimeClient(MinimumEigensolver):
+class VQEClient(MinimumEigensolver):
     """The Qiskit Optimization VQE Runtime Client to call the VQE runtime as a MinimumEigensolver.
 
-    This program is equivalent to the ``VQERuntimeClient`` in Qiskit Nature, but here also serves as
-    basis for the Qiskit Optimization's ``QAOARuntimeClient``.
+    This program is equivalent to the ``VQEClient`` in Qiskit Nature, but here also serves as
+    basis for the Qiskit Optimization's ``QAOAClient``.
     """
 
     def __init__(
