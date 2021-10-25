@@ -20,15 +20,10 @@ Quadratic program
 =================
 Structures for defining an optimization problem.
 
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   QuadraticProgram
-
 Note:
     The following classes are not intended to be instantiated directly.
-    Objects of these types are available within an instantiated :class:`QuadraticProgram`.
+    Objects of these types are available within an instantiated
+    :class:`~qiskit_optimization.QuadraticProgram`.
 
 .. autosummary::
    :toctree: ../stubs/
