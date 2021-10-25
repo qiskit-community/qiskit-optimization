@@ -41,19 +41,16 @@ class OptimizationResultStatus(Enum):
 
 @dataclass
 class SolutionSample:
-    """A sample of an optimization solution
-
-    Attributes:
-        x: the values of variables
-        fval: the objective function value
-        probability: the probability of this sample
-        status: the status of this sample
-    """
+    """A sample of an optimization solution."""
 
     x: np.ndarray
+    """The values of the variables"""
     fval: float
+    """The objective function value"""
     probability: float
+    """The probability of this sample"""
     status: OptimizationResultStatus
+    """The status of this sample"""
 
 
 class OptimizationResult:
