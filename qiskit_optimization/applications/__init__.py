@@ -34,6 +34,7 @@ Applications
    :toctree: ../stubs/
    :nosignatures:
 
+   BinPacking
    Clique
    ExactCover
    GraphPartition
@@ -48,6 +49,7 @@ Applications
    VertexCover
 """
 
+from .bin_packing import BinPacking
 from .clique import Clique
 from .exact_cover import ExactCover
 from .graph_optimization_application import GraphOptimizationApplication
@@ -64,6 +66,7 @@ from .vertex_cover import VertexCover
 from .sk_model import SKModel
 
 _all__ = [
+    "BinPacking"
     "Clique",
     "ExactCover",
     "GraphOptimizationApplication",
