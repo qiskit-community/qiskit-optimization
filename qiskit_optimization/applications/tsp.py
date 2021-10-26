@@ -31,7 +31,7 @@ class Tsp(GraphOptimizationApplication):
 
     References:
         [1]: "Travelling salesman problem",
-             https://en.wikipedia.org/wiki/Travelling_salesman_problem
+        https://en.wikipedia.org/wiki/Travelling_salesman_problem
     """
 
     def to_quadratic_program(self) -> QuadraticProgram:
