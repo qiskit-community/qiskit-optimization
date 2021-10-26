@@ -14,24 +14,22 @@
 
 
 from typing import List, Callable, Optional, Any, Dict, Union
-import warnings
 import numpy as np
 
 from qiskit import QuantumCircuit
-from qiskit.providers import Provider
-from qiskit.providers.backend import Backend
 from qiskit.algorithms import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import Optimizer
+from qiskit.circuit.library import QAOAAnsatz
 from qiskit.opflow import OperatorBase
+from qiskit.providers import Provider
+from qiskit.providers.backend import Backend
 
-from ..deprecation import warn_deprecated, DeprecatedType
-
-from .qaoa_client import QAOAClient
-from .vqe_program import VQEProgramResult
+from qiskit_optimization.exceptions import QiskitOptimizationError
+from .vqe_client import VQEClient
 
 
-class QAOAProgram(QAOAClient):
-    """DEPRECATED. This class has been renamed to ``qiskit_optimization.runtime.QAOAClient``."""
+class QAOAClient(VQEClient):
+    """The Qiskit Optimization QAOA Runtime Client."""
 
     def __init__(
         self,
@@ -75,37 +73,89 @@ class QAOAProgram(QAOAClient):
             store_intermediate: Whether or not to store intermediate values of the optimization
                 steps. Per default False.
         """
-        warn_deprecated(
-            version="0.3.0",
-            old_type=DeprecatedType.CLASS,
-            old_name="QAOAProgram",
-            new_name="QAOAClient",
-            additional_msg="from qiskit_optimization.runtime",
+        super().__init__(
+            ansatz=None,
+            optimizer=optimizer,
+            initial_point=initial_point,
+            provider=provider,
+            backend=backend,
+            shots=shots,
+            measurement_error_mitigation=measurement_error_mitigation,
+            callback=callback,
+            store_intermediate=store_intermediate,
+        )
+        self._initial_state = initial_state
+        self._mixer = mixer
+        self._reps = reps
+
+    @property
+    def ansatz(self) -> Optional[QuantumCircuit]:
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, ansatz: QuantumCircuit) -> None:
+        raise QiskitOptimizationError(
+            "Cannot set the ansatz for QAOA, it is directly inferred from "
+            "the problem Hamiltonian."
         )
 
-        super().__init__(
-            optimizer,
-            reps,
-            initial_state,
-            mixer,
-            initial_point,
-            provider,
-            backend,
-            shots,
-            measurement_error_mitigation,
-            callback,
-            store_intermediate,
-        )
+    @property
+    def initial_state(self) -> Optional[QuantumCircuit]:
+        """
+        Returns:
+            Returns the initial state.
+        """
+        return self._initial_state
+
+    @initial_state.setter
+    def initial_state(self, initial_state: Optional[QuantumCircuit]) -> None:
+        """
+        Args:
+            initial_state: Initial state to set.
+        """
+        self._initial_state = initial_state
+
+    @property
+    def mixer(self) -> Union[QuantumCircuit, OperatorBase]:
+        """
+        Returns:
+            Returns the mixer.
+        """
+        return self._mixer
+
+    @mixer.setter
+    def mixer(self, mixer: Union[QuantumCircuit, OperatorBase]) -> None:
+        """
+        Args:
+            mixer: Mixer to set.
+        """
+        self._mixer = mixer
+
+    @property
+    def reps(self) -> int:
+        """
+        Returns:
+            Returns the reps.
+        """
+        return self._reps
+
+    @reps.setter
+    def reps(self, reps: int) -> None:
+        """
+        Args:
+            reps: The new number of reps.
+        """
+        self._reps = reps
 
     def compute_minimum_eigenvalue(
-        self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
+        self,
+        operator: OperatorBase,
+        aux_operators: Optional[List[Optional[OperatorBase]]] = None,
     ) -> MinimumEigensolverResult:
-        result = super().compute_minimum_eigenvalue(operator, aux_operators)
-
-        # convert to previous result type
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=DeprecationWarning)
-            vqe_result = VQEProgramResult()
-
-        vqe_result.combine(result)
-        return vqe_result
+        self._ansatz = QAOAAnsatz(
+            operator,
+            reps=self.reps,
+            initial_state=self.initial_state,
+            mixer_operator=self.mixer,
+        )
+        return super().compute_minimum_eigenvalue(operator, aux_operators)
