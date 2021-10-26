@@ -29,7 +29,8 @@ class StableSet(GraphOptimizationApplication):
 
     References:
         [1]: "Independent set (graph theory)",
-        https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+        `https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+        <https://en.wikipedia.org/wiki/Independent_set_(graph_theory)>`_
     """
 
     def to_quadratic_program(self) -> QuadraticProgram:

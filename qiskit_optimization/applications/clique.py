@@ -28,7 +28,8 @@ class Clique(GraphOptimizationApplication):
 
     References:
         [1]: "Clique (graph theory)",
-        https://en.wikipedia.org/wiki/Clique_(graph_theory)
+        `https://en.wikipedia.org/wiki/Clique_(graph_theory)
+        <https://en.wikipedia.org/wiki/Clique_(graph_theory)>`_
     """
 
     def __init__(
@@ -36,10 +37,11 @@ class Clique(GraphOptimizationApplication):
     ) -> None:
         """
         Args:
-            graph: A graph representing a clique problem. It can be specified directly as a
-            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
-            size: The size of the clique. When it's None, this class makes an optimization model for
-            a maximal clique instead of the specified size of a clique.
+            graph: A graph representing a problem. It can be specified directly as a
+                `NetworkX <https://networkx.org/>`_ graph,
+                or as an array or list format suitable to build out a NetworkX graph.
+            size: The size of the clique. When it's `None`, the default, this class makes an
+                optimization model for a maximal clique instead of the specified size of a clique.
         """
         super().__init__(graph)
         self._size = size
@@ -105,19 +107,19 @@ class Clique(GraphOptimizationApplication):
         return ["r" if x[node] else "darkgrey" for node in self._graph.nodes]
 
     @property
-    def size(self) -> int:
+    def size(self) -> Optional[int]:
         """Getter of size
 
         Returns:
-            The size of the clique
+            The size of the clique, `None` when maximal clique
         """
         return self._size
 
     @size.setter
-    def size(self, size: int) -> None:
+    def size(self, size: Optional[int]) -> None:
         """Setter of size
 
         Args:
-            size: The size of the clique
+            size: The size of the clique, `None` for maximal clique
         """
         self._size = size
