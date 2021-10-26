@@ -66,7 +66,7 @@ from .vertex_cover import VertexCover
 from .sk_model import SKModel
 
 _all__ = [
-    "BinPacking"
+    "BinPacking",
     "Clique",
     "ExactCover",
     "GraphOptimizationApplication",

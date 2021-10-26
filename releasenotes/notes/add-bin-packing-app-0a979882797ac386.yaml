@@ -1,7 +1,0 @@
----
-features:
-  - |
-    Adding the bin packing problem model
-[1] :class:`qiskit_optimization.applications.BinPacking`.
-    The model find the minimum number of bins needed to store a given number of items. An item has associated a weight and the bin has associated a maximum weight.
-     It takes as inputs a list with the weights and the maximum weight for a bin with an optional number of bins.
