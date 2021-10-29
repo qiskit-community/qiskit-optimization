@@ -41,9 +41,9 @@ class VehicleRouting(GraphOptimizationApplication):
     ) -> None:
         """
         Args:
-            graph: A graph representing a vehicle routing problem. It can be specified directly as a
-            NetworkX Graph, or as an array or list if format suitable to build out a ``NetworkX``
-            graph.
+            graph: A graph representing a problem. It can be specified directly as a
+                `NetworkX <https://networkx.org/>`_ graph,
+                or as an array or list format suitable to build out a NetworkX graph.
             num_vehicles: The number of vehicles
             depot: The index of the depot node where all the vehicle depart
         """

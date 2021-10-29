@@ -14,6 +14,7 @@
 
 from test import QiskitOptimizationTestCase
 
+import warnings
 import unittest
 from ddt import ddt, data
 import numpy as np
@@ -21,7 +22,12 @@ from qiskit.algorithms.optimizers import COBYLA
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import QAOAProgram, VQEProgramResult
+from qiskit_optimization.runtime import (
+    QAOAClient,
+    QAOAProgram,
+    VQERuntimeResult,
+    VQEProgramResult,
+)
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
@@ -45,16 +51,29 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
         initial_point = np.random.RandomState(42).random(2 * reps)
         backend = QasmSimulatorPy()
 
-        qaoa = QAOAProgram(
-            optimizer=optimizer,
-            reps=reps,
-            initial_point=initial_point,
-            backend=backend,
-            provider=self.provider,
-        )
-        result = qaoa.compute_minimum_eigenvalue(operator)
+        for use_deprecated in [False, True]:
+            if use_deprecated:
+                qaoa_cls = QAOAProgram
+                result_cls = VQEProgramResult
+                warnings.filterwarnings("ignore", category=DeprecationWarning)
+            else:
+                qaoa_cls = QAOAClient
+                result_cls = VQERuntimeResult
 
-        self.assertIsInstance(result, VQEProgramResult)
+            qaoa = qaoa_cls(
+                optimizer=optimizer,
+                reps=reps,
+                initial_point=initial_point,
+                backend=backend,
+                provider=self.provider,
+            )
+
+            if use_deprecated:
+                warnings.filterwarnings("always", category=DeprecationWarning)
+
+            result = qaoa.compute_minimum_eigenvalue(operator)
+
+            self.assertIsInstance(result, result_cls)
 
 
 if __name__ == "__main__":
