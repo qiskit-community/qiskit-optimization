@@ -15,6 +15,7 @@
 from test import QiskitOptimizationTestCase
 
 import unittest
+import warnings
 from ddt import ddt, data
 import numpy as np
 from qiskit.algorithms.optimizers import COBYLA
@@ -22,7 +23,12 @@ from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.opflow import I, Z
 
-from qiskit_optimization.runtime import VQEProgram, VQEProgramResult
+from qiskit_optimization.runtime import (
+    VQEClient,
+    VQERuntimeResult,
+    VQEProgram,
+    VQEProgramResult,
+)
 
 from .fake_vqeruntime import FakeRuntimeProvider
 
@@ -46,16 +52,29 @@ class TestVQEProgram(QiskitOptimizationTestCase):
         initial_point = np.random.RandomState(42).random(circuit.num_parameters)
         backend = QasmSimulatorPy()
 
-        vqe = VQEProgram(
-            ansatz=circuit,
-            optimizer=optimizer,
-            initial_point=initial_point,
-            backend=backend,
-            provider=self.provider,
-        )
-        result = vqe.compute_minimum_eigenvalue(operator)
+        for use_deprecated in [False, True]:
+            if use_deprecated:
+                vqe_cls = VQEProgram
+                result_cls = VQEProgramResult
+                warnings.filterwarnings("ignore", category=DeprecationWarning)
+            else:
+                vqe_cls = VQEClient
+                result_cls = VQERuntimeResult
 
-        self.assertIsInstance(result, VQEProgramResult)
+            vqe = vqe_cls(
+                ansatz=circuit,
+                optimizer=optimizer,
+                initial_point=initial_point,
+                backend=backend,
+                provider=self.provider,
+            )
+
+            if use_deprecated:
+                warnings.filterwarnings("always", category=DeprecationWarning)
+
+            result = vqe.compute_minimum_eigenvalue(operator)
+
+            self.assertIsInstance(result, result_cls)
 
 
 if __name__ == "__main__":

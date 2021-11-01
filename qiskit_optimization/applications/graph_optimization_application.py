@@ -40,7 +40,8 @@ class GraphOptimizationApplication(OptimizationApplication):
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
-            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
+                `NetworkX <https://networkx.org/>`_ graph,
+                or as an array or list format suitable to build out a NetworkX graph.
         """
         # The view of the graph is stored which means the graph can not be changed.
         self._graph = nx.Graph(graph).copy(as_view=True)
