@@ -15,6 +15,7 @@
 from typing import List, Union, Optional
 
 import numpy as np
+import matplotlib.pyplot as plt
 from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
@@ -92,3 +93,34 @@ class BinPacking(OptimizationApplication):
             [i for i in range(num_items) if bins[j] and items[i, j]] for j in range(num_bins)
         ]
         return items_in_bins
+
+    @staticmethod
+    def get_plot(items_in_bins: List[List[int]], weights: List[int], max_weight: int) -> plt.Figure:
+        """Get plot of the solution of the Bin Packing Problem.
+
+        Args:
+            items_in_bins: A list of lists with the items in each bin.
+            weights: A list of the weights of items
+            max_weight: The maximum bin weight capacity
+
+        Returns:
+            fig: A plot of the solution.
+        """
+        colors = plt.cm.get_cmap("jet", len(weights))
+        num_bins = len(items_in_bins)
+        fig, axes = plt.subplots()
+        for _, bin_i in enumerate(items_in_bins):
+            sum_items = 0
+            for item in bin_i:
+                axes.bar(
+                    _, weights[item], bottom=sum_items, label=f"Item {item}", color=colors(item)
+                )
+                sum_items += weights[item]
+        axes.hlines(
+            max_weight, -0.5, num_bins - 0.5, linestyle="--", color="tab:red", label="Max Weight"
+        )
+        axes.set_xticks(np.arange(num_bins))
+        axes.set_xlabel("Bin")
+        axes.set_ylabel("Weight")
+        axes.legend()
+        return fig
