@@ -65,7 +65,7 @@ from .vehicle_routing import VehicleRouting
 from .vertex_cover import VertexCover
 from .sk_model import SKModel
 
-_all__ = [
+__all__ = [
     "BinPacking",
     "Clique",
     "ExactCover",
