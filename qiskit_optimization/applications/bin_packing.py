@@ -15,13 +15,20 @@
 from typing import List, Union, Optional
 
 import numpy as np
-import matplotlib.pyplot as plt
 from docplex.mp.model import Model
+from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
 from .optimization_application import OptimizationApplication
+
+try:
+    import matplotlib.pyplot as plt
+
+    _HAS_MATPLOTLIB = True
+except ImportError:
+    _HAS_MATPLOTLIB = False
 
 
 class BinPacking(OptimizationApplication):
@@ -94,30 +101,46 @@ class BinPacking(OptimizationApplication):
         ]
         return items_in_bins
 
-    @staticmethod
-    def get_plot(items_in_bins: List[List[int]], weights: List[int], max_weight: int) -> plt.Figure:
+    def draw(self, result: Union[OptimizationResult, np.ndarray]) -> plt.Figure:
         """Get plot of the solution of the Bin Packing Problem.
 
         Args:
-            items_in_bins: A list of lists with the items in each bin.
-            weights: A list of the weights of items
-            max_weight: The maximum bin weight capacity
+            result : The calculated result of the problem
 
         Returns:
-            fig: A plot of the solution.
+            fig: A plot of the solution, where x and y represent the bins and
+            sum of the weights respectively.
+        Raises:
+            MissingOptionalLibraryError: if matplotlib is not installed.
         """
-        colors = plt.cm.get_cmap("jet", len(weights))
+        if not _HAS_MATPLOTLIB:
+            raise MissingOptionalLibraryError(
+                libname="matplotlib",
+                name="GraphOptimizationApplication",
+                pip_install="pip install 'qiskit-optimization[matplotlib]'",
+            )
+        colors = plt.cm.get_cmap("jet", len(self._weights))
+        items_in_bins = self.interpret(result)
         num_bins = len(items_in_bins)
         fig, axes = plt.subplots()
         for _, bin_i in enumerate(items_in_bins):
             sum_items = 0
             for item in bin_i:
                 axes.bar(
-                    _, weights[item], bottom=sum_items, label=f"Item {item}", color=colors(item)
+                    _,
+                    self._weights[item],
+                    bottom=sum_items,
+                    label=f"Item {item}",
+                    color=colors(item),
                 )
-                sum_items += weights[item]
+                sum_items += self._weights[item]
         axes.hlines(
-            max_weight, -0.5, num_bins - 0.5, linestyle="--", color="tab:red", label="Max Weight"
+            self._max_weight,
+            -0.5,
+            num_bins - 0.5,
+            linestyle="--",
+            color="tab:red",
+            label="Max Weight",
         )
         axes.set_xticks(np.arange(num_bins))
         axes.set_xlabel("Bin")
