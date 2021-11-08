@@ -101,7 +101,7 @@ class BinPacking(OptimizationApplication):
         ]
         return items_in_bins
 
-    def draw(self, result: Union[OptimizationResult, np.ndarray]) -> plt.Figure:
+    def draw(self, result: Union[OptimizationResult, np.ndarray]):
         """Get plot of the solution of the Bin Packing Problem.
 
         Args:
