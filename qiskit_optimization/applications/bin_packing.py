@@ -32,7 +32,7 @@ except ImportError:
     _HAS_MATPLOTLIB = False
 
     class Figure:  # type: ignore
-        """Empty Function class
+        """Empty Figure class
         Replacement if matplotlib.pyplot.Figure is not present.
         """
 
