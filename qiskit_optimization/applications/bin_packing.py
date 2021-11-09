@@ -33,7 +33,7 @@ except ImportError:
 
     class Figure:  # type: ignore
         """Empty Figure class
-        Replacement if matplotlib.pyplot.Figure is not present.
+        Replacement Figure for when matplotlib is not present.
         """
 
         pass
