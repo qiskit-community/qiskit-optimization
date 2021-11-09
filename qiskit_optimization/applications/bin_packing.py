@@ -25,10 +25,18 @@ from .optimization_application import OptimizationApplication
 
 try:
     import matplotlib.pyplot as plt
+    from matplotlib.pyplot import Figure
 
     _HAS_MATPLOTLIB = True
 except ImportError:
     _HAS_MATPLOTLIB = False
+
+    class Figure:  # type: ignore
+        """Empty Function class
+        Replacement if matplotlib.pyplot.Figure is not present.
+        """
+
+        pass
 
 
 class BinPacking(OptimizationApplication):
@@ -101,7 +109,7 @@ class BinPacking(OptimizationApplication):
         ]
         return items_in_bins
 
-    def draw(self, result: Union[OptimizationResult, np.ndarray]):
+    def get_figure(self, result: Union[OptimizationResult, np.ndarray]) -> Figure:
         """Get plot of the solution of the Bin Packing Problem.
 
         Args:
