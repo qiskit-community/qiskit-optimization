@@ -28,7 +28,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
 
     @data(
         ("op_ip1.lp", [0, 2], 6),
-        ("op_mip1.lp", [1, 1, 0], 6),
+        ("op_mip1.lp", [0, 1, 1], 5.5),
         ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
     @requires_extra_library
@@ -55,7 +55,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
 
     @data(
         ("op_ip1.lp", [0, 2], 6),
-        ("op_mip1.lp", [1, 1, 0], 6),
+        ("op_mip1.lp", [0, 1, 1], 5.5),
         ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
     @requires_extra_library

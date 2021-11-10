@@ -16,6 +16,7 @@ import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 from ddt import data, ddt
+import numpy as np
 
 from qiskit_optimization.algorithms import GurobiOptimizer
 from qiskit_optimization.problems import QuadraticProgram
@@ -26,7 +27,9 @@ class TestGurobiOptimizer(QiskitOptimizationTestCase):
     """Gurobi Optimizer Tests."""
 
     @data(
-        ("op_ip1.lp", [0, 2], 6), ("op_mip1.lp", [1, 1, 0], 6), ("op_lp1.lp", [0.25, 1.75], 5.8750)
+        ("op_ip1.lp", [0, 2], 6),
+        ("op_mip1.lp", [0, 1, 1], 5.5),
+        ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
     @requires_extra_library
     def test_gurobi_optimizer(self, config):
@@ -45,8 +48,7 @@ class TestGurobiOptimizer(QiskitOptimizationTestCase):
 
         # analyze results
         self.assertAlmostEqual(result.fval, fval)
-        for i in range(problem.get_num_vars()):
-            self.assertAlmostEqual(result.x[i], x[i])
+        np.testing.assert_array_almost_equal(result.x, x)
 
 
 if __name__ == "__main__":
