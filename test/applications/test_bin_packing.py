@@ -18,6 +18,13 @@ from qiskit_optimization.algorithms import OptimizationResult, OptimizationResul
 from qiskit_optimization.applications.bin_packing import BinPacking
 from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
 
+try:
+    from matplotlib.pyplot import Figure
+
+    _HAS_MATPLOTLIB = True
+except ImportError:
+    _HAS_MATPLOTLIB = False
+
 
 class TestBinPacking(QiskitOptimizationTestCase):
     """Test Bin packing class"""
@@ -89,3 +96,13 @@ class TestBinPacking(QiskitOptimizationTestCase):
         self.assertEqual(lin[2].linear.to_dict(), {6: 1.0, 7: 1.0})
         self.assertEqual(lin[3].linear.to_dict(), {2: 16.0, 4: 9.0, 6: 23.0, 0: -40.0})
         self.assertEqual(lin[4].linear.to_dict(), {3: 16.0, 5: 9.0, 7: 23.0, 1: -40.0})
+
+    def test_figure(self):
+        """Test the plot of the Bin Packing Problem is properly generated."""
+        bin_packing = BinPacking(
+            weights=self.weights,
+            max_weight=self.max_weight,
+            max_number_of_bins=self.max_number_of_bins,
+        )
+        if _HAS_MATPLOTLIB:
+            self.assertEqual(bin_packing.get_figure(self.result), Figure)
