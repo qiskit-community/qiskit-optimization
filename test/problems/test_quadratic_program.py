@@ -14,11 +14,10 @@
 
 import tempfile
 import unittest
-import warnings
 from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
-from docplex.mp.model import DOcplexException, Model
+from docplex.mp.model import DOcplexException
 
 from qiskit.opflow import PauliSumOp
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
@@ -884,123 +883,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         with self.assertRaises(DOcplexException):
             q_p.write_to_lp_file("")
-
-    def test_docplex(self):
-        """DEPRECATED test from_docplex and to_docplex
-
-        This test will be removed when `from_docplex` and `to_docplex` are removed.
-        """
-        q_p = QuadraticProgram("test")
-        q_p.binary_var(name="x")
-        q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
-        q_p.continuous_var(name="z", lowerbound=-1.5, upperbound=3.2)
-        q_p.minimize(
-            constant=1,
-            linear={"x": 1, "y": 2},
-            quadratic={("x", "y"): -1, ("z", "z"): 2},
-        )
-        q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
-        q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = QuadraticProgram()
-        with warnings.catch_warnings(record=True) as c_m:
-            warnings.simplefilter("always")
-            model = q_p.to_docplex()
-            msg = str(c_m[0].message)
-            msg_ref = "The to_docplex method is deprecated as of version "
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[:idx], msg_ref)
-            msg_ref = (
-                " and will be removed no sooner than 3 months after the release. "
-                "Instead use the qiskit_optimization.translators.to_docplex_mp function."
-            )
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[-idx:], msg_ref)
-        with warnings.catch_warnings(record=True) as c_m:
-            warnings.simplefilter("always")
-            q_p2.from_docplex(model)
-            msg = str(c_m[0].message)
-            msg_ref = "The from_docplex method is deprecated as of version "
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[:idx], msg_ref)
-            msg_ref = (
-                " and will be removed no sooner than 3 months after the release. "
-                "Instead use the qiskit_optimization.translators.from_docplex_mp function."
-            )
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[-idx:], msg_ref)
-
-        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
-
-        mod = Model("test")
-        x = mod.binary_var("x")
-        y = mod.integer_var(-2, 4, "y")
-        z = mod.continuous_var(-1.5, 3.2, "z")
-        mod.minimize(1 + x + 2 * y - x * y + 2 * z * z)
-        mod.add(2 * x - z == 1, "c0")
-        mod.add(2 * x - z + 3 * y * z == 1, "q0")
-        self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            mod.semiinteger_var(lb=1, name="x")
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            mod.add_range(0, 2 * x, 1)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
-            mod.add_equivalence(x, x + y <= 1, 1)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
-            mod.add(x != y)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        # test from_docplex without explicit variable names
-        mod = Model()
-        x = mod.binary_var()
-        y = mod.continuous_var()
-        z = mod.integer_var()
-        mod.minimize(x + y + z + x * y + y * z + x * z)
-        mod.add_constraint(x + y == z)  # linear EQ
-        mod.add_constraint(x + y >= z)  # linear GE
-        mod.add_constraint(x + y <= z)  # linear LE
-        mod.add_constraint(x * y == z)  # quadratic EQ
-        mod.add_constraint(x * y >= z)  # quadratic GE
-        mod.add_constraint(x * y <= z)  # quadratic LE
-        q_p = QuadraticProgram()
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            q_p.from_docplex(mod)
-        var_names = [v.name for v in q_p.variables]
-        self.assertListEqual(var_names, ["x0", "x1", "x2"])
-        senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
-        for i, c in enumerate(q_p.linear_constraints):
-            self.assertDictEqual(c.linear.to_dict(use_name=True), {"x0": 1, "x1": 1, "x2": -1})
-            self.assertEqual(c.rhs, 0)
-            self.assertEqual(c.sense, senses[i])
-        for i, c in enumerate(q_p.quadratic_constraints):
-            self.assertEqual(c.rhs, 0)
-            self.assertDictEqual(c.linear.to_dict(use_name=True), {"x2": -1})
-            self.assertDictEqual(c.quadratic.to_dict(use_name=True), {("x0", "x1"): 1})
-            self.assertEqual(c.sense, senses[i])
 
     def test_substitute_variables(self):
         """test substitute variables"""
