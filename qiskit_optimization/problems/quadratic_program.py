@@ -19,7 +19,6 @@ from math import isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
 from scipy.sparse import spmatrix
@@ -27,7 +26,6 @@ from scipy.sparse import spmatrix
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import OperatorBase, PauliSumOp
 
-from ..deprecation import DeprecatedType, deprecate_method
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
@@ -863,46 +861,6 @@ class QuadraticProgram:
                     if isinstance(elem, QuadraticProgramElement):
                         elem.quadratic_program = self
             setattr(self, attr, val)
-
-    @deprecate_method(
-        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.from_docplex_mp"
-    )
-    def from_docplex(self, model: Model) -> None:
-        """DEPRECATED Loads this quadratic program from a docplex model.
-
-        Note that this supports only basic functions of docplex as follows:
-        - quadratic objective function
-        - linear / quadratic constraints
-        - binary / integer / continuous variables
-
-        Args:
-            model: The docplex model to be loaded.
-
-        Raises:
-            QiskitOptimizationError: if the model contains unsupported elements.
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import from_docplex_mp
-
-        other = from_docplex_mp(model)
-        self._copy_from(other, include_name=True)
-
-    @deprecate_method(
-        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.to_docplex_mp"
-    )
-    def to_docplex(self) -> Model:
-        """DEPRECATED Returns a docplex model corresponding to this quadratic program.
-
-        Returns:
-            The docplex model corresponding to this quadratic program.
-
-        Raises:
-            QiskitOptimizationError: if non-supported elements (should never happen).
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
-
-        return to_docplex_mp(self)
 
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
