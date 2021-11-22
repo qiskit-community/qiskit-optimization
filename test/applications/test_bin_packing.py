@@ -12,6 +12,7 @@
 
 """Test bin packing class"""
 from test.optimization_test_case import QiskitOptimizationTestCase
+from qiskit.exceptions import MissingOptionalLibraryError
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
@@ -102,7 +103,8 @@ class TestBinPacking(QiskitOptimizationTestCase):
         bin_packing = BinPacking(
             weights=self.weights,
             max_weight=self.max_weight,
-            max_number_of_bins=self.max_number_of_bins,
         )
         if _HAS_MATPLOTLIB:
-            self.assertEqual(bin_packing.get_figure(self.result), Figure)
+            self.assertIsInstance(bin_packing.get_figure(self.result), Figure)
+        else:
+            self.assertRaises(bin_packing.get_figure(self.result), MissingOptionalLibraryError)
