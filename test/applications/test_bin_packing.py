@@ -11,20 +11,12 @@
 # that they have been altered from the originals.
 
 """Test bin packing class"""
-from test.optimization_test_case import QiskitOptimizationTestCase
-from qiskit.exceptions import MissingOptionalLibraryError
+from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.bin_packing import BinPacking
 from qiskit_optimization.problems import Constraint, QuadraticObjective, VarType
-
-try:
-    from matplotlib.pyplot import Figure
-
-    _HAS_MATPLOTLIB = True
-except ImportError:
-    _HAS_MATPLOTLIB = False
 
 
 class TestBinPacking(QiskitOptimizationTestCase):
@@ -98,13 +90,22 @@ class TestBinPacking(QiskitOptimizationTestCase):
         self.assertEqual(lin[3].linear.to_dict(), {2: 16.0, 4: 9.0, 6: 23.0, 0: -40.0})
         self.assertEqual(lin[4].linear.to_dict(), {3: 16.0, 5: 9.0, 7: 23.0, 1: -40.0})
 
+    @requires_extra_library
     def test_figure(self):
         """Test the plot of the Bin Packing Problem is properly generated."""
+        try:
+            from matplotlib.pyplot import Figure
+        except ImportError:
+
+            class Figure:  # type: ignore
+                """Empty Figure class
+                Replacement Figure for when matplotlib is not present.
+                """
+
+                pass
+
         bin_packing = BinPacking(
             weights=self.weights,
             max_weight=self.max_weight,
         )
-        if _HAS_MATPLOTLIB:
-            self.assertIsInstance(bin_packing.get_figure(self.result), Figure)
-        else:
-            self.assertRaises(bin_packing.get_figure(self.result), MissingOptionalLibraryError)
+        self.assertIsInstance(bin_packing.get_figure(self.result), Figure)
