@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    The deprecated methods ``QuadraticProgram.from_docplex`` and
+    ``QuadraticProgram.to_docplex`` have been removed and no longer exist.
+    These methods were deprecated as part of the 0.2.0 release.
+    Instead you should use :func:`~qiskit_optimization.translators.from_docplex_mp`
+    and :func:`~qiskit_optimization.translators.to_docplex_mp`.
