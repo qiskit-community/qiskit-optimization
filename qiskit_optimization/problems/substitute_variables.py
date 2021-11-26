@@ -154,16 +154,14 @@ class _SubstituteVariables:
         """Checks feasibility of the following condition
         0 `sense` rhs
         """
-        # I use the following pylint option because `rhs` should come to right
-        # pylint: disable=misplaced-comparison-constant
         if sense == ConstraintSense.EQ:
-            if 0 == rhs:
+            if rhs == 0:
                 return True
         elif sense == ConstraintSense.LE:
-            if 0 <= rhs:
+            if rhs >= 0:
                 return True
         elif sense == ConstraintSense.GE:
-            if 0 >= rhs:
+            if rhs <= 0:
                 return True
         return False
 
