@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Adding the bin-packing application :class:`qiskit_optimization.applications.BinPacking`.
+    https://en.wikipedia.org/wiki/Bin_packing_problem
