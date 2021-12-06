@@ -90,6 +90,9 @@ class QAOAClient(VQEClient):
             optimization_level: The transpiler optimization level to run if the swap strategies are
                 not used. This value is 1 by default.
         """
+        if initial_point is None:
+            initial_point = np.random.rand(2 * reps)
+
         super().__init__(
             ansatz=None,
             optimizer=optimizer,
@@ -109,6 +112,7 @@ class QAOAClient(VQEClient):
         self._use_pulse_efficient = use_pulse_efficient
         self._alpha = alpha
         self._optimization_level = optimization_level
+        self._program_id = "qaoa"
 
     @property
     def ansatz(self) -> Optional[QuantumCircuit]:
@@ -168,6 +172,14 @@ class QAOAClient(VQEClient):
             reps: The new number of reps.
         """
         self._reps = reps
+
+    def _send_job(self, inputs: Dict[str, Any], options: Dict[str, Any]):
+        """Internal helper function that subclasses can overwrite."""
+        return self.provider.runtime.run(
+            program_id=self.program_id,
+            inputs=inputs,
+            options=options,
+        )
 
     def program_inputs(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None

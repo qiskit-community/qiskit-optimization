@@ -248,6 +248,15 @@ class VQEClient(MinimumEigensolver):
             "store_intermediate": self.store_intermediate,
         }
 
+    def _send_job(self, inputs: Dict[str, Any], options: Dict[str, Any]):
+        """Internal helper function that subclasses can overwrite."""
+        return self.provider.runtime.run(
+            program_id=self.program_id,
+            inputs=inputs,
+            options=options,
+            callback=self._wrap_vqe_callback(),
+        )
+
     def compute_minimum_eigenvalue(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
     ) -> MinimumEigensolverResult:
@@ -287,12 +296,8 @@ class VQEClient(MinimumEigensolver):
         options = {"backend_name": self.backend.name()}
 
         # send job to runtime and return result
-        job = self.provider.runtime.run(
-            program_id=self.program_id,
-            inputs=inputs,
-            options=options,
-            callback=self._wrap_vqe_callback(),
-        )
+        job = self._send_job(inputs, options)
+
         # print job ID if something goes wrong
         try:
             result = job.result()
