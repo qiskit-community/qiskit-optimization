@@ -230,6 +230,24 @@ class VQEClient(MinimumEigensolver):
         else:
             return None
 
+    def program_inputs(
+        self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
+    ) -> Dict[str, Any]:
+        """Return the inputs for the runtime program.
+
+        Subclasses can override this method to add their own inputs.
+        """
+        return {
+            "operator": operator,
+            "aux_operators": aux_operators,
+            "ansatz": self.ansatz,
+            "optimizer": self.optimizer,
+            "initial_point": self.initial_point,
+            "shots": self.shots,
+            "measurement_error_mitigation": self.measurement_error_mitigation,
+            "store_intermediate": self.store_intermediate,
+        }
+
     def compute_minimum_eigenvalue(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
     ) -> MinimumEigensolverResult:
@@ -263,16 +281,7 @@ class VQEClient(MinimumEigensolver):
             aux_operators = [_convert_to_paulisumop(aux_op) for aux_op in aux_operators]
 
         # combine the settings with the given operator to runtime inputs
-        inputs = {
-            "operator": operator,
-            "aux_operators": aux_operators,
-            "ansatz": self.ansatz,
-            "optimizer": self.optimizer,
-            "initial_point": self.initial_point,
-            "shots": self.shots,
-            "measurement_error_mitigation": self.measurement_error_mitigation,
-            "store_intermediate": self.store_intermediate,
-        }
+        inputs = self.program_inputs(operator, aux_operators)
 
         # define runtime options
         options = {"backend_name": self.backend.name()}
