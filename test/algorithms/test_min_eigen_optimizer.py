@@ -17,7 +17,7 @@ from test.optimization_test_case import (
     QiskitOptimizationTestCase,
     requires_extra_library,
 )
-from test.runtime.fake_vqeruntime import FakeRuntimeProvider
+from test.runtime.fake_vqeruntime import FakeVQERuntimeProvider
 
 import numpy as np
 from ddt import data, ddt
@@ -357,7 +357,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test vqe and qaoa runtime"""
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
-        provider = FakeRuntimeProvider()
+        provider = FakeVQERuntimeProvider()
 
         if subroutine == "vqe":
             ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
