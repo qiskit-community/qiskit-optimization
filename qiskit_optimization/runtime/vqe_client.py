@@ -235,7 +235,7 @@ class VQEClient(MinimumEigensolver):
     ) -> Dict[str, Any]:
         """Return the inputs for the runtime program.
 
-        Subclasses can override this method to add their own inputs.
+        Sub-classes can override this method to add their own inputs.
         """
         return {
             "operator": operator,
