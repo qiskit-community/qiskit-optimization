@@ -124,7 +124,7 @@ jobs:
       - uses: ./.github/actions/install-main-dependencies
         with:
           os: ${{ matrix.os }}
-        if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+        if: ${{ matrix.python-version >= 3.7 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-optimization
         with:
           os: ${{ matrix.os }}
@@ -285,7 +285,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v2
         with:
-          name:  ubuntu-latest-3.6
+          name: ubuntu-latest-3.6
           path: /tmp/o36
       - uses: actions/download-artifact@v2
         with:
