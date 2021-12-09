@@ -46,7 +46,7 @@ class QAOAClient(VQEClient):
         use_swap_strategies: bool = False,
         use_initial_mapping: bool = False,
         use_pulse_efficient: bool = False,
-        optimization_level: int = 1,
+        optimization_level: Optional[int] = None,
     ) -> None:
         """
         Args:
@@ -88,8 +88,17 @@ class QAOAClient(VQEClient):
             use_pulse_efficient: A boolean on whether or not to use a pulse-efficient transpilation.
                 If this flag is set to False by default.
             optimization_level: The transpiler optimization level to run if the swap strategies are
-                not used. This value is 1 by default.
+                not used. This value defaults to 1 in the QAOA runtime.
+
+        Raises:
+            QiskitOptimizationError: if optimization_level is not None and use_swap_strategies
+                is True.
         """
+        if optimization_level is not None and use_swap_strategies:
+            raise QiskitOptimizationError(
+                "optimization_level is not needed when use_swap_strategies is True."
+            )
+
         if initial_point is None:
             initial_point = np.random.rand(2 * reps)
 
