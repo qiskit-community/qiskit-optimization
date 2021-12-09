@@ -93,18 +93,18 @@ See :ref:`optional_installs` for more information.
 Optional installs
 =================
 
-* **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files and the usage of
+* **IBM CPLEX** may be installed using ``pip install 'qiskit-optimization[cplex]'`` to enable the reading of `LP` files and the usage of
   the `CplexOptimizer`, wrapper for ``cplex.Cplex``. Currently there is no python 3.9 version of CPLEX. In this case, the CPLEX install
   command will have no effect.
 
-* **CVXPY**, may be installed using command `pip install 'qiskit-optimization[cvx]'` to install the
-  package. CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
+* **CVXPY** may be installed using the command ``pip install 'qiskit-optimization[cvx]'``.
+  CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
 
-* **Matplotlib**, may be installed using command `pip install 'qiskit-optimization[matplotlib]'` to install the
-  package. Matplotlib being installed will enable the usage of the `draw` method in the graph optimization application classes.
+* **Matplotlib** may be installed using the command ``pip install 'qiskit-optimization[matplotlib]'``.
+  Matplotlib being installed will enable the usage of the `draw` method in the graph optimization application classes.
 
-* **Gurobipy** may be installed using command `pip install 'qiskit-optimization[gurobi]'` to install the
-  package. Gurobipy being installed will enable the usage of the GurobiOptimizer.
+* **Gurobipy** may be installed using the command ``pip install 'qiskit-optimization[gurobi]'``.
+  Gurobipy being installed will enable the usage of the `GurobiOptimizer`.
 
 ----
 
