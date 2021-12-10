@@ -47,10 +47,10 @@ mypy:
 	mypy qiskit_optimization test tools
 
 style:
-	black --check qiskit_optimization test tools
+	black --check qiskit_optimization test tools docs
 
 black:
-	black qiskit_optimization test tools
+	black qiskit_optimization test tools docs
 
 test:
 	python -m unittest discover -v test
