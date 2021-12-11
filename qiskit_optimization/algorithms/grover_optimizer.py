@@ -325,6 +325,8 @@ class GroverOptimizer(OptimizationAlgorithm):
         result = self.quantum_instance.execute(qc)
         if self.quantum_instance.is_statevector:
             state = result.get_statevector(qc)
+            if not isinstance(state, np.ndarray):
+                state = state.data
             keys = [
                 bin(i)[2::].rjust(int(np.log2(len(state))), "0")[::-1] for i in range(0, len(state))
             ]
