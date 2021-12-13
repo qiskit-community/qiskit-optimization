@@ -104,8 +104,8 @@ class FakeQAOARuntime:
             "measurement_error_mitigation": bool,
             "store_intermediate": bool,
             "reps": int,
-            "pulse_efficient": bool,
-            "swap_strategies": bool,
+            "use_pulse_efficient": bool,
+            "use_swap_strategies": bool,
             "use_initial_mapping": bool,
             "alpha": float,
         }
