@@ -195,6 +195,9 @@ class QAOAClient(VQEClient):
     ) -> Dict[str, Any]:
         """Return the QAOA program inputs"""
         inputs = super().program_inputs(operator, aux_operators)
+        
+        # QAOA doesn't set the ansatz
+        del inputs["ansatz"]
 
         inputs.update(
             {
