@@ -249,7 +249,7 @@ class VQEClient(MinimumEigensolver):
         }
 
     def _send_job(self, inputs: Dict[str, Any], options: Dict[str, Any]):
-        """Internal helper function that sub classes can overwrite."""
+        """Submit a runtime job to the program ``self.program_id``."""
         return self.provider.runtime.run(
             program_id=self.program_id,
             inputs=inputs,
