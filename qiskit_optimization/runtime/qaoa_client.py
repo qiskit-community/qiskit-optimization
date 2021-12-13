@@ -127,11 +127,11 @@ class QAOAClient(VQEClient):
         return self._optimization_level
 
     @optimization_level.setter
-    def optimization_level(self, optimization_level: int):
+    def optimization_level(self, optimization_level: Optional[int] = None):
         """Set the optimization level."""
         if optimization_level is not None and self.use_swap_strategies:
             raise QiskitOptimizationError(
-                "optimization_level is not needed when use_swap_strategies is True."
+                "optimization_level cannot be set if use_swap_strategies is True."
             )
 
         self._optimization_level = optimization_level
