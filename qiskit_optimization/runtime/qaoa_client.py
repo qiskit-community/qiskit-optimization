@@ -94,11 +94,6 @@ class QAOAClient(VQEClient):
             QiskitOptimizationError: if optimization_level is not None and use_swap_strategies
                 is True.
         """
-        if optimization_level is not None and use_swap_strategies:
-            raise QiskitOptimizationError(
-                "optimization_level is not needed when use_swap_strategies is True."
-            )
-
         if initial_point is None:
             initial_point = np.random.rand(2 * reps)
 
@@ -116,12 +111,30 @@ class QAOAClient(VQEClient):
         self._initial_state = initial_state
         self._mixer = mixer
         self._reps = reps
-        self._use_swap_strategies = use_swap_strategies
-        self._use_initial_mapping = use_initial_mapping
-        self._use_pulse_efficient = use_pulse_efficient
+        self.use_swap_strategies = use_swap_strategies
+        self.use_initial_mapping = use_initial_mapping
+        self.use_pulse_efficient = use_pulse_efficient
         self._alpha = alpha
-        self._optimization_level = optimization_level
         self._program_id = "qaoa"
+
+        # Use the setter to check consistency with other settings.
+        self._optimization_level = None
+        self.optimization_level = optimization_level
+
+    @property
+    def optimization_level(self) -> int:
+        """Return the optimization level to use if swap strategies are not used."""
+        return self._optimization_level
+
+    @optimization_level.setter
+    def optimization_level(self, optimization_level: int):
+        """Set the optimization level."""
+        if optimization_level is not None and self.use_swap_strategies:
+            raise QiskitOptimizationError(
+                "optimization_level is not needed when use_swap_strategies is True."
+            )
+
+        self._optimization_level = optimization_level
 
     @property
     def ansatz(self) -> Optional[QuantumCircuit]:
@@ -195,7 +208,7 @@ class QAOAClient(VQEClient):
     ) -> Dict[str, Any]:
         """Return the QAOA program inputs"""
         inputs = super().program_inputs(operator, aux_operators)
-        
+
         # QAOA doesn't set the ansatz
         del inputs["ansatz"]
 
