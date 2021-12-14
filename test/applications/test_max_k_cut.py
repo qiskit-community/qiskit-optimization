@@ -147,15 +147,21 @@ class TestMaxkcut(QiskitOptimizationTestCase):
             )
         # given colors
         maxkcut = Maxkcut(self.graph, self.k, colors=["r", "g", "b"])
-        self.assertEqual(
-            [[round(num, 2) for num in i] for i in maxkcut._node_color(self.result.x)],
-            [
-                [0.0, 0.5, 0.0, 1.0],
-                [1.0, 0.0, 0.0, 1.0],
-                [0.0, 0.0, 1.0, 1.0],
-                [1.0, 0.0, 0.0, 1.0],
-            ],
-        )
+        if _HAS_MATPLOTLIB:
+            self.assertEqual(
+                [[round(num, 2) for num in i] for i in maxkcut._node_color(self.result.x)],
+                [
+                    [0.0, 0.5, 0.0, 1.0],
+                    [1.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 1.0],
+                    [1.0, 0.0, 0.0, 1.0],
+                ],
+            )
+        else:
+            self.assertEqual(
+                [list(i) for i in maxkcut._node_color(self.result.x)],
+                [["g"], ["r"], ["b"], ["r"]],
+            )
 
     def test_draw(self):
         """Test whether draw raises an error if matplotlib is not installed"""
