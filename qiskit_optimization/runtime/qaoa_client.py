@@ -195,14 +195,6 @@ class QAOAClient(VQEClient):
         """
         self._reps = reps
 
-    def _send_job(self, inputs: Dict[str, Any], options: Dict[str, Any]):
-        """Internal helper function that sub-classes can overwrite."""
-        return self.provider.runtime.run(
-            program_id=self.program_id,
-            inputs=inputs,
-            options=options,
-        )
-
     def program_inputs(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
     ) -> Dict[str, Any]:
