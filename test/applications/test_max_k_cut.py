@@ -22,6 +22,13 @@ from qiskit_optimization.algorithms import OptimizationResult, OptimizationResul
 from qiskit_optimization.applications.max_k_cut import Maxkcut
 from qiskit_optimization.problems import QuadraticObjective, VarType
 
+try:
+    import matplotlib as _
+
+    _HAS_MATPLOTLIB = True
+except ImportError:
+    _HAS_MATPLOTLIB = False
+
 
 class TestMaxkcut(QiskitOptimizationTestCase):
     """Test Maxkcut class"""
@@ -127,16 +134,17 @@ class TestMaxkcut(QiskitOptimizationTestCase):
     def test_node_color(self):
         """Test _node_color"""
         # default colors
-        maxkcut = Maxkcut(self.graph, self.k)
-        self.assertEqual(
-            [[round(num, 2) for num in i] for i in maxkcut._node_color(self.result.x)],
-            [
-                [0.5, 1.0, 0.7, 1.0],
-                [0.5, 0.0, 1.0, 1.0],
-                [1.0, 0.0, 0.0, 1.0],
-                [0.5, 0.0, 1.0, 1.0],
-            ],
-        )
+        if _HAS_MATPLOTLIB:
+            maxkcut = Maxkcut(self.graph, self.k)
+            self.assertEqual(
+                [[round(num, 2) for num in i] for i in maxkcut._node_color(self.result.x)],
+                [
+                    [0.5, 1.0, 0.7, 1.0],
+                    [0.5, 0.0, 1.0, 1.0],
+                    [1.0, 0.0, 0.0, 1.0],
+                    [0.5, 0.0, 1.0, 1.0],
+                ],
+            )
         # given colors
         maxkcut = Maxkcut(self.graph, self.k, colors=["r", "g", "b"])
         self.assertEqual(

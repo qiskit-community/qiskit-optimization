@@ -16,14 +16,22 @@
 from typing import List, Dict, Tuple, Optional, Union
 import networkx as nx
 import numpy as np
-from matplotlib.pyplot import cm
-from matplotlib.colors import to_rgba
 from docplex.mp.model import Model
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
 from .graph_optimization_application import GraphOptimizationApplication
+
+try:
+    from matplotlib.pyplot import cm
+    from matplotlib.colors import to_rgba
+
+    _HAS_MATPLOTLIB = True
+except ImportError:
+    import random as rd
+
+    _HAS_MATPLOTLIB = False
 
 
 class Maxkcut(GraphOptimizationApplication):
@@ -117,25 +125,38 @@ class Maxkcut(GraphOptimizationApplication):
         x = self._result_to_x(result)
         nx.draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
 
-    def _node_color(self, x: np.ndarray) -> List[Tuple[float, float, float, float]]:
+    def _node_color(
+        self, x: np.ndarray
+    ) -> Union[List[Tuple[float, float, float, float]], List[str]]:
         # Return a list of colors for draw.
 
         n = self._graph.number_of_nodes()
 
-        # k colors chosen from cm.rainbow, or from given color list
+        # k colors chosen (randomly or from cm.rainbow), or from given color list
         colors = (
-            cm.rainbow(np.linspace(0, 1, self._subsets_num))
+            (
+                cm.rainbow(np.linspace(0, 1, self._subsets_num))
+                if _HAS_MATPLOTLIB
+                else [
+                    "#" + "".join([rd.choice("0123456789ABCDEF") for i in range(6)])
+                    for j in range(self._subsets_num)
+                ]
+            )
             if self._colors is None
             else self._colors
         )
-        gray = to_rgba("lightgray")
+        gray = to_rgba("lightgray") if _HAS_MATPLOTLIB else "lightgray"
         node_colors = [gray for _ in range(n)]
 
         n_selected = x.reshape((n, self._subsets_num))
         for i in range(n):
             node_in_subset = np.where(n_selected[i] == 1)  # one-hot encoding
             if len(node_in_subset[0]) != 0:
-                node_colors[i] = to_rgba(colors[node_in_subset[0][0]])
+                node_colors[i] = (
+                    to_rgba(colors[node_in_subset[0][0]])
+                    if _HAS_MATPLOTLIB
+                    else colors[node_in_subset[0][0]]
+                )
 
         return node_colors
 
