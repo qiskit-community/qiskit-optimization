@@ -11,6 +11,7 @@ args
 arxiv
 autosummary
 backend
+barkoutsos
 benchmarking
 bitstring
 bitstrings
@@ -20,6 +21,7 @@ boolean
 boyd
 bravyi
 catol
+cartan
 chu
 chvátal
 cobyla
@@ -112,6 +114,7 @@ minimizer
 minimumeigenoptimizer
 multiset
 mypy
+nannicini
 natively
 ndarray
 ndarrays
@@ -165,6 +168,7 @@ rhoend
 rhs
 rightarrow
 rng
+robert
 ronagh
 rtype
 runtime
@@ -190,11 +194,13 @@ subspaces
 sys
 subproblem
 summands
+tavernelli
 terra
 th
 toctree
 todok
 tol
+tornow
 traceback
 tradeoff
 transpilation
