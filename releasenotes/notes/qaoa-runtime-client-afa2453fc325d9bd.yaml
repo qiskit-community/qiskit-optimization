@@ -1,7 +1,40 @@
 ---
 features:
   - |
-    A Qiskit runtime for QAOA is introduced. This runtime leverages QAOA
-    dedicated transpiler passes such as swap strategies and pulse-efficient
-    transpiler passes for cross-resonance based hardware. It also allows
-    for CVaR optimization.
+    Added the runtime client :class:`~qiskit_optimization.runtime.QAOAClient` to execute the
+    QAOA algorithm on Qiskit runtime. This runtime program leverages QAOA dedicated transpiler 
+    passes such as swap strategies and pulse-efficient transpiler passes for cross-resonance based hardware.
+    Both these optimizations can significantly reduce circuit depth and improve execution time and 
+    results.
+    Further, the QAOA runtime also allows using CVaR expectation values, which can improve the 
+    performance of ground state calculations in optimization settings.
+
+    The client can for instance be used as
+
+    .. code-block:: python
+
+        from qiskit import IBMQ
+        from qiskit.algorithms.optimizers import COBYLA
+        from qiskit.opflow import I, Z
+        from qiskit_optimization.runtime import QAOAClient
+
+        # get the provider and backend we use to run the program
+        IBMQ.load_account()
+        provider = IBMQ.get_provider(hub="ibm-q", group="open", project="main")
+        backend = provider.get_backend("ibmq_qasm_simulator")
+
+        # define diagonal Hamiltonian whose minimum eigenvalue we want to find
+        op =  (Z ^ Z ^ I ^ I ^ I) - (I ^ I ^ Z ^ Z ^ I) 
+
+        # set up the client and solve the problem
+        client = QAOAClient(
+            reps=2,  # use p=2 repetitions in the QAOA ansatz
+            optimizer=COBYLA(), 
+            alpha=0.75,  # use CVaR expectation with 75% of the best readouts
+            provider=provider, 
+            backend=backend
+        )
+        result = client.compute_minimum_eigenvalue(op)
+
+    See also the new QAOA Runtime tutorial in ``docs/tutorials/12_qaoa_runtime.ipynb`` for more 
+    details.
