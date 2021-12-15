@@ -86,7 +86,7 @@ class QAOAClient(VQEClient):
                 coupling map and the swap strategy. This is only needed when the optimization
                 problem is sparse and when using swap strategies to transpile.
             use_pulse_efficient: A boolean on whether or not to use a pulse-efficient transpilation.
-                If this flag is set to False by default.
+                If this flag is set to False by default. See https://arxiv.org/abs/2105.01063.
             optimization_level: The transpiler optimization level to run if the swap strategies are
                 not used. This value defaults to 1 in the QAOA runtime.
 
@@ -111,15 +111,55 @@ class QAOAClient(VQEClient):
         self._initial_state = initial_state
         self._mixer = mixer
         self._reps = reps
-        self.use_swap_strategies = use_swap_strategies
-        self.use_initial_mapping = use_initial_mapping
-        self.use_pulse_efficient = use_pulse_efficient
+        self._use_swap_strategies = use_swap_strategies
+        self._use_initial_mapping = use_initial_mapping
+        self._use_pulse_efficient = use_pulse_efficient
         self._alpha = alpha
         self._program_id = "qaoa"
 
         # Use the setter to check consistency with other settings.
         self._optimization_level = None
         self.optimization_level = optimization_level
+
+    @property
+    def use_swap_strategies(self) -> bool:
+        """Whether or not the transpilation will use the swap strategies."""
+        return self._use_swap_strategies
+
+    @use_swap_strategies.setter
+    def use_swap_strategies(self, use_swap_strategies: bool):
+        """Set to True to use swap strategies in the transpilation."""
+        self._use_swap_strategies = use_swap_strategies
+
+    @property
+    def use_initial_mapping(self) -> bool:
+        """If True run a permutation of the decision variables to better fit the device."""
+        return self._use_initial_mapping
+
+    @use_initial_mapping.setter
+    def use_initial_mapping(self, use_initial_mapping: bool):
+        """If True run a permutation of the decision variables to better fit the device."""
+        self._use_initial_mapping = use_initial_mapping
+
+    @property
+    def use_pulse_efficient(self) -> bool:
+        """If True then a pulse-efficient transpiler pass will run to scale the CR gates."""
+        return self._use_pulse_efficient
+
+    @use_pulse_efficient.setter
+    def use_pulse_efficient(self, use_pulse_efficient: bool):
+        """If True then a pulse-efficient transpiler pass will run to scale the CR gates."""
+        self._use_pulse_efficient = use_pulse_efficient
+
+    @property
+    def alpha(self) -> float:
+        """The fraction of best shots to keep."""
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, alpha: float):
+        """Set the fraction of best shots to keep."""
+        self._alpha = alpha
 
     @property
     def optimization_level(self) -> int:
