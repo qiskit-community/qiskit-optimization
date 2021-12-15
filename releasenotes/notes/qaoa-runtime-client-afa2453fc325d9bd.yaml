@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    A Qiskit runtime for QAOA is introduced. This runtime leverages QAOA
+    dedicated transpiler passes such as swap stretgies and pulse-efficient
+    transpiler passes for corss-resonance based hardware. It also allows
+    for CVaR optimization.
