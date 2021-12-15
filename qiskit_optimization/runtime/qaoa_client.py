@@ -91,9 +91,13 @@ class QAOAClient(VQEClient):
                 not used. This value defaults to 1 in the QAOA runtime.
 
         Raises:
+            QiskitOptimizationError: if reps is smaller than 1.
             QiskitOptimizationError: if optimization_level is not None and use_swap_strategies
                 is True.
         """
+        if reps < 1:
+            raise QiskitOptimizationError(f"reps must be greater than 0, received {reps}.")
+
         if initial_point is None:
             initial_point = np.random.rand(2 * reps)
 
