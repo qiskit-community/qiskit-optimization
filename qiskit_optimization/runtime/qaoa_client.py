@@ -247,9 +247,9 @@ class QAOAClient(VQEClient):
         inputs.update(
             {
                 "reps": self._reps,
-                "use_pulse_efficient": self.use_pulse_efficient,
-                "use_swap_strategies": self.use_swap_strategies,
-                "use_initial_mapping": self.use_initial_mapping,
+                "use_pulse_efficient": self._use_pulse_efficient,
+                "use_swap_strategies": self._use_swap_strategies,
+                "use_initial_mapping": self._use_initial_mapping,
                 "alpha": self._alpha,
             }
         )
