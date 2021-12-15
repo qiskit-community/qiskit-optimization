@@ -131,7 +131,7 @@ class QAOAClient(VQEClient):
         return self._use_swap_strategies
 
     @use_swap_strategies.setter
-    def use_swap_strategies(self, use_swap_strategies: bool):
+    def use_swap_strategies(self, use_swap_strategies: bool) -> None:
         """Set to True to use swap strategies in the transpilation."""
         self._use_swap_strategies = use_swap_strategies
 
@@ -141,7 +141,7 @@ class QAOAClient(VQEClient):
         return self._use_initial_mapping
 
     @use_initial_mapping.setter
-    def use_initial_mapping(self, use_initial_mapping: bool):
+    def use_initial_mapping(self, use_initial_mapping: bool) -> None:
         """If True run a permutation of the decision variables to better fit the device."""
         self._use_initial_mapping = use_initial_mapping
 
@@ -151,7 +151,7 @@ class QAOAClient(VQEClient):
         return self._use_pulse_efficient
 
     @use_pulse_efficient.setter
-    def use_pulse_efficient(self, use_pulse_efficient: bool):
+    def use_pulse_efficient(self, use_pulse_efficient: bool) -> None:
         """If True then a pulse-efficient transpiler pass will run to scale the CR gates."""
         self._use_pulse_efficient = use_pulse_efficient
 
@@ -161,12 +161,12 @@ class QAOAClient(VQEClient):
         return self._alpha
 
     @alpha.setter
-    def alpha(self, alpha: float):
+    def alpha(self, alpha: float) -> None:
         """Set the fraction of best shots to keep."""
         self._alpha = alpha
 
     @property
-    def optimization_level(self) -> int:
+    def optimization_level(self) -> Optional[int]:
         """Return the optimization level to use if swap strategies are not used."""
         return self._optimization_level
 
