@@ -75,16 +75,6 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
 
             self.assertIsInstance(result, result_cls)
 
-    def _test_initial_point_rng(self):
-        """Test the rng of the initial point."""
-
-        qaoa1 = QAOAClient(rng_seed=0)
-        qaoa2 = QAOAClient(rng_seed=0)
-        qaoa3 = QAOAClient(rng_seed=1)
-
-        self.assertTrue(np.allclose(qaoa1.initial_point, qaoa2.initial_point))
-        self.assertFalse(np.allclose(qaoa1.initial_point, qaoa3.initial_point))
-
 
 if __name__ == "__main__":
     unittest.main()

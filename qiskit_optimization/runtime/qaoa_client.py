@@ -47,7 +47,6 @@ class QAOAClient(VQEClient):
         use_initial_mapping: bool = False,
         use_pulse_efficient: bool = False,
         optimization_level: Optional[int] = None,
-        rng_seed: Optional[int] = None,
     ) -> None:
         """
         Args:
@@ -90,16 +89,13 @@ class QAOAClient(VQEClient):
                 If this flag is set to False by default. See https://arxiv.org/abs/2105.01063.
             optimization_level: The transpiler optimization level to run if the swap strategies are
                 not used. This value defaults to 1 in the QAOA runtime.
-            rng_seed: An optional int to set the seed of the random generator that chooses the
-                initial point if no initial point is given.
 
         Raises:
             QiskitOptimizationError: if optimization_level is not None and use_swap_strategies
                 is True.
         """
         if initial_point is None:
-            rng = np.random.default_rng(rng_seed)
-            initial_point = rng.random(2 * reps)
+            initial_point = np.random.rand(2 * reps)
 
         super().__init__(
             ansatz=None,
