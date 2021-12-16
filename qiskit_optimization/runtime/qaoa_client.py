@@ -63,7 +63,8 @@ class QAOAClient(VQEClient):
                 as well as warm-starting the optimization as introduced
                 in http://arxiv.org/abs/2009.10095.
             initial_point: An optional initial point (i.e. initial parameter values)
-                for the optimizer. If ``None`` a random vector is used.
+                for the optimizer. If ``None`` a random vector is chosen in the :class:`VQE`
+                class in Qiskit terra using a uniform distribution.
             alpha: The fraction of top measurement samples to be used for the expectation value
                 (CVaR expectation). Defaults to 1, i.e. using all samples to construct the
                 expectation value. This value must be contained in the interval [0, 1].
