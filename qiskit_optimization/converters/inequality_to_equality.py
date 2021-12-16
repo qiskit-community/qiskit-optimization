@@ -13,7 +13,7 @@
 
 import copy
 import math
-from typing import List, Optional, Union, cast
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -267,7 +267,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         Returns:
             bool: If the constraint contains float coefficients, this returns True, else False.
         """
-        return any(isinstance(v, float) and not cast(float, v).is_integer() for v in values)
+        return any(isinstance(v, float) and not v.is_integer() for v in values)
 
     @property
     def mode(self) -> str:
