@@ -66,7 +66,7 @@ class QAOAClient(VQEClient):
                 for the optimizer. If ``None`` a random vector is used.
             alpha: The fraction of top measurement samples to be used for the expectation value
                 (CVaR expectation). Defaults to 1, i.e. using all samples to construct the
-                expectation value.
+                expectation value. This value must be contained in the interval [0, 1].
             provider: The provider.
             backend: The backend to run the circuits on.
             shots: The number of shots to be used
@@ -92,14 +92,15 @@ class QAOAClient(VQEClient):
 
         Raises:
             QiskitOptimizationError: if reps is smaller than 1.
+            QiskitOptimizationError: if alpha is not in the interval [0, 1].
             QiskitOptimizationError: if optimization_level is not None and use_swap_strategies
                 is True.
         """
         if reps < 1:
             raise QiskitOptimizationError(f"reps must be greater than 0, received {reps}.")
 
-        if initial_point is None:
-            initial_point = np.random.rand(2 * reps)
+        if alpha < 0 or alpha > 1:
+            raise QiskitOptimizationError(f"alpha must range from 0 to 1. Received {alpha}.")
 
         super().__init__(
             ansatz=None,
@@ -122,7 +123,6 @@ class QAOAClient(VQEClient):
         self._program_id = "qaoa"
 
         # Use the setter to check consistency with other settings.
-        self._optimization_level = None
         self.optimization_level = optimization_level
 
     @property
