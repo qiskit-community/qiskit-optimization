@@ -97,7 +97,7 @@ class TestBinPacking(QiskitOptimizationTestCase):
             from matplotlib.pyplot import Figure
         except ImportError:
 
-            class Figure:  # type: ignore
+            class Figure:
                 """Empty Figure class
                 Replacement Figure for when matplotlib is not present.
                 """
