@@ -230,6 +230,33 @@ class VQEClient(MinimumEigensolver):
         else:
             return None
 
+    def program_inputs(
+        self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
+    ) -> Dict[str, Any]:
+        """Return the inputs for the runtime program.
+
+        Sub-classes can override this method to add their own inputs.
+        """
+        return {
+            "operator": operator,
+            "aux_operators": aux_operators,
+            "ansatz": self.ansatz,
+            "optimizer": self.optimizer,
+            "initial_point": self.initial_point,
+            "shots": self.shots,
+            "measurement_error_mitigation": self.measurement_error_mitigation,
+            "store_intermediate": self.store_intermediate,
+        }
+
+    def _send_job(self, inputs: Dict[str, Any], options: Dict[str, Any]):
+        """Submit a runtime job to the program ``self.program_id``."""
+        return self.provider.runtime.run(
+            program_id=self.program_id,
+            inputs=inputs,
+            options=options,
+            callback=self._wrap_vqe_callback(),
+        )
+
     def compute_minimum_eigenvalue(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
     ) -> MinimumEigensolverResult:
@@ -263,27 +290,14 @@ class VQEClient(MinimumEigensolver):
             aux_operators = [_convert_to_paulisumop(aux_op) for aux_op in aux_operators]
 
         # combine the settings with the given operator to runtime inputs
-        inputs = {
-            "operator": operator,
-            "aux_operators": aux_operators,
-            "ansatz": self.ansatz,
-            "optimizer": self.optimizer,
-            "initial_point": self.initial_point,
-            "shots": self.shots,
-            "measurement_error_mitigation": self.measurement_error_mitigation,
-            "store_intermediate": self.store_intermediate,
-        }
+        inputs = self.program_inputs(operator, aux_operators)
 
         # define runtime options
         options = {"backend_name": self.backend.name()}
 
         # send job to runtime and return result
-        job = self.provider.runtime.run(
-            program_id=self.program_id,
-            inputs=inputs,
-            options=options,
-            callback=self._wrap_vqe_callback(),
-        )
+        job = self._send_job(inputs, options)
+
         # print job ID if something goes wrong
         try:
             result = job.result()

@@ -84,17 +84,17 @@ class QAOAProgram(QAOAClient):
         )
 
         super().__init__(
-            optimizer,
-            reps,
-            initial_state,
-            mixer,
-            initial_point,
-            provider,
-            backend,
-            shots,
-            measurement_error_mitigation,
-            callback,
-            store_intermediate,
+            optimizer=optimizer,
+            reps=reps,
+            initial_state=initial_state,
+            mixer=mixer,
+            initial_point=initial_point,
+            provider=provider,
+            backend=backend,
+            shots=shots,
+            measurement_error_mitigation=measurement_error_mitigation,
+            callback=callback,
+            store_intermediate=store_intermediate,
         )
 
     def compute_minimum_eigenvalue(
