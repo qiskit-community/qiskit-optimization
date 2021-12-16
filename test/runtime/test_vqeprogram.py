@@ -30,7 +30,7 @@ from qiskit_optimization.runtime import (
     VQEProgramResult,
 )
 
-from .fake_vqeruntime import FakeRuntimeProvider
+from .fake_vqeruntime import FakeVQERuntimeProvider
 
 
 @ddt
@@ -39,7 +39,7 @@ class TestVQEProgram(QiskitOptimizationTestCase):
 
     def setUp(self):
         super().setUp()
-        self.provider = FakeRuntimeProvider()
+        self.provider = FakeVQERuntimeProvider()
 
     @data(
         {"name": "SPSA", "maxiter": 100},
