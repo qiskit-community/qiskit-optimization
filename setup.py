@@ -48,7 +48,7 @@ setuptools.setup(
     author='Qiskit Optimization Development Team',
     author_email='hello@qiskit.org',
     license='Apache-2.0',
-    classifiers=(
+    classifiers=[
         "Environment :: Console",
         "License :: OSI Approved :: Apache Software License",
         "Intended Audience :: Developers",
@@ -62,7 +62,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering"
-    ),
+    ],
     keywords='qiskit sdk quantum optimization',
     packages=setuptools.find_packages(include=['qiskit_optimization', 'qiskit_optimization.*']),
     install_requires=REQUIREMENTS,
