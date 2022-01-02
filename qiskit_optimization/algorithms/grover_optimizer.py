@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -251,7 +251,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                     if self._quantum_instance.is_statevector:
                         indices = list(range(n_key, len(outcome)))
                         rho = partial_trace(self._circuit_results, indices)
-                        self._circuit_results = np.diag(rho.data) ** 0.5
+                        self._circuit_results = cast(Dict, np.diag(rho.data) ** 0.5)
                     else:
                         self._circuit_results = {
                             i[-1 * n_key :]: v for i, v in self._circuit_results.items()
