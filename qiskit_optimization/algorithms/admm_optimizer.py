@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -28,6 +28,7 @@ from .optimization_algorithm import (
 from .slsqp_optimizer import SlsqpOptimizer
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
+from ..problems.linear_expression import LinearExpression
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import VarType, Variable
 from ..converters import MaximizeToMinimize
@@ -366,7 +367,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             self._state.dual_residuals.append(dual_residual)
             self._state.cons_r.append(constraint_residual)
             self._state.merits.append(merit)
-            self._state.lambdas.append(np.linalg.norm(self._state.lambda_mult))
+            self._state.lambdas.append(cast(float, np.linalg.norm(self._state.lambda_mult)))
 
             self._state.x0_saved.append(self._state.x0)
             self._state.u_saved.append(self._state.u)
@@ -686,7 +687,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
         # set linear objective for y
         linear_y = -self._state.lambda_mult - self._state.rho * (self._state.x0 - self._state.z)
-        op3.objective.linear = linear_y
+        op3.objective.linear = cast(LinearExpression, linear_y)
 
         return op3
 
@@ -834,12 +835,12 @@ class ADMMOptimizer(OptimizationAlgorithm):
             r, s as primary and dual residuals.
         """
         elements = self._state.x0 - self._state.z - self._state.y
-        primal_residual = np.linalg.norm(elements)
+        primal_residual: float = cast(float, np.linalg.norm(elements))
         if iteration > 0:
             elements_dual = self._state.z - self._state.z_saved[iteration - 1]
         else:
             elements_dual = self._state.z - self._state.z_init
-        dual_residual = self._state.rho * np.linalg.norm(elements_dual)
+        dual_residual: float = cast(float, self._state.rho * np.linalg.norm(elements_dual))
 
         return primal_residual, dual_residual
 
