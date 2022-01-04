@@ -24,7 +24,7 @@ from numpy import ndarray
 from scipy.sparse import spmatrix
 
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.opflow import OperatorBase, PauliSumOp
+from qiskit.opflow import OperatorBase
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
@@ -988,7 +988,7 @@ class QuadraticProgram:
 
     def from_ising(
         self,
-        qubit_op: Union[OperatorBase, PauliSumOp],
+        qubit_op: OperatorBase,
         offset: float = 0.0,
         linear: bool = False,
     ) -> None:

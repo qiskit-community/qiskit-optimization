@@ -115,7 +115,7 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
 
 
 def from_ising(
-    qubit_op: Union[OperatorBase, PauliSumOp],
+    qubit_op: OperatorBase,
     offset: float = 0.0,
     linear: bool = False,
 ) -> QuadraticProgram:
