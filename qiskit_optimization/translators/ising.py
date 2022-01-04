@@ -13,7 +13,7 @@
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
 import math
-from typing import Tuple, Union
+from typing import Tuple
 
 import numpy as np
 
