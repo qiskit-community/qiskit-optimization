@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,7 +13,7 @@
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
 import math
-from typing import Tuple, Union
+from typing import Tuple
 
 import numpy as np
 
@@ -115,7 +115,7 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
 
 
 def from_ising(
-    qubit_op: Union[OperatorBase, PauliSumOp],
+    qubit_op: OperatorBase,
     offset: float = 0.0,
     linear: bool = False,
 ) -> QuadraticProgram:
