@@ -146,7 +146,8 @@ class TestMaxkcut(QiskitOptimizationTestCase):
                 ],
             )
         # given colors
-        maxkcut = Maxkcut(self.graph, self.k, colors=["r", "g", "b"])
+        maxkcut = Maxkcut(self.graph, self.k)
+        maxkcut.colors = ["r", "g", "b"]
         if _HAS_MATPLOTLIB:
             self.assertEqual(
                 [[round(num, 2) for num in i] for i in maxkcut._node_color(self.result.x)],
@@ -174,3 +175,14 @@ class TestMaxkcut(QiskitOptimizationTestCase):
         except ImportError:
             with self.assertRaises(MissingOptionalLibraryError):
                 maxkcut.draw()
+
+    def test_set_colors(self):
+        """Test set colors list"""
+        maxkcut = Maxkcut(self.graph, self.k)
+        # set different quantity of colors
+        with self.assertRaises(ValueError):
+            maxkcut.colors = ["g", "r"]
+        # change k value
+        maxkcut.colors = ["g", "r", "b"]
+        with self.assertRaises(ValueError):
+            maxkcut.k = 8

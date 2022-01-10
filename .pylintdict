@@ -24,6 +24,7 @@ catol
 cartan
 chu
 chvátal
+cmap
 cobyla
 coeff
 coeffs
@@ -165,6 +166,7 @@ qubits
 qubo
 readme
 representable
+rgb
 rgba
 rhobeg
 rhoend
@@ -218,6 +220,8 @@ undirected
 upperbound
 variational
 vartype
+vmax
+vmin
 vqe
 writelines
 xixj

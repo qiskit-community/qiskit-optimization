@@ -18,6 +18,7 @@ import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
 
+from qiskit.utils import algorithm_globals
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
@@ -29,7 +30,6 @@ try:
 
     _HAS_MATPLOTLIB = True
 except ImportError:
-    import random as rd
 
     _HAS_MATPLOTLIB = False
 
@@ -49,7 +49,6 @@ class Maxkcut(GraphOptimizationApplication):
         self,
         graph: Union[nx.Graph, np.ndarray, List],
         k: int,
-        colors: Optional[Union[List[str], List[List[int]]]] = None,
     ) -> None:
         """
         Args:
@@ -57,12 +56,11 @@ class Maxkcut(GraphOptimizationApplication):
                 `NetworkX <https://networkx.org/>`_ graph,
                 or as an array or list format suitable to build out a NetworkX graph.
             k: The number of colors
-            colors: List of strings or list of colors in rgba lists to be assigned to each
-                resulting subset, there must be as many colors as the number k
         """
         super().__init__(graph=graph)
         self._subsets_num = k
-        self._colors = colors if colors and len(colors) >= k else None
+        self._colors: Union[List[Tuple[float, float, float, float]], List[str]] = None
+        self._seed: int = None
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert a Max-k-cut problem instance into a
@@ -133,18 +131,22 @@ class Maxkcut(GraphOptimizationApplication):
         n = self._graph.number_of_nodes()
 
         # k colors chosen (randomly or from cm.rainbow), or from given color list
-        colors = (
-            (
-                cm.rainbow(np.linspace(0, 1, self._subsets_num))
-                if _HAS_MATPLOTLIB
-                else [
-                    "#" + "".join([rd.choice("0123456789ABCDEF") for i in range(6)])
+        if self._colors is None:
+            if _HAS_MATPLOTLIB:
+                colors = cm.rainbow(np.linspace(0, 1, self._subsets_num))
+            else:
+                if self._seed:
+                    algorithm_globals.random_seed = self._seed
+                colors = [
+                    "#"
+                    + "".join(
+                        [algorithm_globals.random.choice("0123456789ABCDEF") for i in range(6)]
+                    )
                     for j in range(self._subsets_num)
                 ]
-            )
-            if self._colors is None
-            else self._colors
-        )
+        else:
+            colors = self._colors
+
         gray = to_rgba("lightgray") if _HAS_MATPLOTLIB else "lightgray"
         node_colors = [gray for _ in range(n)]
 
@@ -175,12 +177,21 @@ class Maxkcut(GraphOptimizationApplication):
 
         Args:
             k: The number of colors
+
+        Raises:
+            ValueError: if the size of the colors is different than the k parameter.
         """
         self._subsets_num = k
-        self._colors = self._colors if self._colors and len(self._colors) >= k else None
+        if self._colors and len(self._colors) != self._subsets_num:
+            self._colors = None
+            raise ValueError(
+                f"Number of colors in the list is different than the parameter"
+                f" k = {self._subsets_num} specified for this problem,"
+                f" the colors have not been assigned"
+            )
 
     @property
-    def colors(self) -> Union[List[str], List[List[int]]]:
+    def colors(self) -> Union[List[Tuple[float, float, float, float]], List[str]]:
         """Getter of colors list
 
         Returns:
@@ -189,10 +200,48 @@ class Maxkcut(GraphOptimizationApplication):
         return self._colors
 
     @colors.setter
-    def colors(self, colors: Union[List[str], List[List[int]]]) -> None:
+    def colors(self, colors: Union[List[Tuple[float, float, float, float]], List[str]]) -> None:
         """Setter of colors list
+        Colors list must be the same length as the k parameter. Color can be a string or rgb or
+        rgba tuple of floats from 0-1. If numeric values are specified, they will be mapped to
+        colors using the cmap and vmin, vmax parameters. See matplotlib colors docs for more
+        details (https://matplotlib.org/stable/gallery/color/named_colors.html).
+
+        Examples:
+            [[0.0, 0.5, 0.0, 1.0], [1.0, 0.0, 0.0, 1.0], ...]
+            ["g", "r", "b", ...]
+            ["cyan", "purple", ...]
 
         Args:
             colors: The k size color list
+
+        Raises:
+            ValueError: if the size of the colors is different than the k parameter.
         """
-        self._colors = colors if colors and len(colors) >= self._subsets_num else None
+        if colors and len(colors) == self._subsets_num:
+            self._colors = colors
+        else:
+            self._colors = None
+            raise ValueError(
+                f"Number of colors in the list is different than the parameter"
+                f" k = {self._subsets_num} specified for this problem,"
+                f" the colors have not been assigned"
+            )
+
+    @property
+    def seed(self) -> int:
+        """Getter of seed
+
+        Returns:
+            The seed value for random generation of colors
+        """
+        return self._seed
+
+    @seed.setter
+    def seed(self, seed: int) -> None:
+        """Setter of seed
+
+        Args:
+            seed: The seed value for random generation of colors
+        """
+        self._seed = seed
