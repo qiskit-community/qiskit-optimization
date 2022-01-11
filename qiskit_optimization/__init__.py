@@ -22,7 +22,7 @@ to a suite of easy-to-use quantum optimization algorithms that are ready to run 
 classical simulators, as well as on real quantum devices via Qiskit.
 
 This module enables easy, efficient modeling of optimization problems using `docplex
-<http://ibmdecisionoptimization.github.io/docplex-doc/>`_.
+<https://ibmdecisionoptimization.github.io/docplex-doc/>`_.
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm
