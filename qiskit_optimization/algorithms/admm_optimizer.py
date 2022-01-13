@@ -247,10 +247,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             problem: The optimization problem to check compatibility.
 
         Returns:
-            Returns True if the problem is compatible, otherwise raises an error.
-
-        Raises:
-            QiskitOptimizationError: If the problem is not compatible with the ADMM optimizer.
+            Returns the incompatibility message. If the message is empty no issues were found.
         """
 
         msg = ""
