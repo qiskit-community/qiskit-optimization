@@ -240,17 +240,14 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # the solve method.
         self._state = None  # type: Optional[ADMMState]
 
-    def get_compatibility_msg(self, problem: QuadraticProgram) -> Optional[str]:
+    def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with the optimizer implementing this method.
 
         Args:
             problem: The optimization problem to check compatibility.
 
         Returns:
-            Returns True if the problem is compatible, otherwise raises an error.
-
-        Raises:
-            QiskitOptimizationError: If the problem is not compatible with the ADMM optimizer.
+            Returns the incompatibility message. If the message is empty no issues were found.
         """
 
         msg = ""
@@ -267,7 +264,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
                     # binary and continuous vars are mixed.
                     msg += "Binary and continuous variables are not separable in the objective. "
 
-        # if an error occurred, return error message, otherwise, return None
+        # if an error occurred, return error message, otherwise, return the empty string
         return msg
 
     def solve(self, problem: QuadraticProgram) -> ADMMOptimizationResult:
