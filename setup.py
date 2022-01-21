@@ -61,6 +61,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Scientific/Engineering"
     ],
     keywords='qiskit sdk quantum optimization',
@@ -69,7 +70,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.6",
     extras_require={
-        'cplex': ["cplex; python_version < '3.9'"],
+        'cplex': ["cplex; python_version < '3.10'"],
         'cvx': ['cvxpy'],
         'matplotlib': ['matplotlib'],
         'gurobi': ["gurobipy; python_version >= '3.7'"],
