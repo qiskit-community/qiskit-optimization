@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -105,12 +105,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, '3.10']
         include:
           - os: macos-latest
             python-version: 3.8
-          - os: windows-latest
+          - os: macos-latest
+            python-version: '3.10'
+          - os: windows-2019
             python-version: 3.8
+          - os: windows-2019
+            python-version: '3.10'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -122,7 +126,7 @@ jobs:
           conda create -n scsenv python=${{ matrix.python-version }}
           conda activate scsenv
           conda install -y scs lapack cvxpy -c conda-forge
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-2019' }}
         shell: bash
       - uses: ./.github/actions/install-main-dependencies
         with:
@@ -133,7 +137,7 @@ jobs:
           os: ${{ matrix.os }}
       - name: Run lint
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2019" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
@@ -141,7 +145,7 @@ jobs:
         shell: bash
       - name: Run mypy
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2019" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
@@ -150,7 +154,7 @@ jobs:
         shell: bash
       - name: Run lint latest version
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2019" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
@@ -167,7 +171,7 @@ jobs:
         if: ${{ !cancelled() }}
       - name: Deprecation Messages
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2019" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
@@ -176,7 +180,7 @@ jobs:
         shell: bash
       - name: Coverage combine
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2019" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
@@ -192,7 +196,7 @@ jobs:
         env:
           PYTHONWARNINGS: default
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2019" ]; then
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
@@ -300,18 +304,30 @@ jobs:
           path: /tmp/o39
       - uses: actions/download-artifact@v2
         with:
+          name: ubuntu-latest-3.10
+          path: /tmp/o310
+      - uses: actions/download-artifact@v2
+        with:
           name: macos-latest-3.8
           path: /tmp/m38
       - uses: actions/download-artifact@v2
         with:
-          name: windows-latest-3.8
+          name: macos-latest-3.10
+          path: /tmp/m310
+      - uses: actions/download-artifact@v2
+        with:
+          name: windows-2019-3.8
           path: /tmp/w38
+      - uses: actions/download-artifact@v2
+        with:
+          name: windows-2019-3.10
+          path: /tmp/w310
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/m38/opt.dep /tmp/w38/opt.dep || true
+          sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep tmp/w310/opt.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/o37/opt.dat
