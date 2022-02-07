@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,7 @@ from test import QiskitOptimizationTestCase, requires_extra_library
 import numpy as np
 
 from qiskit import BasicAer
-from qiskit.utils import algorithm_globals
+from qiskit.utils import algorithm_globals, QuantumInstance
 
 from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
 
@@ -130,9 +130,15 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
     @requires_extra_library
     def test_recursive_warm_qaoa(self):
         """Test the recursive optimizer with warm start qaoa."""
-        algorithm_globals.random_seed = 12345
+        seed = 1234
+        algorithm_globals.random_seed = seed
         backend = BasicAer.get_backend("statevector_simulator")
-        qaoa = QAOA(quantum_instance=backend, reps=1)
+        qaoa = QAOA(
+            quantum_instance=QuantumInstance(
+                backend=backend, seed_simulator=seed, seed_transpiler=seed
+            ),
+            reps=1,
+        )
         warm_qaoa = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True, qaoa=qaoa
         )
