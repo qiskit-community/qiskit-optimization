@@ -69,9 +69,13 @@ import numpy as np
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
+from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA
 from qiskit.algorithms.optimizers import SPSA
+
+seed = 1234
+algorithm_globals.random_seed = seed
 
 # Generate a graph of 4 nodes
 n = 4
@@ -96,7 +100,8 @@ problem.linear_constraint([1, 0, 0, 0], '==', 1)
 # Run quantum algorithm QAOA on qasm simulator
 spsa = SPSA(maxiter=250)
 backend = BasicAer.get_backend('qasm_simulator')
-qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=backend)
+q_i = QuantumInstance(backend=backend, seed_simulator=seed, seed_transpiler=seed)
+qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=q_i)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result)  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
