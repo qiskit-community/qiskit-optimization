@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -30,9 +30,12 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     i-th variable is mapped to i-th qubit.
     See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
 
+    Args:
+        quad_prog: The problem to be translated.
+
     Returns:
-        qubit_op: The qubit operator for the problem
-        offset: The constant value in the Ising Hamiltonian.
+        A tuple (qubit_op, offset) comprising the qubit operator for the problem
+        and offset for the constant value in the Ising Hamiltonian.
 
     Raises:
         QiskitOptimizationError: If an integer variable or a continuous variable exists
