@@ -149,6 +149,7 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
     """Translate a gurobipy model into a quadratic program.
 
     Note that this supports only basic functions of gurobipy as follows:
+
     - quadratic objective function
     - linear / quadratic constraints
     - binary / integer / continuous variables

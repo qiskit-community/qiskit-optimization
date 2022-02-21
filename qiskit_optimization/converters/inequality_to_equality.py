@@ -44,12 +44,11 @@ class InequalityToEquality(QuadraticProgramConverter):
     def __init__(self, mode: str = "auto") -> None:
         """
         Args:
-            mode: To chose the type of slack variables. There are 3 options for mode.
+            mode: To choose the type of slack variables. There are 3 options for mode.
 
                 - 'integer': All slack variables will be integer variables.
-                - 'continuous': All slack variables will be continuous variables
-                - 'auto': Try to use integer variables but if it's not possible,
-                   use continuous variables
+                - 'continuous': All slack variables will be continuous variables.
+                - 'auto': Try to use integer variables, but use continuous variables if impossible.
         """
         self._src: Optional[QuadraticProgram] = None
         self._dst: Optional[QuadraticProgram] = None

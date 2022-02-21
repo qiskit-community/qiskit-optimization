@@ -380,6 +380,7 @@ def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> Qu
     """Translate a docplex.mp model into a quadratic program.
 
     Note that this supports the following features of docplex:
+
     - linear / quadratic objective function
     - linear / quadratic / indicator constraints
     - binary / integer / continuous variables
