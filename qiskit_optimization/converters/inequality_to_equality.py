@@ -48,7 +48,7 @@ class InequalityToEquality(QuadraticProgramConverter):
 
                 - 'integer': All slack variables will be integer variables.
                 - 'continuous': All slack variables will be continuous variables.
-                - 'auto': Try to use integer variables, but use continuous variables if impossible.
+                - 'auto': Use integer variables if possible, otherwise use continuous variables.
         """
         self._src: Optional[QuadraticProgram] = None
         self._dst: Optional[QuadraticProgram] = None
