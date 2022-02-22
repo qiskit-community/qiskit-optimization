@@ -14,7 +14,7 @@
 
 from io import StringIO
 from math import isclose
-from typing import Optional, Union, cast
+from typing import Optional, Union
 
 from qiskit_optimization import INFINITY
 from qiskit_optimization.problems import (
@@ -33,7 +33,9 @@ def _int_if_close(val: Union[int, float]) -> Union[int, float]:
     Note: if abs(val) is too large, int(val) is not correct
           e.g., int(1e16 - 1) -> 10000000000000000
     """
-    if isinstance(val, float) and abs(val) <= 1e10 and cast(float, val).is_integer():
+    if isinstance(val, int):
+        return val
+    if abs(val) <= 1e10 and val.is_integer():
         return int(val)
     return val
 

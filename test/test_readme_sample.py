@@ -86,7 +86,7 @@ class TestReadmeSample(QiskitOptimizationTestCase):
             return
 
         with self.subTest("test result.x"):
-            self.assertEqual(result_x, "[1. 0. 1. 0.]")
+            self.assertEqual(result_x, "x0=1, x1=0, x2=1, x3=0")
         with self.subTest("test result.fval"):
             self.assertAlmostEqual(result_fval, 4.0)
 

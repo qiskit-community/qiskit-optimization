@@ -149,7 +149,7 @@ class OptimizationResult:
         from qiskit_optimization.translators.prettyprint import _int_if_close
 
         optimal_value = ", ".join(
-            [f"{var.name}={_int_if_close(x)}" for var, x in zip(self._variables, self._x)]
+            [f"{var}={_int_if_close(x)}" for var, x in self._variables_dict.items()]
         )
         return (
             f"optimal function value: {_int_if_close(self._fval)}\n"
