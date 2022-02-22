@@ -24,6 +24,23 @@ from qiskit_optimization.problems import Constraint
 class TestLinearConstraint(QiskitOptimizationTestCase):
     """Test LinearConstraint."""
 
+    def setUp(self) -> None:
+        super().setUp()
+        self.quadratic_program = QuadraticProgram()
+        self.quadratic_program.binary_var_list(3, name="x")
+        self.quadratic_program.linear_constraint({"x0": 1, "x1": -2}, "<=", 1)
+        self.quadratic_program.linear_constraint({"x0": 1, "x1": -2}, "<", 1)
+        self.quadratic_program.linear_constraint({"x0": 1, "x1": -2}, "LE", 1)
+        self.quadratic_program.linear_constraint({"x0": 1, "x1": -2}, "L", 1)
+        self.quadratic_program.linear_constraint({"x0": -1, "x1": 2}, "==", 2)
+        self.quadratic_program.linear_constraint({"x0": -1, "x1": 2}, "=", 2)
+        self.quadratic_program.linear_constraint({"x0": -1, "x1": 2}, "EQ", 2)
+        self.quadratic_program.linear_constraint({"x0": -1, "x1": 2}, "E", 2)
+        self.quadratic_program.linear_constraint({"x1": 2, "x2": -1}, ">=", 3)
+        self.quadratic_program.linear_constraint({"x1": 2, "x2": -1}, ">", 3)
+        self.quadratic_program.linear_constraint({"x1": 2, "x2": -1}, "GE", 3)
+        self.quadratic_program.linear_constraint({"x1": 2, "x2": -1}, "G", 3)
+
     def test_init(self):
         """test init."""
 
@@ -141,6 +158,41 @@ class TestLinearConstraint(QiskitOptimizationTestCase):
             quadratic_program.linear_constraints[5],
             quadratic_program.get_linear_constraint(5),
         )
+
+    def test_str(self):
+        """Test str"""
+        self.assertEqual(self.quadratic_program.get_num_linear_constraints(), 12)
+        for i in range(0, 4):
+            self.assertEqual(
+                str(self.quadratic_program.get_linear_constraint(i)), f"x0 - 2 x1 <= 1 'c{i}'"
+            )
+        for i in range(4, 8):
+            self.assertEqual(
+                str(self.quadratic_program.get_linear_constraint(i)), f"-x0 + 2 x1 == 2 'c{i}'"
+            )
+        for i in range(8, 12):
+            self.assertEqual(
+                str(self.quadratic_program.get_linear_constraint(i)), f"2 x1 - x2 >= 3 'c{i}'"
+            )
+
+    def test_repr(self):
+        """Test repr"""
+        self.assertEqual(self.quadratic_program.get_num_linear_constraints(), 12)
+        for i in range(0, 4):
+            self.assertEqual(
+                repr(self.quadratic_program.get_linear_constraint(i)),
+                f"<LinearConstraint: x0 - 2 x1 <= 1 'c{i}'>",
+            )
+        for i in range(4, 8):
+            self.assertEqual(
+                repr(self.quadratic_program.get_linear_constraint(i)),
+                f"<LinearConstraint: -x0 + 2 x1 == 2 'c{i}'>",
+            )
+        for i in range(8, 12):
+            self.assertEqual(
+                repr(self.quadratic_program.get_linear_constraint(i)),
+                f"<LinearConstraint: 2 x1 - x2 >= 3 'c{i}'>",
+            )
 
 
 if __name__ == "__main__":

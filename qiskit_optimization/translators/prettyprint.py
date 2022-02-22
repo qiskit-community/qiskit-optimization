@@ -57,14 +57,14 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
         elif isclose(coeff, -1.0):
             ret = f"-{term}"
         else:
-            ret = f"{_int_if_close(coeff)}{term}"
+            ret = f"{_int_if_close(coeff)} {term}"
     else:
         sign = "-" if coeff < 0.0 else "+"
         abs_val = abs(coeff)
         if isclose(abs_val, 1.0):
             ret = f" {sign} {term}"
         else:
-            ret = f" {sign} {_int_if_close(abs_val)}{term}"
+            ret = f" {sign} {_int_if_close(abs_val)} {term}"
     return ret
 
 
