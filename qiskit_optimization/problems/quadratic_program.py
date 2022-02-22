@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -595,15 +595,17 @@ class QuadraticProgram:
         name: Optional[str] = None,
     ) -> LinearConstraint:
         """Adds a linear equality constraint to the quadratic program of the form:
-            linear * x sense rhs.
+            ``(linear * x) sense rhs``.
 
         Args:
-            linear: The linear coefficients of the left-hand-side of the constraint.
+            linear: The linear coefficients of the left-hand side of the constraint.
             sense: The sense of the constraint,
-              - '==', '=', 'E', and 'EQ' denote 'equal to'.
-              - '>=', '>', 'G', and 'GE' denote 'greater-than-or-equal-to'.
-              - '<=', '<', 'L', and 'LE' denote 'less-than-or-equal-to'.
-            rhs: The right hand side of the constraint.
+
+              - ``==``, ``=``, ``E``, and ``EQ`` denote 'equal to'.
+              - ``>=``, ``>``, ``G``, and ``GE`` denote 'greater-than-or-equal-to'.
+              - ``<=``, ``<``, ``L``, and ``LE`` denote 'less-than-or-equal-to'.
+
+            rhs: The right-hand side of the constraint.
             name: The name of the constraint.
 
         Returns:
@@ -686,16 +688,18 @@ class QuadraticProgram:
         name: Optional[str] = None,
     ) -> QuadraticConstraint:
         """Adds a quadratic equality constraint to the quadratic program of the form:
-            x * Q * x <= rhs.
+            ``(x * quadratic * x + linear * x) sense rhs``.
 
         Args:
             linear: The linear coefficients of the constraint.
             quadratic: The quadratic coefficients of the constraint.
             sense: The sense of the constraint,
-              - '==', '=', 'E', and 'EQ' denote 'equal to'.
-              - '>=', '>', 'G', and 'GE' denote 'greater-than-or-equal-to'.
-              - '<=', '<', 'L', and 'LE' denote 'less-than-or-equal-to'.
-            rhs: The right hand side of the constraint.
+
+              - ``==``, ``=``, ``E``, and ``EQ`` denote 'equal to'.
+              - ``>=``, ``>``, ``G``, and ``GE`` denote 'greater-than-or-equal-to'.
+              - ``<=``, ``<``, ``L``, and ``LE`` denote 'less-than-or-equal-to'.
+
+            rhs: The right-hand side of the constraint.
             name: The name of the constraint.
 
         Returns:
@@ -943,21 +947,22 @@ class QuadraticProgram:
 
         Args:
             constants: replace variable by constant
-                e.g., {'x': 2} means 'x' is substituted with 2
+                e.g., ``{'x': 2}`` means ``x`` is substituted with 2
 
             variables: replace variables by weighted other variable
                 need to copy everything using name reference to make sure that indices are matched
                 correctly. The lower and upper bounds are updated accordingly.
-                e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
+                e.g., ``{'x': ('y', 2)}`` means ``x`` is substituted with ``y * 2``
 
         Returns:
             An optimization problem by substituting variables with constants or other variables.
-            If the substitution is valid, `QuadraticProgram.status` is still
-            `QuadraticProgram.Status.VALID`.
-            Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
+            If the substitution is valid, ``QuadraticProgram.status`` is still
+            ``QuadraticProgram.Status.VALID``.
+            Otherwise, it gets ``QuadraticProgram.Status.INFEASIBLE``.
 
         Raises:
             QiskitOptimizationError: if the substitution is invalid as follows.
+
                 - Same variable is substituted multiple times.
                 - Coefficient of variable substitution is zero.
         """

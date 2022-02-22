@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -149,6 +149,7 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
     """Translate a gurobipy model into a quadratic program.
 
     Note that this supports only basic functions of gurobipy as follows:
+
     - quadratic objective function
     - linear / quadratic constraints
     - binary / integer / continuous variables
