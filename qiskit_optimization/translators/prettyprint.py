@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Translate QuadraticProgram into string"""
+"""Translate ``QuadraticProgram`` into a string"""
 
 from io import StringIO
 from math import isclose
@@ -23,12 +23,11 @@ from qiskit_optimization.problems import (
     QuadraticObjective,
     QuadraticProgram,
 )
-from qiskit_optimization.problems.constraint import ConstraintSense
 
 DEFAULT_TRUNCATE = 50
 
 
-def _f2i(val: Union[int, float]) -> Union[int, float]:
+def _int_if_close(val: Union[int, float]) -> Union[int, float]:
     """Convert a value into an integer if possible
 
     Note: if abs(val) is too large, int(val) is not correct
@@ -40,11 +39,11 @@ def _f2i(val: Union[int, float]) -> Union[int, float]:
 
 
 def _term2str(coeff: float, term: str, is_head: bool) -> str:
-    """Translate a coefficient to a list of strings.
+    """Translate a pair of a coefficient and a term to a string.
 
     Args:
-        coeff: The coefficient.
-        term: The term.
+        coeff: a coefficient.
+        term: a term.
         is_head: Whether this coefficient appears in the head of the string or not.
 
     Returns:
@@ -56,14 +55,14 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
         elif isclose(coeff, -1.0):
             ret = f"-{term}"
         else:
-            ret = f"{_f2i(coeff)}{term}"
+            ret = f"{_int_if_close(coeff)}{term}"
     else:
         sign = "-" if coeff < 0.0 else "+"
         abs_val = abs(coeff)
         if isclose(abs_val, 1.0):
-            ret = f"{sign} {term}"
+            ret = f" {sign} {term}"
         else:
-            ret = f"{sign} {_f2i(abs_val)}{term}"
+            ret = f" {sign} {_int_if_close(abs_val)}{term}"
     return ret
 
 
@@ -77,9 +76,9 @@ def _expr2str(
     into a string.
 
     Args:
-        constant: The constant part.
-        linear: The linear expression.
-        quadratic: The quadratic expression.
+        constant: a constant part.
+        linear: a linear expression.
+        quadratic: a quadratic expression.
         truncate: the threshold of the output string to be truncated. If a string is longer than
             the threshold, it is truncated and appended "...", e.g., "x^2 + y +...".
             The default value 0 means no truncation is carried out.
@@ -90,7 +89,10 @@ def _expr2str(
     Raises:
         ValueError: if `truncate` is negative.
     """
-    expr = []
+    if truncate < 0:
+        raise ValueError(f"Invalid truncate value: {truncate}")
+
+    expr = StringIO()
     is_head = True
     lin_dict = linear.to_dict(use_name=True) if linear else {}
     quad_dict = quadratic.to_dict(use_name=True) if quadratic else {}
@@ -98,25 +100,23 @@ def _expr2str(
     # quadratic expression
     for (var1, var2), coeff in quad_dict.items():
         if var1 == var2:
-            expr.append(_term2str(coeff, f"{var1}^2", is_head))
+            expr.write(_term2str(coeff, f"{var1}^2", is_head))
         else:
-            expr.append(_term2str(coeff, f"{var1} * {var2}", is_head))
+            expr.write(_term2str(coeff, f"{var1} * {var2}", is_head))
         is_head = False
 
     # linear expression
     for var, coeff in lin_dict.items():
-        expr.append(_term2str(coeff, f"{var}", is_head))
+        expr.write(_term2str(coeff, f"{var}", is_head))
         is_head = False
 
     # constant
     if not isclose(constant, 0.0, abs_tol=1e-10):
-        expr.append(_term2str(constant, "", is_head))
+        expr.write(_term2str(constant, "", is_head))
     elif not lin_dict and not quad_dict:
-        expr.append(_term2str(0, "", is_head))
+        expr.write(_term2str(0, "", is_head))
 
-    ret = " ".join(expr)
-    if truncate < 0:
-        raise ValueError(f"Invalid truncate value: {truncate}")
+    ret = expr.getvalue()
     if 0 < truncate < len(ret):
         ret = ret[:truncate] + "..."
     return ret
@@ -156,7 +156,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for cst in quadratic_program.linear_constraints:
                 buf.write(
                     f"    {_expr2str(linear=cst.linear)}"
-                    f" {cst.sense.label} {_f2i(cst.rhs)}"
+                    f" {cst.sense.label} {_int_if_close(cst.rhs)}"
                     f"  '{cst.name}'\n"
                 )
         if num_quad_csts > 0:
@@ -164,7 +164,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for cst2 in quadratic_program.quadratic_constraints:
                 buf.write(
                     f"    {_expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
-                    f" {cst2.sense.label} {_f2i(cst2.rhs)}"
+                    f" {cst2.sense.label} {_int_if_close(cst2.rhs)}"
                     f"  '{cst2.name}'\n"
                 )
         if quadratic_program.get_num_vars() == 0:
@@ -184,20 +184,20 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for var in int_vars:
                 buf.write("    ")
                 if var.lowerbound > -INFINITY:
-                    buf.write(f"{_f2i(var.lowerbound)} <= ")
+                    buf.write(f"{_int_if_close(var.lowerbound)} <= ")
                 buf.write(var.name)
                 if var.upperbound < INFINITY:
-                    buf.write(f" <= {_f2i(var.upperbound)}")
+                    buf.write(f" <= {_int_if_close(var.upperbound)}")
                 buf.write("\n")
         if con_vars:
             buf.write(f"\n  Continuous variables ({len(con_vars)})\n")
             for var in con_vars:
                 buf.write("    ")
                 if var.lowerbound > -INFINITY:
-                    buf.write(f"{_f2i(var.lowerbound)} <= ")
+                    buf.write(f"{_int_if_close(var.lowerbound)} <= ")
                 buf.write(var.name)
                 if var.upperbound < INFINITY:
-                    buf.write(f" <= {_f2i(var.upperbound)}")
+                    buf.write(f" <= {_int_if_close(var.upperbound)}")
                 buf.write("\n")
         if bin_vars:
             buf.write(f"\n  Binary variables ({len(bin_vars)})\n")

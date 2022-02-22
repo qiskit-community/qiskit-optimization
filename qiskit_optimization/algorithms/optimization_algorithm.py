@@ -146,13 +146,13 @@ class OptimizationResult:
         return f"<OptimizationResult(x={self._x}, fval={self._fval}, status={self._status.name})>"
 
     def __str__(self) -> str:
-        from qiskit_optimization.translators.prettyprint import _f2i
+        from qiskit_optimization.translators.prettyprint import _int_if_close
 
         optimal_value = ", ".join(
-            [f"{var.name}={_f2i(x)}" for var, x in zip(self._variables, self._x)]
+            [f"{var.name}={_int_if_close(x)}" for var, x in zip(self._variables, self._x)]
         )
         return (
-            f"optimal function value: {_f2i(self._fval)}\n"
+            f"optimal function value: {_int_if_close(self._fval)}\n"
             f"optimal value: {optimal_value}\n"
             f"status: {self._status.name}"
         )
