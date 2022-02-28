@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -380,6 +380,7 @@ def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> Qu
     """Translate a docplex.mp model into a quadratic program.
 
     Note that this supports the following features of docplex:
+
     - linear / quadratic objective function
     - linear / quadratic / indicator constraints
     - binary / integer / continuous variables
