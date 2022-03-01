@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -325,7 +325,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
 
         mdl.minimize(v + w)
         mdl.add_constraint(v + w >= 1, "cons2")
-        mdl.add_constraint(v ** 2 + w ** 2 <= 1, "cons2")
+        mdl.add_constraint(v**2 + w**2 <= 1, "cons2")
 
         op = from_docplex_mp(mdl)
 
