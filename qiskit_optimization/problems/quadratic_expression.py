@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -269,7 +269,7 @@ class QuadraticExpression(QuadraticProgramElement):
                 if x.lowerbound * x.upperbound <= 0.0:
                     # lower bound and upper bound have different signs
                     lst.append(0.0)
-                lst.extend([x.lowerbound ** 2, x.upperbound ** 2])
+                lst.extend([x.lowerbound**2, x.upperbound**2])
             else:
                 lst.extend(
                     [
