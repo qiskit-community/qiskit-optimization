@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -100,9 +100,9 @@ class IntegerToBinary(QuadraticProgramConverter):
     ) -> List[Tuple[str, int]]:
         var_range = upperbound - lowerbound
         power = int(np.log2(var_range)) if var_range > 0 else 0
-        bounded_coef = var_range - (2 ** power - 1)
+        bounded_coef = var_range - (2**power - 1)
 
-        coeffs = [2 ** i for i in range(power)] + [bounded_coef]
+        coeffs = [2**i for i in range(power)] + [bounded_coef]
         return [(name + self._delimiter + str(i), coef) for i, coef in enumerate(coeffs)]
 
     def _convert_linear_coefficients_dict(
