@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,13 @@
 # that they have been altered from the originals.
 
 """ Test Goemans-Williamson optimizer. """
-from test import QiskitOptimizationTestCase, requires_extra_library
+
+import unittest
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
     GoemansWilliamsonOptimizer,
     GoemansWilliamsonOptimizationResult,
@@ -37,7 +40,7 @@ class TestGoemansWilliamson(QiskitOptimizationTestCase):
             ]
         )
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CVXPY, "CVXPY not available.")
     def test_all_cuts(self):
         """Basic test of the Goemans-Williamson optimizer."""
 
@@ -59,7 +62,7 @@ class TestGoemansWilliamson(QiskitOptimizationTestCase):
         self.assertIsNotNone(results.samples)
         self.assertEqual(3, len(results.samples))
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CVXPY, "CVXPY not available.")
     def test_minimization_problem(self):
         """Tests the optimizer with a minimization problem"""
         optimizer = GoemansWilliamsonOptimizer(num_cuts=10, seed=0)
@@ -74,3 +77,7 @@ class TestGoemansWilliamson(QiskitOptimizationTestCase):
 
         np.testing.assert_almost_equal([0, 1, 1, 0], results.x, 3)
         np.testing.assert_almost_equal(4, results.fval, 3)
+
+
+if __name__ == "__main__":
+    unittest.main()

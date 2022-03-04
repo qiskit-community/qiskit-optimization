@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,7 +11,9 @@
 # that they have been altered from the originals.
 
 """ Test warm start QAOA optimizer. """
-from test import QiskitOptimizationTestCase, requires_extra_library
+
+import unittest
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 
@@ -19,6 +21,7 @@ from docplex.mp.model import Model
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import SlsqpOptimizer
 from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
     GoemansWilliamsonOptimizer,
@@ -34,7 +37,7 @@ from qiskit_optimization.translators import from_docplex_mp
 class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
     """Tests for the warm start QAOA optimizer."""
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CVXPY, "CVXPY not available.")
     def test_max_cut(self):
         """Basic test on the max cut problem."""
         graph = np.array(
@@ -125,3 +128,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_almost_equal([0, 1], result_warm.x, 3)
         self.assertIsNotNone(result_warm.fval)
         np.testing.assert_almost_equal(1, result_warm.fval, 3)
+
+
+if __name__ == "__main__":
+    unittest.main()

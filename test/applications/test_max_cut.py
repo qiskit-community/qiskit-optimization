@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,11 +11,13 @@
 # that they have been altered from the originals.
 
 """ Test GraphPartinioning class"""
+
+import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import networkx as nx
 
-from qiskit.exceptions import MissingOptionalLibraryError
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.max_cut import Maxcut
@@ -78,14 +80,15 @@ class TestMaxcut(QiskitOptimizationTestCase):
         maxcut = Maxcut(self.graph)
         self.assertEqual(maxcut._node_color(self.result), ["b", "b", "r", "r"])
 
-    def test_draw(self):
+    @unittest.skipIf(_optionals.HAS_MATPLOTLIB, "Matplotlib is available.")
+    def test_draw_without_maxplotlin(self):
         """Test whether draw raises an error if matplotlib is not installed"""
         maxcut = Maxcut(self.graph)
-        try:
-            import matplotlib as _
+        from qiskit.exceptions import MissingOptionalLibraryError
 
+        with self.assertRaises(MissingOptionalLibraryError):
             maxcut.draw()
 
-        except ImportError:
-            with self.assertRaises(MissingOptionalLibraryError):
-                maxcut.draw()
+
+if __name__ == "__main__":
+    unittest.main()

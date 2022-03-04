@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,10 +13,8 @@
 """ Test Min Eigen Optimizer """
 
 import unittest
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
+from test.optimization_test_case import QiskitOptimizationTestCase
+
 from test.runtime.fake_vqeruntime import FakeVQERuntimeProvider, FakeQAOARuntimeProvider
 
 import numpy as np
@@ -27,6 +25,7 @@ from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.utils import QuantumInstance, algorithm_globals
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
     CplexOptimizer,
     MinimumEigenOptimizer,
@@ -98,7 +97,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ("qaoa", "statevector_simulator", "op_ip1.lp"),
         ("qaoa", "qasm_simulator", "op_ip1.lp"),
     )
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_min_eigen_optimizer(self, config):
         """Min Eigen Optimizer Test"""
         try:
@@ -138,7 +137,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ("op_ip1.lp", -470, 12, OptimizationResultStatus.SUCCESS),
         ("op_ip1.lp", np.inf, None, OptimizationResultStatus.FAILURE),
     )
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_min_eigen_optimizer_with_filter(self, config):
         """Min Eigen Optimizer Test"""
         try:

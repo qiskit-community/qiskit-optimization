@@ -23,9 +23,9 @@ from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
 from scipy.sparse import spmatrix
 
-from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import OperatorBase
 
+import qiskit_optimization.optionals as _optionals
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
@@ -877,6 +877,7 @@ class QuadraticProgram:
 
         return to_docplex_mp(self).export_as_lp_string()
 
+    @_optionals.HAS_CPLEX.require_in_call
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
 
@@ -885,19 +886,10 @@ class QuadraticProgram:
 
         Raises:
             FileNotFoundError: If the file does not exist.
-            MissingOptionalLibraryError: If CPLEX is not installed.
 
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
-        try:
-            import cplex  # pylint: disable=unused-import
-        except ImportError as ex:
-            raise MissingOptionalLibraryError(
-                libname="CPLEX",
-                name="QuadraticProgram.read_from_lp_file",
-                pip_install="pip install 'qiskit-optimization[cplex]'",
-            ) from ex
 
         def _parse_problem_name(filename: str) -> str:
             # Because docplex model reader uses the base name as model name,
