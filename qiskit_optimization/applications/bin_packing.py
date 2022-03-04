@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,20 +16,16 @@ from typing import List, Union, Optional
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.exceptions import MissingOptionalLibraryError
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
 from .optimization_application import OptimizationApplication
 
-try:
-    import matplotlib.pyplot as plt
+if _optionals.HAS_MATPLOTLIB:
     from matplotlib.pyplot import Figure
-
-    _HAS_MATPLOTLIB = True
-except ImportError:
-    _HAS_MATPLOTLIB = False
+else:
 
     class Figure:  # type: ignore
         """Empty Figure class
@@ -109,6 +105,7 @@ class BinPacking(OptimizationApplication):
         ]
         return items_in_bins
 
+    @_optionals.HAS_MATPLOTLIB.require_in_call
     def get_figure(self, result: Union[OptimizationResult, np.ndarray]) -> Figure:
         """Get plot of the solution of the Bin Packing Problem.
 
@@ -118,15 +115,9 @@ class BinPacking(OptimizationApplication):
         Returns:
             fig: A plot of the solution, where x and y represent the bins and
             sum of the weights respectively.
-        Raises:
-            MissingOptionalLibraryError: if matplotlib is not installed.
         """
-        if not _HAS_MATPLOTLIB:
-            raise MissingOptionalLibraryError(
-                libname="matplotlib",
-                name="GraphOptimizationApplication",
-                pip_install="pip install 'qiskit-optimization[matplotlib]'",
-            )
+        import matplotlib.pyplot as plt
+
         colors = plt.cm.get_cmap("jet", len(self._weights))
         items_in_bins = self.interpret(result)
         num_bins = len(items_in_bins)
