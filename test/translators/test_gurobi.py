@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,8 +12,9 @@
 
 """Test from_gurobipy and to_gurobipy"""
 
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
-from qiskit.exceptions import MissingOptionalLibraryError
+import unittest
+from test.optimization_test_case import QiskitOptimizationTestCase
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
 from qiskit_optimization.translators.gurobipy import from_gurobipy, to_gurobipy
@@ -22,7 +23,7 @@ from qiskit_optimization.translators.gurobipy import from_gurobipy, to_gurobipy
 class TestGurobiTranslator(QiskitOptimizationTestCase):
     """Test from_gurobipy and to_gurobipy"""
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_GUROBIPY, "Gurobi not available.")
     def test_from_and_to(self):
         """test from_gurobipy and to_gurobipy"""
         q_p = QuadraticProgram("test")
@@ -35,14 +36,8 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p2 = from_gurobipy(to_gurobipy(q_p))
         self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
 
-        try:
-            import gurobipy as gp
-        except ImportError as ex:
-            raise MissingOptionalLibraryError(
-                libname="GUROBI",
-                name="GurobiOptimizer",
-                pip_install="pip install qiskit-optimization[gurobi]",
-            ) from ex
+        # pylint: disable=import-error
+        import gurobipy as gp
 
         mod = gp.Model("test")
         x = mod.addVar(vtype=gp.GRB.BINARY, name="x")
@@ -92,3 +87,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
             self.assertDictEqual(c.linear.to_dict(use_name=True), {"C2": -1})
             self.assertDictEqual(c.quadratic.to_dict(use_name=True), {("C0", "C1"): 1})
             self.assertEqual(c.sense, senses[i])
+
+
+if __name__ == "__main__":
+    unittest.main()
