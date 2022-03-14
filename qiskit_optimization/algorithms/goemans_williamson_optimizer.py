@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,8 +18,8 @@ import logging
 from typing import Optional, List, Tuple, Union, cast
 
 import numpy as np
-from qiskit.exceptions import MissingOptionalLibraryError
 
+import qiskit_optimization.optionals as _optionals
 from .optimization_algorithm import (
     OptimizationResult,
     OptimizationResultStatus,
@@ -29,15 +29,6 @@ from .optimization_algorithm import (
 from ..converters.flip_problem_sense import MinimizeToMaximize
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
-
-try:
-    import cvxpy as cvx
-    from cvxpy import DCPError, DGPError, SolverError
-
-    _HAS_CVXPY = True
-except ImportError:
-    _HAS_CVXPY = False
-
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +69,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
         return self._sdp_solution
 
 
+@_optionals.HAS_CVXPY.require_in_instance
 class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
     """
     Goemans-Williamson algorithm to approximate the max-cut of a problem.
@@ -103,16 +95,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             unique_cuts: The solve method returns only unique cuts, thus there may be less cuts
                 than ``num_cuts``.
             seed: A seed value for the random number generator.
-
-        Raises:
-            MissingOptionalLibraryError: CVXPY is not installed.
         """
-        if not _HAS_CVXPY:
-            raise MissingOptionalLibraryError(
-                libname="CVXPY",
-                name="GoemansWilliamsonOptimizer",
-                pip_install="pip install 'qiskit-optimization[cvxpy]'",
-            )
         super().__init__()
 
         self._num_cuts = num_cuts
@@ -148,6 +131,9 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         Returns:
             cuts: A list of generated cuts.
         """
+        # pylint: disable=import-error
+        from cvxpy import DCPError, DGPError, SolverError
+
         self._verify_compatibility(problem)
 
         min2max = MinimizeToMaximize()
@@ -257,6 +243,9 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             chi: a list of length |V| where the i-th element is +1 or -1, representing which
                 set the it-h vertex is in. Returns None if an error occurs.
         """
+        # pylint: disable=import-error
+        import cvxpy as cvx
+
         num_vertices = len(adj_matrix)
         constraints, expr = [], 0
 

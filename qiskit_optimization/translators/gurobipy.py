@@ -14,13 +14,18 @@
 
 from typing import cast
 
-try:
-    import gurobipy as gp
-    from gurobipy import Model
+import qiskit_optimization.optionals as _optionals
+from qiskit_optimization.exceptions import QiskitOptimizationError
+from qiskit_optimization.problems.constraint import Constraint
+from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
+from qiskit_optimization.problems.variable import Variable
 
-    _HAS_GUROBI = True
-except ImportError:
-    _HAS_GUROBI = False
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
+if _optionals.HAS_GUROBIPY:
+    # pylint: disable=import-error,no-name-in-module
+    from gurobipy import Model
+else:
 
     class Model:  # type: ignore
         """Empty Model class
@@ -30,24 +35,7 @@ except ImportError:
         pass
 
 
-from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit_optimization.exceptions import QiskitOptimizationError
-from qiskit_optimization.problems.constraint import Constraint
-from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
-from qiskit_optimization.problems.variable import Variable
-
-from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-
-
-def _check_gurobipy_is_installed(name: str):
-    if not _HAS_GUROBI:
-        raise MissingOptionalLibraryError(
-            libname="GUROBI",
-            name=name,
-            pip_install="pip install qiskit-optimization[gurobi]",
-        )
-
-
+@_optionals.HAS_GUROBIPY.require_in_call
 def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
     """Returns a gurobipy model corresponding to a quadratic program.
 
@@ -59,12 +47,11 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
 
     Raises:
         QiskitOptimizationError: if non-supported elements (should never happen).
-        MissingOptionalLibraryError: if gurobipy is not installed.
     """
-
-    _check_gurobipy_is_installed("to_gurobipy")
-
     # initialize model
+    # pylint: disable=import-error
+    import gurobipy as gp
+
     mdl = gp.Model(quadratic_program.name)
 
     # add variables
@@ -145,6 +132,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
     return mdl
 
 
+@_optionals.HAS_GUROBIPY.require_in_call
 def from_gurobipy(model: Model) -> QuadraticProgram:
     """Translate a gurobipy model into a quadratic program.
 
@@ -162,10 +150,9 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
 
     Raises:
         QiskitOptimizationError: if the model contains unsupported elements.
-        MissingOptionalLibraryError: if gurobipy is not installed.
     """
-
-    _check_gurobipy_is_installed("from_gurobipy")
+    # pylint: disable=import-error
+    import gurobipy as gp
 
     if not isinstance(model, Model):
         raise QiskitOptimizationError(f"The model is not compatible: {model}")

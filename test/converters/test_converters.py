@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,15 +13,13 @@
 """ Test Converters """
 
 import unittest
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit.opflow import Z, I
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
 from qiskit_optimization.algorithms import (
     MinimumEigenOptimizer,
@@ -474,7 +472,7 @@ class TestConverters(QiskitOptimizationTestCase):
             quadratic.objective.quadratic.coefficients.toarray(), quadratic_matrix
         )
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_continuous_variable_decode(self):
         """Test decode func of IntegerToBinaryConverter for continuous variables"""
         mdl = Model("test_continuous_varable_decode")

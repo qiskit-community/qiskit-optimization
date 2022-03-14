@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,23 +12,14 @@
 
 """The Gurobi optimizer wrapped to be used within Qiskit's optimization module."""
 
-
-from qiskit.exceptions import MissingOptionalLibraryError
-
+import qiskit_optimization.optionals as _optionals
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
 from ..translators.gurobipy import to_gurobipy
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
 
-try:
-    import gurobipy as gp
-
-    _HAS_GUROBI = True
-except ImportError:
-    _HAS_GUROBI = False
-
-
+@_optionals.HAS_GUROBIPY.require_in_instance
 class GurobiOptimizer(OptimizationAlgorithm):
     """The Gurobi optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
 
@@ -55,23 +46,13 @@ class GurobiOptimizer(OptimizationAlgorithm):
 
         Args:
             disp: Whether to print Gurobi output or not.
-
-        Raises:
-            MissingOptionalLibraryError: Gurobi is not installed.
         """
-        if not _HAS_GUROBI:
-            raise MissingOptionalLibraryError(
-                libname="GUROBI",
-                name="GurobiOptimizer",
-                pip_install="pip install qiskit-optimization[gurobi]",
-            )
-
         self._disp = disp
 
     @staticmethod
     def is_gurobi_installed():
         """Returns True if gurobi is installed"""
-        return _HAS_GUROBI
+        return _optionals.HAS_GUROBIPY
 
     @property
     def disp(self) -> bool:
@@ -120,6 +101,8 @@ class GurobiOptimizer(OptimizationAlgorithm):
         Raises:
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
+        # pylint: disable=import-error
+        import gurobipy as gp
 
         # convert to Gurobi problem
         model = to_gurobipy(problem)

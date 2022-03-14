@@ -13,7 +13,7 @@
 """Test Recursive Min Eigen Optimizer."""
 
 import unittest
-from test import QiskitOptimizationTestCase, requires_extra_library
+from test import QiskitOptimizationTestCase
 
 import numpy as np
 
@@ -22,6 +22,7 @@ from qiskit.utils import algorithm_globals, QuantumInstance
 
 from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
     MinimumEigenOptimizer,
     CplexOptimizer,
@@ -44,7 +45,7 @@ from qiskit_optimization.converters import (
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
     """Recursive Min Eigen Optimizer Tests."""
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_min_eigen_optimizer(self):
         """Test the recursive minimum eigen optimizer."""
         filename = "op_ip1.lp"
@@ -73,7 +74,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(cplex_result.x, result.x, 4)
         self.assertAlmostEqual(cplex_result.fval, result.fval)
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_history(self):
         """Tests different options for history."""
         filename = "op_ip1.lp"
@@ -127,7 +128,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertGreater(len(result.history[0]), 1)
         self.assertIsNotNone(result.history[1])
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_warm_qaoa(self):
         """Test the recursive optimizer with warm start qaoa."""
         seed = 1234
