@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -556,7 +556,7 @@ class OptimizationAlgorithm(ABC):
         if isinstance(eigenvector, dict):
             # When eigenvector is a dict, square the values since the values are normalized.
             # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
-            probabilities = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
+            probabilities = {bitstr: val**2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
             for bitstr, sampling_probability in probabilities.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
