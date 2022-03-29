@@ -187,7 +187,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         n_value = self._num_value_qubits
 
         # Variables for tracking the solutions encountered.
-        num_solutions = 2 ** n_key
+        num_solutions = 2**n_key
         keys_measured = []
 
         # Variables for result object.
@@ -346,7 +346,7 @@ class GroverOptimizer(OptimizationAlgorithm):
     def _bin_to_int(v: str, num_value_bits: int) -> int:
         """Converts a binary string of n bits using two's complement to an integer."""
         if v.startswith("1"):
-            int_v = int(v, 2) - 2 ** num_value_bits
+            int_v = int(v, 2) - 2**num_value_bits
         else:
             int_v = int(v, 2)
 
