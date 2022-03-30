@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Unpin networkx by removing the release upper bound 2.6.
