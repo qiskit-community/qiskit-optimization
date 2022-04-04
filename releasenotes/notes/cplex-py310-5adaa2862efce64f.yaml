@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Enable installation of CPLEX for Python 3.10.
