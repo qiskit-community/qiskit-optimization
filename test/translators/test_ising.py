@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,7 +16,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 
-from qiskit.opflow import PauliSumOp
+from qiskit.opflow import PauliSumOp, I, Z
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_ising, to_ising
@@ -150,3 +150,65 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             op = PauliSumOp.from_list([("IZ", 1j)])
             _ = from_ising(op, 0)
+
+    def test_from_ising3(self):
+        """test to_from_ising 3"""
+        with self.subTest("I"):
+            q_p = from_ising(2 * I)
+            self.assertEqual(q_p.get_num_vars(), 1)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 2)
+            np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), [0])
+            np.testing.assert_array_almost_equal(q_p.objective.quadratic.to_array(), [[0]])
+
+        with self.subTest("Z, linear=False"):
+            q_p = from_ising(Z)
+            self.assertEqual(q_p.get_num_vars(), 1)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 1)
+            np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), [0])
+            np.testing.assert_array_almost_equal(q_p.objective.quadratic.to_array(), [[-2]])
+
+        with self.subTest("Z, linear=True"):
+            q_p = from_ising(Z, linear=True)
+            self.assertEqual(q_p.get_num_vars(), 1)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 1)
+            np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), [-2])
+            np.testing.assert_array_almost_equal(q_p.objective.quadratic.to_array(), [[0]])
+
+        with self.subTest("II"):
+            q_p = from_ising(3 * I ^ I)
+            self.assertEqual(q_p.get_num_vars(), 2)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 3)
+            np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), [0, 0])
+            np.testing.assert_array_almost_equal(
+                q_p.objective.quadratic.to_array(), [[0, 0], [0, 0]]
+            )
+
+        with self.subTest("IZ, linear=False"):
+            q_p = from_ising(I ^ Z)
+            self.assertEqual(q_p.get_num_vars(), 2)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 1)
+            np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), [0, 0])
+            np.testing.assert_array_almost_equal(
+                q_p.objective.quadratic.to_array(), [[-2, 0], [0, 0]]
+            )
+
+        with self.subTest("IZ, linear=True"):
+            q_p = from_ising(I ^ Z, linear=True)
+            self.assertEqual(q_p.get_num_vars(), 2)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 1)
+            np.testing.assert_array_almost_equal(q_p.objective.linear.to_array(), [-2, 0])
+            np.testing.assert_array_almost_equal(
+                q_p.objective.quadratic.to_array(), [[0, 0], [0, 0]]
+            )

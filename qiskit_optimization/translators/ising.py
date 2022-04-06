@@ -185,7 +185,9 @@ def from_ising(
         z_index = np.where(pauli.z)[0]
         num_z = len(z_index)
 
-        if num_z == 1:
+        if num_z == 0:
+            offset += coeff.real
+        elif num_z == 1:
             pauli_coeffs_diag[z_index[0]] = coeff.real
         elif num_z == 2:
             pauli_coeffs_triu[z_index[0], z_index[1]] = coeff.real
