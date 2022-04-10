@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -121,21 +121,26 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
     Examples:
         Outline of how to use this class:
 
-    .. code-block::
+    .. code-block:: python
 
         from qiskit.algorithms import QAOA
         from qiskit_optimization.problems import QuadraticProgram
-        from qiskit_optimization.algorithms import RecursiveMinimumEigenOptimizer
+        from qiskit_optimization.algorithms import (
+            MinimumEigenOptimizer, RecursiveMinimumEigenOptimizer
+        )
+
         problem = QuadraticProgram()
         # specify problem here
         # specify minimum eigen solver to be used, e.g., QAOA
         qaoa = QAOA(...)
-        optimizer = RecursiveMinimumEigenOptimizer(qaoa)
+        internal_optimizer = MinimumEigenOptimizer(qaoa)
+
+        optimizer = RecursiveMinimumEigenOptimizer(internal_optimizer)
         result = optimizer.solve(problem)
 
     References:
-        [1]: Bravyi et al. (2019), Obstacles to State Preparation and Variational Optimization
-            from Symmetry Protection. http://arxiv.org/abs/1910.08980.
+        [1] Bravyi et al. (2019), Obstacles to State Preparation and Variational Optimization
+        from Symmetry Protection. `arXiv:1910.08980 <http://arxiv.org/abs/1910.08980>`_
     """
 
     def __init__(
