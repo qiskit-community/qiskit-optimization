@@ -112,7 +112,7 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     if isinstance(qubit_op, OperatorBase):
         qubit_op = qubit_op.reduce()
     else:
-        qubit_op = I ^ num_nodes
+        qubit_op = 0 * I ^ num_nodes
 
     return qubit_op, offset
 
