@@ -292,7 +292,7 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
 
         with self.subTest("max -1"):
             q_p = QuadraticProgram()
-            q_p.minimize(constant=-1)
+            q_p.maximize(constant=-1)
             op, offset = to_ising(q_p)
             np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
-            self.assertAlmostEqual(offset, -1)
+            self.assertAlmostEqual(offset, 1)
