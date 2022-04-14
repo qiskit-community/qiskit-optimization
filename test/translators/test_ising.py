@@ -145,8 +145,47 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
 
     def test_pauli_I_Z(self):
         """test from_ising and to_ising with Pauli I and Z"""
-        with self.subTest("I"):
-            q_p = from_ising(2 * I)
+        with self.subTest("0 * I, linear=False"):
+            q_p = from_ising(0 * I, linear=False)
+            self.assertEqual(q_p.get_num_vars(), 1)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 0)
+            np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
+            np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
+
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
+            self.assertAlmostEqual(offset, 0)
+
+        with self.subTest("0 * I, linear=True"):
+            q_p = from_ising(0 * I, linear=True)
+            self.assertEqual(q_p.get_num_vars(), 1)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 0)
+            np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
+            np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
+
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
+            self.assertAlmostEqual(offset, 0)
+
+        with self.subTest("2 * I, linear=False"):
+            q_p = from_ising(2 * I, linear=False)
+            self.assertEqual(q_p.get_num_vars(), 1)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 2)
+            np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
+            np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
+
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
+            self.assertAlmostEqual(offset, 2)
+
+        with self.subTest("2 * I, linear=True"):
+            q_p = from_ising(2 * I, linear=True)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -184,7 +223,20 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(op.to_matrix(), Z.to_matrix())
             self.assertAlmostEqual(offset, 0)
 
-        with self.subTest("II"):
+        with self.subTest("3 * II, linear=False"):
+            q_p = from_ising(3 * I ^ I)
+            self.assertEqual(q_p.get_num_vars(), 2)
+            self.assertEqual(q_p.get_num_linear_constraints(), 0)
+            self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(q_p.objective.constant, 3)
+            np.testing.assert_allclose(q_p.objective.linear.to_array(), [0, 0])
+            np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0, 0], [0, 0]])
+
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((4, 4)))
+            self.assertAlmostEqual(offset, 3)
+
+        with self.subTest("3 * II, linear=True"):
             q_p = from_ising(3 * I ^ I)
             self.assertEqual(q_p.get_num_vars(), 2)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
@@ -222,3 +274,25 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             op, offset = to_ising(q_p)
             np.testing.assert_allclose(op.to_matrix(), (I ^ Z).to_matrix())
             self.assertAlmostEqual(offset, 0)
+
+    def test_to_ising_wo_variable(self):
+        """test to_ising with problems without variables"""
+        with self.subTest("empty problem"):
+            q_p = QuadraticProgram()
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
+            self.assertAlmostEqual(offset, 0)
+
+        with self.subTest("min 3"):
+            q_p = QuadraticProgram()
+            q_p.minimize(constant=3)
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
+            self.assertAlmostEqual(offset, 3)
+
+        with self.subTest("max -1"):
+            q_p = QuadraticProgram()
+            q_p.minimize(constant=-1)
+            op, offset = to_ising(q_p)
+            np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
+            self.assertAlmostEqual(offset, -1)
