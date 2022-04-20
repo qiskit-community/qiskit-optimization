@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,11 +15,12 @@
 import tempfile
 import unittest
 from os import path
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import DOcplexException
 
 from qiskit.opflow import PauliSumOp
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
 
@@ -740,7 +741,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var_list(3)
             _ = q_p.objective.evaluate_gradient({})
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_read_from_lp_file(self):
         """test read lp file"""
         try:
@@ -1003,7 +1004,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertEqual("c3", constraints[1].name)
         self.assertEqual("c5", constraints[2].name)
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_quadratic_program_element_when_loaded_from_source(self):
         """Test QuadraticProgramElement when QuadraticProgram is loaded from an external source"""
         with self.subTest("from_ising"):

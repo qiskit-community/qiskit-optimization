@@ -564,7 +564,7 @@ class OptimizationAlgorithm(ABC):
         if isinstance(eigenvector, dict):
             # When eigenvector is a dict, square the values since the values are normalized.
             # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
-            probabilities = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
+            probabilities = {bitstr: val**2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
             for bitstr, sampling_probability in probabilities.items():
                 # add the bitstring, if the sampling probability exceeds the threshold

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,11 @@
 # that they have been altered from the originals.
 
 """Test bin packing class"""
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
 
+import unittest
+from test.optimization_test_case import QiskitOptimizationTestCase
+
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
 from qiskit_optimization.applications.bin_packing import BinPacking
@@ -90,22 +93,17 @@ class TestBinPacking(QiskitOptimizationTestCase):
         self.assertEqual(lin[3].linear.to_dict(), {2: 16.0, 4: 9.0, 6: 23.0, 0: -40.0})
         self.assertEqual(lin[4].linear.to_dict(), {3: 16.0, 5: 9.0, 7: 23.0, 1: -40.0})
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_MATPLOTLIB, "Matplotlib not available.")
     def test_figure(self):
         """Test the plot of the Bin Packing Problem is properly generated."""
-        try:
-            from matplotlib.pyplot import Figure
-        except ImportError:
-
-            class Figure:
-                """Empty Figure class
-                Replacement Figure for when matplotlib is not present.
-                """
-
-                pass
+        from matplotlib.pyplot import Figure
 
         bin_packing = BinPacking(
             weights=self.weights,
             max_weight=self.max_weight,
         )
         self.assertIsInstance(bin_packing.get_figure(self.result), Figure)
+
+
+if __name__ == "__main__":
+    unittest.main()

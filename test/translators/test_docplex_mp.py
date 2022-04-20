@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -584,7 +584,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             x = mod.binary_var("x")
             y = mod.logical_not(x)
             mod.add_constraint(y <= 1)
-            mod.add_constraint(y ** 2 == 2)
+            mod.add_constraint(y**2 == 2)
             q_p = from_docplex_mp(mod)
             self.assertListEqual([v.name for v in q_p.variables], ["x", "_not1"])
             self.assertEqual(q_p.get_num_linear_constraints(), 2)
@@ -615,7 +615,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             y = mod.binary_var("y")
             z = mod.logical_and(x, y)
             mod.add_constraint(z <= 1)
-            mod.add_constraint(z ** 2 == 2)
+            mod.add_constraint(z**2 == 2)
             q_p = from_docplex_mp(mod)
             self.assertListEqual([v.name for v in q_p.variables], ["x", "y", "_and2"])
             self.assertEqual(q_p.get_num_linear_constraints(), 4)
@@ -658,7 +658,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             y = mod.binary_var("y")
             z = mod.logical_or(x, y)
             mod.add_constraint(z <= 1)
-            mod.add_constraint(z ** 2 == 2)
+            mod.add_constraint(z**2 == 2)
             q_p = from_docplex_mp(mod)
             self.assertListEqual([v.name for v in q_p.variables], ["x", "y", "_or2"])
             self.assertEqual(q_p.get_num_linear_constraints(), 4)
