@@ -101,6 +101,127 @@ class TestQuadraticObjective(QiskitOptimizationTestCase):
         quadratic_program.objective.sense = quadratic_program.objective.Sense.MINIMIZE
         self.assertEqual(quadratic_program.objective.sense, QuadraticObjective.Sense.MINIMIZE)
 
+    def test_str_repr(self):
+        """Test str and repr"""
+        with self.subTest("4 variables"):
+            n = 4
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(n)  # x0,...,x3
+            quad = {(i, i): float(i) for i in range(n)}
+            lin = [float(i) for i in range(n)]
+
+            q_p.maximize(quadratic=quad, linear=lin, constant=n)
+            expected = "maximize x1^2 + 2 x2^2 + 3 x3^2 + x1 + 2 x2 + 3 x3 + 4"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            q_p.minimize(quadratic=quad, linear=lin, constant=n)
+            expected = "minimize x1^2 + 2 x2^2 + 3 x3^2 + x1 + 2 x2 + 3 x3 + 4"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            quad = {(i, (i + 1) % n): i for i in range(n)}
+
+            q_p.maximize(quadratic=quad, linear=lin, constant=0)
+            expected = "maximize 3 x0 x3 + x1 x2 + 2 x2 x3 + x1 + 2 x2 + 3 x3"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            q_p.minimize(quadratic=quad, linear=lin, constant=0)
+            expected = "minimize 3 x0 x3 + x1 x2 + 2 x2 x3 + x1 + 2 x2 + 3 x3"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+        with self.subTest("50 variables"):
+            # pylint: disable=cyclic-import
+            from qiskit_optimization.translators.prettyprint import DEFAULT_TRUNCATE
+
+            n = 50
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(n)
+            quad = {(i, i): float(i) for i in range(n)}
+            lin = [float(i) for i in range(n)]
+
+            expected = " ".join(
+                ["x1^2"]
+                + sorted([f"+ {i} x{i}^2" for i in range(2, n)], key=lambda e: e.split(" ")[1])
+                + ["+ x1"]
+                + sorted([f"+ {i} x{i}" for i in range(2, n)], key=lambda e: e.split(" ")[1])
+                + [f"+ {n}"]
+            )
+            q_p.maximize(quadratic=quad, linear=lin, constant=n)
+            self.assertEqual(str(q_p.objective), f"maximize {expected}")
+            self.assertEqual(
+                repr(q_p.objective),
+                f"<QuadraticObjective: maximize {expected[:DEFAULT_TRUNCATE]}...>",
+            )
+
+            q_p.minimize(quadratic=quad, linear=lin, constant=n)
+            self.assertEqual(str(q_p.objective), f"minimize {expected}")
+            self.assertEqual(
+                repr(q_p.objective),
+                f"<QuadraticObjective: minimize {expected[:DEFAULT_TRUNCATE]}...>",
+            )
+
+            quad = {(i + 1, i): float(i + 1) for i in range(2)}
+            lin = [float(i) for i in range(n)]
+            expected = " ".join(
+                ["x0 x1 + 2 x1 x2"]
+                + ["+ x1"]
+                + sorted([f"+ {i} x{i}" for i in range(2, n)], key=lambda e: e.split(" ")[1])
+                + [f"+ {n}"]
+            )
+            q_p.maximize(quadratic=quad, linear=lin, constant=n)
+            self.assertEqual(str(q_p.objective), f"maximize {expected}")
+            self.assertEqual(
+                repr(q_p.objective),
+                f"<QuadraticObjective: maximize {expected[:DEFAULT_TRUNCATE]}...>",
+            )
+
+            q_p.minimize(quadratic=quad, linear=lin, constant=n)
+            self.assertEqual(str(q_p.objective), f"minimize {expected}")
+            self.assertEqual(
+                repr(q_p.objective),
+                f"<QuadraticObjective: minimize {expected[:DEFAULT_TRUNCATE]}...>",
+            )
+
+        with self.subTest("only constant"):
+            q_p = QuadraticProgram()
+
+            q_p.maximize()
+            expected = "maximize 0"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            q_p.minimize()
+            expected = "minimize 0"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            q_p.maximize(constant=-1.23)
+            expected = "maximize -1.23"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            q_p.minimize(constant=-1.23)
+            expected = "minimize -1.23"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+        with self.subTest("1 variable"):
+            q_p = QuadraticProgram()
+            q_p.binary_var("z")
+
+            q_p.maximize(linear=[1], quadratic={("z", "z"): -1}, constant=1)
+            expected = "maximize -z^2 + z + 1"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
+            q_p.minimize(linear=[1], quadratic={("z", "z"): -1}, constant=1)
+            expected = "minimize -z^2 + z + 1"
+            self.assertEqual(str(q_p.objective), expected)
+            self.assertEqual(repr(q_p.objective), f"<QuadraticObjective: {expected}>")
+
 
 if __name__ == "__main__":
     unittest.main()

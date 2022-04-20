@@ -184,11 +184,13 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             self.assertEqual(repr(expr), "<LinearExpression: x1 + 2 x2 + 3 x3 + 4 x4>")
 
         with self.subTest("50 variables"):
+            # pylint: disable=cyclic-import
+            from qiskit_optimization.translators.prettyprint import DEFAULT_TRUNCATE
+
             n = 50
             quadratic_program = QuadraticProgram()
             quadratic_program.binary_var_list(n)  # x0,...,x49
             expr = LinearExpression(quadratic_program, [float(e) for e in range(n)])
-            from qiskit_optimization.translators.prettyprint import DEFAULT_TRUNCATE
 
             expected = " ".join(["x1"] + [f"+ {i} x{i}" for i in range(2, n)])
             self.assertEqual(str(expr), expected)

@@ -45,26 +45,34 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
 
     Args:
         coeff: a coefficient.
-        term: a term.
+        term: a term. This can be empty and `coeff` is treated as a constant.
         is_head: Whether this coefficient appears in the head of the string or not.
 
     Returns:
         A strings representing the term.
     """
-    if is_head:
-        if isclose(coeff, 1.0):
-            ret = term
-        elif isclose(coeff, -1.0):
-            ret = f"-{term}"
+    if term:
+        if is_head:
+            if isclose(coeff, 1.0):
+                ret = term
+            elif isclose(coeff, -1.0):
+                ret = f"-{term}"
+            else:
+                ret = f"{_int_if_close(coeff)} {term}"
         else:
-            ret = f"{_int_if_close(coeff)} {term}"
+            sign = "-" if coeff < 0.0 else "+"
+            abs_val = abs(coeff)
+            if isclose(abs_val, 1.0):
+                ret = f" {sign} {term}"
+            else:
+                ret = f" {sign} {_int_if_close(abs_val)} {term}"
     else:
-        sign = "-" if coeff < 0.0 else "+"
-        abs_val = abs(coeff)
-        if isclose(abs_val, 1.0):
-            ret = f" {sign} {term}"
+        if is_head:
+            ret = f"{_int_if_close(coeff)}"
         else:
-            ret = f" {sign} {_int_if_close(abs_val)} {term}"
+            sign = "-" if coeff < 0.0 else "+"
+            abs_val = abs(coeff)
+            ret = f" {sign} {_int_if_close(abs_val)}"
     return ret
 
 
