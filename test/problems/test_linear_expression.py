@@ -173,6 +173,14 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             coefficients_list = list(range(3))
             _ = LinearExpression(quadratic_program, coefficients_list).bounds
 
+    def test_str_repr(self):
+        """Test str and repr"""
+        quadratic_program = QuadraticProgram()
+        quadratic_program.binary_var_list(5)  # x0,...,x4
+        expr = LinearExpression(quadratic_program, list(range(5)))
+        self.assertEqual(str(expr), "x1 + 2 x2 + 3 x3 + 4 x4")
+        self.assertEqual(repr(expr), "<LinearExpression: x1 + 2 x2 + 3 x3 + 4 x4>")
+
 
 if __name__ == "__main__":
     unittest.main()

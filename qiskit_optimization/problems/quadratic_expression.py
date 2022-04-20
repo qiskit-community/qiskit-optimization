@@ -269,7 +269,7 @@ class QuadraticExpression(QuadraticProgramElement):
                 if x.lowerbound * x.upperbound <= 0.0:
                     # lower bound and upper bound have different signs
                     lst.append(0.0)
-                lst.extend([x.lowerbound ** 2, x.upperbound ** 2])
+                lst.extend([x.lowerbound**2, x.upperbound**2])
             else:
                 lst.extend(
                     [

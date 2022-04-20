@@ -47,8 +47,9 @@ class TestConstraint(QiskitOptimizationTestCase):
     def test_init(self):
         """test init"""
         quadratic_program = QuadraticProgram("test")
-        cst = Constraint(quadratic_program, "name", ConstraintSense.GE, 1.0)
-        self.assertEqual(cst.name, "name")
-        self.assertEqual(cst.sense, ConstraintSense.GE)
-        self.assertAlmostEqual(cst.rhs, 1.0)
-        self.assertEqual(cst.quadratic_program.name, "test")
+        for sense in [ConstraintSense.GE, ConstraintSense.LE, ConstraintSense.EQ]:
+            cst = Constraint(quadratic_program, "name", sense, 1.0)
+            self.assertEqual(cst.name, "name")
+            self.assertEqual(cst.sense, sense)
+            self.assertAlmostEqual(cst.rhs, 1.0)
+            self.assertEqual(cst.quadratic_program.name, "test")

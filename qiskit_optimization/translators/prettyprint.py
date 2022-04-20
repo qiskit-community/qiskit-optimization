@@ -100,15 +100,15 @@ def _expr2str(
     quad_dict = quadratic.to_dict(use_name=True) if quadratic else {}
 
     # quadratic expression
-    for (var1, var2), coeff in quad_dict.items():
+    for (var1, var2), coeff in sorted(quad_dict.items()):
         if var1 == var2:
             expr.write(_term2str(coeff, f"{var1}^2", is_head))
         else:
-            expr.write(_term2str(coeff, f"{var1} * {var2}", is_head))
+            expr.write(_term2str(coeff, f"{var1} {var2}", is_head))
         is_head = False
 
     # linear expression
-    for var, coeff in lin_dict.items():
+    for var, coeff in sorted(lin_dict.items()):
         expr.write(_term2str(coeff, f"{var}", is_head))
         is_head = False
 
