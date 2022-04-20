@@ -175,11 +175,24 @@ class TestLinearExpression(QiskitOptimizationTestCase):
 
     def test_str_repr(self):
         """Test str and repr"""
-        quadratic_program = QuadraticProgram()
-        quadratic_program.binary_var_list(5)  # x0,...,x4
-        expr = LinearExpression(quadratic_program, list(range(5)))
-        self.assertEqual(str(expr), "x1 + 2 x2 + 3 x3 + 4 x4")
-        self.assertEqual(repr(expr), "<LinearExpression: x1 + 2 x2 + 3 x3 + 4 x4>")
+        with self.subTest("5 variables"):
+            n = 5
+            quadratic_program = QuadraticProgram()
+            quadratic_program.binary_var_list(n)  # x0,...,x4
+            expr = LinearExpression(quadratic_program, [float(e) for e in range(n)])
+            self.assertEqual(str(expr), "x1 + 2 x2 + 3 x3 + 4 x4")
+            self.assertEqual(repr(expr), "<LinearExpression: x1 + 2 x2 + 3 x3 + 4 x4>")
+
+        with self.subTest("50 variables"):
+            n = 50
+            quadratic_program = QuadraticProgram()
+            quadratic_program.binary_var_list(n)  # x0,...,x49
+            expr = LinearExpression(quadratic_program, [float(e) for e in range(n)])
+            from qiskit_optimization.translators.prettyprint import DEFAULT_TRUNCATE
+
+            expected = " ".join(["x1"] + [f"+ {i} x{i}" for i in range(2, n)])
+            self.assertEqual(str(expr), expected)
+            self.assertEqual(repr(expr), f"<LinearExpression: {expected[:DEFAULT_TRUNCATE]}...>")
 
 
 if __name__ == "__main__":

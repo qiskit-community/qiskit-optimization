@@ -124,7 +124,7 @@ class QuadraticConstraint(Constraint):
         from ..translators.prettyprint import _expr2str, DEFAULT_TRUNCATE
 
         lhs = _expr2str(linear=self.linear, quadratic=self.quadratic, truncate=DEFAULT_TRUNCATE)
-        return f"<LinearConstraint: {lhs} {self.sense.label} {self.rhs} '{self.name}'>"
+        return f"<QuadraticConstraint: {lhs} {self.sense.label} {self.rhs} '{self.name}'>"
 
     def __str__(self):
         # pylint: disable=cyclic-import

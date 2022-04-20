@@ -24,6 +24,47 @@ from qiskit_optimization.problems import Constraint
 class TestQuadraticConstraint(QiskitOptimizationTestCase):
     """Test QuadraticConstraint."""
 
+    def setUp(self) -> None:
+        super().setUp()
+        self.quadratic_program = QuadraticProgram()
+        self.quadratic_program.binary_var_list(3, name="x")
+        self.quadratic_program.quadratic_constraint(
+            {"x0": 1, "x1": -2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "<=", 1
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": 1, "x1": -2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "<", 1
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": 1, "x1": -2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "LE", 1
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": 1, "x1": -2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "L", 1
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": -1, "x1": 2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "==", 2
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": -1, "x1": 2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "=", 2
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": -1, "x1": 2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "EQ", 2
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x0": -1, "x1": 2}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "E", 2
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x1": 2, "x2": -1}, {("x0", "x0"): -1, ("x2", "x1"): 2}, ">=", 3
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x1": 2, "x2": -1}, {("x0", "x0"): -1, ("x2", "x1"): 2}, ">", 3
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x1": 2, "x2": -1}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "GE", 3
+        )
+        self.quadratic_program.quadratic_constraint(
+            {"x1": 2, "x2": -1}, {("x0", "x0"): -1, ("x2", "x1"): 2}, "G", 3
+        )
+
     def test_init(self):
         """test init."""
 
@@ -175,6 +216,44 @@ class TestQuadraticConstraint(QiskitOptimizationTestCase):
         )
 
         self.assertEqual(quadratic_program.quadratic_constraints[5].evaluate(linear_coeffs), 930.0)
+
+    def test_str(self):
+        """Test str"""
+        self.assertEqual(self.quadratic_program.get_num_quadratic_constraints(), 12)
+        for i in range(0, 4):
+            self.assertEqual(
+                str(self.quadratic_program.get_quadratic_constraint(i)),
+                f"-x0^2 + 2 x1 x2 + x0 - 2 x1 <= 1 'q{i}'",
+            )
+        for i in range(4, 8):
+            self.assertEqual(
+                str(self.quadratic_program.get_quadratic_constraint(i)),
+                f"-x0^2 + 2 x1 x2 - x0 + 2 x1 == 2 'q{i}'",
+            )
+        for i in range(8, 12):
+            self.assertEqual(
+                str(self.quadratic_program.get_quadratic_constraint(i)),
+                f"-x0^2 + 2 x1 x2 + 2 x1 - x2 >= 3 'q{i}'",
+            )
+
+    def test_repr(self):
+        """Test repr"""
+        self.assertEqual(self.quadratic_program.get_num_quadratic_constraints(), 12)
+        for i in range(0, 4):
+            self.assertEqual(
+                repr(self.quadratic_program.get_quadratic_constraint(i)),
+                f"<QuadraticConstraint: -x0^2 + 2 x1 x2 + x0 - 2 x1 <= 1 'q{i}'>",
+            )
+        for i in range(4, 8):
+            self.assertEqual(
+                repr(self.quadratic_program.get_quadratic_constraint(i)),
+                f"<QuadraticConstraint: -x0^2 + 2 x1 x2 - x0 + 2 x1 == 2 'q{i}'>",
+            )
+        for i in range(8, 12):
+            self.assertEqual(
+                repr(self.quadratic_program.get_quadratic_constraint(i)),
+                f"<QuadraticConstraint: -x0^2 + 2 x1 x2 + 2 x1 - x2 >= 3 'q{i}'>",
+            )
 
 
 if __name__ == "__main__":

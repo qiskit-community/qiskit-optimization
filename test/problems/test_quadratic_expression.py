@@ -234,15 +234,43 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
 
     def test_str_repr(self):
         """Test str and repr"""
-        q_p = QuadraticProgram()
-        q_p.binary_var_list(5)  # x0,...,x4
-        expr = QuadraticExpression(q_p, {(i, i): i for i in range(5)})
-        self.assertEqual(str(expr), "x1^2 + 2 x2^2 + 3 x3^2 + 4 x4^2")
-        self.assertEqual(repr(expr), "<QuadraticExpression: x1^2 + 2 x2^2 + 3 x3^2 + 4 x4^2>")
+        with self.subTest("5 variables"):
+            n = 5
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(n)  # x0,...,x4
+            expr = QuadraticExpression(q_p, {(i, i): i for i in range(n)})
+            self.assertEqual(str(expr), "x1^2 + 2 x2^2 + 3 x3^2 + 4 x4^2")
+            self.assertEqual(repr(expr), "<QuadraticExpression: x1^2 + 2 x2^2 + 3 x3^2 + 4 x4^2>")
 
-        expr = QuadraticExpression(q_p, {(i, (i + 1) % 5): i for i in range(5)})
-        self.assertEqual(str(expr), "4 x0 x4 + x1 x2 + 2 x2 x3 + 3 x3 x4")
-        self.assertEqual(repr(expr), "<QuadraticExpression: 4 x0 x4 + x1 x2 + 2 x2 x3 + 3 x3 x4>")
+            expr = QuadraticExpression(q_p, {(i, (i + 1) % n): i for i in range(n)})
+            self.assertEqual(str(expr), "4 x0 x4 + x1 x2 + 2 x2 x3 + 3 x3 x4")
+            self.assertEqual(
+                repr(expr), "<QuadraticExpression: 4 x0 x4 + x1 x2 + 2 x2 x3 + 3 x3 x4>"
+            )
+
+        with self.subTest("50 variables"):
+            from qiskit_optimization.translators.prettyprint import DEFAULT_TRUNCATE
+
+            n = 50
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(n)  # x0,...,x49
+            expr = QuadraticExpression(q_p, {(i, i): float(i) for i in range(n)})
+            expected = " ".join(
+                ["x1^2"]
+                + sorted([f"+ {i} x{i}^2" for i in range(2, n)], key=lambda e: e.split(" ")[1])
+            )
+            self.assertEqual(str(expr), expected)
+            self.assertEqual(repr(expr), f"<QuadraticExpression: {expected[:DEFAULT_TRUNCATE]}...>")
+
+            expr = QuadraticExpression(q_p, {(i, (i + 1) % n): float(i) for i in range(n)})
+            expected = " ".join(
+                [f"{n-1} x0 x{n-1}", "+ x1 x2"]
+                + sorted(
+                    [f"+ {i} x{i} x{i + 1}" for i in range(2, n - 1)], key=lambda e: e.split(" ")[1]
+                )
+            )
+            self.assertEqual(str(expr), expected)
+            self.assertEqual(repr(expr), f"<QuadraticExpression: {expected[:DEFAULT_TRUNCATE]}...>")
 
 
 if __name__ == "__main__":
