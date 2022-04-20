@@ -94,18 +94,9 @@ class QuadraticProgram:
         )
 
     def __str__(self) -> str:
-        # pylint: disable=cyclic-import
-        from ..translators.prettyprint import _expr2str
-
-        objective = _expr2str(
-            constant=self._objective.constant,
-            linear=self.objective.linear,
-            quadratic=self._objective.quadratic,
-        )
         num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
         return (
-            f"{self.objective.sense.name.lower()} "
-            f"{objective} "
+            f"{str(self.objective)} "
             f"({self.get_num_vars()} variables, "
             f"{num_constraints} constraints, "
             f"'{self._name}')"

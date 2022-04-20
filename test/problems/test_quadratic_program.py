@@ -1031,6 +1031,45 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         except RuntimeError as ex:
             self.fail(str(ex))
 
+    def test_str_repr(self):
+        q_p = QuadraticProgram("my problem")
+        q_p.binary_var("x")
+        q_p.integer_var(-1, 5, "y")
+        q_p.continuous_var(-1, 5, "z")
+        q_p.minimize(1, {"x": 1, "y": -1, "z": 10}, {("x", "x"): 0.5, ("y", "z"): -1})
+        q_p.linear_constraint({"x": 1, "y": 2}, "==", 1, "lin_eq")
+        q_p.linear_constraint({"x": 1, "y": 2}, "<=", 1, "lin_leq")
+        q_p.linear_constraint({"x": 1, "y": 2}, ">=", 1, "lin_geq")
+        q_p.quadratic_constraint(
+            {"x": 1, "y": 1},
+            {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+            "==",
+            1,
+            "quad_eq",
+        )
+        q_p.quadratic_constraint(
+            {"x": 1, "y": 1},
+            {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+            "<=",
+            1,
+            "quad_leq",
+        )
+        q_p.quadratic_constraint(
+            {"x": 1, "y": 1},
+            {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+            ">=",
+            1,
+            "quad_geq",
+        )
+        self.assertEqual(
+            str(q_p),
+            "minimize 0.5 x^2 - y z + x - y + 10 z + 1 (3 variables, 6 constraints, 'my problem')",
+        )
+        self.assertEqual(
+            repr(q_p),
+            "<QuadraticProgram: minimize 0.5 x^2 - y z + x - y + 10 z + 1, 3 variables, 6 constraints, 'my problem'>",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
