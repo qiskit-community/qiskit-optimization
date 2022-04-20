@@ -192,7 +192,9 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             quadratic_program.binary_var_list(n)  # x0,...,x49
             expr = LinearExpression(quadratic_program, [float(e) for e in range(n)])
 
-            expected = " ".join(["x1"] + [f"+ {i} x{i}" for i in range(2, n)])
+            expected = " ".join(
+                ["x1"] + sorted([f"+ {i} x{i}" for i in range(2, n)], key=lambda e: e.split(" ")[1])
+            )
             self.assertEqual(str(expr), expected)
             self.assertEqual(repr(expr), f"<LinearExpression: {expected[:DEFAULT_TRUNCATE]}...>")
 

@@ -43,13 +43,41 @@ class TestOptimizationResult(QiskitOptimizationTestCase):
 
     def test_str_repr(self):
         """test str and repr"""
-        q_p = QuadraticProgram()
-        q_p.integer_var_list(3)
-        result = OptimizationResult(
-            x=[1, 2, 3], fval=10, variables=q_p.variables, status=OptimizationResultStatus.SUCCESS
-        )
-        expected = "\n".join(
-            ["optimal function value: 10", "optimal value: x0=1, x1=2, x2=3", "status: SUCCESS"]
-        )
-        self.assertEqual(str(result), expected)
-        self.assertEqual(repr(result), "<OptimizationResult: x=[1 2 3], fval=10, status=SUCCESS)>")
+
+        with self.subTest("float fval"):
+            q_p = QuadraticProgram()
+            q_p.integer_var_list(3)
+            result = OptimizationResult(
+                x=[1, 2, 3],
+                fval=10.1,
+                variables=q_p.variables,
+                status=OptimizationResultStatus.SUCCESS,
+            )
+            expected = "\n".join(
+                [
+                    "optimal function value: 10.1",
+                    "optimal value: x0=1, x1=2, x2=3",
+                    "status: SUCCESS",
+                ]
+            )
+            self.assertEqual(str(result), expected)
+            self.assertEqual(
+                repr(result), "<OptimizationResult: x=[1 2 3], fval=10.1, status=SUCCESS)>"
+            )
+
+        with self.subTest("int fval"):
+            q_p = QuadraticProgram()
+            q_p.integer_var_list(3)
+            result = OptimizationResult(
+                x=[1, 2, 3],
+                fval=10.0,
+                variables=q_p.variables,
+                status=OptimizationResultStatus.SUCCESS,
+            )
+            expected = "\n".join(
+                ["optimal function value: 10", "optimal value: x0=1, x1=2, x2=3", "status: SUCCESS"]
+            )
+            self.assertEqual(str(result), expected)
+            self.assertEqual(
+                repr(result), "<OptimizationResult: x=[1 2 3], fval=10, status=SUCCESS)>"
+            )

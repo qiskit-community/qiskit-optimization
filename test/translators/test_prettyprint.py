@@ -34,7 +34,6 @@ class TestPrettyprint(QiskitOptimizationTestCase):
         with self.subTest("empty"):
             q_p = QuadraticProgram()
             out = prettyprint(q_p)
-            self._convert(out)
             expected = "\n".join(
                 [
                     "Problem name: ",

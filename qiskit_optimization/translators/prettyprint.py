@@ -15,6 +15,7 @@
 from io import StringIO
 from math import isclose
 from typing import Optional, Union
+import numpy as np
 
 from qiskit_optimization import INFINITY
 from qiskit_optimization.problems import (
@@ -28,12 +29,17 @@ from qiskit_optimization.problems import (
 DEFAULT_TRUNCATE = 50
 
 
-def _int_if_close(val: Union[int, float]) -> Union[int, float]:
+def _int_if_close(val: Union[int, float, np.integer, np.floating]) -> Union[int, float]:
     """Convert a value into an integer if possible
 
     Note: if abs(val) is too large, int(val) is not correct
           e.g., int(1e16 - 1) -> 10000000000000000
     """
+    if isinstance(val, np.integer):
+        val = int(val)
+    elif isinstance(val, np.floating):
+        val = float(val)
+
     if isinstance(val, int):
         return val
     if abs(val) <= 1e10 and val.is_integer():
