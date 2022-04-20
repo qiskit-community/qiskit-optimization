@@ -143,6 +143,7 @@ pre
 preprint
 prepend
 presolver
+prettyprint
 princeton
 probabilistically
 py
@@ -162,6 +163,7 @@ qubit
 qubits
 qubo
 readme
+repr
 representable
 rhobeg
 rhoend

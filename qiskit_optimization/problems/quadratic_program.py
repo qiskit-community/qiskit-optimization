@@ -1098,3 +1098,13 @@ class QuadraticProgram:
         feasible, _, _ = self.get_feasibility_info(x)
 
         return feasible
+
+    def prettyprint(self) -> str:
+        """Pretty print
+
+        Returns:
+
+        """
+        from qiskit_optimization.translators.prettyprint import prettyprint
+
+        return prettyprint(self)

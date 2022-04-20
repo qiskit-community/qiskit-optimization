@@ -31,6 +31,26 @@ class TestPrettyprint(QiskitOptimizationTestCase):
     def test_prettyprint(self):
         """test prettyprint"""
 
+        with self.subTest("empty"):
+            q_p = QuadraticProgram()
+            out = prettyprint(q_p)
+            self._convert(out)
+            expected = "\n".join(
+                [
+                    "Problem name: ",
+                    "",
+                    "Minimize",
+                    "  0",
+                    "",
+                    "Subject to",
+                    "  No constraints",
+                    "",
+                    "  No variables",
+                    "",
+                ]
+            )
+            self.assertEqual(out, expected)
+
         with self.subTest("minimize 1"):
             q_p = QuadraticProgram("test")
             q_p.binary_var(name="x")
