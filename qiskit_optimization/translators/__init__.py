@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -31,17 +31,20 @@ Translators
    to_gurobipy
    from_ising
    to_ising
+   prettyprint
 """
 
 from .docplex_mp import from_docplex_mp, to_docplex_mp
 from .gurobipy import from_gurobipy, to_gurobipy
 from .ising import from_ising, to_ising
+from .prettyprint import prettyprint
 
-_all = [
+__all__ = [
     "from_docplex_mp",
     "to_docplex_mp",
     "from_gurobipy",
     "to_gurobipy",
     "from_ising",
     "to_ising",
+    "prettyprint",
 ]

@@ -75,9 +75,9 @@ class ConstraintSense(Enum):
         Returns:
             The label of the constraint sense ('<=', '>=', or '==')
         """
-        if self == self.LE:
+        if self is ConstraintSense.LE:
             return "<="
-        elif self == self.GE:
+        elif self is ConstraintSense.GE:
             return ">="
         else:
             return "=="

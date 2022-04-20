@@ -1032,6 +1032,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.fail(str(ex))
 
     def test_str_repr(self):
+        """Test str and repr"""
         q_p = QuadraticProgram("my problem")
         q_p.binary_var("x")
         q_p.integer_var(-1, 5, "y")
@@ -1067,7 +1068,8 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         )
         self.assertEqual(
             repr(q_p),
-            "<QuadraticProgram: minimize 0.5 x^2 - y z + x - y + 10 z + 1, 3 variables, 6 constraints, 'my problem'>",
+            "<QuadraticProgram: minimize 0.5 x^2 - y z + x - y + 10 z + 1, "
+            "3 variables, 6 constraints, 'my problem'>",
         )
 
 

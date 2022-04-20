@@ -143,7 +143,12 @@ class OptimizationResult:
             ]
 
     def __repr__(self) -> str:
-        return f"<OptimizationResult(x={self._x}, fval={self._fval}, status={self._status.name})>"
+        from qiskit_optimization.translators.prettyprint import _int_if_close
+
+        return (
+            f"<OptimizationResult: x={self._x}, fval={_int_if_close(self._fval)}, "
+            f"status={self._status.name})>"
+        )
 
     def __str__(self) -> str:
         from qiskit_optimization.translators.prettyprint import _int_if_close

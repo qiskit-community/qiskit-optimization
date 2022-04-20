@@ -22,6 +22,7 @@ from qiskit_optimization.problems import (
     QuadraticExpression,
     QuadraticObjective,
     QuadraticProgram,
+    VarType,
 )
 
 DEFAULT_TRUNCATE = 50
@@ -183,9 +184,9 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         int_vars = []
         con_vars = []
         for var in quadratic_program.variables:
-            if var.vartype == var.vartype.BINARY:
+            if var.vartype is VarType.BINARY:
                 bin_vars.append(var.name)
-            elif var.vartype == var.vartype.INTEGER:
+            elif var.vartype is VarType.INTEGER:
                 int_vars.append(var)
             else:
                 con_vars.append(var)
