@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Fixed an issue that :func:`~qiskit_optimization.translators.from_ising`
+    raises an error when Pauli I is given.
+  - |
+    Fixed an issue that :func:`~qiskit_optimization.translators.to_ising`
+    returns a wrong operator when there is no variable in an input problem.
