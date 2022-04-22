@@ -85,7 +85,9 @@ elist = [(0, 1, 1.0), (0, 2, 1.0), (0, 3, 1.0), (1, 2, 1.0), (2, 3, 1.0)]
 graph.add_weighted_edges_from(elist)
 
 # Compute the weight matrix from the graph
-w = nx.adjacency_matrix(graph)
+#w = nx.adjacency_matrix(graph)
+w = nx.to_scipy_sparse_array(graph)
+#to_scipy_sparse_matrix(G, nodelist=None, dtype=None, weight='weight', format='csr')--> from_scipy_sparse_array(A, parallel_edges=False, create_using=None, edge_attribute='weight')
 
 # Formulate the problem as quadratic program
 problem = QuadraticProgram()
