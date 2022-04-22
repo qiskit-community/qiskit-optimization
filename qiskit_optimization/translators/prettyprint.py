@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Translate ``QuadraticProgram`` into a string"""
+"""Translate ``QuadraticProgram`` into a pretty-printed string"""
 
 from io import StringIO
 from math import isclose
@@ -140,13 +140,13 @@ def _expr2str(
 
 
 def prettyprint(quadratic_program: QuadraticProgram) -> str:
-    """Translate a `QuadraticProgram` into a string of a stylistic format
+    """Translate a :class:`~qiskit_optimization.problem.QuadraticProgram` into a pretty-printed string.
 
     Args:
         quadratic_program: The optimization problem to be translated into a string
 
     Returns:
-        A string representing this problem.
+        A pretty-printed string representing the problem.
     """
 
     with StringIO() as buf:

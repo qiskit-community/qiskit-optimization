@@ -17,7 +17,7 @@ Quadratic program translators (:mod:`qiskit_optimization.translators`)
 .. currentmodule:: qiskit_optimization.translators
 
 Translators between :class:`~qiskit_optimization.problems.QuadraticProgram` and
-other optimization models.
+other optimization models or other objects.
 
 Translators
 ======================

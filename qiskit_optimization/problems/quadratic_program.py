@@ -1100,9 +1100,10 @@ class QuadraticProgram:
         return feasible
 
     def prettyprint(self) -> str:
-        """Pretty print
+        """Returns a pretty printed string of this problem.
 
         Returns:
+            A pretty printed string representing the problem.
 
         """
         from qiskit_optimization.translators.prettyprint import prettyprint
