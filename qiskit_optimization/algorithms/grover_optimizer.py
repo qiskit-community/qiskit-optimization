@@ -24,7 +24,7 @@ from qiskit.algorithms import AmplificationProblem
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
-from qiskit.providers import Backend, BaseBackend
+from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace
 from .optimization_algorithm import (
     OptimizationResultStatus,
@@ -49,7 +49,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self,
         num_value_qubits: int,
         num_iterations: int = 3,
-        quantum_instance: Optional[Union[BaseBackend, Backend, QuantumInstance]] = None,
+        quantum_instance: Optional[Union[Backend, QuantumInstance]] = None,
         converters: Optional[
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
         ] = None,
@@ -91,15 +91,13 @@ class GroverOptimizer(OptimizationAlgorithm):
         return self._quantum_instance
 
     @quantum_instance.setter
-    def quantum_instance(
-        self, quantum_instance: Union[Backend, BaseBackend, QuantumInstance]
-    ) -> None:
+    def quantum_instance(self, quantum_instance: Union[Backend, QuantumInstance]) -> None:
         """Set the quantum instance used to run the circuits.
 
         Args:
             quantum_instance: The quantum instance to be used in the algorithm.
         """
-        if isinstance(quantum_instance, (BaseBackend, Backend)):
+        if isinstance(quantum_instance, Backend):
             self._quantum_instance = QuantumInstance(quantum_instance)
         else:
             self._quantum_instance = quantum_instance
