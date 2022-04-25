@@ -322,7 +322,7 @@ class VQEClient(MinimumEigensolver):
 
 
 class VQERuntimeResult(VQEResult):
-    """The VQERuntimeClient result object.
+    """The VQEClient result object.
 
     This result objects contains the same as the VQEResult and additionally the history
     of the optimizer, containing information such as the function and parameter values per step.
