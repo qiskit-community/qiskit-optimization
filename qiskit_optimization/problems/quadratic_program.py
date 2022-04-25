@@ -1072,3 +1072,15 @@ class QuadraticProgram:
         feasible, _, _ = self.get_feasibility_info(x)
 
         return feasible
+
+    def prettyprint(self) -> str:
+        """Returns a pretty printed string of this problem.
+
+        Returns:
+            A pretty printed string representing the problem.
+
+        """
+        # pylint: disable=cyclic-import
+        from qiskit_optimization.translators.prettyprint import prettyprint
+
+        return prettyprint(self)
