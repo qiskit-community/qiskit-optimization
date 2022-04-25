@@ -6,6 +6,6 @@ deprecations:
     :class:`~qiskit_optimization.runtime.VQEProgram`, 
     :class:`~qiskit_optimization.runtime.QAOAProgram` and
     :class:`~qiskit_optimization.runtime.VQEProgramResult` have been renamed to
-    :class:`~qiskit_optimization.runtime.VQERuntimeClient`,
-    :class:`~qiskit_optimization.runtime.QAOARuntimeClient` and
+    :class:`~qiskit_optimization.runtime.VQEClient`,
+    :class:`~qiskit_optimization.runtime.QAOAClient` and
     :class:`~qiskit_optimization.runtime.VQERuntimeResult`, respectively.
