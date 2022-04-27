@@ -14,7 +14,7 @@
 
 from io import StringIO
 from math import isclose
-from typing import Optional, Union
+from typing import Optional, Union, cast
 
 import numpy as np
 
@@ -150,8 +150,8 @@ def _expr2str(
 
     # quadratic expression
     for (var1, var2), coeff in sorted(quad_dict.items()):
-        var1 = _varname(var1)
-        var2 = _varname(var2)
+        var1 = _varname(cast(str, var1))
+        var2 = _varname(cast(str, var2))
         if var1 == var2:
             expr.write(_term2str(coeff, f"{var1}^2", is_head))
         else:
@@ -160,7 +160,7 @@ def _expr2str(
 
     # linear expression
     for var, coeff in sorted(lin_dict.items()):
-        var = _varname(var)
+        var = _varname(cast(str, var))
         expr.write(_term2str(coeff, f"{var}", is_head))
         is_head = False
 

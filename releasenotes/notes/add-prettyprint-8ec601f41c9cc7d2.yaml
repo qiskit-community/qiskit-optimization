@@ -1,4 +1,10 @@
 ---
+upgrade:
+  - |
+    Shows a warning message if non-printable strings are set to
+    :class:`~qiskit_optimization.problems.QuadraticProgram`
+    as problem name, variable name, or constraint name.
+
 features:
   - |
     Adds :func:`~qiskit_optimization.translator.prettyprint.prettyprint`
@@ -41,16 +47,16 @@ features:
         Problem name: problem 1
 
         Minimize
-          -x u + 2 x + 3 y + 3
+          -x*u + 2*x + 3*y + 3
 
         Subject to
           Linear constraints (2)
-            x - 2 y >= 2  'lin_GE'
-            2 x - y == 1  'lin_EQ'
+            x - 2*y >= 2  'lin_GE'
+            2*x - y == 1  'lin_EQ'
 
           Quadratic constraints (2)
-            u v - x5 x6 + u + x <= 1  'quad_LE'
-            -z^2 + 2 x - y <= 1  'q1'
+            u*v - x5*x6 + u + x <= 1  'quad_LE'
+            -z^2 + 2*x - y <= 1  'q1'
 
           Integer variables (5)
             -1 <= x <= 2
@@ -67,3 +73,4 @@ features:
 
           Binary variables (12)
             u v x5 x6 x7 x8 x9 x10 x11 x12 x13 x14
+
