@@ -1091,7 +1091,7 @@ class QuadraticProgram:
             A pretty printed string representing the problem.
 
         Raises:
-            QiskitOptimizationError: if the variable name is not printable.
+            QiskitOptimizationError: if there is a non-printable name.
         """
         # pylint: disable=cyclic-import
         from qiskit_optimization.translators.prettyprint import prettyprint
