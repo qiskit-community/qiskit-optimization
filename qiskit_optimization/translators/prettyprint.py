@@ -84,19 +84,6 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
     return ret
 
 
-def _check_name(name: str) -> None:
-    """Check a name is printable.
-
-    Args:
-        name: a variable name.
-
-    Raises:
-        QiskitOptimizationError: if the variable name is not printable.
-    """
-    if not name.isprintable():
-        raise QiskitOptimizationError("Variable name is not printable")
-
-
 def _varname(name: str) -> str:
     """Translate a variable name into a string.
 
@@ -110,7 +97,8 @@ def _varname(name: str) -> str:
     Raises:
         QiskitOptimizationError: if the variable name is not printable.
     """
-    _check_name(name)
+    if not name.isprintable():
+        raise QiskitOptimizationError("Variable name is not printable")
     if {" ", "+", "-", "*"}.intersection(set(name)):
         return f'("{name}")'
     return name
@@ -186,11 +174,12 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         A pretty-printed string representing the problem.
 
     Raises:
-        QiskitOptimizationError: if the variable name is not printable.
+        QiskitOptimizationError: if there is a non-printable name.
     """
 
     with StringIO() as buf:
-        _check_name(quadratic_program.name)
+        if not quadratic_program.name.isprintable():
+            raise QiskitOptimizationError("Problem name is not printable")
         buf.write(f"Problem name: {quadratic_program.name}\n\n")
         if quadratic_program.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             buf.write("Minimize\n")
@@ -212,7 +201,8 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         if num_lin_csts > 0:
             buf.write(f"\n  Linear constraints ({num_lin_csts})\n")
             for cst in quadratic_program.linear_constraints:
-                _check_name(cst.name)
+                if not cst.name.isprintable():
+                    raise QiskitOptimizationError("Linear constraint name is not printable")
                 buf.write(
                     f"    {_expr2str(linear=cst.linear)}"
                     f" {cst.sense.label} {_int_if_close(cst.rhs)}"
@@ -221,7 +211,8 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         if num_quad_csts > 0:
             buf.write(f"\n  Quadratic constraints ({num_quad_csts})\n")
             for cst2 in quadratic_program.quadratic_constraints:
-                _check_name(cst2.name)
+                if not cst2.name.isprintable():
+                    raise QiskitOptimizationError("Quadratic constraint name is not printable")
                 buf.write(
                     f"    {_expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
                     f" {cst2.sense.label} {_int_if_close(cst2.rhs)}"
