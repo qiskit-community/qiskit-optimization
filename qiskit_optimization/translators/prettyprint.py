@@ -65,14 +65,14 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
             elif isclose(coeff, -1.0):
                 ret = f"-{term}"
             else:
-                ret = f"{_int_if_close(coeff)} {term}"
+                ret = f"{_int_if_close(coeff)}*{term}"
         else:
             sign = "-" if coeff < 0.0 else "+"
             abs_val = abs(coeff)
             if isclose(abs_val, 1.0):
                 ret = f" {sign} {term}"
             else:
-                ret = f" {sign} {_int_if_close(abs_val)} {term}"
+                ret = f" {sign} {_int_if_close(abs_val)}*{term}"
     else:
         if is_head:
             ret = f"{_int_if_close(coeff)}"
@@ -119,7 +119,7 @@ def _expr2str(
         if var1 == var2:
             expr.write(_term2str(coeff, f"{var1}^2", is_head))
         else:
-            expr.write(_term2str(coeff, f"{var1} {var2}", is_head))
+            expr.write(_term2str(coeff, f"{var1}*{var2}", is_head))
         is_head = False
 
     # linear expression
