@@ -17,15 +17,16 @@ from collections.abc import Sequence
 from enum import Enum
 from math import isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
+from warnings import warn
 
 import numpy as np
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
+from qiskit.opflow import OperatorBase
 from scipy.sparse import spmatrix
 
-from qiskit.opflow import OperatorBase
-
 import qiskit_optimization.optionals as _optionals
+
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
@@ -59,6 +60,8 @@ class QuadraticProgram:
         Args:
             name: The name of the quadratic program.
         """
+        if not name.isprintable():
+            warn("Problem name is not printable")
         self._name = name
         self._status = QuadraticProgram.Status.VALID
 
@@ -110,6 +113,8 @@ class QuadraticProgram:
         Args:
             name: The name of the quadratic program.
         """
+        if not name.isprintable():
+            warn("Problem name is not printable")
         self._name = name
 
     @property
@@ -200,6 +205,8 @@ class QuadraticProgram:
                 indexed_name, k = _find_name(name, key_format, k)
             if indexed_name in self._variables_index:
                 raise QiskitOptimizationError(f"Variable name already exists: {indexed_name}")
+            if not indexed_name.isprintable():
+                warn("Variable name is not printable")
             names.append(indexed_name)
             self._variables_index[indexed_name] = self.get_num_vars()
             variable = Variable(self, indexed_name, lowerbound, upperbound, vartype)
@@ -618,6 +625,8 @@ class QuadraticProgram:
         if name:
             if name in self.linear_constraints_index:
                 raise QiskitOptimizationError(f"Linear constraint's name already exists: {name}")
+            if not name.isprintable():
+                warn("Linear constraint name is not printable")
         else:
             k = self.get_num_linear_constraints()
             while f"c{k}" in self.linear_constraints_index:
@@ -711,6 +720,8 @@ class QuadraticProgram:
         if name:
             if name in self.quadratic_constraints_index:
                 raise QiskitOptimizationError(f"Quadratic constraint name already exists: {name}")
+            if not name.isprintable():
+                warn("Quadratic constraint name is not printable")
         else:
             k = self.get_num_quadratic_constraints()
             while f"q{k}" in self.quadratic_constraints_index:

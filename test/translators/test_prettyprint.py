@@ -14,6 +14,7 @@
 
 from test.optimization_test_case import QiskitOptimizationTestCase
 
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import prettyprint
 
@@ -216,3 +217,59 @@ class TestPrettyprint(QiskitOptimizationTestCase):
                 ]
             )
             self.assertEqual(out, expected)
+
+    def test_prettyprint2(self):
+        """test prettyprint with special characters (' ', '+', '-', '*')"""
+        q_p = QuadraticProgram("+ test - test *")
+        q_p.binary_var(" x ")
+        q_p.continuous_var(1e-10, 1e10, "+y+")
+        q_p.continuous_var(-1e10, -1e-10, "-y-")
+        q_p.integer_var(10, 100, "*z*")
+        q_p.minimize(1, [1, 2, 3, 4])
+        out = prettyprint(q_p)
+        expected = "\n".join(
+            [
+                "Problem name: + test - test *",
+                "",
+                "Minimize",
+                '  (" x ") + 4*("*z*") + 2*("+y+") + 3*("-y-") + 1',
+                "",
+                "Subject to",
+                "  No constraints",
+                "",
+                "  Integer variables (1)",
+                '    10 <= ("*z*") <= 100',
+                "",
+                "  Continuous variables (2)",
+                '    1e-10 <= ("+y+") <= 10000000000',
+                '    -10000000000 <= ("-y-") <= -1e-10',
+                "",
+                "  Binary variables (1)",
+                '    (" x ")',
+                "",
+            ]
+        )
+        self.assertEqual(out, expected)
+
+    def test_error(self):
+        """Test error case due to non-printable names"""
+
+        name = "\n"
+        with self.subTest("problem name"), self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram(name)
+            _ = prettyprint(q_p)
+
+        with self.subTest("linear variable name"), self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.binary_var(name)
+            _ = prettyprint(q_p)
+
+        with self.subTest("linear constraint name"), self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.linear_constraint(name=name)
+            _ = prettyprint(q_p)
+
+        with self.subTest("quadratic constraint name"), self.assertRaises(QiskitOptimizationError):
+            q_p = QuadraticProgram()
+            q_p.quadratic_constraint(name=name)
+            _ = prettyprint(q_p)

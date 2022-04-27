@@ -18,8 +18,8 @@ from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import DOcplexException
-
 from qiskit.opflow import PauliSumOp
+
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
@@ -1030,6 +1030,48 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 self.assertEqual(id(elem.quadratic_program), id(q_p))
         except RuntimeError as ex:
             self.fail(str(ex))
+
+    def test_printable_name(self):
+        """Test non-printable names"""
+        name = "\n"
+
+        with self.assertWarns(UserWarning):
+            _ = QuadraticProgram(name)
+
+        q_p = QuadraticProgram()
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var(name + "bin")
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var_list(10, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var_dict(10, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var(0, 1, name + "int")
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var_list(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var_dict(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var(0, 1, name + "cont")
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var_list(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var_dict(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.linear_constraint(name=name)
+
+        with self.assertWarns(UserWarning):
+            q_p.quadratic_constraint(name=name)
 
 
 if __name__ == "__main__":
