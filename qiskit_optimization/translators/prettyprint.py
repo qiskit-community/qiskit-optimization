@@ -84,22 +84,18 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
     return ret
 
 
-def _varname(name: str) -> str:
-    """Translate a variable name into a string.
+def _check_name(name: str, name_type: str) -> None:
+    """Check a name is printable or not.
 
     Args:
         name: a variable name.
-
-    Returns:
-        A string representing the variable name. If it contains " ", "+", "-" or, "*", the name
-        is translated into ("{name}").
+        name_type: the type associated with the name.
 
     Raises:
-        QiskitOptimizationError: if the variable name is not printable.
+        QiskitOptimizationError: if the name is not printable.
     """
     if not name.isprintable():
-        raise QiskitOptimizationError("Variable name is not printable")
-    return name
+        raise QiskitOptimizationError(f"{name_type} name is not printable")
 
 
 def _expr2str(
@@ -136,8 +132,8 @@ def _expr2str(
 
     # quadratic expression
     for (var1, var2), coeff in sorted(quad_dict.items()):
-        var1 = _varname(cast(str, var1))
-        var2 = _varname(cast(str, var2))
+        _check_name(cast(str, var1), "Variable")
+        _check_name(cast(str, var2), "Variable")
         if var1 == var2:
             expr.write(_term2str(coeff, f"{var1}^2", is_head))
         else:
@@ -146,7 +142,7 @@ def _expr2str(
 
     # linear expression
     for var, coeff in sorted(lin_dict.items()):
-        var = _varname(cast(str, var))
+        _check_name(cast(str, var), "Variable")
         expr.write(_term2str(coeff, f"{var}", is_head))
         is_head = False
 
@@ -176,8 +172,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
     """
 
     with StringIO() as buf:
-        if not quadratic_program.name.isprintable():
-            raise QiskitOptimizationError("Problem name is not printable")
+        _check_name(quadratic_program.name, "Problem")
         buf.write(f"Problem name: {quadratic_program.name}\n\n")
         if quadratic_program.objective.sense == QuadraticObjective.Sense.MINIMIZE:
             buf.write("Minimize\n")
@@ -199,8 +194,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         if num_lin_csts > 0:
             buf.write(f"\n  Linear constraints ({num_lin_csts})\n")
             for cst in quadratic_program.linear_constraints:
-                if not cst.name.isprintable():
-                    raise QiskitOptimizationError("Linear constraint name is not printable")
+                _check_name(cst.name, "Linear constraint")
                 buf.write(
                     f"    {_expr2str(linear=cst.linear)}"
                     f" {cst.sense.label} {_int_if_close(cst.rhs)}"
@@ -209,8 +203,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         if num_quad_csts > 0:
             buf.write(f"\n  Quadratic constraints ({num_quad_csts})\n")
             for cst2 in quadratic_program.quadratic_constraints:
-                if not cst2.name.isprintable():
-                    raise QiskitOptimizationError("Quadratic constraint name is not printable")
+                _check_name(cst2.name, "Quadratic constraint")
                 buf.write(
                     f"    {_expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
                     f" {cst2.sense.label} {_int_if_close(cst2.rhs)}"
@@ -223,7 +216,8 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
         con_vars = []
         for var in quadratic_program.variables:
             if var.vartype is VarType.BINARY:
-                bin_vars.append(_varname(var.name))
+                _check_name(var.name, "Variable")
+                bin_vars.append(var.name)
             elif var.vartype is VarType.INTEGER:
                 int_vars.append(var)
             else:
@@ -234,7 +228,8 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
                 buf.write("    ")
                 if var.lowerbound > -INFINITY:
                     buf.write(f"{_int_if_close(var.lowerbound)} <= ")
-                buf.write(_varname(var.name))
+                _check_name(var.name, "Variable")
+                buf.write(var.name)
                 if var.upperbound < INFINITY:
                     buf.write(f" <= {_int_if_close(var.upperbound)}")
                 buf.write("\n")
@@ -244,7 +239,8 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
                 buf.write("    ")
                 if var.lowerbound > -INFINITY:
                     buf.write(f"{_int_if_close(var.lowerbound)} <= ")
-                buf.write(_varname(var.name))
+                _check_name(var.name, "Variable")
+                buf.write(var.name)
                 if var.upperbound < INFINITY:
                     buf.write(f" <= {_int_if_close(var.upperbound)}")
                 buf.write("\n")
