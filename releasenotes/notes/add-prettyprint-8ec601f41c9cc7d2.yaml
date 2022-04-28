@@ -4,6 +4,25 @@ upgrade:
     Shows a warning message if non-printable strings are set to
     :class:`~qiskit_optimization.problems.QuadraticProgram`
     as problem name, variable name, or constraint name.
+  - |
+    If users set an empty variable name ``""`` with
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.binary_var`,
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.integer_var`, and
+    :meth:`~qiskit_optimization.problems.QuadraticProgram.continuous_var`,
+    they set the default variable name (e.g., ``x0``)
+    while they used to set the empty name as variable name.
+
+    .. code-block:: python
+
+        from qiskit_optimization.problems import QuadraticProgram
+
+        qp = QuadraticProgram()
+        x = qp.binary_var(name="")
+        y = qp.integer_var(name="")
+        z = qp.continuous_var(name="")
+        print(x.name)  # x0
+        print(y.name)  # x1
+        print(z.name)  # x2
 
 features:
   - |

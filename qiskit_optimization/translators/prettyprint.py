@@ -99,8 +99,6 @@ def _varname(name: str) -> str:
     """
     if not name.isprintable():
         raise QiskitOptimizationError("Variable name is not printable")
-    if {" ", "+", "-", "*"}.intersection(set(name)):
-        return f'("{name}")'
     return name
 
 
@@ -165,7 +163,7 @@ def _expr2str(
 
 
 def prettyprint(quadratic_program: QuadraticProgram) -> str:
-    """Translate a :class:`~qiskit_optimization.problem.QuadraticProgram` into a pretty-printed string.
+    """Translate a :class:`~qiskit_optimization.problems.QuadraticProgram` into a pretty-printed string.
 
     Args:
         quadratic_program: The optimization problem to be translated into a string

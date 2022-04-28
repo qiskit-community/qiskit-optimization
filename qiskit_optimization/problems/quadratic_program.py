@@ -152,7 +152,7 @@ class QuadraticProgram:
         vartype: VarType,
         name: Optional[str],
     ) -> Variable:
-        if name is None:
+        if not name:
             name = "x"
             key_format = "{}"
         else:
@@ -170,7 +170,7 @@ class QuadraticProgram:
     ) -> Tuple[List[str], List[Variable]]:
         if isinstance(keys, int) and keys < 1:
             raise QiskitOptimizationError(f"Cannot create non-positive number of variables: {keys}")
-        if name is None:
+        if not name:
             name = "x"
         if "{{}}" in key_format:
             raise QiskitOptimizationError(
