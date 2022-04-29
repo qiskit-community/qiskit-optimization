@@ -95,7 +95,7 @@ def _check_name(name: str, name_type: str) -> None:
         QiskitOptimizationError: if the name is not printable.
     """
     if not name.isprintable():
-        raise QiskitOptimizationError(f"{name_type} name is not printable")
+        raise QiskitOptimizationError(f"{name_type} name is not printable: {repr(name)}")
 
 
 def _expr2str(
