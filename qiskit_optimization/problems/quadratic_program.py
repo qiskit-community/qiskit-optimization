@@ -297,6 +297,7 @@ class QuadraticProgram:
             lowerbound: The lowerbound of the variable.
             upperbound: The upperbound of the variable.
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -321,6 +322,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -354,6 +356,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -377,6 +380,7 @@ class QuadraticProgram:
 
         Args:
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -397,6 +401,7 @@ class QuadraticProgram:
 
         Args:
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -424,6 +429,7 @@ class QuadraticProgram:
 
         Args:
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -452,6 +458,7 @@ class QuadraticProgram:
             lowerbound: The lowerbound of the variable.
             upperbound: The upperbound of the variable.
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -476,6 +483,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -507,6 +515,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -613,6 +622,7 @@ class QuadraticProgram:
 
             rhs: The right-hand side of the constraint.
             name: The name of the constraint.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``c0``, is used.
 
         Returns:
             The added constraint.
@@ -708,6 +718,7 @@ class QuadraticProgram:
 
             rhs: The right-hand side of the constraint.
             name: The name of the constraint.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``q0``, is used.
 
         Returns:
             The added constraint.

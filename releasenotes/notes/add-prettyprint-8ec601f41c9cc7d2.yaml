@@ -26,12 +26,8 @@ upgrade:
 
 features:
   - |
-    Adds :func:`~qiskit_optimization.translators.prettyprint`
-    to generate a pretty-printed string of
-    :class:`~qiskit_optimization.problems.QuadraticProgram`.
-  - |
-    Adds :meth:`~qiskit_optimization.problems.QuadraticProgram.prettyprint`
-    to generate a pretty-printed string of the object.
+    Adds a method :meth:`~qiskit_optimization.problems.QuadraticProgram.prettyprint`
+    to ``QuadraticProgram`` to generate a pretty-printed string of a ``QuadraticProgram`` object.
 
     Here is an example of pretty printing.
 
@@ -55,11 +51,6 @@ features:
         qp.quadratic_constraint({'x': 2, 'y': -1}, {('z', 'z'): -1}, '<=', 1)
 
         print(qp.prettyprint())
-
-        # the following generates the same output as `print(qp.prettyprint())`.
-        #
-        # from qiskit_optimization.translators.prettyprint import prettyprint
-        # print(prettyprint(qp))
 
     The output is as follows. ::
 
