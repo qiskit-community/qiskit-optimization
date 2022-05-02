@@ -27,7 +27,7 @@ upgrade:
 features:
   - |
     Adds a method :meth:`~qiskit_optimization.QuadraticProgram.prettyprint`
-    to ``QuadraticProgram`` to generate a pretty-printed string of a ``QuadraticProgram`` object.
+    to :class:`~qiskit_optimization.QuadraticProgram` to generate a pretty-printed string of the object.
 
     Here is an example of pretty printing.
 
