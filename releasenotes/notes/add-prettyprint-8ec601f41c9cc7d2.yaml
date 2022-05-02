@@ -33,7 +33,7 @@ features:
 
     .. code-block:: python
 
-        from qiskit_optimization.problems import QuadraticProgram
+        from qiskit_optimization import QuadraticProgram
 
         qp = QuadraticProgram('problem 1')
         qp.integer_var(-1, 2, 'x')
