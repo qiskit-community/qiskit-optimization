@@ -6,8 +6,8 @@ upgrade:
     as problem name, variable name, or constraint name.
   - |
     If users set an empty variable name ``""`` with
-    :meth:`~qiskit_optimization.problems.QuadraticProgram.binary_var`,
-    :meth:`~qiskit_optimization.problems.QuadraticProgram.integer_var`, and
+    :meth:`~qiskit_optimization.QuadraticProgram.binary_var`,
+    :meth:`~qiskit_optimization.QuadraticProgram.integer_var`, and
     :meth:`~qiskit_optimization.problems.QuadraticProgram.continuous_var`,
     they set the default variable name (e.g., ``x0``)
     while they used to set the empty name as variable name.
