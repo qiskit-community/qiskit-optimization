@@ -18,8 +18,8 @@ from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import DOcplexException
-
 from qiskit.opflow import PauliSumOp
+
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
@@ -172,7 +172,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var("x_")
 
         d_5 = q_p.continuous_var_dict(1, -1, 2, "", "")
-        self.assertSetEqual(set(d_5.keys()), {""})
+        self.assertSetEqual(set(d_5.keys()), {"x"})
         self.assertSetEqual(
             {var.name for var in q_p.variables},
             {
@@ -189,7 +189,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 "c1",
                 "c2",
                 "x_",
-                "",
+                "x",
             },
         )
         for var in q_p.variables[-1:]:
@@ -200,9 +200,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         with self.assertRaises(QiskitOptimizationError):
             q_p.binary_var_dict(1, "", "")
-
-        with self.assertRaises(QiskitOptimizationError):
-            q_p.integer_var(0, 1, "")
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
@@ -327,7 +324,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var("x_")
 
         d_5 = q_p.integer_var_list(1, -1, 2, "", "")
-        names = [""]
+        names = ["x"]
         self.assertSetEqual(
             {var.name for var in q_p.variables},
             {
@@ -344,7 +341,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 "c1",
                 "c2",
                 "x_",
-                "",
+                "x",
             },
         )
         for i, var in enumerate(q_p.variables[-1:]):
@@ -356,9 +353,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         with self.assertRaises(QiskitOptimizationError):
             q_p.binary_var_list(1, "", "")
-
-        with self.assertRaises(QiskitOptimizationError):
-            q_p.integer_var(0, 1, "")
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
@@ -1030,6 +1024,107 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 self.assertEqual(id(elem.quadratic_program), id(q_p))
         except RuntimeError as ex:
             self.fail(str(ex))
+
+    def test_empty_name(self):
+        """Test empty names"""
+
+        with self.subTest("problem name"):
+            q_p = QuadraticProgram("")
+            self.assertEqual(q_p.name, "")
+
+        with self.subTest("variable name"):
+            q_p = QuadraticProgram()
+            x = q_p.binary_var(name="")
+            y = q_p.integer_var(name="")
+            z = q_p.continuous_var(name="")
+            self.assertEqual(x.name, "x0")
+            self.assertEqual(y.name, "x1")
+            self.assertEqual(z.name, "x2")
+
+        with self.subTest("variable name 2"):
+            q_p = QuadraticProgram()
+            w = q_p.binary_var(name="w")
+            x = q_p.binary_var(name="")
+            y = q_p.integer_var(name="")
+            z = q_p.continuous_var(name="")
+            self.assertEqual(w.name, "w")
+            self.assertEqual(x.name, "x1")
+            self.assertEqual(y.name, "x2")
+            self.assertEqual(z.name, "x3")
+
+        with self.subTest("variable name list"):
+            q_p = QuadraticProgram()
+            x = q_p.binary_var_list(2, name="")
+            y = q_p.integer_var_list(2, name="")
+            z = q_p.continuous_var_list(2, name="")
+            self.assertListEqual([v.name for v in x], ["x0", "x1"])
+            self.assertListEqual([v.name for v in y], ["x2", "x3"])
+            self.assertListEqual([v.name for v in z], ["x4", "x5"])
+
+        with self.subTest("variable name dict"):
+            q_p = QuadraticProgram()
+            x = q_p.binary_var_dict(2, name="")
+            y = q_p.integer_var_dict(2, name="")
+            z = q_p.continuous_var_dict(2, name="")
+            self.assertDictEqual({k: v.name for k, v in x.items()}, {"x0": "x0", "x1": "x1"})
+            self.assertDictEqual({k: v.name for k, v in y.items()}, {"x2": "x2", "x3": "x3"})
+            self.assertDictEqual({k: v.name for k, v in z.items()}, {"x4": "x4", "x5": "x5"})
+
+        with self.subTest("linear constraint name"):
+            q_p = QuadraticProgram()
+            x = q_p.linear_constraint(name="")
+            y = q_p.linear_constraint(name="")
+            self.assertEqual(x.name, "c0")
+            self.assertEqual(y.name, "c1")
+
+        with self.subTest("quadratic constraint name"):
+            q_p = QuadraticProgram()
+            x = q_p.quadratic_constraint(name="")
+            y = q_p.quadratic_constraint(name="")
+            self.assertEqual(x.name, "q0")
+            self.assertEqual(y.name, "q1")
+
+    def test_printable_name(self):
+        """Test non-printable names"""
+        name = "\n"
+
+        with self.assertWarns(UserWarning):
+            _ = QuadraticProgram(name)
+
+        q_p = QuadraticProgram()
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var(name + "bin")
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var_list(10, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var_dict(10, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var(0, 1, name + "int")
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var_list(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var_dict(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var(0, 1, name + "cont")
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var_list(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var_dict(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.linear_constraint(name=name)
+
+        with self.assertWarns(UserWarning):
+            q_p.quadratic_constraint(name=name)
 
 
 if __name__ == "__main__":
