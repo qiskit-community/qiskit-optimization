@@ -1,0 +1,13 @@
+---
+upgrade:
+  - |
+    Adds informative text formats to ``str`` and ``repr`` functions of the following objects.
+    The formats are IDE friendly, i.e., the text is one line.
+
+    - :class:`~qiskit_optimization.problems.LinearConstraint`
+    - :class:`~qiskit_optimization.problems.LinearExpression`
+    - :class:`~qiskit_optimization.problems.QuadraticConstraint`
+    - :class:`~qiskit_optimization.problems.QuadraticExpression`
+    - :class:`~qiskit_optimization.problems.QuadraticObjective`
+    - :class:`~qiskit_optimization.problems.Variable`
+

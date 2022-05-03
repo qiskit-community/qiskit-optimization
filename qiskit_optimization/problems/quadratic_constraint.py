@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -118,3 +118,17 @@ class QuadraticConstraint(Constraint):
             The left-hand-side of the constraint given the variable values.
         """
         return self.linear.evaluate(x) + self.quadratic.evaluate(x)
+
+    def __repr__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.prettyprint import _expr2str, DEFAULT_TRUNCATE
+
+        lhs = _expr2str(linear=self.linear, quadratic=self.quadratic, truncate=DEFAULT_TRUNCATE)
+        return f"<QuadraticConstraint: {lhs} {self.sense.label} {self.rhs} '{self.name}'>"
+
+    def __str__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.prettyprint import _expr2str
+
+        lhs = _expr2str(linear=self.linear, quadratic=self.quadratic)
+        return f"{lhs} {self.sense.label} {self.rhs} '{self.name}'"

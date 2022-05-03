@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -148,3 +148,13 @@ class Variable(QuadraticProgramElement):
             variable type.
         """
         return self.name, self.lowerbound, self.upperbound, self.vartype
+
+    def __repr__(self):
+        return f"<Variable: {str(self)}>"
+
+    def __str__(self):
+        if self._vartype == VarType.BINARY:
+            return f"{self._name} ({self._vartype.name.lower()})"
+        lowerbound = "" if self._lowerbound == -INFINITY else f"{self._lowerbound} <= "
+        upperbound = "" if self._upperbound == INFINITY else f" <= {self._upperbound}"
+        return f"{lowerbound}{self._name}{upperbound} ({self._vartype.name.lower()})"
