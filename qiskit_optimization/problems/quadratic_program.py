@@ -17,15 +17,16 @@ from collections.abc import Sequence
 from enum import Enum
 from math import isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
+from warnings import warn
 
 import numpy as np
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
+from qiskit.opflow import OperatorBase
 from scipy.sparse import spmatrix
 
-from qiskit.opflow import OperatorBase
-
 import qiskit_optimization.optionals as _optionals
+
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
@@ -59,7 +60,10 @@ class QuadraticProgram:
         Args:
             name: The name of the quadratic program.
         """
-        self._name = name
+        if not name.isprintable():
+            warn("Problem name is not printable")
+        self._name = ""
+        self.name = name
         self._status = QuadraticProgram.Status.VALID
 
         self._variables: List[Variable] = []
@@ -110,6 +114,7 @@ class QuadraticProgram:
         Args:
             name: The name of the quadratic program.
         """
+        self._check_name(name, "Problem")
         self._name = name
 
     @property
@@ -147,7 +152,7 @@ class QuadraticProgram:
         vartype: VarType,
         name: Optional[str],
     ) -> Variable:
-        if name is None:
+        if not name:
             name = "x"
             key_format = "{}"
         else:
@@ -165,7 +170,7 @@ class QuadraticProgram:
     ) -> Tuple[List[str], List[Variable]]:
         if isinstance(keys, int) and keys < 1:
             raise QiskitOptimizationError(f"Cannot create non-positive number of variables: {keys}")
-        if name is None:
+        if not name:
             name = "x"
         if "{{}}" in key_format:
             raise QiskitOptimizationError(
@@ -200,6 +205,7 @@ class QuadraticProgram:
                 indexed_name, k = _find_name(name, key_format, k)
             if indexed_name in self._variables_index:
                 raise QiskitOptimizationError(f"Variable name already exists: {indexed_name}")
+            self._check_name(indexed_name, "Variable")
             names.append(indexed_name)
             self._variables_index[indexed_name] = self.get_num_vars()
             variable = Variable(self, indexed_name, lowerbound, upperbound, vartype)
@@ -291,6 +297,7 @@ class QuadraticProgram:
             lowerbound: The lowerbound of the variable.
             upperbound: The upperbound of the variable.
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -315,6 +322,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -348,6 +356,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -371,6 +380,7 @@ class QuadraticProgram:
 
         Args:
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -391,6 +401,7 @@ class QuadraticProgram:
 
         Args:
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -418,6 +429,7 @@ class QuadraticProgram:
 
         Args:
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -446,6 +458,7 @@ class QuadraticProgram:
             lowerbound: The lowerbound of the variable.
             upperbound: The upperbound of the variable.
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -470,6 +483,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -501,6 +515,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -607,6 +622,7 @@ class QuadraticProgram:
 
             rhs: The right-hand side of the constraint.
             name: The name of the constraint.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``c0``, is used.
 
         Returns:
             The added constraint.
@@ -618,6 +634,7 @@ class QuadraticProgram:
         if name:
             if name in self.linear_constraints_index:
                 raise QiskitOptimizationError(f"Linear constraint's name already exists: {name}")
+            self._check_name(name, "Linear constraint")
         else:
             k = self.get_num_linear_constraints()
             while f"c{k}" in self.linear_constraints_index:
@@ -701,6 +718,7 @@ class QuadraticProgram:
 
             rhs: The right-hand side of the constraint.
             name: The name of the constraint.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``q0``, is used.
 
         Returns:
             The added constraint.
@@ -711,6 +729,7 @@ class QuadraticProgram:
         if name:
             if name in self.quadratic_constraints_index:
                 raise QiskitOptimizationError(f"Quadratic constraint name already exists: {name}")
+            self._check_name(name, "Quadratic constraint")
         else:
             k = self.get_num_quadratic_constraints()
             while f"q{k}" in self.quadratic_constraints_index:
@@ -1072,3 +1091,23 @@ class QuadraticProgram:
         feasible, _, _ = self.get_feasibility_info(x)
 
         return feasible
+
+    def prettyprint(self) -> str:
+        """Returns a pretty printed string of this problem.
+
+        Returns:
+            A pretty printed string representing the problem.
+
+        Raises:
+            QiskitOptimizationError: if there is a non-printable name.
+        """
+        # pylint: disable=cyclic-import
+        from qiskit_optimization.translators.prettyprint import prettyprint
+
+        return prettyprint(self)
+
+    @staticmethod
+    def _check_name(name: str, name_type: str) -> None:
+        """Displays a warning message if a name string is not printable"""
+        if not name.isprintable():
+            warn(f"{name_type} name is not printable: {repr(name)}")
