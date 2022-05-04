@@ -211,12 +211,12 @@ class LinearExpression(QuadraticProgramElement):
 
     def __repr__(self):
         # pylint: disable=cyclic-import
-        from ..translators.prettyprint import _expr2str, DEFAULT_TRUNCATE
+        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
 
-        return f"<LinearExpression: {_expr2str(linear=self, truncate=DEFAULT_TRUNCATE)}>"
+        return f"<{self.__class__.__name__}: {expr2str(linear=self, truncate=DEFAULT_TRUNCATE)}>"
 
     def __str__(self):
         # pylint: disable=cyclic-import
-        from ..translators.prettyprint import _expr2str
+        from ..translators.prettyprint import expr2str
 
-        return f"{_expr2str(linear=self)}"
+        return f"{expr2str(linear=self)}"

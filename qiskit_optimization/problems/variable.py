@@ -150,11 +150,11 @@ class Variable(QuadraticProgramElement):
         return self.name, self.lowerbound, self.upperbound, self.vartype
 
     def __repr__(self):
-        return f"<Variable: {str(self)}>"
+        return f"<{self.__class__.__name__}: {str(self)}>"
 
     def __str__(self):
         if self._vartype == VarType.BINARY:
-            return f"{self._name} ({self._vartype.name.lower()})"
+            return f"{self.name} ({self._vartype.name.lower()})"
         lowerbound = "" if self._lowerbound == -INFINITY else f"{self._lowerbound} <= "
         upperbound = "" if self._upperbound == INFINITY else f" <= {self._upperbound}"
-        return f"{lowerbound}{self._name}{upperbound} ({self._vartype.name.lower()})"
+        return f"{lowerbound}{self.name}{upperbound} ({self._vartype.name.lower()})"
