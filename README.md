@@ -63,41 +63,39 @@ is employed in combination with the Quantum Approximate Optimization Algorithm (
 eigensolver routine.
 
 ```python
-import networkx as nx
-import numpy as np
+from docplex.mp.model import Model
 
-from qiskit_optimization import QuadraticProgram
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
+from qiskit_optimization.translators import from_docplex_mp
 
 from qiskit.utils import algorithm_globals, QuantumInstance
 from qiskit import BasicAer
 from qiskit.algorithms import QAOA
 from qiskit.algorithms.optimizers import SPSA
 
+# Generate a graph of 4 nodes
+n = 4
+edges = [(0, 1, 1.0), (0, 2, 1.0), (0, 3, 1.0), (1, 2, 1.0), (2, 3, 1.0)]  # (node_i, node_j, weight)
+
+# Formulate the problem as a Docplex model
+model = Model()
+
+# Create n binary variables
+x = model.binary_var_list(n)
+
+# Define the objective function to be maximized
+model.maximize(model.sum(w * x[i] * (1 - x[j]) + w * (1 - x[i]) * x[j] for i, j, w in edges))
+
+# Fix node 0 to be 1 to break the symmetry of the max-cut solution
+model.add(x[0] == 1)
+
+# Convert the Docplex model into a `QuadraticProgram` object
+problem = from_docplex_mp(model)
+
+# Run quantum algorithm QAOA on qasm simulator
 seed = 1234
 algorithm_globals.random_seed = seed
 
-# Generate a graph of 4 nodes
-n = 4
-graph = nx.Graph()
-graph.add_nodes_from(np.arange(0, n, 1))
-elist = [(0, 1, 1.0), (0, 2, 1.0), (0, 3, 1.0), (1, 2, 1.0), (2, 3, 1.0)]
-graph.add_weighted_edges_from(elist)
-
-# Compute the weight matrix from the graph
-w = nx.adjacency_matrix(graph)
-
-# Formulate the problem as quadratic program
-problem = QuadraticProgram()
-_ = [problem.binary_var(f"x{i}") for i in range(n)]  # create n binary variables
-linear = w.dot(np.ones(n))
-quadratic = -w
-problem.maximize(linear=linear, quadratic=quadratic)
-
-# Fix node 0 to be 1 to break the symmetry of the max-cut solution
-problem.linear_constraint([1, 0, 0, 0], '==', 1)
-
-# Run quantum algorithm QAOA on qasm simulator
 spsa = SPSA(maxiter=250)
 backend = BasicAer.get_backend('qasm_simulator')
 q_i = QuantumInstance(backend=backend, seed_simulator=seed, seed_transpiler=seed)
