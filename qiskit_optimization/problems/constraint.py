@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -23,7 +23,7 @@ from ..exceptions import QiskitOptimizationError
 
 
 class ConstraintSense(Enum):
-    """Constants Sense Type."""
+    """Constraint Sense Type."""
 
     # pylint: disable=invalid-name
     LE = 0
@@ -67,6 +67,20 @@ class ConstraintSense(Enum):
             return ConstraintSense.LE
         else:
             return ConstraintSense.GE
+
+    @property
+    def label(self) -> str:
+        """Label of the constraint sense
+
+        Returns:
+            The label of the constraint sense ('<=', '>=', or '==')
+        """
+        if self is ConstraintSense.LE:
+            return "<="
+        elif self is ConstraintSense.GE:
+            return ">="
+        else:
+            return "=="
 
 
 class Constraint(QuadraticProgramElement):

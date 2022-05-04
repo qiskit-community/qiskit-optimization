@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -322,7 +322,7 @@ class VQEClient(MinimumEigensolver):
 
 
 class VQERuntimeResult(VQEResult):
-    """The VQERuntimeClient result object.
+    """The VQEClient result object.
 
     This result objects contains the same as the VQEResult and additionally the history
     of the optimizer, containing information such as the function and parameter values per step.
