@@ -16,7 +16,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
-from qiskit_optimization.translators.prettyprint import prettyprint
+from qiskit_optimization.translators.prettyprint import expr2str, prettyprint
 
 
 class TestPrettyprint(QiskitOptimizationTestCase):
@@ -304,3 +304,64 @@ class TestPrettyprint(QiskitOptimizationTestCase):
             q_p = QuadraticProgram()
             q_p.quadratic_constraint(name=name)
             _ = q_p.prettyprint()
+
+    def test_expr2str(self):
+        """test expr2str"""
+
+        with self.subTest("constant"):
+            self.assertEqual(expr2str(), "0")
+            self.assertEqual(expr2str(12345), "12345")
+            self.assertEqual(expr2str(1e3), "1000")
+            self.assertEqual(expr2str(1e20), "1e+20")
+            self.assertEqual(expr2str(1e-5), "1e-05")
+            self.assertEqual(expr2str(1e-9), "1e-09")
+            self.assertEqual(expr2str(1e-10), "0")
+
+        with self.subTest("linear"):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            q_p.linear_constraint({0: 1, 1: 2, 2: 3}, "==", 0)
+            self.assertEqual(
+                expr2str(linear=q_p.get_linear_constraint(0).linear), "x0 + 2*x1 + 3*x2"
+            )
+            self.assertEqual(
+                expr2str(constant=-1, linear=q_p.get_linear_constraint(0).linear),
+                "x0 + 2*x1 + 3*x2 - 1",
+            )
+
+        with self.subTest("quadratic"):
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3)
+            q_p.quadratic_constraint(
+                quadratic={(0, 0): 1, (1, 2): 2, (2, 0): -3}, sense="==", rhs=0
+            )
+            self.assertEqual(
+                expr2str(quadratic=q_p.get_quadratic_constraint(0).quadratic),
+                "x0^2 - 3*x0*x2 + 2*x1*x2",
+            )
+            self.assertEqual(
+                expr2str(constant=1, quadratic=q_p.get_quadratic_constraint(0).quadratic),
+                "x0^2 - 3*x0*x2 + 2*x1*x2 + 1",
+            )
+
+        with self.subTest("truncate"):
+            self.assertEqual(expr2str(123456789, truncate=5), "12345...")
+
+            q_p = QuadraticProgram()
+            q_p.binary_var_list(3, name="long_name")
+            q_p.linear_constraint({0: 1, 1: 2, 2: 3}, "==", 0)
+            self.assertEqual(
+                expr2str(linear=q_p.get_linear_constraint(0).linear, truncate=10), "long_name0..."
+            )
+            self.assertEqual(
+                expr2str(linear=q_p.get_linear_constraint(0).linear, truncate=20),
+                "long_name0 + 2*long_...",
+            )
+
+            q_p.quadratic_constraint(
+                quadratic={(0, 0): 1, (1, 2): 2, (2, 0): -3}, sense="==", rhs=0
+            )
+            self.assertEqual(
+                expr2str(quadratic=q_p.get_quadratic_constraint(0).quadratic, truncate=20),
+                "long_name0^2 - 3*lon...",
+            )

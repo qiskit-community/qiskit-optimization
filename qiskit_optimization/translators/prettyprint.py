@@ -98,7 +98,7 @@ def _check_name(name: str, name_type: str) -> None:
         raise QiskitOptimizationError(f"{name_type} name is not printable: {repr(name)}")
 
 
-def _expr2str(
+def expr2str(
     constant: float = 0.0,
     linear: Optional[LinearExpression] = None,
     quadratic: Optional[QuadraticExpression] = None,
@@ -180,7 +180,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             buf.write("Maximize\n")
         buf.write("  ")
         buf.write(
-            _expr2str(
+            expr2str(
                 quadratic_program.objective.constant,
                 quadratic_program.objective.linear,
                 quadratic_program.objective.quadratic,
@@ -196,7 +196,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for cst in quadratic_program.linear_constraints:
                 _check_name(cst.name, "Linear constraint")
                 buf.write(
-                    f"    {_expr2str(linear=cst.linear)}"
+                    f"    {expr2str(linear=cst.linear)}"
                     f" {cst.sense.label} {_int_if_close(cst.rhs)}"
                     f"  '{cst.name}'\n"
                 )
@@ -205,7 +205,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             for cst2 in quadratic_program.quadratic_constraints:
                 _check_name(cst2.name, "Quadratic constraint")
                 buf.write(
-                    f"    {_expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
+                    f"    {expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
                     f" {cst2.sense.label} {_int_if_close(cst2.rhs)}"
                     f"  '{cst2.name}'\n"
                 )

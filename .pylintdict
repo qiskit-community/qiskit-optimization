@@ -81,6 +81,7 @@ hamiltonian
 hamiltonians
 hastings
 hoyer
+ide
 imode
 init
 initializer
@@ -163,6 +164,7 @@ qubit
 qubits
 qubo
 readme
+repr
 representable
 rhobeg
 rhoend

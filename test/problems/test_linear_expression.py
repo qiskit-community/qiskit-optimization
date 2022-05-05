@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -172,6 +172,31 @@ class TestLinearExpression(QiskitOptimizationTestCase):
             quadratic_program.continuous_var_list(3, lowerbound=-INFINITY, upperbound=0)
             coefficients_list = list(range(3))
             _ = LinearExpression(quadratic_program, coefficients_list).bounds
+
+    def test_str_repr(self):
+        """Test str and repr"""
+        with self.subTest("5 variables"):
+            n = 5
+            quadratic_program = QuadraticProgram()
+            quadratic_program.binary_var_list(n)  # x0,...,x4
+            expr = LinearExpression(quadratic_program, [float(e) for e in range(n)])
+            self.assertEqual(str(expr), "x1 + 2*x2 + 3*x3 + 4*x4")
+            self.assertEqual(repr(expr), "<LinearExpression: x1 + 2*x2 + 3*x3 + 4*x4>")
+
+        with self.subTest("50 variables"):
+            # pylint: disable=cyclic-import
+            from qiskit_optimization.translators.prettyprint import DEFAULT_TRUNCATE
+
+            n = 50
+            quadratic_program = QuadraticProgram()
+            quadratic_program.binary_var_list(n)  # x0,...,x49
+            expr = LinearExpression(quadratic_program, [float(e) for e in range(n)])
+
+            expected = " ".join(
+                ["x1"] + sorted([f"+ {i}*x{i}" for i in range(2, n)], key=lambda e: e.split(" ")[1])
+            )
+            self.assertEqual(str(expr), expected)
+            self.assertEqual(repr(expr), f"<LinearExpression: {expected[:DEFAULT_TRUNCATE]}...>")
 
 
 if __name__ == "__main__":
