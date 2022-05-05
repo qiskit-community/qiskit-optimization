@@ -78,7 +78,32 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        return self.export_as_lp_string()
+        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+
+        objective = expr2str(
+            constant=self._objective.constant,
+            linear=self.objective.linear,
+            quadratic=self._objective.quadratic,
+            truncate=DEFAULT_TRUNCATE,
+        )
+        num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
+        return (
+            f"<{self.__class__.__name__}: "
+            f"{self.objective.sense.name.lower()} "
+            f"{objective}, "
+            f"{self.get_num_vars()} variables, "
+            f"{num_constraints} constraints, "
+            f"'{self._name}'>"
+        )
+
+    def __str__(self) -> str:
+        num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
+        return (
+            f"{str(self.objective)} "
+            f"({self.get_num_vars()} variables, "
+            f"{num_constraints} constraints, "
+            f"'{self._name}')"
+        )
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
