@@ -64,8 +64,8 @@ class TestReadmeSample(QiskitOptimizationTestCase):
 
         result_x = None
         result_fval = None
-        str_ref1 = "optimal value:"
-        str_ref2 = "optimal function value:"
+        str_ref1 = "variable values:"
+        str_ref2 = "objective function value:"
         texts = out.getvalue().split("\n")
         for text in texts:
             idx = text.find(str_ref1)

@@ -11,7 +11,6 @@
 # that they have been altered from the originals.
 
 """ Test OptimizationResult """
-import unittest
 
 from test.optimization_test_case import QiskitOptimizationTestCase
 
@@ -54,7 +53,7 @@ class TestOptimizationResult(QiskitOptimizationTestCase):
                 variables=q_p.variables,
                 status=OptimizationResultStatus.SUCCESS,
             )
-            expected = f"fval=10.1, x0=1.0, x1=2.0, x2=3.0, status=SUCCESS"
+            expected = "fval=10.1, x0=1.0, x1=2.0, x2=3.0, status=SUCCESS"
             self.assertEqual(str(result), expected)
             self.assertEqual(repr(result), f"<OptimizationResult: {expected}>")
 
@@ -67,7 +66,7 @@ class TestOptimizationResult(QiskitOptimizationTestCase):
                 variables=q_p.variables,
                 status=OptimizationResultStatus.FAILURE,
             )
-            expected = f"fval=10.0, x0=-1.0, x1=2.0, x2=-3.0, status=FAILURE"
+            expected = "fval=10.0, x0=-1.0, x1=2.0, x2=-3.0, status=FAILURE"
             self.assertEqual(str(result), expected)
             self.assertEqual(repr(result), f"<OptimizationResult: {expected}>")
 
@@ -80,7 +79,7 @@ class TestOptimizationResult(QiskitOptimizationTestCase):
                 variables=q_p.variables,
                 status=OptimizationResultStatus.INFEASIBLE,
             )
-            expected = f"fval=11.0, y_0=1.0, y_1=2.0, y_2=-3.0, status=INFEASIBLE"
+            expected = "fval=11.0, y_0=1.0, y_1=2.0, y_2=-3.0, status=INFEASIBLE"
             self.assertEqual(str(result), expected)
             self.assertEqual(repr(result), f"<OptimizationResult: {expected}>")
 

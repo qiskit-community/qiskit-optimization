@@ -102,7 +102,7 @@ q_i = QuantumInstance(backend=backend, seed_simulator=seed, seed_transpiler=seed
 qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=q_i)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
-print(result)  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
+print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
 ```
 
 ### Further examples
