@@ -150,6 +150,11 @@ class OptimizationResult:
         return f"fval={self._fval}, {variables}, status={self._status.name}"
 
     def prettyprint(self) -> str:
+        """Returns a pretty printed string of this optimization result.
+
+        Returns:
+            A pretty printed string representing the result.
+        """
         variables = ", ".join([f"{var}={x}" for var, x in self._variables_dict.items()])
         return (
             f"objective function value: {self._fval}\n"
