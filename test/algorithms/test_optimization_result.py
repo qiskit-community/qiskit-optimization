@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """ Test OptimizationResult """
+import unittest
 
 from test.optimization_test_case import QiskitOptimizationTestCase
 
@@ -53,35 +54,89 @@ class TestOptimizationResult(QiskitOptimizationTestCase):
                 variables=q_p.variables,
                 status=OptimizationResultStatus.SUCCESS,
             )
-            expected = "\n".join(
-                [
-                    "optimal function value: 10.1",
-                    "optimal value: x0=1.0, x1=2.0, x2=3.0",
-                    "status: SUCCESS",
-                ]
-            )
+            expected = f"fval=10.1, x0=1.0, x1=2.0, x2=3.0, status=SUCCESS"
             self.assertEqual(str(result), expected)
-            self.assertEqual(
-                repr(result), "<OptimizationResult: x=[1. 2. 3.], fval=10.1, status=SUCCESS)>"
-            )
+            self.assertEqual(repr(result), f"<OptimizationResult: {expected}>")
 
         with self.subTest("failure"):
             q_p = QuadraticProgram()
             q_p.integer_var_list(3)
             result = OptimizationResult(
+                x=[-1.0, 2.0, -3.0],
+                fval=10.0,
+                variables=q_p.variables,
+                status=OptimizationResultStatus.FAILURE,
+            )
+            expected = f"fval=10.0, x0=-1.0, x1=2.0, x2=-3.0, status=FAILURE"
+            self.assertEqual(str(result), expected)
+            self.assertEqual(repr(result), f"<OptimizationResult: {expected}>")
+
+        with self.subTest("infeasible"):
+            q_p = QuadraticProgram()
+            q_p.integer_var_list(3, name="y", key_format="_{}")
+            result = OptimizationResult(
+                x=[1.0, 2.0, -3.0],
+                fval=11.0,
+                variables=q_p.variables,
+                status=OptimizationResultStatus.INFEASIBLE,
+            )
+            expected = f"fval=11.0, y_0=1.0, y_1=2.0, y_2=-3.0, status=INFEASIBLE"
+            self.assertEqual(str(result), expected)
+            self.assertEqual(repr(result), f"<OptimizationResult: {expected}>")
+
+    def test_prettyprint(self):
+        """test prettyprint"""
+
+        with self.subTest("success"):
+            q_p = QuadraticProgram()
+            q_p.integer_var_list(3)
+            result = OptimizationResult(
                 x=[1.0, 2.0, 3.0],
+                fval=10.1,
+                variables=q_p.variables,
+                status=OptimizationResultStatus.SUCCESS,
+            )
+            expected = "\n".join(
+                [
+                    "objective function value: 10.1",
+                    "variable values: x0=1.0, x1=2.0, x2=3.0",
+                    "status: SUCCESS",
+                ]
+            )
+            self.assertEqual(result.prettyprint(), expected)
+
+        with self.subTest("failure"):
+            q_p = QuadraticProgram()
+            q_p.integer_var_list(3)
+            result = OptimizationResult(
+                x=[-1.0, 2.0, -3.0],
                 fval=10.0,
                 variables=q_p.variables,
                 status=OptimizationResultStatus.FAILURE,
             )
             expected = "\n".join(
                 [
-                    "optimal function value: 10.0",
-                    "optimal value: x0=1.0, x1=2.0, x2=3.0",
+                    "objective function value: 10.0",
+                    "variable values: x0=-1.0, x1=2.0, x2=-3.0",
                     "status: FAILURE",
                 ]
             )
-            self.assertEqual(str(result), expected)
-            self.assertEqual(
-                repr(result), "<OptimizationResult: x=[1. 2. 3.], fval=10.0, status=FAILURE)>"
+            self.assertEqual(result.prettyprint(), expected)
+
+        with self.subTest("infeasible"):
+            q_p = QuadraticProgram()
+            q_p.integer_var_list(3, name="y", key_format="_{}")
+            result = OptimizationResult(
+                x=[1.0, 2.0, -3.0],
+                fval=11.0,
+                variables=q_p.variables,
+                status=OptimizationResultStatus.INFEASIBLE,
             )
+            expected = "\n".join(
+                [
+                    "objective function value: 11.0",
+                    "variable values: y_0=1.0, y_1=2.0, y_2=-3.0",
+                    "status: INFEASIBLE",
+                ]
+            )
+            self.assertEqual(result.prettyprint(), expected)
