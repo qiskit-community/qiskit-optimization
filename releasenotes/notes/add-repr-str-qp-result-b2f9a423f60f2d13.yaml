@@ -1,0 +1,79 @@
+---
+features:
+  - |
+    Adds a method :meth:`~qiskit_optimization.algorithms.OptimizationResult.prettyprint`
+    to display the result in a multi-line text format.
+
+upgrade:
+  - |
+    Updates the text format of ``str`` and ``repr`` of the following objects so that the output is one line.
+
+    - :class:`~qiskit_optimization.QuadraticProgram`
+    - :class:`~qiskit_optimization.algorithms.OptimizationResult`.
+
+    If users want to display a multi-line text of :class:`~qiskit_optimization.QuadraticProgram`
+    and :class:`~qiskit_optimization.algorithms.OptimizationResult`,
+    please use :meth:`~qiskit_optimization.QuadraticProgram.prettyprint` and
+    :meth:`~qiskit_optimization.algorithms.OptimizationResult.prettyprint`, respectively.
+
+    .. code-block:: python
+
+      # An example of OptimizationResult
+      from qiskit_optimization.problems import QuadraticProgram
+      from qiskit_optimization.algorithms import OptimizationResult, OptimizationResultStatus
+
+      qp = QuadraticProgram()
+      x = qp.binary_var_list(3)
+      result = OptimizationResult([1.0,2.0,3.0], 10.0, x, OptimizationResultStatus.SUCCESS)
+
+      print(repr(result))
+      # <OptimizationResult: fval=10.0, x0=1.0, x1=2.0, x2=3.0, status=SUCCESS>
+
+      print(str(result))
+      # fval=10.0, x0=1.0, x1=2.0, x2=3.0, status=SUCCESS
+
+      print(result.prettyprint())
+      # objective function value: 10.0
+      # variable values: x0=1.0, x1=2.0, x2=3.0
+      # status: SUCCESS
+
+    .. code-block:: python
+
+      from qiskit_optimization.problems import QuadraticProgram
+
+      qp = QuadraticProgram('problem 1')
+      qp.integer_var(-1, 2, 'x')
+      qp.integer_var(-1, 2, 'y')
+      qp.continuous_var(-1, name='z')
+      qp.minimize(constant=3, linear={'x': 2, 'y': 3}, quadratic={('z', 'x'): -1})
+      qp.linear_constraint({'x': 1, 'y': -2}, '>=', 2, name='lin_GE')
+      qp.linear_constraint({'x': 2, 'y': -1}, '==', 1, name='lin_EQ')
+      qp.quadratic_constraint({'x': 2, 'y': -1}, {('z', 'z'): -1}, '<=', 1)
+
+      print(repr(qp))
+      # <QuadraticProgram: minimize -x*z + 2*x + 3*y + 3, 3 variables, 3 constraints, 'problem 1'>
+
+      print(str(qp))
+      # minimize -x*z + 2*x + 3*y + 3 (3 variables, 3 constraints, 'problem 1')
+
+      print(qp.prettyprint())
+      # Problem name: problem 1
+      #
+      # Minimize
+      #   -x*z + 2*x + 3*y + 3
+      #
+      # Subject to
+      #   Linear constraints (2)
+      #     x - 2*y >= 2  'lin_GE'
+      #     2*x - y == 1  'lin_EQ'
+      #
+      #   Quadratic constraints (1)
+      #     -z^2 + 2*x - y <= 1  'q0'
+      #
+      #   Integer variables (2)
+      #     -1 <= x <= 2
+      #     -1 <= y <= 2
+      #
+      #   Continuous variables (1)
+      #     -1 <= z
+
