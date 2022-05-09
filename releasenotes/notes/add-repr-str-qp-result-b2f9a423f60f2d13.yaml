@@ -2,6 +2,7 @@
 features:
   - |
     Adds a method :meth:`~qiskit_optimization.algorithms.OptimizationResult.prettyprint`
+    to :class:`~qiskit_optimization.algorithms.OptimizationResult`
     to display the result in a multi-line text format.
 
 upgrade:
@@ -9,11 +10,14 @@ upgrade:
     Updates the text format of ``str`` and ``repr`` of the following objects so that the output is one line.
 
     - :class:`~qiskit_optimization.QuadraticProgram`
-    - :class:`~qiskit_optimization.algorithms.OptimizationResult`.
+    - :class:`~qiskit_optimization.algorithms.OptimizationResult`
 
     If users want to display a multi-line text of :class:`~qiskit_optimization.QuadraticProgram`
     and :class:`~qiskit_optimization.algorithms.OptimizationResult`,
-    please use :meth:`~qiskit_optimization.QuadraticProgram.prettyprint` and
+    please use
+    :class:`~qiskit_optimization.QuadraticProgram`'s
+    :meth:`~qiskit_optimization.QuadraticProgram.prettyprint` and
+    :class:`~qiskit_optimization.algorithms.OptimizationResult`'s
     :meth:`~qiskit_optimization.algorithms.OptimizationResult.prettyprint`, respectively.
 
     .. code-block:: python
@@ -76,4 +80,18 @@ upgrade:
       #
       #   Continuous variables (1)
       #     -1 <= z
+
+other:
+  - |
+    Updated the documentation of :attr:`~qiskit_optimization.algorithms.OptimizationResultStatus.SUCCESS`
+    of :class:`~qiskit_optimization.algorithms.OptimizationResultStatus`.
+    :attr:`~qiskit_optimization.algorithms.OptimizationResultStatus.SUCCESS` means the obtained solution is feasible,
+    but not always optimal because some algorithms do not guarantee the optimality.
+  - |
+    Reword the documentation of all methods and the multi-line text format of
+    :class:`~qiskit_optimization.algorithms.OptimizationResult` as follows
+    because some algorithms do not guarantee the optimality.
+
+    - "optimal function value" → "objective function value"
+    - "optimal value" → "variable values"
 
