@@ -80,7 +80,7 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             self.assertAlmostEqual(offset, 0.0)
 
     def test_from_ising(self):
-        """test to_from_ising"""
+        """test from_ising"""
         # minimize: x + x * y
         # subject to: x, y \in {0, 1}
         op = PauliSumOp.from_list([("ZI", -0.25), ("IZ", -0.75), ("ZZ", 0.25)])
@@ -103,7 +103,7 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[1, 1], [0, 0]])
 
     def test_from_ising2(self):
-        """test to_from_ising 2"""
+        """test from_ising 2"""
         # minimize: 1 - 2 * x1 - 2 * x2 + 4 * x1 * x2
         # subject to: x, y \in {0, 1}
         op = PauliSumOp.from_list([("ZZ", 1)])
@@ -126,7 +126,7 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[-2, 4], [0, -2]])
 
     def test_from_ising_pauli_with_invalid_paulis(self):
-        """test to_from_ising with invalid Pauli terms"""
+        """test from_ising with invalid Pauli terms"""
         with self.assertRaises(QiskitOptimizationError):
             op = PauliSumOp.from_list([("IX", 1)])
             _ = from_ising(op, 0)
