@@ -5,7 +5,7 @@
 First please read the overall project contributing guidelines. These are
 included in the Qiskit documentation here:
 
-https://qiskit.org/documentation/contributing_to_qiskit.html
+<https://qiskit.org/documentation/contributing_to_qiskit.html>
 
 ## Contributing to Qiskit Optimization
 
@@ -26,27 +26,27 @@ please ensure that:
 1. The code follows the _code style_ of this project and successfully
    passes the _unit tests_. Optimization uses [Pylint](https://www.pylint.org) and
    [PEP8](https://www.python.org/dev/peps/pep-0008) style guidelines.
-   
+
    You can run
    ```shell script
    make lint
-   make style 
+   make style
    ```
    from the root of the Optimization repository clone for lint and style conformance checks.
 
    If your code fails the local style checks (specifically the black
    code formatting check) you can use `make black` to automatically
    fix update the code formatting.
-   
+
    For unit testing please see [Testing](#testing) section below.
-   
+
 2. The documentation has been updated accordingly. In particular, if a
    function or class has been modified during the PR, please update the
    *docstring* accordingly.
-   
+
    The documentation will be built/tested using Sphinx and should be free
    from errors and warnings.
-   
+
    You can run
    ```shell script
     make html
@@ -54,22 +54,22 @@ please ensure that:
    in the 'docs' folder. You might also like to check the html output
    to see the changes formatted output is as expected. You will find an index.html
    file in docs\_build\html and you can navigate from there.
-   
+
    Please note that a spell check is run in CI, on the docstrings, since the text
    becomes part of the online [API Documentation](https://qiskit.org/documentation/).
-   
+
    You can run `make spell` locally to check spelling though you would need to
    [install pyenchant](https://pyenchant.github.io/pyenchant/install.html) and be using
-   hunspell-en-us as is used by the CI. 
-   
-   For some words, such as names, technical terms, referring to parameters of the method etc., 
+   hunspell-en-us as is used by the CI.
+
+   For some words, such as names, technical terms, referring to parameters of the method etc.,
    that are not in the en-us dictionary and get flagged as being misspelled, despite being correct,
    there is a [.pylintdict](./.pylintdict) custom word list file, in the root of the Optimization repo,
    where such words can be added, in alphabetic order, as needed.
-   
+
 3. If it makes sense for your change that you have added new tests that
    cover the changes and any new function.
-   
+
 4. Ensure that if your change has an end user facing impact (new feature,
    deprecation, removal etc) that you have added a reno release note for
    that change and that the PR is tagged for the changelog.
@@ -77,16 +77,16 @@ please ensure that:
 5. Ensure all code, including unit tests, has the copyright header. The copyright
    date will be checked by CI build. The format of the date(s) is _year of creation,
    last year changed_. So for example:
-   
+
    > \# (C) Copyright IBM 2018, 2021.
 
    If the _year of creation_ is the same as _last year changed_ then only
    one date is needed, for example:
 
    > \# (C) Copyright IBM 2021.
-                                                                                                                                                                                                 
+
    If code is changed in a file make sure the copyright includes the current year.
-   If there is just one date and it's a prior year then add the current year as the 2nd date, 
+   If there is just one date and it's a prior year then add the current year as the 2nd date,
    otherwise simply change the 2nd date to the current year. The _year of creation_ date is
    never changed.
 
@@ -235,10 +235,10 @@ Source](https://github.com/Qiskit/qiskit-optimization#installation)
 
 Note: Optimization depends on Terra, and has optional dependence on Aer and IBM Q Provider, so
 these should be installed too. The main branch of Optimization is kept working with those other element
-main branches so these should be installed from source too following the instructions at 
+main branches so these should be installed from source too following the instructions at
 the same location
 
-Optimization also has some other optional dependents see 
+Optimization also has some other optional dependents see
 [Optimization optional installs](https://github.com/Qiskit/qiskit-optimization#optional-installs) for
 further information. Unit tests that require any of the optional dependents will check
 and skip the test if not installed.
@@ -259,13 +259,13 @@ Test section. However please note Optimization does not have any
 [online tests](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#online-tests)
 nor does it have
 [test skip
- options](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#test-skip-options).    
+ options](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#test-skip-options).
 
 ### Development Cycle
 
-The development cycle for qiskit-optimization is informed by release plans in the 
-[Qiskit rfcs repository](https://github.com/Qiskit/rfcs)
- 
+The development cycle for qiskit-optimization is informed by release plans in the
+[Release Planning Wiki](https://github.com/qiskit-community/feedback/wiki/Release-Planning)
+
 ### Branches
 
 * `main`:
