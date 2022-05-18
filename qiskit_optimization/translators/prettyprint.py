@@ -122,8 +122,8 @@ def expr2str(
     constant: float = 0.0,
     linear: Optional[LinearExpression] = None,
     quadratic: Optional[QuadraticExpression] = None,
-    suffix: str = "",
     truncate: int = 0,
+    suffix: str = "",
     wrap: int = 0,
     indent: int = 0,
 ) -> str:
@@ -134,10 +134,10 @@ def expr2str(
         constant: a constant part.
         linear: a linear expression.
         quadratic: a quadratic expression.
-        suffix: a suffix text.
         truncate: the threshold of the output string to be truncated. If a string is longer than
             the threshold, it is truncated and appended "...", e.g., "x^2 + y +...".
             It is disabled by setting 0. The default value is 0.
+        suffix: a suffix text.
         wrap: The text width to wrap the output strings. It is disabled by setting 0.
             Note that some strings might exceed this value, for example, a long variable
             name won't be wrapped. The default value is 0.
