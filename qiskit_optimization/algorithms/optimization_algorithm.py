@@ -123,7 +123,7 @@ class OptimizationResult:
         else:
             if len(x) != len(variables):
                 raise QiskitOptimizationError(
-                    f"Inconsistent size of variables and values. x: size {len(x)} {x}, "
+                    f"Inconsistent size of variable values (x) and variables. x: size {len(x)} {x}, "
                     f"variables: size {len(variables)} {[v.name for v in variables]}"
                 )
             self._x = np.asarray(x)

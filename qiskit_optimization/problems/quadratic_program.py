@@ -1117,8 +1117,13 @@ class QuadraticProgram:
 
         return feasible
 
-    def prettyprint(self) -> str:
+    def prettyprint(self, wrap: int = 80) -> str:
         """Returns a pretty printed string of this problem.
+
+        Args:
+            wrap: The text width to wrap the output strings. It is disabled by setting 0.
+                Note that some strings might exceed this value, for example, a long variable
+                name won't be wrapped. The default value is 80.
 
         Returns:
             A pretty printed string representing the problem.
@@ -1129,7 +1134,7 @@ class QuadraticProgram:
         # pylint: disable=cyclic-import
         from qiskit_optimization.translators.prettyprint import prettyprint
 
-        return prettyprint(self)
+        return prettyprint(self, wrap)
 
     @staticmethod
     def _check_name(name: str, name_type: str) -> None:
