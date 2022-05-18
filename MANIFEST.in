@@ -1,5 +1,6 @@
 include LICENSE.txt
 include requirements.txt
+include qiskit_optimization/py.typed
 recursive-include qiskit_optimization *.txt
 graft test
 prune docs
