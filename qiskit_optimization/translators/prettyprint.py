@@ -102,20 +102,19 @@ def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
     ind = " " * indent
     if wrap == 0:
         return ind + " ".join(terms)
-    buf = StringIO()
-    buf.write(ind)
+    buf = ind
     cur = indent
     for term in terms:
         if cur + len(term) >= wrap:
-            buf.write("\n")
-            buf.write(ind)
+            buf += "\n"
+            buf += ind
             cur = indent
         if cur != indent:  # if the position is not the start of the line
-            buf.write(" ")
+            buf += " "
             cur += 1
-        buf.write(term)
+        buf += term
         cur += len(term)
-    return buf.getvalue()
+    return buf
 
 
 def expr2str(
