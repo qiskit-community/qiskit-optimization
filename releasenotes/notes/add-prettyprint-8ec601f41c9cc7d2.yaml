@@ -1,10 +1,6 @@
 ---
 upgrade:
   - |
-    Shows a warning message if non-printable strings are set to
-    :class:`~qiskit_optimization.QuadraticProgram`
-    as problem name, variable name, or constraint name.
-  - |
     If users set an empty variable name ``""`` with
     :meth:`~qiskit_optimization.QuadraticProgram.binary_var`,
     :meth:`~qiskit_optimization.QuadraticProgram.integer_var`, and
@@ -84,3 +80,8 @@ features:
           Binary variables (12)
             u v x5 x6 x7 x8 x9 x10 x11 x12 x13 x14
 
+other:
+  - |
+    Shows a warning message if non-printable strings are set to
+    :class:`~qiskit_optimization.QuadraticProgram`
+    as problem name, variable name, or constraint name.

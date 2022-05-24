@@ -30,7 +30,7 @@ class OptimizationResultStatus(Enum):
     """Termination status of an optimization algorithm."""
 
     SUCCESS = 0
-    """the optimization algorithm succeeded to find an optimal solution."""
+    """the optimization algorithm succeeded to find a feasible solution."""
 
     FAILURE = 1
     """the optimization algorithm ended in a failure."""
@@ -104,8 +104,8 @@ class OptimizationResult:
     ) -> None:
         """
         Args:
-            x: the optimal value found in the optimization, or possibly None in case of FAILURE.
-            fval: the optimal function value.
+            x: the variable values found in the optimization, or possibly None in case of FAILURE.
+            fval: the objective function value.
             variables: the list of variables of the optimization problem.
             raw_results: the original results object from the optimization algorithm.
             status: the termination status of the optimization algorithm.
@@ -123,7 +123,7 @@ class OptimizationResult:
         else:
             if len(x) != len(variables):
                 raise QiskitOptimizationError(
-                    f"Inconsistent size of optimal value and variables. x: size {len(x)} {x}, "
+                    f"Inconsistent size of variable values (x) and variables. x: size {len(x)} {x}, "
                     f"variables: size {len(variables)} {[v.name for v in variables]}"
                 )
             self._x = np.asarray(x)
@@ -143,9 +143,22 @@ class OptimizationResult:
             ]
 
     def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {str(self)}>"
+
+    def __str__(self) -> str:
+        variables = ", ".join([f"{var}={x}" for var, x in self._variables_dict.items()])
+        return f"fval={self._fval}, {variables}, status={self._status.name}"
+
+    def prettyprint(self) -> str:
+        """Returns a pretty printed string of this optimization result.
+
+        Returns:
+            A pretty printed string representing the result.
+        """
+        variables = ", ".join([f"{var}={x}" for var, x in self._variables_dict.items()])
         return (
-            f"optimal function value: {self._fval}\n"
-            f"optimal value: {self._x}\n"
+            f"objective function value: {self._fval}\n"
+            f"variable values: {variables}\n"
             f"status: {self._status.name}"
         )
 
@@ -200,19 +213,19 @@ class OptimizationResult:
 
     @property
     def x(self) -> Optional[np.ndarray]:
-        """Returns the optimal value found in the optimization or None in case of FAILURE.
+        """Returns the variable values found in the optimization or None in case of FAILURE.
 
         Returns:
-            The optimal value found in the optimization.
+            The variable values found in the optimization.
         """
         return self._x
 
     @property
     def fval(self) -> Optional[float]:
-        """Returns the optimal function value.
+        """Returns the objective function value.
 
         Returns:
-            The function value corresponding to the optimal value found in the optimization.
+            The function value corresponding to the objective function value found in the optimization.
         """
         return self._fval
 
@@ -247,10 +260,10 @@ class OptimizationResult:
 
     @property
     def variables_dict(self) -> Dict[str, float]:
-        """Returns the optimal value as a dictionary of the variable name and corresponding value.
+        """Returns the variable values as a dictionary of the variable name and corresponding value.
 
         Returns:
-            The optimal value as a dictionary of the variable name and corresponding value.
+            The variable values as a dictionary of the variable name and corresponding value.
         """
         return self._variables_dict
 

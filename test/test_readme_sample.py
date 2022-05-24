@@ -64,8 +64,8 @@ class TestReadmeSample(QiskitOptimizationTestCase):
 
         result_x = None
         result_fval = None
-        str_ref1 = "optimal value:"
-        str_ref2 = "optimal function value:"
+        str_ref1 = "variable values:"
+        str_ref2 = "objective function value:"
         texts = out.getvalue().split("\n")
         for text in texts:
             idx = text.find(str_ref1)
@@ -86,7 +86,7 @@ class TestReadmeSample(QiskitOptimizationTestCase):
             return
 
         with self.subTest("test result.x"):
-            self.assertEqual(result_x, "[1. 0. 1. 0.]")
+            self.assertEqual(result_x, "x0=1.0, x1=0.0, x2=1.0, x3=0.0")
         with self.subTest("test result.fval"):
             self.assertAlmostEqual(result_fval, 4.0)
 

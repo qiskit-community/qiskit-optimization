@@ -14,7 +14,7 @@
 
 from io import StringIO
 from math import isclose
-from typing import Optional, Union, cast
+from typing import List, Optional, Union, cast
 
 import numpy as np
 
@@ -71,16 +71,16 @@ def _term2str(coeff: float, term: str, is_head: bool) -> str:
             sign = "-" if coeff < 0.0 else "+"
             abs_val = abs(coeff)
             if isclose(abs_val, 1.0):
-                ret = f" {sign} {term}"
+                ret = f"{sign} {term}"
             else:
-                ret = f" {sign} {_int_if_close(abs_val)}*{term}"
+                ret = f"{sign} {_int_if_close(abs_val)}*{term}"
     else:
         if is_head:
             ret = f"{_int_if_close(coeff)}"
         else:
             sign = "-" if coeff < 0.0 else "+"
             abs_val = abs(coeff)
-            ret = f" {sign} {_int_if_close(abs_val)}"
+            ret = f"{sign} {_int_if_close(abs_val)}"
     return ret
 
 
@@ -98,11 +98,33 @@ def _check_name(name: str, name_type: str) -> None:
         raise QiskitOptimizationError(f"{name_type} name is not printable: {repr(name)}")
 
 
+def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
+    ind = " " * indent
+    if wrap == 0:
+        return ind + " ".join(terms)
+    buf = ind
+    cur = indent
+    for term in terms:
+        if cur + len(term) >= wrap:
+            buf += "\n"
+            buf += ind
+            cur = indent
+        if cur != indent:  # if the position is not the start of the line
+            buf += " "
+            cur += 1
+        buf += term
+        cur += len(term)
+    return buf
+
+
 def expr2str(
     constant: float = 0.0,
     linear: Optional[LinearExpression] = None,
     quadratic: Optional[QuadraticExpression] = None,
     truncate: int = 0,
+    suffix: str = "",
+    wrap: int = 0,
+    indent: int = 0,
 ) -> str:
     """Translate a combination of a constant, a linear expression, and a quadratic expression
     into a string.
@@ -113,19 +135,24 @@ def expr2str(
         quadratic: a quadratic expression.
         truncate: the threshold of the output string to be truncated. If a string is longer than
             the threshold, it is truncated and appended "...", e.g., "x^2 + y +...".
-            The default value 0 means no truncation is carried out.
+            It is disabled by setting 0. The default value is 0.
+        suffix: a suffix text.
+        wrap: The text width to wrap the output strings. It is disabled by setting 0.
+            Note that some strings might exceed this value, for example, a long variable
+            name won't be wrapped. The default value is 0.
+        indent: The indent size. The default value is 0.
 
     Returns:
         A string representing the combination of the expressions.
 
     Raises:
-        ValueError: if `truncate` is negative.
+        ValueError: if ``truncate`` is negative.
         QiskitOptimizationError: if the variable name is not printable.
     """
     if truncate < 0:
         raise ValueError(f"Invalid truncate value: {truncate}")
 
-    expr = StringIO()
+    terms = []
     is_head = True
     lin_dict = linear.to_dict(use_name=True) if linear else {}
     quad_dict = quadratic.to_dict(use_name=True) if quadratic else {}
@@ -135,34 +162,41 @@ def expr2str(
         _check_name(cast(str, var1), "Variable")
         _check_name(cast(str, var2), "Variable")
         if var1 == var2:
-            expr.write(_term2str(coeff, f"{var1}^2", is_head))
+            terms.append(_term2str(coeff, f"{var1}^2", is_head))
         else:
-            expr.write(_term2str(coeff, f"{var1}*{var2}", is_head))
+            terms.append(_term2str(coeff, f"{var1}*{var2}", is_head))
         is_head = False
 
     # linear expression
     for var, coeff in sorted(lin_dict.items()):
         _check_name(cast(str, var), "Variable")
-        expr.write(_term2str(coeff, f"{var}", is_head))
+        terms.append(_term2str(coeff, f"{var}", is_head))
         is_head = False
 
     # constant
     if not isclose(constant, 0.0, abs_tol=1e-10):
-        expr.write(_term2str(constant, "", is_head))
+        terms.append(_term2str(constant, "", is_head))
     elif not lin_dict and not quad_dict:
-        expr.write(_term2str(0, "", is_head))
+        terms.append(_term2str(0, "", is_head))
 
-    ret = expr.getvalue()
+    # suffix
+    if suffix:
+        terms.append(suffix)
+
+    ret = _concatenate_terms(terms, wrap, indent)
     if 0 < truncate < len(ret):
         ret = ret[:truncate] + "..."
     return ret
 
 
-def prettyprint(quadratic_program: QuadraticProgram) -> str:
+def prettyprint(quadratic_program: QuadraticProgram, wrap: int = 80) -> str:
     """Translate a :class:`~qiskit_optimization.problems.QuadraticProgram` into a pretty-printed string.
 
     Args:
-        quadratic_program: The optimization problem to be translated into a string
+        quadratic_program: The optimization problem to be translated into a string.
+        wrap: The text width to wrap the output strings. It is disabled by setting 0.
+            Note that some strings might exceed this value, for example, a long variable
+            name won't be wrapped. The default value is 80.
 
     Returns:
         A pretty-printed string representing the problem.
@@ -178,12 +212,13 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             buf.write("Minimize\n")
         else:
             buf.write("Maximize\n")
-        buf.write("  ")
         buf.write(
             expr2str(
                 quadratic_program.objective.constant,
                 quadratic_program.objective.linear,
                 quadratic_program.objective.quadratic,
+                wrap=wrap,
+                indent=2,
             )
         )
         buf.write("\n\nSubject to")
@@ -195,19 +230,21 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
             buf.write(f"\n  Linear constraints ({num_lin_csts})\n")
             for cst in quadratic_program.linear_constraints:
                 _check_name(cst.name, "Linear constraint")
-                buf.write(
-                    f"    {expr2str(linear=cst.linear)}"
-                    f" {cst.sense.label} {_int_if_close(cst.rhs)}"
-                    f"  '{cst.name}'\n"
-                )
+                suffix = f"{cst.sense.label} {_int_if_close(cst.rhs)}  '{cst.name}'\n"
+                buf.write(expr2str(linear=cst.linear, suffix=suffix, wrap=wrap, indent=4))
         if num_quad_csts > 0:
             buf.write(f"\n  Quadratic constraints ({num_quad_csts})\n")
             for cst2 in quadratic_program.quadratic_constraints:
                 _check_name(cst2.name, "Quadratic constraint")
+                suffix = f"{cst2.sense.label} {_int_if_close(cst2.rhs)}  '{cst2.name}'\n"
                 buf.write(
-                    f"    {expr2str(linear=cst2.linear, quadratic=cst2.quadratic)}"
-                    f" {cst2.sense.label} {_int_if_close(cst2.rhs)}"
-                    f"  '{cst2.name}'\n"
+                    expr2str(
+                        linear=cst2.linear,
+                        quadratic=cst2.quadratic,
+                        suffix=suffix,
+                        wrap=wrap,
+                        indent=4,
+                    )
                 )
         if quadratic_program.get_num_vars() == 0:
             buf.write("\n  No variables\n")
@@ -246,6 +283,7 @@ def prettyprint(quadratic_program: QuadraticProgram) -> str:
                 buf.write("\n")
         if bin_vars:
             buf.write(f"\n  Binary variables ({len(bin_vars)})\n")
-            buf.write(f"    {' '.join(bin_vars)}\n")
+            buf.write(_concatenate_terms(bin_vars, wrap=wrap, indent=4))
+            buf.write("\n")
         ret = buf.getvalue()
     return ret
