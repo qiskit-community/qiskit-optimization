@@ -70,10 +70,10 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
     sense = quad_prog.objective.sense.value
 
-    # convert a constant part of the object function into Hamiltonian.
+    # convert a constant part of the objective function into Hamiltonian.
     offset += quad_prog.objective.constant * sense
 
-    # convert linear parts of the object function into Hamiltonian.
+    # convert linear parts of the objective function into Hamiltonian.
     for idx, coef in quad_prog.objective.linear.to_dict().items():
         z_p = zero.copy()
         weight = coef * sense / 2
@@ -205,7 +205,7 @@ def from_ising(
     # For quadratic pauli terms of operator
     # x_i * x_j = (1 - Z_i - Z_j + Z_i * Z_j)/4
     for (i, j), weight in pauli_coeffs_triu.items():
-        # Add a quadratic term to the object function of `QuadraticProgram`
+        # Add a quadratic term to the objective function of `QuadraticProgram`
         # The coefficient of the quadratic term in `QuadraticProgram` is
         # 4 * weight of the pauli
         quadratic_terms[i, j] = 4 * weight
@@ -216,7 +216,7 @@ def from_ising(
     # After processing quadratic pauli terms, only linear paulis are left
     # x_i = (1 - Z_i)/2
     for i, weight in enumerate(pauli_coeffs_diag):
-        # Add a linear term to the object function of `QuadraticProgram`
+        # Add a linear term to the objective function of `QuadraticProgram`
         # The coefficient of the linear term in `QuadraticProgram` is
         # 2 * weight of the pauli
         if linear:
