@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -67,11 +67,11 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
                 coefficients[min(i, j)][max(i, j)] += i * j
         quadratic = QuadraticExpression(quadratic_program, coefficients)
         for i, j_v in enumerate(coefficients):
-            for j, _ in enumerate(j_v):
+            for j, j_v_j in enumerate(j_v):
                 if i == j:
-                    self.assertEqual(quadratic[i, j], coefficients[i][j])
+                    self.assertEqual(quadratic[i, j], j_v_j)
                 else:
-                    self.assertEqual(quadratic[i, j], coefficients[i][j] + coefficients[j][i])
+                    self.assertEqual(quadratic[i, j], j_v_j + coefficients[j][i])
 
     def test_setters(self):
         """test setters."""
