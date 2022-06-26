@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,8 +18,8 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from ddt import data, ddt
 from docplex.mp.model import Model
-from qiskit import Aer
-from qiskit.utils import QuantumInstance, algorithm_globals
+import qiskit
+from qiskit.utils import QuantumInstance, algorithm_globals, optionals
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.algorithms import (
     GroverOptimizer,
@@ -41,16 +41,19 @@ from qiskit_optimization.translators import from_docplex_mp
 class TestGroverOptimizer(QiskitOptimizationTestCase):
     """GroverOptimizer tests."""
 
+    @unittest.skipUnless(optionals.HAS_AER, "qiskit-aer is required to run this test")
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 1
         self.sv_simulator = QuantumInstance(
-            Aer.get_backend("aer_simulator_statevector"),
+            qiskit.providers.aer.Aer.get_backend("aer_simulator_statevector"),
             seed_simulator=921,
             seed_transpiler=200,
         )
         self.qasm_simulator = QuantumInstance(
-            Aer.get_backend("aer_simulator"), seed_simulator=123, seed_transpiler=123
+            qiskit.providers.aer.Aer.get_backend("aer_simulator"),
+            seed_simulator=123,
+            seed_transpiler=123,
         )
         self.n_iter = 8
 
