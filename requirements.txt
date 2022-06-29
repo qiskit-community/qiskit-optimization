@@ -4,4 +4,3 @@ numpy>=1.17
 docplex>=2.21.207
 setuptools>=40.1.0
 networkx>=2.2
-dataclasses; python_version < '3.7'
