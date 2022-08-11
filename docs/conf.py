@@ -106,6 +106,7 @@ extensions = [
     "reno.sphinxext",
     "sphinx.ext.doctest",
     "nbsphinx",
+    "sphinx.ext.intersphinx",
 ]
 html_static_path = ["_static"]
 templates_path = ["_templates"]
@@ -212,6 +213,14 @@ html_theme_options = {
     "titles_only": False,
 }
 
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy", None),
+    "networkx": ("https://networkx.org/documentation/stable", None),
+    "docplex.mp": ("https://ibmdecisionoptimization.github.io/docplex-doc/mp", None),
+    "qiskit": ("https://qiskit.org/documentation/", None),
+}
 # -- Extension configuration -------------------------------------------------
 
 
