@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """ Test Tsp class"""
-
+import unittest
 import random
 from test.optimization_test_case import QiskitOptimizationTestCase
 
@@ -100,3 +100,16 @@ class TestTsp(QiskitOptimizationTestCase):
         edge_weight = [graph.edges[edge]["weight"] for edge in graph.edges]
         expected_weight = [48, 91, 63]
         self.assertEqual(edge_weight, expected_weight)
+
+    def test_parse_tsplib_format(self):
+        """Test tsplib format parser"""
+        # test_tsplib is eli51.tsp from http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/
+        reference_file_name = self.get_resource_path("test_tsplib.tsp", "applications/resources")
+        tsp = Tsp.parse_tsplib_format(reference_file_name)
+        graph = tsp.graph
+        self.assertEqual(graph.number_of_nodes(), 51)
+        self.assertEqual(graph.number_of_edges(), 51 * 50 / 2)  # fully connected graph
+
+
+if __name__ == "__main__":
+    unittest.main()
