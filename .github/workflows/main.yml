@@ -206,7 +206,7 @@ jobs:
         with:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
-      - name: Optimization Unit Tests without cplex/cvxpy/gurobipy under Python ${{ matrix.python-version }}
+      - name: Optimization Unit Tests without cplex/cvxpy/matplotlib/gurobipy under Python ${{ matrix.python-version }}
         env:
           PYTHONWARNINGS: default
         run: |
@@ -214,7 +214,7 @@ jobs:
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
-          pip uninstall -y cplex cvxpy gurobipy
+          pip uninstall -y cplex cvxpy matplotlib gurobipy
           if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}" == "true" ]; then
               export QISKIT_TESTS="run_slow"
           fi
