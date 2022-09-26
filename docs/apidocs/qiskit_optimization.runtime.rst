@@ -1,4 +1,4 @@
-.. _qiskit_optimization-problems:
+.. _qiskit_optimization-runtime:
 
 .. automodule:: qiskit_optimization.runtime
    :no-members:
