@@ -167,7 +167,7 @@ class Tsp(GraphOptimizationApplication):
                         )
                 elif line.startswith("EOF"):
                     # End Of File tag
-                    continue
+                    break
                 elif line.startswith("DIMENSION"):
                     dim = int(line.split(":")[1])
                     coord = np.zeros((dim, 2))  # type: ignore

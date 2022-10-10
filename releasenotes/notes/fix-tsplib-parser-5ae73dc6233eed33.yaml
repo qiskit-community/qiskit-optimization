@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fixed an issue that :meth:`~qiskit_optimization.application.tsp.Tsp.parse_tsplib_format` did not parsed TSPLIB files.
