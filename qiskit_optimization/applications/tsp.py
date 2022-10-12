@@ -189,7 +189,7 @@ class Tsp(GraphOptimizationApplication):
         x_min = min(coord_[0] for coord_ in coord)
         y_max = max(coord_[1] for coord_ in coord)
         y_min = min(coord_[1] for coord_ in coord)
-        pos = dict(zip(range(len(coord)), coord))
+        pos = dict(enumerate(coord))
         graph = nx.random_geometric_graph(
             len(coord), np.hypot(x_max - x_min, y_max - y_min) + 1, pos=pos
         )
