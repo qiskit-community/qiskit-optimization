@@ -62,7 +62,7 @@ class Tsp(GraphOptimizationApplication):
 
     def interpret(
         self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[Union[int, List[int]]]:
+    ) -> List[int]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -73,16 +73,13 @@ class Tsp(GraphOptimizationApplication):
         """
         x = self._result_to_x(result)
         n = int(np.sqrt(len(x)))
-        route = []  # type: List[Union[int, List[int]]]
+        route = []  # type: List[int]
         for p__ in range(n):
             p_step = []
             for i in range(n):
                 if x[i * n + p__]:
                     p_step.append(i)
-            if len(p_step) == 1:
-                route.extend(p_step)
-            else:
-                route.append(p_step)
+            route.extend(p_step)
         return route
 
     def _draw_result(
