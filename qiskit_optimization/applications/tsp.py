@@ -60,9 +60,7 @@ class Tsp(GraphOptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(
-        self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[int]:
+    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
         """Interpret a result as a list of node indices
 
         Args:
