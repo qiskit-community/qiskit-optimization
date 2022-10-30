@@ -135,7 +135,7 @@ class OptimizationResult:
         if samples:
             sum_prob = np.sum([e.probability for e in samples])
             if not np.isclose(sum_prob, 1.0):
-                warn("The sum of probability of samples is not close to 1: f{sum_prob}")
+                warn(f"The sum of probability of samples is not close to 1: {sum_prob}")
             self._samples = samples
         else:
             self._samples = [
