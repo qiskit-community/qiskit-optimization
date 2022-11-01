@@ -216,7 +216,7 @@ html_theme_options = {
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy", None),
+    # "scipy": ("https://docs.scipy.org/doc/scipy", None),
     "networkx": ("https://networkx.org/documentation/stable", None),
     "docplex.mp": ("https://ibmdecisionoptimization.github.io/docplex-doc/mp", None),
     "qiskit": ("https://qiskit.org/documentation/", None),
