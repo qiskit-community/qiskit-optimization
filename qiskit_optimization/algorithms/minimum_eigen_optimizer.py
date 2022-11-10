@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,24 +11,25 @@
 # that they have been altered from the originals.
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
-from typing import Optional, Union, List, cast
+from typing import List, Optional, Union, cast
 
 import numpy as np
 
-from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
+from qiskit.algorithms.minimum_eigensolvers import (
+    SamplingMinimumEigensolver,
+    SamplingMinimumEigensolverResult,
+)
 from qiskit.opflow import OperatorBase
+
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
+from ..exceptions import QiskitOptimizationError
+from ..problems.quadratic_program import QuadraticProgram, Variable
 from .optimization_algorithm import (
-    OptimizationResultStatus,
     OptimizationAlgorithm,
     OptimizationResult,
+    OptimizationResultStatus,
     SolutionSample,
 )
-from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import (
-    QuadraticProgramToQubo,
-    QuadraticProgramConverter,
-)
-from ..problems.quadratic_program import QuadraticProgram, Variable
 
 
 class MinimumEigenOptimizationResult(OptimizationResult):
@@ -41,7 +42,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
         variables: List[Variable],
         status: OptimizationResultStatus,
         samples: Optional[List[SolutionSample]] = None,
-        min_eigen_solver_result: Optional[MinimumEigensolverResult] = None,
+        min_eigen_solver_result: Optional[SamplingMinimumEigensolverResult] = None,
         raw_samples: Optional[List[SolutionSample]] = None,
     ) -> None:
         """
@@ -68,7 +69,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
         self._raw_samples = raw_samples
 
     @property
-    def min_eigen_solver_result(self) -> MinimumEigensolverResult:
+    def min_eigen_solver_result(self) -> SamplingMinimumEigensolverResult:
         """Returns a result object obtained from the instance of :class:`MinimumEigensolver`."""
         return self._min_eigen_solver_result
 
@@ -114,7 +115,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     def __init__(
         self,
-        min_eigen_solver: MinimumEigensolver,
+        min_eigen_solver: SamplingMinimumEigensolver,
         penalty: Optional[float] = None,
         converters: Optional[
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
@@ -163,12 +164,12 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         return QuadraticProgramToQubo.get_compatibility_msg(problem)
 
     @property
-    def min_eigen_solver(self) -> MinimumEigensolver:
+    def min_eigen_solver(self) -> SamplingMinimumEigensolver:
         """Returns the minimum eigensolver."""
         return self._min_eigen_solver
 
     @min_eigen_solver.setter
-    def min_eigen_solver(self, min_eigen_solver: MinimumEigensolver) -> None:
+    def min_eigen_solver(self, min_eigen_solver: SamplingMinimumEigensolver) -> None:
         """Sets the minimum eigensolver."""
         self._min_eigen_solver = min_eigen_solver
 
@@ -204,7 +205,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         original_problem: QuadraticProgram,
     ):
         # only try to solve non-empty Ising Hamiltonians
-        eigen_result: Optional[MinimumEigensolverResult] = None
+        eigen_result: Optional[SamplingMinimumEigensolverResult] = None
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)

@@ -18,13 +18,13 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 from test.runtime.fake_vqeruntime import FakeVQERuntimeProvider, FakeQAOARuntimeProvider
 
 import numpy as np
-from ddt import data, ddt
-from qiskit import BasicAer
-from qiskit.algorithms import QAOA, VQE, NumPyMinimumEigensolver
+from ddt import data, ddt, unpack
+from qiskit.algorithms.minimum_eigensolvers import QAOA, SamplingVQE, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
+from qiskit.primitives import Sampler
 from qiskit.providers.basicaer import QasmSimulatorPy
-from qiskit.utils import QuantumInstance, algorithm_globals
+from qiskit.utils import algorithm_globals
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
     CplexOptimizer,
@@ -42,7 +42,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
-from qiskit_optimization.runtime import VQEProgram, QAOAProgram
+from qiskit_optimization.runtime import VQEClient, QAOAClient
 
 
 @ddt
@@ -52,26 +52,14 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
 
+        self._seed = 123
+
         # setup minimum eigen solvers
-        self.min_eigen_solvers = {}
+        self.min_eigen_solvers = {
+            "exact": NumPyMinimumEigensolver(),
+            "qaoa": QAOA(sampler=Sampler(), optimizer=COBYLA()),
+        }
 
-        # exact eigen solver
-        self.min_eigen_solvers["exact"] = NumPyMinimumEigensolver()
-
-        # QAOA
-        optimizer = COBYLA()
-        self.min_eigen_solvers["qaoa"] = QAOA(optimizer=optimizer)
-        # simulators
-        self.sv_simulator = QuantumInstance(
-            BasicAer.get_backend("statevector_simulator"),
-            seed_simulator=123,
-            seed_transpiler=123,
-        )
-        self.qasm_simulator = QuantumInstance(
-            BasicAer.get_backend("qasm_simulator"),
-            seed_simulator=123,
-            seed_transpiler=123,
-        )
         # test minimize
         self.op_minimize = QuadraticProgram()
         self.op_minimize.integer_var(0, 3, "x")
@@ -94,20 +82,19 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
     @data(
         ("exact", None, "op_ip1.lp"),
-        ("qaoa", "statevector_simulator", "op_ip1.lp"),
-        ("qaoa", "qasm_simulator", "op_ip1.lp"),
+        ("qaoa", None, "op_ip1.lp"),
+        ("qaoa", 10000, "op_ip1.lp"),
     )
+    @unpack
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
-    def test_min_eigen_optimizer(self, config):
+    def test_min_eigen_optimizer(self, min_eigen_solver_name, shots, filename):
         """Min Eigen Optimizer Test"""
         try:
-            # unpack configuration
-            min_eigen_solver_name, backend, filename = config
-
             # get minimum eigen solver
             min_eigen_solver = self.min_eigen_solvers[min_eigen_solver_name]
-            if backend:
-                min_eigen_solver.quantum_instance = BasicAer.get_backend(backend)
+            if min_eigen_solver_name == "qaoa":
+                min_eigen_solver.sampler.options.shots = shots
+                min_eigen_solver.sampler.options.seed = self._seed
 
             # construct minimum eigen optimizer
             min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -137,13 +124,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         ("op_ip1.lp", -470, 12, OptimizationResultStatus.SUCCESS),
         ("op_ip1.lp", np.inf, None, OptimizationResultStatus.FAILURE),
     )
+    @unpack
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
-    def test_min_eigen_optimizer_with_filter(self, config):
+    def test_min_eigen_optimizer_with_filter(self, filename, lowerbound, fval, status):
         """Min Eigen Optimizer Test"""
         try:
-            # unpack configuration
-            filename, lowerbound, fval, status = config
-
             # get minimum eigen solver
             min_eigen_solver = NumPyMinimumEigensolver()
 
@@ -241,13 +226,13 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
 
-    @data("sv", "qasm")
-    def test_samples_qaoa(self, simulator):
+    @data(None, 10000)
+    def test_samples_qaoa(self, shots):
         """Test samples for QAOA"""
         # test minimize
         algorithm_globals.random_seed = 4
-        quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
+        sampler = Sampler(options={"shots": shots, "seed": self._seed})
+        qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
         success = OptimizationResultStatus.SUCCESS
@@ -269,7 +254,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         opt_sol = 2
-        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_maximize)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
@@ -297,7 +282,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test bit ordering
         opt_sol = -2
-        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
+        qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_ordering)
         self.assertEqual(result.fval, opt_sol)
@@ -319,17 +304,17 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertEqual(result.raw_samples[0].status, success)
 
-    @data("sv", "qasm")
-    def test_samples_vqe(self, simulator):
+    @data(None, 10000)
+    def test_samples_vqe(self, shots):
         """Test samples for VQE"""
         # test minimize
         algorithm_globals.random_seed = 1
-        quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
         opt_sol = -2
         success = OptimizationResultStatus.SUCCESS
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-        vqe_mes = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=quantum_instance)
+        sampler = Sampler(options={"shots": shots, "seed": self._seed})
+        vqe_mes = SamplingVQE(sampler, ry_ansatz, optimizer=optimizer)
         vqe = MinimumEigenOptimizer(vqe_mes)
         results = vqe.solve(self.op_ordering)
         self.assertEqual(results.fval, opt_sol)
@@ -360,7 +345,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         if subroutine == "vqe":
             ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
             initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
-            solver = VQEProgram(
+            solver = VQEClient(
                 ansatz=ry_ansatz,
                 optimizer=optimizer,
                 initial_point=initial_point,
@@ -370,7 +355,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         else:
             reps = 2
             initial_point = np.random.default_rng(42).random(2 * reps)
-            solver = QAOAProgram(
+            solver = QAOAClient(
                 optimizer=optimizer,
                 reps=reps,
                 initial_point=initial_point,
