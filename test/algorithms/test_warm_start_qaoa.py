@@ -17,11 +17,11 @@ from test import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-
-import qiskit_optimization.optionals as _optionals
 from qiskit.algorithms.minimum_eigensolvers import QAOA
 from qiskit.algorithms.optimizers import SLSQP
 from qiskit.primitives.sampler import Sampler
+
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import SlsqpOptimizer
 from qiskit_optimization.algorithms.goemans_williamson_optimizer import GoemansWilliamsonOptimizer
 from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (

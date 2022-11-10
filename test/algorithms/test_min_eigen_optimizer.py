@@ -14,26 +14,24 @@
 
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
-
-from test.runtime.fake_vqeruntime import FakeVQERuntimeProvider, FakeQAOARuntimeProvider
+from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntimeProvider
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.minimum_eigensolvers import QAOA, SamplingVQE, NumPyMinimumEigensolver
+from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver, SamplingVQE
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Sampler
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.utils import algorithm_globals
+
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
     CplexOptimizer,
-    MinimumEigenOptimizer,
     MinimumEigenOptimizationResult,
+    MinimumEigenOptimizer,
 )
-from qiskit_optimization.algorithms.optimization_algorithm import (
-    OptimizationResultStatus,
-)
+from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
 from qiskit_optimization.converters import (
     InequalityToEquality,
     IntegerToBinary,
@@ -42,7 +40,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
-from qiskit_optimization.runtime import VQEClient, QAOAClient
+from qiskit_optimization.runtime import QAOAClient, VQEClient
 
 
 @ddt
@@ -226,12 +224,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
 
-    @data(None, 10000)
-    def test_samples_qaoa(self, shots):
+    def test_samples_qaoa(self):
         """Test samples for QAOA"""
         # test minimize
         algorithm_globals.random_seed = 4
-        sampler = Sampler(options={"shots": shots, "seed": self._seed})
+        sampler = Sampler()
         qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
@@ -304,8 +301,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertEqual(result.raw_samples[0].status, success)
 
-    @data(None, 10000)
-    def test_samples_vqe(self, shots):
+    def test_samples_vqe(self):
         """Test samples for VQE"""
         # test minimize
         algorithm_globals.random_seed = 1
@@ -313,7 +309,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         success = OptimizationResultStatus.SUCCESS
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-        sampler = Sampler(options={"shots": shots, "seed": self._seed})
+        sampler = Sampler()
         vqe_mes = SamplingVQE(sampler, ry_ansatz, optimizer=optimizer)
         vqe = MinimumEigenOptimizer(vqe_mes)
         results = vqe.solve(self.op_ordering)

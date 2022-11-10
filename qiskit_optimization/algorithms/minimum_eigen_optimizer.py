@@ -14,8 +14,9 @@
 from typing import List, Optional, Union, cast
 
 import numpy as np
-
 from qiskit.algorithms.minimum_eigensolvers import (
+    NumPyMinimumEigensolver,
+    NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
@@ -31,6 +32,11 @@ from .optimization_algorithm import (
     SolutionSample,
 )
 
+SamplingOrNumpyMinimumEigensolver = Union[SamplingMinimumEigensolver, NumPyMinimumEigensolver]
+SamplingOrNumpyMinimumEigensolverResult = Union[
+    SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult
+]
+
 
 class MinimumEigenOptimizationResult(OptimizationResult):
     """Minimum Eigen Optimizer Result."""
@@ -42,7 +48,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
         variables: List[Variable],
         status: OptimizationResultStatus,
         samples: Optional[List[SolutionSample]] = None,
-        min_eigen_solver_result: Optional[SamplingMinimumEigensolverResult] = None,
+        min_eigen_solver_result: Optional[SamplingOrNumpyMinimumEigensolverResult] = None,
         raw_samples: Optional[List[SolutionSample]] = None,
     ) -> None:
         """
@@ -69,7 +75,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
         self._raw_samples = raw_samples
 
     @property
-    def min_eigen_solver_result(self) -> SamplingMinimumEigensolverResult:
+    def min_eigen_solver_result(self) -> SamplingOrNumpyMinimumEigensolverResult:
         """Returns a result object obtained from the instance of :class:`MinimumEigensolver`."""
         return self._min_eigen_solver_result
 
@@ -115,7 +121,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     def __init__(
         self,
-        min_eigen_solver: SamplingMinimumEigensolver,
+        min_eigen_solver: SamplingOrNumpyMinimumEigensolver,
         penalty: Optional[float] = None,
         converters: Optional[
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
@@ -164,12 +170,12 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         return QuadraticProgramToQubo.get_compatibility_msg(problem)
 
     @property
-    def min_eigen_solver(self) -> SamplingMinimumEigensolver:
+    def min_eigen_solver(self) -> SamplingOrNumpyMinimumEigensolver:
         """Returns the minimum eigensolver."""
         return self._min_eigen_solver
 
     @min_eigen_solver.setter
-    def min_eigen_solver(self, min_eigen_solver: SamplingMinimumEigensolver) -> None:
+    def min_eigen_solver(self, min_eigen_solver: SamplingOrNumpyMinimumEigensolver) -> None:
         """Sets the minimum eigensolver."""
         self._min_eigen_solver = min_eigen_solver
 

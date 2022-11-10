@@ -19,7 +19,6 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 from warnings import warn
 
 import numpy as np
-
 from qiskit.quantum_info import Statevector
 from qiskit.result import QuasiDistribution
 

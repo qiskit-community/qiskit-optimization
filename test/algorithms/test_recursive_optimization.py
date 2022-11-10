@@ -16,12 +16,12 @@ import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-
-import qiskit_optimization.optionals as _optionals
 from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
 from qiskit.algorithms.optimizers import SLSQP
 from qiskit.primitives import Sampler
 from qiskit.utils import algorithm_globals
+
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
     CplexOptimizer,
     MinimumEigenOptimizer,

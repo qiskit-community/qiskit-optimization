@@ -17,7 +17,6 @@ from enum import Enum
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-
 from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.utils.validation import validate_min
 

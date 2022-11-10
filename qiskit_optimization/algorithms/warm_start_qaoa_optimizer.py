@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,7 +17,6 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-
 from qiskit import QuantumCircuit
 from qiskit.algorithms.minimum_eigensolvers import QAOA
 from qiskit.circuit import Parameter

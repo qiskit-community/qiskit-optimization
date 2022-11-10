@@ -17,10 +17,10 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-
-import qiskit_optimization.optionals as _optionals
 from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.opflow import I, Z
+
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.algorithms import ADMMOptimizer, CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
