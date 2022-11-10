@@ -19,7 +19,7 @@ from qiskit.algorithms.minimum_eigensolvers import (
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
-from qiskit.opflow import OperatorBase
+from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
@@ -208,6 +208,8 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         eigen_result: Optional[SamplingMinimumEigensolverResult] = None
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
+            if isinstance(operator, PauliOp):
+                operator = PauliSumOp.from_list([(operator.primitive.to_label(), operator.coeff)])
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None

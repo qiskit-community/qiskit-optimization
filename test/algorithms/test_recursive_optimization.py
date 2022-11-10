@@ -17,29 +17,26 @@ from test import QiskitOptimizationTestCase
 
 import numpy as np
 
-from qiskit import BasicAer
-from qiskit.utils import algorithm_globals, QuantumInstance
-
-from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
-
 import qiskit_optimization.optionals as _optionals
+from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
+from qiskit.algorithms.optimizers import SLSQP
+from qiskit.primitives import Sampler
+from qiskit.utils import algorithm_globals
 from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
     CplexOptimizer,
+    MinimumEigenOptimizer,
     RecursiveMinimumEigenOptimizer,
-    WarmStartQAOAOptimizer,
     SlsqpOptimizer,
+    WarmStartQAOAOptimizer,
 )
-from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import (
-    IntermediateResult,
-)
-from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
 from qiskit_optimization.converters import (
-    IntegerToBinary,
     InequalityToEquality,
+    IntegerToBinary,
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
@@ -133,11 +130,9 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test the recursive optimizer with warm start qaoa."""
         seed = 1234
         algorithm_globals.random_seed = seed
-        backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(
-            quantum_instance=QuantumInstance(
-                backend=backend, seed_simulator=seed, seed_transpiler=seed
-            ),
+            sampler=Sampler(),
+            optimizer=SLSQP(),
             reps=1,
         )
         warm_qaoa = WarmStartQAOAOptimizer(

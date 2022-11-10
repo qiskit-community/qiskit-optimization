@@ -17,15 +17,12 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.algorithms import NumPyMinimumEigensolver
-from qiskit.opflow import Z, I
+
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
-    CplexOptimizer,
-    ADMMOptimizer,
-)
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit.opflow import I, Z
+from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
+from qiskit_optimization.algorithms import ADMMOptimizer, CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -35,7 +32,6 @@ from qiskit_optimization.converters import (
 )
 from qiskit_optimization.problems import Constraint, Variable
 from qiskit_optimization.translators import from_docplex_mp
-
 
 QUBIT_OP_MAXIMIZE_SAMPLE = (
     -199999.5 * (I ^ I ^ I ^ Z)

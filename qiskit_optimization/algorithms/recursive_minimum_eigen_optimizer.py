@@ -14,28 +14,23 @@
 
 from copy import deepcopy
 from enum import Enum
-from typing import Optional, Union, List, Tuple, Dict, cast
+from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from qiskit.algorithms import NumPyMinimumEigensolver
+
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.utils.validation import validate_min
 
-from .minimum_eigen_optimizer import (
-    MinimumEigenOptimizer,
-    MinimumEigenOptimizationResult,
-)
-from .optimization_algorithm import (
-    OptimizationResultStatus,
-    OptimizationAlgorithm,
-    OptimizationResult,
-)
-from ..converters.quadratic_program_to_qubo import (
-    QuadraticProgramToQubo,
-    QuadraticProgramConverter,
-)
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
 from ..problems import Variable
 from ..problems.quadratic_program import QuadraticProgram
+from .minimum_eigen_optimizer import MinimumEigenOptimizationResult, MinimumEigenOptimizer
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+)
 
 
 class IntermediateResult(Enum):
