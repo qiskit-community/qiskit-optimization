@@ -15,14 +15,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Union, Any, Optional, Dict, Type, Tuple, cast
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 from warnings import warn
 
 import numpy as np
+from qiskit.opflow import DictStateFn, StateFn
+from qiskit.quantum_info import Statevector
+from qiskit.result import QuasiDistribution
 
-from qiskit.opflow import StateFn, DictStateFn
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import QuadraticProgramToQubo, QuadraticProgramConverter
 from ..problems.quadratic_program import QuadraticProgram, Variable
 
 
@@ -518,7 +520,7 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _eigenvector_to_solutions(
-        eigenvector: Union[dict, np.ndarray, StateFn],
+        eigenvector: Union[QuasiDistribution, Statevector, dict, np.ndarray, StateFn],
         qubo: QuadraticProgram,
         min_probability: float = 1e-6,
     ) -> List[SolutionSample]:
@@ -566,7 +568,25 @@ class OptimizationAlgorithm(ABC):
             )
 
         solutions = []
-        if isinstance(eigenvector, dict):
+        if isinstance(eigenvector, QuasiDistribution):
+            probabilities = eigenvector.binary_probabilities()
+            # iterate over all samples
+            for bitstr, sampling_probability in probabilities.items():
+                # add the bitstring, if the sampling probability exceeds the threshold
+                if sampling_probability >= min_probability:
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
+
+        elif isinstance(eigenvector, Statevector):
+            probabilities = eigenvector.probabilities()
+            num_qubits = eigenvector.num_qubits
+            # iterate over all states and their sampling probabilities
+            for i, sampling_probability in enumerate(probabilities):
+                # add the i-th state if the sampling probability exceeds the threshold
+                if sampling_probability >= min_probability:
+                    bitstr = f"{i:b}".rjust(num_qubits, "0")
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
+
+        elif isinstance(eigenvector, dict):
             # When eigenvector is a dict, square the values since the values are normalized.
             # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
             probabilities = {bitstr: val**2 for (bitstr, val) in eigenvector.items()}
@@ -579,7 +599,6 @@ class OptimizationAlgorithm(ABC):
         elif isinstance(eigenvector, np.ndarray):
             num_qubits = int(np.log2(eigenvector.size))
             probabilities = np.abs(eigenvector * eigenvector.conj())
-
             # iterate over all states and their sampling probabilities
             for i, sampling_probability in enumerate(probabilities):
                 # add the i-th state if the sampling probability exceeds the threshold
@@ -588,6 +607,8 @@ class OptimizationAlgorithm(ABC):
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:
-            raise TypeError("Unsupported format of eigenvector. Provide a dict or numpy.ndarray.")
-
+            raise TypeError(
+                f"Eigenvector should be QuasiDistribution, Statevector, dict or numpy.ndarray. "
+                f"But, it was {type(eigenvector)}."
+            )
         return solutions
