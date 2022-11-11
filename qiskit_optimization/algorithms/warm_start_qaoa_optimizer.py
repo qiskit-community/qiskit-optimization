@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,26 +14,19 @@
 
 import copy
 from abc import ABC, abstractmethod
-from typing import Optional, List, Union, Dict, Tuple, cast
+from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.algorithms import QAOA
+from qiskit.algorithms.minimum_eigensolvers import QAOA
 from qiskit.circuit import Parameter
 
-from .minimum_eigen_optimizer import (
-    MinimumEigenOptimizer,
-    MinimumEigenOptimizationResult,
-)
-from .optimization_algorithm import (
-    OptimizationAlgorithm,
-    OptimizationResultStatus,
-    SolutionSample,
-)
 from ..converters.quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import VarType
+from .minimum_eigen_optimizer import MinimumEigenOptimizationResult, MinimumEigenOptimizer
+from .optimization_algorithm import OptimizationAlgorithm, OptimizationResultStatus, SolutionSample
 
 
 class BaseAggregator(ABC):
