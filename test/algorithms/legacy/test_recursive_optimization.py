@@ -10,33 +10,36 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test Recursive Min Eigen Optimizer with the primitive-based minimum eigensolver."""
+"""Test Recursive Min Eigen Optimizer with legacy MinimumEigensolver."""
 
 import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
-from qiskit.algorithms.optimizers import SLSQP
-from qiskit.primitives import Sampler
-from qiskit.utils import algorithm_globals
+
+from qiskit import BasicAer
+from qiskit.utils import algorithm_globals, QuantumInstance
+
+from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
-    CplexOptimizer,
     MinimumEigenOptimizer,
+    CplexOptimizer,
     RecursiveMinimumEigenOptimizer,
-    SlsqpOptimizer,
     WarmStartQAOAOptimizer,
+    SlsqpOptimizer,
 )
-from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
+from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import (
+    IntermediateResult,
+)
+from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.converters import (
-    InequalityToEquality,
     IntegerToBinary,
+    InequalityToEquality,
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
-from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
@@ -130,9 +133,11 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test the recursive optimizer with warm start qaoa."""
         seed = 1234
         algorithm_globals.random_seed = seed
+        backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(
-            sampler=Sampler(),
-            optimizer=SLSQP(),
+            quantum_instance=QuantumInstance(
+                backend=backend, seed_simulator=seed, seed_transpiler=seed
+            ),
             reps=1,
         )
         warm_qaoa = WarmStartQAOAOptimizer(

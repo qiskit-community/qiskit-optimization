@@ -10,20 +10,22 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test warm start QAOA optimizer with the primitive-based minimum eigensolver. """
+""" Test warm start QAOA optimizer with legacy MinimumEigensolver. """
 
 import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
+
 from docplex.mp.model import Model
-from qiskit.algorithms.minimum_eigensolvers import QAOA
-from qiskit.algorithms.optimizers import SLSQP
-from qiskit.primitives.sampler import Sampler
+from qiskit import BasicAer
+from qiskit.algorithms import QAOA
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import SlsqpOptimizer
-from qiskit_optimization.algorithms.goemans_williamson_optimizer import GoemansWilliamsonOptimizer
+from qiskit_optimization.algorithms.goemans_williamson_optimizer import (
+    GoemansWilliamsonOptimizer,
+)
 from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (
     MeanAggregator,
     WarmStartQAOAOptimizer,
@@ -50,7 +52,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         presolver = GoemansWilliamsonOptimizer(num_cuts=10)
         problem = Maxcut(graph).to_quadratic_program()
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=SLSQP(), reps=1)
+        backend = BasicAer.get_backend("statevector_simulator")
+        qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=presolver,
@@ -82,7 +85,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         problem = from_docplex_mp(model)
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=SLSQP(), reps=1)
+        backend = BasicAer.get_backend("statevector_simulator")
+        qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
@@ -109,7 +113,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         model.minimize((u - v + 2) ** 2)
         problem = from_docplex_mp(model)
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=SLSQP(), reps=1)
+        backend = BasicAer.get_backend("statevector_simulator")
+        qaoa = QAOA(quantum_instance=backend, reps=1)
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
             relax_for_pre_solver=True,
