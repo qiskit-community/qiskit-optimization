@@ -270,7 +270,6 @@ class GroverOptimizer(OptimizationAlgorithm):
                 k = int(outcome[0:n_key], 2)
                 v = outcome[n_key : n_key + n_value]
                 int_v = self._bin_to_int(v, n_value) + threshold
-                print(f'int_v: {int_v}')
                 logger.info("Outcome: %s", outcome)
                 logger.info("Value Q(x): %s", int_v)
                 # If the value is an improvement, we update the iteration parameters (e.g. oracle).
@@ -284,7 +283,6 @@ class GroverOptimizer(OptimizationAlgorithm):
 
                     # trace out work qubits and store samples
                     if self._sampler:
-                        print('cccc',self._circuit_results)
                         self._circuit_results = {
                             i[-1 * n_key :]: v for i, v in self._circuit_results.items()
                         }
@@ -294,12 +292,9 @@ class GroverOptimizer(OptimizationAlgorithm):
                             rho = partial_trace(self._circuit_results, indices)
                             self._circuit_results = cast(Dict, np.diag(rho.data) ** 0.5)
                         else:
-                            print(self._circuit_results)
                             self._circuit_results = {
                                 i[-1 * n_key :]: v for i, v in self._circuit_results.items()
                             }
-                            print(self._circuit_results)
-                    print(f'circuit_results: {self._circuit_results}')
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
@@ -372,15 +367,10 @@ class GroverOptimizer(OptimizationAlgorithm):
                 result = job.result()
             except Exception as exc:
                 raise QiskitOptimizationError("Sampler job failed.") from exc
-            #print(result)
             quasi_dist = result.quasi_dists[0]
             bit_length = (len(quasi_dist)-1).bit_length()
             hist = {f"{i:0{bit_length}b}"[::-1]: v for i, v in quasi_dist.items()}
-            # print(probs)
-            # print([v for i, v in quasi_dist.items() if v<0])
             self._circuit_results = {f"{i:0{bit_length}b}": v ** 0.5 for i, v in quasi_dist.items() if not np.isclose(v,0)}
-            #print(hist)
-            #print('bbbbbb',self._circuit_results)
         else:
             result = self.quantum_instance.execute(qc)
             if self.quantum_instance.is_statevector:
