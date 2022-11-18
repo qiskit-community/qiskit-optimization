@@ -27,7 +27,6 @@ from qiskit.algorithms.minimum_eigensolvers import (
 from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
-from ..deprecation import DeprecatedType, warn_deprecated
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram, Variable
 from .optimization_algorithm import (
@@ -115,7 +114,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.algorithms import QAOA
+        from qiskit.algorithms.minimum_eigensolver import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
@@ -151,14 +150,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-        if isinstance(min_eigen_solver, LegacyMinimumEigensolver):
-            warn_deprecated(
-                "0.5.0",
-                DeprecatedType.ARGUMENT,
-                f"min_eigen_solver as {LegacyMinimumEigensolver.__name__}",
-                new_name=f"min_eigen_solver as {SamplingMinimumEigensolver.__name__} "
-                f"or {NumPyMinimumEigensolver.__name__}",
-            )
+
         if not min_eigen_solver.supports_aux_operators():
             raise QiskitOptimizationError(
                 "Given MinimumEigensolver does not return the eigenstate "

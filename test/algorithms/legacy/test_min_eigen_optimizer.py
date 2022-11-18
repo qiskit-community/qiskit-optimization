@@ -383,15 +383,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         result = opt.solve(self.op_ordering)
         self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
-    def test_deprecation(self):
-        """Test deprecation warning"""
-        clear_deprecated_objects()
-        optimizer = SPSA(maxiter=100)
-        ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-        vqe_mes = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=QasmSimulatorPy())
-        with self.assertWarns(DeprecationWarning):
-            _ = MinimumEigenOptimizer(vqe_mes)
-
 
 if __name__ == "__main__":
     unittest.main()

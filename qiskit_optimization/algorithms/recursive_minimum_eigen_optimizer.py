@@ -117,7 +117,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block:: python
 
-        from qiskit.algorithms import QAOA
+        from qiskit.algorithms.minimum_eigensolver import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import (
             MinimumEigenOptimizer, RecursiveMinimumEigenOptimizer
@@ -161,7 +161,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
             min_num_vars_optimizer: This optimizer is used after the recursive scheme for the
                 problem with the remaining variables. Default value is
                 :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` created on top of
-                :class:`~qiskit.algorithms.minimum_eigen_solver.NumPyMinimumEigensolver`.
+                :class:`~qiskit.algorithms.minimum_eigensolver.NumPyMinimumEigensolver`.
             penalty: The factor that is used to scale the penalty terms corresponding to linear
                 equality constraints.
             history: Whether the intermediate results are stored.

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2021.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -421,12 +421,3 @@ def deprecate_function(
     return _deprecate_object(
         version, DeprecatedType.FUNCTION, new_type, new_name, additional_msg, stack_level
     )
-
-
-def clear_deprecated_objects() -> None:
-    """Clear deprecated object cache
-
-    Returns:
-        None
-    """
-    _DEPRECATED_OBJECTS.clear()
