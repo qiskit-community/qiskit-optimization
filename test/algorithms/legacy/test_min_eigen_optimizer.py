@@ -43,7 +43,6 @@ from qiskit_optimization.converters import (
 )
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.runtime import VQEProgram, QAOAProgram
-from qiskit_optimization.deprecation import clear_deprecated_objects
 
 
 @ddt

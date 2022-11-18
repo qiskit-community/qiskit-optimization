@@ -1,9 +1,0 @@
----
-features:
-  - |
-    The :class:`~.GroverOptimizer` class has a new keyword argument, ``sampler`` which is
-    used to run the algorithm using an instance of the :class:`~.BaseSampler`
-    interface to calculate the results. This new argument supersedes the
-    the ``quantum_instance`` argument and accordingly, ``quantum_instance``
-    is pending deprecation and will be deprecated and subsequently removed in
-    future releases.

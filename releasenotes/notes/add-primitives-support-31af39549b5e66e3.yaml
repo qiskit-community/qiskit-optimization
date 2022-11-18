@@ -1,0 +1,24 @@
+---
+features:
+  - |
+    The :class:`~.GroverOptimizer` class has a new keyword argument, ``sampler`` which is
+    used to run the algorithm using an instance of the :class:`~.BaseSampler`
+    interface to calculate the results. This new argument supersedes
+    the ``quantum_instance`` argument and accordingly, ``quantum_instance``
+    is pending deprecation and will be deprecated and subsequently removed in
+    future releases.
+  - |
+    The :class:`~.MinimumEigenOptimizer` class takes the primitives-based algorithms
+    (``qiskit.algorithms.minimum_eigensolvers.SamplingVQE`` and
+    ``qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver``)
+    as ``min_eigen_solver`` argument.
+    The conventional algorithms ``qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver``
+    is pending deprecation and will be deprecated and subsequently removed in future releases.
+    Note that ``qiskit.algorithms.minimum_eigensolvers.SamplingVQE`` supersedes
+    ``qiskit.algorithms.VQE`` for :class:`~.MinimumEigenOptimizer`.
+  - |
+    The :class:`~.WarmStartQAOAOptimizer` class takes the primitives-based QAOA
+    (``qiskit.algorithms.minimum_eigensolvers.QAOA``) as ``qaoa`` argument.
+    The conventional algorithm ``qiskit.algorithms.minimum_eigen_solvers.QAOA``
+    is pending deprecation and will be deprecated
+    and subsequently removed in future releases.

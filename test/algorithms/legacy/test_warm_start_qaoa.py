@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Test warm start QAOA optimizer with legacy MinimumEigensolver. """
+""" Test warm start QAOA optimizer with legacy QAOA. """
 
 import unittest
 from test import QiskitOptimizationTestCase
