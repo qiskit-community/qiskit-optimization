@@ -19,7 +19,7 @@ import numpy as np
 from ddt import data, ddt
 from docplex.mp.model import Model
 from qiskit.utils import QuantumInstance, algorithm_globals, optionals
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.primitives import Sampler
 from qiskit_optimization.algorithms import (
     GroverOptimizer,

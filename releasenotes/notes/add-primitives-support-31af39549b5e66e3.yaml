@@ -1,4 +1,7 @@
 ---
+prelude:
+  - |
+
 features:
   - |
     The :class:`~.GroverOptimizer` class has a new keyword argument, ``sampler`` which is
@@ -9,7 +12,7 @@ features:
     future releases.
   - |
     The :class:`~.MinimumEigenOptimizer` class takes the primitives-based algorithms
-    (``qiskit.algorithms.minimum_eigensolvers.SamplingVQE`` and
+    (``qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver`` and
     ``qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver``)
     as ``min_eigen_solver`` argument.
     The conventional algorithms ``qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver``
