@@ -42,7 +42,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
-from qiskit_optimization.runtime import VQEProgram, QAOAProgram
+from qiskit_optimization.runtime import VQEClient, QAOAClient
 
 
 @ddt
@@ -56,22 +56,23 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.min_eigen_solvers = {}
 
         # exact eigen solver
-        self.min_eigen_solvers["exact"] = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            self.min_eigen_solvers["exact"] = NumPyMinimumEigensolver()
 
-        # QAOA
-        optimizer = COBYLA()
-        self.min_eigen_solvers["qaoa"] = QAOA(optimizer=optimizer)
-        # simulators
-        self.sv_simulator = QuantumInstance(
-            BasicAer.get_backend("statevector_simulator"),
-            seed_simulator=123,
-            seed_transpiler=123,
-        )
-        self.qasm_simulator = QuantumInstance(
-            BasicAer.get_backend("qasm_simulator"),
-            seed_simulator=123,
-            seed_transpiler=123,
-        )
+            # QAOA
+            optimizer = COBYLA()
+            self.min_eigen_solvers["qaoa"] = QAOA(optimizer=optimizer)
+            # simulators
+            self.sv_simulator = QuantumInstance(
+                BasicAer.get_backend("statevector_simulator"),
+                seed_simulator=123,
+                seed_transpiler=123,
+            )
+            self.qasm_simulator = QuantumInstance(
+                BasicAer.get_backend("qasm_simulator"),
+                seed_simulator=123,
+                seed_transpiler=123,
+            )
         # test minimize
         self.op_minimize = QuadraticProgram()
         self.op_minimize.integer_var(0, 3, "x")
@@ -122,7 +123,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             cplex_result = cplex.solve(problem)
 
             # solve problem
-            result = min_eigen_optimizer.solve(problem)
+            with self.assertWarns(PendingDeprecationWarning):
+                result = min_eigen_optimizer.solve(problem)
             self.assertIsNotNone(result)
 
             # analyze results
@@ -145,7 +147,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             filename, lowerbound, fval, status = config
 
             # get minimum eigen solver
-            min_eigen_solver = NumPyMinimumEigensolver()
+            with self.assertWarns(PendingDeprecationWarning):
+                min_eigen_solver = NumPyMinimumEigensolver()
 
             # set filter
             # pylint: disable=unused-argument
@@ -163,7 +166,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             problem.read_from_lp_file(lp_file)
 
             # solve problem
-            result = min_eigen_optimizer.solve(problem)
+            with self.assertWarns(PendingDeprecationWarning):
+                result = min_eigen_optimizer.solve(problem)
             self.assertIsNotNone(result)
 
             # analyze results
@@ -183,11 +187,13 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         op.maximize(linear={"x": 1, "y": 2})
         op.linear_constraint(linear={"x": 1, "y": 1}, sense="LE", rhs=3, name="xy_leq")
-        min_eigen_solver = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            min_eigen_solver = NumPyMinimumEigensolver()
         # a single converter
         qp2qubo = QuadraticProgramToQubo()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=qp2qubo)
-        result = min_eigen_optimizer.solve(op)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         # a list of converters
         ineq2eq = InequalityToEquality()
@@ -196,7 +202,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         max2min = MaximizeToMinimize()
         converters = [ineq2eq, int2bin, penalize, max2min]
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=converters)
-        result = min_eigen_optimizer.solve(op)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         with self.assertRaises(TypeError):
             invalid = [qp2qubo, "invalid converter"]
@@ -205,9 +212,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def test_samples_numpy_eigen_solver(self):
         """Test samples for NumPyMinimumEigensolver"""
         # test minimize
-        min_eigen_solver = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
-        result = min_eigen_optimizer.solve(self.op_minimize)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(self.op_minimize)
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
         self.assertEqual(result.fval, opt_sol)
@@ -222,9 +231,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
-        min_eigen_solver = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
-        result = min_eigen_optimizer.solve(self.op_maximize)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(self.op_maximize)
         opt_sol = 2
         self.assertEqual(result.fval, opt_sol)
         self.assertEqual(len(result.samples), 1)
@@ -247,9 +258,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         # test minimize
         algorithm_globals.random_seed = 4
         quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
-        result = min_eigen_optimizer.solve(self.op_minimize)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(self.op_minimize)
         success = OptimizationResultStatus.SUCCESS
         opt_sol = 1
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
@@ -269,9 +282,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         opt_sol = 2
-        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
-        result = min_eigen_optimizer.solve(self.op_maximize)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(self.op_maximize)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
         self.assertAlmostEqual(max(s.fval for s in result.samples), 5)
@@ -297,9 +312,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test bit ordering
         opt_sol = -2
-        qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
-        result = min_eigen_optimizer.solve(self.op_ordering)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = min_eigen_optimizer.solve(self.op_ordering)
         self.assertEqual(result.fval, opt_sol)
         np.testing.assert_array_almost_equal(result.x, [0, 1])
         self.assertEqual(result.status, success)
@@ -329,9 +346,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         success = OptimizationResultStatus.SUCCESS
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-        vqe_mes = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=quantum_instance)
+        with self.assertWarns(PendingDeprecationWarning):
+            vqe_mes = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=quantum_instance)
         vqe = MinimumEigenOptimizer(vqe_mes)
-        results = vqe.solve(self.op_ordering)
+        with self.assertWarns(PendingDeprecationWarning):
+            results = vqe.solve(self.op_ordering)
         self.assertEqual(results.fval, opt_sol)
         np.testing.assert_array_almost_equal(results.x, [0, 1])
         self.assertEqual(results.status, success)
@@ -360,7 +379,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         if subroutine == "vqe":
             ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
             initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
-            solver = VQEProgram(
+            solver = VQEClient(
                 ansatz=ry_ansatz,
                 optimizer=optimizer,
                 initial_point=initial_point,
@@ -370,7 +389,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         else:
             reps = 2
             initial_point = np.random.default_rng(42).random(2 * reps)
-            solver = QAOAProgram(
+            solver = QAOAClient(
                 optimizer=optimizer,
                 reps=reps,
                 initial_point=initial_point,

@@ -53,7 +53,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         problem = Maxcut(graph).to_quadratic_program()
 
         backend = BasicAer.get_backend("statevector_simulator")
-        qaoa = QAOA(quantum_instance=backend, reps=1)
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=presolver,
@@ -63,7 +64,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
             num_initial_solutions=10,
             aggregator=aggregator,
         )
-        result_warm = optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result_warm = optimizer.solve(problem)
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)
@@ -86,7 +88,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         problem = from_docplex_mp(model)
 
         backend = BasicAer.get_backend("statevector_simulator")
-        qaoa = QAOA(quantum_instance=backend, reps=1)
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(quantum_instance=backend, reps=1)
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
@@ -95,7 +98,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
             epsilon=0.25,
             aggregator=aggregator,
         )
-        result_warm = optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result_warm = optimizer.solve(problem)
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)
@@ -114,14 +118,16 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         problem = from_docplex_mp(model)
 
         backend = BasicAer.get_backend("statevector_simulator")
-        qaoa = QAOA(quantum_instance=backend, reps=1)
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(quantum_instance=backend, reps=1)
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
             relax_for_pre_solver=True,
             qaoa=qaoa,
             epsilon=0.25,
         )
-        result_warm = optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result_warm = optimizer.solve(problem)
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)

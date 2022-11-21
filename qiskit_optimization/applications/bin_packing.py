@@ -118,7 +118,7 @@ class BinPacking(OptimizationApplication):
         """
         import matplotlib.pyplot as plt
 
-        colors = plt.cm.get_cmap("jet", len(self._weights))
+        colors = plt.colormaps.get_cmap("jet").resampled(len(self._weights))
         items_in_bins = self.interpret(result)
         num_bins = len(items_in_bins)
         fig, axes = plt.subplots()
