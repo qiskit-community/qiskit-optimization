@@ -18,7 +18,7 @@ features:
     (``qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver`` and
     ``qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver``)
     as ``min_eigen_solver`` argument.
-    The conventional algorithm ``qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver``
+    The former algorithm ``qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver``
     is pending deprecation and will be deprecated and subsequently removed in future releases.
     Note that ``qiskit.algorithms.minimum_eigensolvers.SamplingVQE`` supersedes
     ``qiskit.algorithms.VQE`` for :class:`~.MinimumEigenOptimizer`.
@@ -27,5 +27,5 @@ features:
   - |
     The :class:`~.WarmStartQAOAOptimizer` class takes the primitives-based QAOA
     (``qiskit.algorithms.minimum_eigensolvers.QAOA``) as ``qaoa`` argument.
-    The conventional algorithm ``qiskit.algorithms.minimum_eigen_solvers.QAOA``
+    The former algorithm ``qiskit.algorithms.minimum_eigen_solvers.QAOA``
     is pending deprecation and will be deprecated and subsequently removed in future releases.
