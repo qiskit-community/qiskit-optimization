@@ -16,7 +16,7 @@ features:
     Note that ``qiskit.algorithms.minimum_eigensolvers.SamplingVQE`` supersedes
     ``qiskit.algorithms.VQE`` for :class:`~.MinimumEigenOptimizer`.
     ``qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver`` also supersedes
-    ``qiskit.algorithms.minimum_eigen_solvers.NumPyMinimumEigensolver`.
+    ``qiskit.algorithms.minimum_eigen_solvers.NumPyMinimumEigensolver``.
   - |
     The :class:`~.WarmStartQAOAOptimizer` class takes the primitives-based QAOA
     (``qiskit.algorithms.minimum_eigensolvers.QAOA``) as ``qaoa`` argument.
