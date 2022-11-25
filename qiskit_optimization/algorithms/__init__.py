@@ -93,6 +93,7 @@ from .recursive_minimum_eigen_optimizer import (
     RecursiveMinimumEigenOptimizationResult,
     IntermediateResult,
 )
+from .scipy_milp_optimizer import ScipyMilpOptimizer
 from .slsqp_optimizer import SlsqpOptimizer, SlsqpOptimizationResult
 from .warm_start_qaoa_optimizer import (
     BaseAggregator,
@@ -120,6 +121,7 @@ __all__ = [
     "RecursiveMinimumEigenOptimizer",
     "RecursiveMinimumEigenOptimizationResult",
     "IntermediateResult",
+    "ScipyMilpOptimizer",
     "SlsqpOptimizer",
     "SlsqpOptimizationResult",
     "SolutionSample",
