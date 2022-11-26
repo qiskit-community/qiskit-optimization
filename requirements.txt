@@ -1,6 +1,6 @@
 qiskit-terra>=0.20.0
 scipy>=1.4
 numpy>=1.17
-docplex>=2.21.207
+docplex>=2.21.207,<2.24.231
 setuptools>=40.1.0
 networkx>=2.2
