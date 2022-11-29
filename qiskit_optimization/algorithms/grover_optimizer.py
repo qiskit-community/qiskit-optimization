@@ -237,7 +237,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         # Initialize oracle helper object.
         qr_key_value = QuantumRegister(self._num_key_qubits + self._num_value_qubits)
         orig_constant = problem_.objective.constant
-        measurement = not (self._quantum_instance and self._quantum_instance.is_statevector)
+        measurement = self._quantum_instance is None or not self._quantum_instance.is_statevector
         oracle, is_good_state = self._get_oracle(qr_key_value)
 
         while not optimum_found:
@@ -284,7 +284,7 @@ class GroverOptimizer(OptimizationAlgorithm):
                     threshold = optimum_value
 
                     # trace out work qubits and store samples
-                    if self._sampler:
+                    if self._sampler is not None:
                         self._circuit_results = {
                             i[-1 * n_key :]: v for i, v in self._circuit_results.items()
                         }
