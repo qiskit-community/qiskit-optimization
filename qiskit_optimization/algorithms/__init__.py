@@ -55,6 +55,7 @@ Algorithms and results
    OptimizationResultStatus
    RecursiveMinimumEigenOptimizationResult
    RecursiveMinimumEigenOptimizer
+   ScipyMilpOptimizer
    SlsqpOptimizationResult
    SlsqpOptimizer
    SolutionSample
