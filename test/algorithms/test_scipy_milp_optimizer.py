@@ -19,7 +19,6 @@ from ddt import data, ddt
 import numpy as np
 
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization.algorithms import GurobiOptimizer
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.algorithms import ScipyMilpOptimizer
 
