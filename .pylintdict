@@ -126,6 +126,7 @@ nosignatures
 np
 num
 numpy
+numpyminimumeigensolver
 october
 optimality
 optimizationresult

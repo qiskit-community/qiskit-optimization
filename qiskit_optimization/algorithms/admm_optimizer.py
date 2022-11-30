@@ -17,21 +17,21 @@ import time
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 
-from .minimum_eigen_optimizer import MinimumEigenOptimizer
-from .optimization_algorithm import (
-    OptimizationResultStatus,
-    OptimizationAlgorithm,
-    OptimizationResult,
-)
-from .slsqp_optimizer import SlsqpOptimizer
+from ..converters import MaximizeToMinimize
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
 from ..problems.linear_expression import LinearExpression
 from ..problems.quadratic_program import QuadraticProgram
-from ..problems.variable import VarType, Variable
-from ..converters import MaximizeToMinimize
+from ..problems.variable import Variable, VarType
+from .minimum_eigen_optimizer import MinimumEigenOptimizer
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+)
+from .slsqp_optimizer import SlsqpOptimizer
 
 UPDATE_RHO_BY_TEN_PERCENT = 0
 UPDATE_RHO_BY_RESIDUALS = 1
