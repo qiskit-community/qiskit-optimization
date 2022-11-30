@@ -68,9 +68,9 @@ from docplex.mp.model import Model
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from qiskit_optimization.translators import from_docplex_mp
 
-from qiskit.utils import algorithm_globals, QuantumInstance
-from qiskit import BasicAer
-from qiskit.algorithms import QAOA
+from qiskit.utils import algorithm_globals
+from qiskit.primitives import Sampler
+from qiskit.algorithms.minimum_eigensolvers import QAOA
 from qiskit.algorithms.optimizers import SPSA
 
 # Generate a graph of 4 nodes
@@ -97,9 +97,8 @@ seed = 1234
 algorithm_globals.random_seed = seed
 
 spsa = SPSA(maxiter=250)
-backend = BasicAer.get_backend('qasm_simulator')
-q_i = QuantumInstance(backend=backend, seed_simulator=seed, seed_transpiler=seed)
-qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=q_i)
+sampler = Sampler()
+qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
