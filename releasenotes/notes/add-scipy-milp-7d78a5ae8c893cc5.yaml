@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Adds a class :class:`~qiskit_optimization.algorithms.ScipyMilpOptimizer`
+    as a classical solver.
