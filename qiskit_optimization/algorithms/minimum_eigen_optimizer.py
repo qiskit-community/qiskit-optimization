@@ -154,8 +154,8 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         """
         if isinstance(min_eigen_solver, VQE):
             raise TypeError(
-                "MinimumEigenOptimizer does not support VQE but SamplingVQE. "
-                "qiskit.algorithms.minimum_eigensolvers.SamplingVQE may help you."
+                "MinimumEigenOptimizer does not support this VQE. You can use  "
+                "qiskit.algorithms.minimum_eigensolvers.SamplingVQE instead."
             )
         if not isinstance(
             min_eigen_solver,
