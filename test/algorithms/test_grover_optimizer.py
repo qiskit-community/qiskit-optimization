@@ -20,7 +20,6 @@ from ddt import data, ddt
 from docplex.mp.model import Model
 from qiskit.utils import QuantumInstance, algorithm_globals, optionals
 from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
-from qiskit.primitives import Sampler
 from qiskit_optimization.algorithms import (
     GroverOptimizer,
     MinimumEigenOptimizer,
@@ -46,6 +45,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         super().setUp()
         algorithm_globals.random_seed = 1
         from qiskit_aer import Aer
+        from qiskit_aer.primitives import Sampler
 
         self.sv_simulator = QuantumInstance(
             Aer.get_backend("aer_simulator_statevector"),
@@ -57,6 +57,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
             seed_simulator=123,
             seed_transpiler=123,
         )
+        self.sampler = Sampler(run_options={"seed_simulator": 123})
         self.n_iter = 8
 
     def _prepare_grover_optimizer(
@@ -84,7 +85,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
                 num_value_qubits=num_value_qubits,
                 num_iterations=num_iterations,
                 converters=converters,
-                sampler=Sampler(),
+                sampler=self.sampler,
             )
         return grover_optimizer
 
