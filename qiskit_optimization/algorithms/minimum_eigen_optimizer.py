@@ -23,6 +23,7 @@ from qiskit.algorithms.minimum_eigensolvers import (
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
+    VQE,
 )
 from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
 
@@ -147,10 +148,26 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
 
         Raises:
+            TypeError: If minimum eigensolver has an invalid type.
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-
+        if isinstance(min_eigen_solver, VQE):
+            raise TypeError(
+                "MinimumEigenOptimizer does not support this VQE. You can use  "
+                "qiskit.algorithms.minimum_eigensolvers.SamplingVQE instead."
+            )
+        if not isinstance(
+            min_eigen_solver,
+            (SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver),
+        ):
+            raise TypeError(
+                "MinimumEigenOptimizer supports "
+                "qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver, "
+                "qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver, and "
+                "qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver. "
+                f"But {type(min_eigen_solver)} is given."
+            )
         if not min_eigen_solver.supports_aux_operators():
             raise QiskitOptimizationError(
                 "Given MinimumEigensolver does not return the eigenstate "
