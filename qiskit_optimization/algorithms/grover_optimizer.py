@@ -368,7 +368,9 @@ class GroverOptimizer(OptimizationAlgorithm):
                 raise QiskitOptimizationError("Sampler job failed.") from exc
             quasi_dist = result.quasi_dists[0]
             raw_prob_dist = {
-                k: v for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items() if v > 1e-6
+                k: v
+                for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items()
+                if v >= self._MIN_PROBABILITY
             }
             prob_dist = {k[::-1]: v for k, v in raw_prob_dist.items()}
             self._circuit_results = {i: v**0.5 for i, v in raw_prob_dist.items()}
