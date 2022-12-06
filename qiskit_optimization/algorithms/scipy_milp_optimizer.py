@@ -12,16 +12,12 @@
 
 """The MILP(Scipy) optimizer wrapped to be used within Qiskit's optimization module."""
 
-from packaging import version
 import numpy as np
-import scipy.version
-from scipy.optimize import milp, LinearConstraint, Bounds
-from scipy.sparse import csc_matrix
-
+import qiskit_optimization.optionals as _optionals
 from ..problems.quadratic_program import QuadraticProgram
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
-
+@_optionals.HAS_SCIPY_MILP.require_in_instance
 class ScipyMilpOptimizer(OptimizationAlgorithm):
     """The MILP optimizer from Scipy wrapped as an Qiskit :class:`OptimizationAlgorithm`.
 
@@ -42,7 +38,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
     @staticmethod
     def is_scipy_updated():
         """Returns True if scipy is updated."""
-        return version.parse("1.9.0") < version.parse(scipy.version.version)
+        return _optionals.HAS_SCIPY_MILP
 
     @property
     def disp(self) -> bool:
@@ -81,6 +77,8 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
 
     def _generate_problem(self, problem: QuadraticProgram):
 
+        from scipy.optimize import LinearConstraint, Bounds
+        from scipy.sparse import csc_matrix
         ## Obtain sense of objective function (+1 for minimization and -1 for maximization)
         sense = problem.objective.sense.value
 
@@ -137,6 +135,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
         # pylint: disable=import-error
+        from scipy.optimize import milp
 
         objective, constraints, integrality, bounds, sense = self._generate_problem(problem)
         opt_result = milp(

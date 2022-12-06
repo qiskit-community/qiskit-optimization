@@ -18,6 +18,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 from ddt import data, ddt
 import numpy as np
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.algorithms import ScipyMilpOptimizer
 
@@ -31,6 +32,7 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
         ("op_mip1.lp", [0, 1, 1], 5.5),
         ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
+    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_scipy_milp_optimizer(self, config):
         """ScipyMilp Optimizer Test"""
         # unpack configuration
