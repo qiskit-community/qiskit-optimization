@@ -17,6 +17,7 @@ import qiskit_optimization.optionals as _optionals
 from ..problems.quadratic_program import QuadraticProgram
 from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
+
 @_optionals.HAS_SCIPY_MILP.require_in_instance
 class ScipyMilpOptimizer(OptimizationAlgorithm):
     """The MILP optimizer from Scipy wrapped as an Qiskit :class:`OptimizationAlgorithm`.
@@ -79,6 +80,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
 
         from scipy.optimize import LinearConstraint, Bounds
         from scipy.sparse import csc_matrix
+
         ## Obtain sense of objective function (+1 for minimization and -1 for maximization)
         sense = problem.objective.sense.value
 
