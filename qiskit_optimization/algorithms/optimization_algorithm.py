@@ -15,8 +15,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
+from logging import getLogger
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
-from warnings import warn
 
 import numpy as np
 from qiskit.opflow import DictStateFn, StateFn
@@ -26,6 +26,8 @@ from qiskit.result import QuasiDistribution
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram, Variable
+
+logger = getLogger(__name__)
 
 
 class OptimizationResultStatus(Enum):
@@ -137,7 +139,7 @@ class OptimizationResult:
         if samples:
             sum_prob = np.sum([e.probability for e in samples])
             if not np.isclose(sum_prob, 1.0):
-                warn(f"The sum of probability of samples is not close to 1: {sum_prob}")
+                logger.debug("The sum of probability of samples is not close to 1: %f", sum_prob)
             self._samples = samples
         else:
             self._samples = [
@@ -290,6 +292,8 @@ class OptimizationResult:
 
 class OptimizationAlgorithm(ABC):
     """An abstract class for optimization algorithms in Qiskit's optimization module."""
+
+    _MIN_PROBABILITY = 1e-6
 
     @abstractmethod
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
@@ -522,7 +526,7 @@ class OptimizationAlgorithm(ABC):
     def _eigenvector_to_solutions(
         eigenvector: Union[QuasiDistribution, Statevector, dict, np.ndarray, StateFn],
         qubo: QuadraticProgram,
-        min_probability: float = 1e-6,
+        min_probability: float = _MIN_PROBABILITY,
     ) -> List[SolutionSample]:
         """Convert the eigenvector to the bitstrings and corresponding eigenvalues.
 
