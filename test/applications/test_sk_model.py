@@ -29,8 +29,8 @@ class TestSKModel(QiskitOptimizationTestCase):
         super().setUp()
         self._num_of_sites = 2
         self._seed = 0
-        self._graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, -1], [-1, 0]]))
-        self._new_disorder_graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, 1], [1, 0]]))
+        self._graph = nx.convert_matrix.from_numpy_array(np.array([[0, -1], [-1, 0]]))
+        self._new_disorder_graph = nx.convert_matrix.from_numpy_array(np.array([[0, 1], [1, 0]]))
 
         op = QuadraticProgram()
         for _ in range(2):

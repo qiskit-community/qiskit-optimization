@@ -14,33 +14,30 @@
 
 import logging
 import math
-from copy import deepcopy
-from typing import Optional, Dict, Union, List, cast
 import warnings
+from copy import deepcopy
+from typing import Dict, List, Optional, Union, cast
 
 import numpy as np
-
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.algorithms import AmplificationProblem
-from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
 from qiskit.primitives import BaseSampler
 from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace
-from .optimization_algorithm import (
-    OptimizationResultStatus,
-    OptimizationAlgorithm,
-    OptimizationResult,
-    SolutionSample,
-)
-from ..converters.quadratic_program_to_qubo import (
-    QuadraticProgramToQubo,
-    QuadraticProgramConverter,
-)
+from qiskit.utils import QuantumInstance, algorithm_globals
+
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
 from ..problems import Variable
 from ..problems.quadratic_program import QuadraticProgram
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+    SolutionSample,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -370,13 +367,13 @@ class GroverOptimizer(OptimizationAlgorithm):
             except Exception as exc:
                 raise QiskitOptimizationError("Sampler job failed.") from exc
             quasi_dist = result.quasi_dists[0]
-            bit_length = (len(quasi_dist) - 1).bit_length()
-            prob_dist = {f"{i:0{bit_length}b}"[::-1]: v for i, v in quasi_dist.items()}
-            self._circuit_results = {
-                f"{i:0{bit_length}b}": v**0.5
-                for i, v in quasi_dist.items()
-                if not np.isclose(v, 0)
+            raw_prob_dist = {
+                k: v
+                for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items()
+                if v >= self._MIN_PROBABILITY
             }
+            prob_dist = {k[::-1]: v for k, v in raw_prob_dist.items()}
+            self._circuit_results = {i: v**0.5 for i, v in raw_prob_dist.items()}
         else:
             result = self._quantum_instance.execute(qc)
             if self._quantum_instance.is_statevector:
