@@ -81,6 +81,7 @@ hamiltonian
 hamiltonians
 hastings
 hoyer
+ibm
 ide
 imode
 init
@@ -128,6 +129,7 @@ num
 numpy
 numpyminimumeigensolver
 october
+opflow
 optimality
 optimizationresult
 optimizationresultstatus
