@@ -79,7 +79,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
     def _generate_problem(self, problem: QuadraticProgram):
 
         from scipy.optimize import LinearConstraint, Bounds
-        from scipy.sparse import csc_matrix
+        from scipy.sparse import lil_matrix
 
         ## Obtain sense of objective function (+1 for minimization and -1 for maximization)
         sense = problem.objective.sense.value
@@ -88,7 +88,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
         objective = problem.objective.linear.to_array() * sense
 
         ## Initialize constraints matrix
-        constraints_matrix = csc_matrix(len(problem.linear_constraints), len(problem.variables))
+        constraints_matrix = lil_matrix((len(problem.linear_constraints), len(problem.variables)))
 
         ## Initialize constraint value
         left_constraint = np.array([])
@@ -144,12 +144,19 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
             c=objective, integrality=integrality, bounds=bounds, constraints=constraints
         )
 
+        opt_x = []
+        for i, ele in enumerate(opt_result.x):
+            if integrality[i]:
+                opt_x.append(round(ele))
+            else:
+                opt_x.append(ele)
+
         # create results
         result = OptimizationResult(
-            x=opt_result.x,
+            x=opt_x,
             fval=opt_result.fun * sense,
             variables=problem.variables,
-            status=opt_result.status,
+            status=self._get_feasibility_status(problem, opt_x),
             raw_results=opt_result,
         )
 

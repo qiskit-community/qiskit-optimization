@@ -50,7 +50,7 @@ HAS_MATPLOTLIB = LazyImportTester(
 
 HAS_SCIPY_MILP = LazyImportTester(
     {
-        "scipy.optimize": ("Milp",),
+        "scipy.optimize": ("milp",),
     },
     name="Scipy",
     install="pip install 'qiskit-optimization[scipy]'",
