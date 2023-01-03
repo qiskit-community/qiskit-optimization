@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2022.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -114,7 +114,7 @@ class _SubstituteVariables:
     """A class to substitute variables of an optimization problem with constants for other
     variables"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._src: Optional[QuadraticProgram] = None
         self._dst: Optional[QuadraticProgram] = None
         self._subs: Dict[str, SubstitutionExpression] = {}
