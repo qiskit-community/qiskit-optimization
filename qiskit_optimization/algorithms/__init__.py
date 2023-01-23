@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -103,6 +103,9 @@ from .warm_start_qaoa_optimizer import (
 
 __all__ = [
     "ADMMOptimizer",
+    "ADMMOptimizationResult",
+    "ADMMState",
+    "ADMMParameters",
     "OptimizationAlgorithm",
     "OptimizationResult",
     "OptimizationResultStatus",
@@ -117,6 +120,7 @@ __all__ = [
     "MeanAggregator",
     "MinimumEigenOptimizer",
     "MinimumEigenOptimizationResult",
+    "MultiStartOptimizer",
     "RecursiveMinimumEigenOptimizer",
     "RecursiveMinimumEigenOptimizationResult",
     "IntermediateResult",
