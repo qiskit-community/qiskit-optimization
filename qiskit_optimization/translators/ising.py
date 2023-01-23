@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2022.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,17 +13,20 @@
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
 import math
-from typing import Tuple
+from typing import Tuple, Union
 
 import numpy as np
-
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
-from qiskit.quantum_info import Pauli
+from qiskit.quantum_info import Pauli, SparsePauliOp
+from qiskit.quantum_info.operators.base_operator import BaseOperator
+
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
+def to_ising(
+    quad_prog: QuadraticProgram, quantum_info: bool = False
+) -> Tuple[Union[OperatorBase, SparsePauliOp], float]:
     """Return the Ising Hamiltonian of this problem.
 
     Variables are mapped to qubits in the same order, i.e.,
@@ -32,6 +35,8 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
 
     Args:
         quad_prog: The problem to be translated.
+        quantum_info: The output object is ``SparsePauliOp`` if True.
+            Otherwise, it is an OpFlow's operator. (default: False)
 
     Returns:
         A tuple (qubit_op, offset) comprising the qubit operator for the problem
@@ -117,11 +122,20 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
         num_nodes = max(1, num_nodes)
         qubit_op = 0 * I ^ num_nodes
 
+    if quantum_info:
+        # Note: if there is only one operator in `qubit_op`, `qubit_op.primitives`
+        # can be `Pauli` and can be multiplied only by 1, -1j, -1, 1j.
+        # So, we need to make sure to generate `SparsePauliOp`.
+        if isinstance(qubit_op, PauliSumOp):
+            qubit_op = qubit_op.coeff * qubit_op.primitive
+        else:
+            qubit_op = qubit_op.coeff * SparsePauliOp(qubit_op.primitive)
+
     return qubit_op, offset
 
 
 def from_ising(
-    qubit_op: OperatorBase,
+    qubit_op: Union[OperatorBase, BaseOperator],
     offset: float = 0.0,
     linear: bool = False,
 ) -> QuadraticProgram:
@@ -148,6 +162,11 @@ def from_ising(
         QiskitOptimizationError: if any Pauli term has an imaginary coefficient
         NotImplementedError: If the input operator is a ListOp
     """
+    if isinstance(qubit_op, BaseOperator):
+        if isinstance(qubit_op, SparsePauliOp):
+            qubit_op = PauliSumOp(qubit_op)
+        else:
+            qubit_op = PauliSumOp(SparsePauliOp(qubit_op))
     if isinstance(qubit_op, PauliSumOp):
         qubit_op = qubit_op.to_pauli_op()
 
