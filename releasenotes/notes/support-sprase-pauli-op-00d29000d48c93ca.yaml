@@ -3,5 +3,8 @@ features:
   - |
     Updates :func:`~.to_ising` and :func:`~.from_ising` to support
     ``qiskit.quantum_info.SparsePauliOp``.
-    Adds ``quantum_info`` option to :func:`~.to_ising` to control the output is
-    opflow's operator (if ``False``) or ``SparsePauliOp`` (if ``True``).
+    Adds ``opflow`` option to :func:`~.to_ising` to control the output is
+    opflow's operator (if ``True``) or ``SparsePauliOp`` (if ``False``).
+    The default of ``opflow`` option is ``True`` now, but it will be
+    changed to ``False`` and the option itself will be deprecated
+    in the future release.

@@ -13,7 +13,8 @@
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
 import math
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
+from warnings import warn
 
 import numpy as np
 from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
@@ -25,7 +26,7 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
 def to_ising(
-    quad_prog: QuadraticProgram, quantum_info: bool = False
+    quad_prog: QuadraticProgram, opflow: Optional[bool] = None
 ) -> Tuple[Union[OperatorBase, SparsePauliOp], float]:
     """Return the Ising Hamiltonian of this problem.
 
@@ -35,8 +36,8 @@ def to_ising(
 
     Args:
         quad_prog: The problem to be translated.
-        quantum_info: The output object is ``SparsePauliOp`` if True.
-            Otherwise, it is an OpFlow's operator. (default: False)
+        opflow: The output object is an OpFlow's operator if True.
+            Otherwise, it is ``SparsePauliOp``. (default: True)
 
     Returns:
         A tuple (qubit_op, offset) comprising the qubit operator for the problem
@@ -47,6 +48,15 @@ def to_ising(
             in the problem.
         QiskitOptimizationError: If constraints exist in the problem.
     """
+    if opflow is None:
+        opflow = True
+        warn(
+            "`opflow` option of `to_ising` is not set explicitly. "
+            "It is set True now, but the default value will be changed to False. "
+            "We suggest setting `opflow=True` explicitly like `to_ising(qp, opflow=True)`.",
+            stacklevel=2,
+        )
+
     # if problem has variables that are not binary, raise an error
     if quad_prog.get_num_vars() > quad_prog.get_num_binary_vars():
         raise QiskitOptimizationError(
@@ -122,7 +132,7 @@ def to_ising(
         num_nodes = max(1, num_nodes)
         qubit_op = 0 * I ^ num_nodes
 
-    if quantum_info:
+    if not opflow:
         # Note: if there is only one operator in `qubit_op`, `qubit_op.primitives`
         # can be `Pauli` and can be multiplied only by 1, -1j, -1, 1j.
         # So, we need to make sure to generate `SparsePauliOp`.

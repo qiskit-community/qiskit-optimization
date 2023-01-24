@@ -1010,7 +1010,7 @@ class QuadraticProgram:
         return substitute_variables(self, constants, variables)
 
     def to_ising(
-        self, quantum_info: bool = False
+        self, opflow: Optional[bool] = None
     ) -> Tuple[Union[OperatorBase, SparsePauliOp], float]:
         """Return the Ising Hamiltonian of this problem.
 
@@ -1019,8 +1019,8 @@ class QuadraticProgram:
         See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
 
         Args:
-            quantum_info: The output object is ``SparsePauliOp`` if True.
-                Otherwise, it is an OpFlow's operator. (default: False)
+            opflow: The output object is an OpFlow's operator if True.
+                Otherwise, it is ``SparsePauliOp``. (default: True)
 
         Returns:
             qubit_op: The qubit operator for the problem
@@ -1033,7 +1033,7 @@ class QuadraticProgram:
         # pylint: disable=cyclic-import
         from ..translators.ising import to_ising
 
-        return to_ising(self, quantum_info=quantum_info)
+        return to_ising(self, opflow=opflow)
 
     def from_ising(
         self,
