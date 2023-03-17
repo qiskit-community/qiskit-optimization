@@ -50,6 +50,7 @@ eckstein
 egger
 eigen
 eigensolver
+eigensolvers
 eigenstate
 entangler
 enum
@@ -221,6 +222,7 @@ upperbound
 variational
 vartype
 vqe
+vqeresult
 writelines
 xixj
 wavefunction
