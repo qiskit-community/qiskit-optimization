@@ -17,7 +17,7 @@ from typing import Optional, Tuple, Union
 from warnings import warn
 
 import numpy as np
-from qiskit.opflow import I, ListOp, OperatorBase, PauliOp, PauliSumOp, SummedOp
+from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -27,16 +27,21 @@ from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 def to_ising(
     quad_prog: QuadraticProgram, opflow: Optional[bool] = None
-) -> Tuple[Union[OperatorBase, SparsePauliOp], float]:
+) -> Tuple[Union[PauliSumOp, SparsePauliOp], float]:
     """Return the Ising Hamiltonian of this problem.
 
     Variables are mapped to qubits in the same order, i.e.,
     i-th variable is mapped to i-th qubit.
     See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
 
+    .. note::
+
+        The default value of ``opflow`` argument is currently set ``True``, but it will
+        first be changed to ``False`` and then deprecated in future releases.
+
     Args:
         quad_prog: The problem to be translated.
-        opflow: The output object is an OpFlow's operator if True.
+        opflow: The output object is a ``PauliSumOp`` operator if True.
             Otherwise, it is ``SparsePauliOp``. (default: True)
 
     Returns:
@@ -51,9 +56,9 @@ def to_ising(
     if opflow is None:
         opflow = True
         warn(
-            "`opflow` option of `to_ising` is not set explicitly. "
-            "It is set True now, but the default value will be changed to False. "
-            "We suggest setting `opflow=True` explicitly like `to_ising(qp, opflow=True)`.",
+            "`opflow` argument of `to_ising` is not set explicitly. "
+            "It is currently set True, but the default value will be changed to False. "
+            "We suggest using `SparsePauliOp` instead of Opflow operators.",
             stacklevel=2,
         )
 
@@ -76,10 +81,10 @@ def to_ising(
         )
 
     # initialize Hamiltonian.
-    num_nodes = quad_prog.get_num_vars()
+    num_vars = quad_prog.get_num_vars()
     pauli_list = []
     offset = 0.0
-    zero = np.zeros(num_nodes, dtype=bool)
+    zero = np.zeros(num_vars, dtype=bool)
 
     # set a sign corresponding to a maximized or minimized problem.
     # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
@@ -94,7 +99,7 @@ def to_ising(
         weight = coef * sense / 2
         z_p[idx] = True
 
-        pauli_list.append(PauliOp(Pauli((z_p, zero)), -weight))
+        pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
         offset += weight
 
     # create Pauli terms
@@ -107,39 +112,29 @@ def to_ising(
             z_p = zero.copy()
             z_p[i] = True
             z_p[j] = True
-            pauli_list.append(PauliOp(Pauli((z_p, zero)), weight))
+            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), weight))
 
         z_p = zero.copy()
         z_p[i] = True
-        pauli_list.append(PauliOp(Pauli((z_p, zero)), -weight))
+        pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
 
         z_p = zero.copy()
         z_p[j] = True
-        pauli_list.append(PauliOp(Pauli((z_p, zero)), -weight))
+        pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
 
         offset += weight
 
-    # Remove paulis whose coefficients are zeros.
-    qubit_op = sum(pauli_list)
-
-    # qubit_op could be the integer 0, in this case return an identity operator of
-    # appropriate size
-    if isinstance(qubit_op, OperatorBase):
-        qubit_op = qubit_op.reduce()
+    if pauli_list:
+        # Remove paulis whose coefficients are zeros.
+        qubit_op = sum(pauli_list).simplify(atol=0)
     else:
         # If there is no variable, we set num_nodes=1 so that qubit_op should be an operator.
         # If num_nodes=0, I^0 = 1 (int).
-        num_nodes = max(1, num_nodes)
-        qubit_op = 0 * I ^ num_nodes
+        num_vars = max(1, num_vars)
+        qubit_op = SparsePauliOp("I" * num_vars, 0)
 
-    if not opflow:
-        # Note: if there is only one operator in `qubit_op`, `qubit_op.primitives`
-        # can be `Pauli` and can be multiplied only by 1, -1j, -1, 1j.
-        # So, we need to make sure to generate `SparsePauliOp`.
-        if isinstance(qubit_op, PauliSumOp):
-            qubit_op = qubit_op.coeff * qubit_op.primitive
-        else:
-            qubit_op = qubit_op.coeff * SparsePauliOp(qubit_op.primitive)
+    if opflow:
+        qubit_op = PauliSumOp(qubit_op)
 
     return qubit_op, offset
 
@@ -154,6 +149,12 @@ def from_ising(
     Variables are mapped to qubits in the same order, i.e.,
     i-th variable is mapped to i-th qubit.
     See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
+
+    .. note::
+
+        The ``qubit_op`` argument can currently accept Opflow operators, but it has been
+        superseded by ``SparsePauliOp``.
+        Opflow will be deprecated in a future release and subsequently removed after that.
 
     Args:
         qubit_op: The qubit operator of the problem.
@@ -172,14 +173,24 @@ def from_ising(
         QiskitOptimizationError: if any Pauli term has an imaginary coefficient
         NotImplementedError: If the input operator is a ListOp
     """
+    # quantum_info
     if isinstance(qubit_op, BaseOperator):
-        if isinstance(qubit_op, SparsePauliOp):
-            qubit_op = PauliSumOp(qubit_op)
-        else:
-            qubit_op = PauliSumOp(SparsePauliOp(qubit_op))
-    if isinstance(qubit_op, PauliSumOp):
-        qubit_op = qubit_op.to_pauli_op()
+        if not isinstance(qubit_op, SparsePauliOp):
+            qubit_op = SparsePauliOp(qubit_op)
 
+    # opflow
+    if isinstance(qubit_op, OperatorBase):
+        warn(
+            "The `qubit_op` argument can currently accept Opflow operators, but it has been "
+            "superseded by `SparsePauliOp`. "
+            "Opflow will be deprecated in a future release and subsequently removed after that.",
+            category=PendingDeprecationWarning,
+            stacklevel=2,
+        )
+    if isinstance(qubit_op, PauliSumOp):
+        qubit_op = qubit_op.primitive * qubit_op.coeff
+    if isinstance(qubit_op, PauliOp):
+        qubit_op = SparsePauliOp(qubit_op.primitive, qubit_op.coeff)
     # No support for ListOp yet, this can be added in future
     # pylint: disable=unidiomatic-typecheck
     if type(qubit_op) == ListOp:
@@ -191,21 +202,15 @@ def from_ising(
     quad_prog = QuadraticProgram()
     quad_prog.binary_var_list(qubit_op.num_qubits)
 
-    if not isinstance(qubit_op, SummedOp):
-        pauli_list = [qubit_op.to_pauli_op()]
-    else:
-        pauli_list = qubit_op.to_pauli_op()
-
     # prepare a matrix of coefficients of Pauli terms
     # `pauli_coeffs_diag` is the diagonal part
     # `pauli_coeffs_triu` is the upper triangular part
     pauli_coeffs_diag = [0.0] * qubit_op.num_qubits
     pauli_coeffs_triu = {}
 
-    for pauli_op in pauli_list:
-        pauli_op = pauli_op.to_pauli_op()
-        pauli = pauli_op.primitive
-        coeff = pauli_op.coeff
+    for pauli_op in qubit_op:
+        pauli = pauli_op.paulis[0]
+        coeff = pauli_op.coeffs[0]
 
         if not math.isclose(coeff.imag, 0.0, abs_tol=1e-10):
             raise QiskitOptimizationError(f"Imaginary coefficient exists: {pauli_op}")

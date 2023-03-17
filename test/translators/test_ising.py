@@ -355,3 +355,7 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
         q_p = QuadraticProgram()
         with self.assertWarns(UserWarning):
             _ = to_ising(q_p)
+
+        op = PauliSumOp.from_list([("Z", 1)])
+        with self.assertWarns(PendingDeprecationWarning):
+            _ = from_ising(op)
