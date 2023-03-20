@@ -70,7 +70,7 @@ setuptools.setup(
     python_requires=">=3.7",
     extras_require={
         'cplex': ['cplex'],
-        'cvx': ['cvxpy'],
+        'cvx': ['cvxpy>=1.2.0'],
         'matplotlib': ['matplotlib'],
         'gurobi': ['gurobipy'],
     },
