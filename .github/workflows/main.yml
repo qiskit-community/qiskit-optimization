@@ -113,16 +113,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.9, 3.10, 3.11]
+        python-version: [3.8, 3.9, '3.10', 3.11]
         include:
           - os: macos-latest
             python-version: 3.8
           - os: macos-latest
-            python-version: 3.10
+            python-version: '3.10'
           - os: windows-2019
             python-version: 3.8
           - os: windows-2019
-            python-version: 3.10
+            python-version: '3.10'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -230,7 +230,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.10]
+        python-version: [3.8, '3.10']
     steps:
       - uses: actions/checkout@v3
         with:
