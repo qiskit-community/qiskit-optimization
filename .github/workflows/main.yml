@@ -135,6 +135,7 @@ jobs:
             requirements-dev.txt
       - name: install Windows dependencies
         run: |
+          source "$CONDA/etc/profile.d/conda.sh"
           if [ "${{ matrix.python-version }}" == "3.11" ]; then
             conda create -y -n scsenv python=${{ matrix.python-version }} -c conda-forge
           else
