@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7]
+        python-version: [3.8]
     steps:
       - name: Print Concurrency Group
         env:
@@ -113,16 +113,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8, 3.9, '3.10.6']
+        python-version: [3.8, 3.9, 3.10, 3.11]
         include:
           - os: macos-latest
             python-version: 3.8
           - os: macos-latest
-            python-version: '3.10.6'
+            python-version: 3.10
           - os: windows-2019
             python-version: 3.8
           - os: windows-2019
-            python-version: '3.10'
+            python-version: 3.10
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -135,10 +135,13 @@ jobs:
             requirements-dev.txt
       - name: install Windows dependencies
         run: |
-          source "$CONDA/etc/profile.d/conda.sh"
-          conda create -n scsenv python=${{ matrix.python-version }}
-          conda activate scsenv
-          conda install -y scs lapack cvxpy -c conda-forge
+          if [ "${{ matrix.python-version }}" == "3.11" ]; then
+            conda create -y -n scsenv python=${{ matrix.python-version }} -c conda-forge
+          else
+            conda create -y -n scsenv python=${{ matrix.python-version }}
+            conda activate scsenv
+            conda install -y scs lapack cvxpy -c conda-forge
+          fi
         if: ${{ matrix.os == 'windows-2019' }}
         shell: bash
       - uses: ./.github/actions/install-main-dependencies
@@ -200,7 +203,7 @@ jobs:
           fi
           coverage3 combine
           mv .coverage ./ci-artifact-data/opt.dat
-        if: ${{ matrix.python-version == 3.7 }}
+        if: ${{ matrix.python-version == 3.8 }}
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
@@ -227,7 +230,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8]
+        python-version: [3.8, 3.10]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -305,16 +308,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v3
-        with:
-          name:  ubuntu-latest-3.7
-          path: /tmp/o37
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-latest-3.8
@@ -325,15 +324,19 @@ jobs:
           path: /tmp/o39
       - uses: actions/download-artifact@v3
         with:
-          name: ubuntu-latest-3.10.6
+          name: ubuntu-latest-3.10
           path: /tmp/o310
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.11
+          path: /tmp/o311
       - uses: actions/download-artifact@v3
         with:
           name: macos-latest-3.8
           path: /tmp/m38
       - uses: actions/download-artifact@v3
         with:
-          name: macos-latest-3.10.6
+          name: macos-latest-3.10
           path: /tmp/m310
       - uses: actions/download-artifact@v3
         with:
@@ -348,10 +351,10 @@ jobs:
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
+          sort -f -u /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
         shell: bash
       - name: Coverage combine
-        run: coverage3 combine /tmp/o37/opt.dat
+        run: coverage3 combine /tmp/o38/opt.dat
         shell: bash
       - name: Upload to Coveralls
         env:
