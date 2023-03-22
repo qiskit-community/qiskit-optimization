@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,22 +15,26 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Union, Any, Optional, Dict, Type, Tuple, cast
-from warnings import warn
+from logging import getLogger
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
 import numpy as np
+from qiskit.opflow import DictStateFn, StateFn
+from qiskit.quantum_info import Statevector
+from qiskit.result import QuasiDistribution
 
-from qiskit.opflow import StateFn, DictStateFn
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import QuadraticProgramToQubo, QuadraticProgramConverter
 from ..problems.quadratic_program import QuadraticProgram, Variable
+
+logger = getLogger(__name__)
 
 
 class OptimizationResultStatus(Enum):
     """Termination status of an optimization algorithm."""
 
     SUCCESS = 0
-    """the optimization algorithm succeeded to find an optimal solution."""
+    """the optimization algorithm succeeded to find a feasible solution."""
 
     FAILURE = 1
     """the optimization algorithm ended in a failure."""
@@ -41,19 +45,16 @@ class OptimizationResultStatus(Enum):
 
 @dataclass
 class SolutionSample:
-    """A sample of an optimization solution
-
-    Attributes:
-        x: the values of variables
-        fval: the objective function value
-        probability: the probability of this sample
-        status: the status of this sample
-    """
+    """A sample of an optimization solution."""
 
     x: np.ndarray
+    """The values of the variables"""
     fval: float
+    """The objective function value"""
     probability: float
+    """The probability of this sample"""
     status: OptimizationResultStatus
+    """The status of this sample"""
 
 
 class OptimizationResult:
@@ -107,8 +108,8 @@ class OptimizationResult:
     ) -> None:
         """
         Args:
-            x: the optimal value found in the optimization, or possibly None in case of FAILURE.
-            fval: the optimal function value.
+            x: the variable values found in the optimization, or possibly None in case of FAILURE.
+            fval: the objective function value.
             variables: the list of variables of the optimization problem.
             raw_results: the original results object from the optimization algorithm.
             status: the termination status of the optimization algorithm.
@@ -126,7 +127,7 @@ class OptimizationResult:
         else:
             if len(x) != len(variables):
                 raise QiskitOptimizationError(
-                    f"Inconsistent size of optimal value and variables. x: size {len(x)} {x}, "
+                    f"Inconsistent size of variable values (x) and variables. x: size {len(x)} {x}, "
                     f"variables: size {len(variables)} {[v.name for v in variables]}"
                 )
             self._x = np.asarray(x)
@@ -138,7 +139,7 @@ class OptimizationResult:
         if samples:
             sum_prob = np.sum([e.probability for e in samples])
             if not np.isclose(sum_prob, 1.0):
-                warn("The sum of probability of samples is not close to 1: f{sum_prob}")
+                logger.debug("The sum of probability of samples is not close to 1: %f", sum_prob)
             self._samples = samples
         else:
             self._samples = [
@@ -146,9 +147,22 @@ class OptimizationResult:
             ]
 
     def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {str(self)}>"
+
+    def __str__(self) -> str:
+        variables = ", ".join([f"{var}={x}" for var, x in self._variables_dict.items()])
+        return f"fval={self._fval}, {variables}, status={self._status.name}"
+
+    def prettyprint(self) -> str:
+        """Returns a pretty printed string of this optimization result.
+
+        Returns:
+            A pretty printed string representing the result.
+        """
+        variables = ", ".join([f"{var}={x}" for var, x in self._variables_dict.items()])
         return (
-            f"optimal function value: {self._fval}\n"
-            f"optimal value: {self._x}\n"
+            f"objective function value: {self._fval}\n"
+            f"variable values: {variables}\n"
             f"status: {self._status.name}"
         )
 
@@ -203,19 +217,19 @@ class OptimizationResult:
 
     @property
     def x(self) -> Optional[np.ndarray]:
-        """Returns the optimal value found in the optimization or None in case of FAILURE.
+        """Returns the variable values found in the optimization or None in case of FAILURE.
 
         Returns:
-            The optimal value found in the optimization.
+            The variable values found in the optimization.
         """
         return self._x
 
     @property
     def fval(self) -> Optional[float]:
-        """Returns the optimal function value.
+        """Returns the objective function value.
 
         Returns:
-            The function value corresponding to the optimal value found in the optimization.
+            The function value corresponding to the objective function value found in the optimization.
         """
         return self._fval
 
@@ -250,10 +264,10 @@ class OptimizationResult:
 
     @property
     def variables_dict(self) -> Dict[str, float]:
-        """Returns the optimal value as a dictionary of the variable name and corresponding value.
+        """Returns the variable values as a dictionary of the variable name and corresponding value.
 
         Returns:
-            The optimal value as a dictionary of the variable name and corresponding value.
+            The variable values as a dictionary of the variable name and corresponding value.
         """
         return self._variables_dict
 
@@ -278,6 +292,8 @@ class OptimizationResult:
 
 class OptimizationAlgorithm(ABC):
     """An abstract class for optimization algorithms in Qiskit's optimization module."""
+
+    _MIN_PROBABILITY = 1e-6
 
     @abstractmethod
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
@@ -508,9 +524,9 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _eigenvector_to_solutions(
-        eigenvector: Union[dict, np.ndarray, StateFn],
+        eigenvector: Union[QuasiDistribution, Statevector, dict, np.ndarray, StateFn],
         qubo: QuadraticProgram,
-        min_probability: float = 1e-6,
+        min_probability: float = _MIN_PROBABILITY,
     ) -> List[SolutionSample]:
         """Convert the eigenvector to the bitstrings and corresponding eigenvalues.
 
@@ -556,10 +572,28 @@ class OptimizationAlgorithm(ABC):
             )
 
         solutions = []
-        if isinstance(eigenvector, dict):
+        if isinstance(eigenvector, QuasiDistribution):
+            probabilities = eigenvector.binary_probabilities()
+            # iterate over all samples
+            for bitstr, sampling_probability in probabilities.items():
+                # add the bitstring, if the sampling probability exceeds the threshold
+                if sampling_probability >= min_probability:
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
+
+        elif isinstance(eigenvector, Statevector):
+            probabilities = eigenvector.probabilities()
+            num_qubits = eigenvector.num_qubits
+            # iterate over all states and their sampling probabilities
+            for i, sampling_probability in enumerate(probabilities):
+                # add the i-th state if the sampling probability exceeds the threshold
+                if sampling_probability >= min_probability:
+                    bitstr = f"{i:b}".rjust(num_qubits, "0")
+                    solutions.append(generate_solution(bitstr, qubo, sampling_probability))
+
+        elif isinstance(eigenvector, dict):
             # When eigenvector is a dict, square the values since the values are normalized.
             # See https://github.com/Qiskit/qiskit-terra/pull/5496 for more details.
-            probabilities = {bitstr: val ** 2 for (bitstr, val) in eigenvector.items()}
+            probabilities = {bitstr: val**2 for (bitstr, val) in eigenvector.items()}
             # iterate over all samples
             for bitstr, sampling_probability in probabilities.items():
                 # add the bitstring, if the sampling probability exceeds the threshold
@@ -569,15 +603,16 @@ class OptimizationAlgorithm(ABC):
         elif isinstance(eigenvector, np.ndarray):
             num_qubits = int(np.log2(eigenvector.size))
             probabilities = np.abs(eigenvector * eigenvector.conj())
-
             # iterate over all states and their sampling probabilities
             for i, sampling_probability in enumerate(probabilities):
                 # add the i-th state if the sampling probability exceeds the threshold
                 if sampling_probability >= min_probability:
-                    bitstr = "{:b}".format(i).rjust(num_qubits, "0")
+                    bitstr = f"{i:b}".rjust(num_qubits, "0")
                     solutions.append(generate_solution(bitstr, qubo, sampling_probability))
 
         else:
-            raise TypeError("Unsupported format of eigenvector. Provide a dict or numpy.ndarray.")
-
+            raise TypeError(
+                f"Eigenvector should be QuasiDistribution, Statevector, dict or numpy.ndarray. "
+                f"But, it was {type(eigenvector)}."
+            )
         return solutions

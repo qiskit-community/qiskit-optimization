@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,21 +13,16 @@
 """ Test Converters """
 
 import unittest
-from test.optimization_test_case import (
-    QiskitOptimizationTestCase,
-    requires_extra_library,
-)
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.algorithms import NumPyMinimumEigensolver
-from qiskit.opflow import Z, I
-from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
-    CplexOptimizer,
-    ADMMOptimizer,
-)
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit.opflow import I, Z
+
+import qiskit_optimization.optionals as _optionals
+from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
+from qiskit_optimization.algorithms import ADMMOptimizer, CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -37,7 +32,6 @@ from qiskit_optimization.converters import (
 )
 from qiskit_optimization.problems import Constraint, Variable
 from qiskit_optimization.translators import from_docplex_mp
-
 
 QUBIT_OP_MAXIMIZE_SAMPLE = (
     -199999.5 * (I ^ I ^ I ^ Z)
@@ -88,7 +82,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test InequalityToEqualityConverter with binary variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -169,7 +163,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test InequalityToEqualityConverter with integer variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.integer_var(name="x{}".format(i), lowerbound=-3, upperbound=3)
+            op.integer_var(name=f"x{i}", lowerbound=-3, upperbound=3)
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -246,7 +240,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test integer mode of InequalityToEqualityConverter()"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -263,7 +257,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test continuous mode of InequalityToEqualityConverter()"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -280,7 +274,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test auto mode of InequalityToEqualityConverter()"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -297,7 +291,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test PenalizeLinearEqualityConstraints with senses"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -314,7 +308,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test PenalizeLinearEqualityConstraints with binary variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -334,7 +328,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test PenalizeLinearEqualityConstraints with integer variables"""
         op = QuadraticProgram()
         for i in range(3):
-            op.integer_var(name="x{}".format(i), lowerbound=-3, upperbound=3)
+            op.integer_var(name=f"x{i}", lowerbound=-3, upperbound=3)
         # Linear constraints
         linear_constraint = {"x0": 1, "x1": 1}
         op.linear_constraint(linear_constraint, Constraint.Sense.EQ, 1, "x0x1")
@@ -355,7 +349,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test integer to binary"""
         op = QuadraticProgram()
         for i in range(0, 2):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.integer_var(name="x2", lowerbound=0, upperbound=5)
         linear = {}
         for i, x in enumerate(op.variables):
@@ -375,7 +369,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test binary to integer"""
         op = QuadraticProgram()
         for i in range(0, 2):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         op.integer_var(name="x2", lowerbound=0, upperbound=5)
         linear = {"x0": 1, "x1": 2, "x2": 1}
         op.maximize(0, linear, {})
@@ -392,7 +386,7 @@ class TestConverters(QiskitOptimizationTestCase):
         """Test optimization problem to operators"""
         op = QuadraticProgram()
         for i in range(4):
-            op.binary_var(name="x{}".format(i))
+            op.binary_var(name=f"x{i}")
         linear = {}
         for x in op.variables:
             linear[x.name] = 1
@@ -474,7 +468,7 @@ class TestConverters(QiskitOptimizationTestCase):
             quadratic.objective.quadratic.coefficients.toarray(), quadratic_matrix
         )
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_continuous_variable_decode(self):
         """Test decode func of IntegerToBinaryConverter for continuous variables"""
         mdl = Model("test_continuous_varable_decode")
@@ -486,7 +480,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op = converter.convert(op)
         admm_params = ADMMParameters()
         qubo_optimizer = MinimumEigenOptimizer(NumPyMinimumEigensolver())
-        continuous_optimizer = CplexOptimizer()
+        continuous_optimizer = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
         solver = ADMMOptimizer(
             qubo_optimizer=qubo_optimizer,
             continuous_optimizer=continuous_optimizer,
@@ -638,6 +632,85 @@ class TestConverters(QiskitOptimizationTestCase):
         for cst, cst2 in zip(mod.quadratic_constraints, mod2.quadratic_constraints):
             self.assertDictEqual(cst.linear.to_dict(), cst2.linear.to_dict())
             self.assertDictEqual(cst.quadratic.to_dict(), cst2.quadratic.to_dict())
+
+    def test_integer_to_binary_quadratic(self):
+        """Test integer to binary variables with quadratic expressions"""
+        mod = QuadraticProgram()
+        mod.integer_var(name="x", lowerbound=10, upperbound=13)
+        mod.minimize(quadratic={("x", "x"): 1})
+        mod2 = IntegerToBinary().convert(mod)
+        self.assertListEqual([e.name for e in mod2.variables], ["x@0", "x@1"])
+        self.assertEqual(mod.get_num_linear_constraints(), 0)
+        self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+        self.assertAlmostEqual(mod2.objective.constant, 100)
+        self.assertDictEqual(mod2.objective.linear.to_dict(use_name=True), {"x@0": 20, "x@1": 40})
+        self.assertDictEqual(
+            mod2.objective.quadratic.to_dict(use_name=True),
+            {("x@0", "x@0"): 1, ("x@1", "x@1"): 4, ("x@0", "x@1"): 4},
+        )
+
+    def test_integer_to_binary_zero_range_variable(self):
+        """Test integer to binary variables with zero range variables"""
+
+        with self.subTest("zero range variable in a linear expression of the objective"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.minimize(linear={"x": 1})
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0"])
+            self.assertEqual(mod.get_num_linear_constraints(), 0)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(mod2.objective.constant, 10)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+
+        with self.subTest("zero range variable in a quadratic expression of the objective"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.minimize(quadratic={("x", "x"): 1})
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0"])
+            self.assertEqual(mod.get_num_linear_constraints(), 0)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(mod2.objective.constant, 100)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+
+        with self.subTest("zero range variable in a linear constraint"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.binary_var(name="y")
+            mod.linear_constraint({"x": 1, "y": 1}, "<=", 100)
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0", "y"])
+            self.assertEqual(mod.get_num_linear_constraints(), 1)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 0)
+            self.assertAlmostEqual(mod2.objective.constant, 0)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+            cst = mod2.get_linear_constraint(0)
+            self.assertDictEqual(cst.linear.to_dict(use_name=True), {"y": 1})
+            self.assertEqual(cst.sense, Constraint.Sense.LE)
+            self.assertAlmostEqual(cst.rhs, 90)
+            self.assertEqual(cst.name, "c0")
+
+        with self.subTest("zero range variable in a quadratic constraint"):
+            mod = QuadraticProgram()
+            mod.integer_var(name="x", lowerbound=10, upperbound=10)
+            mod.binary_var(name="y")
+            mod.quadratic_constraint({"x": 1}, {("x", "x"): 2, ("x", "y"): 3}, ">=", 100)
+            mod2 = IntegerToBinary().convert(mod)
+            self.assertListEqual([e.name for e in mod2.variables], ["x@0", "y"])
+            self.assertEqual(mod.get_num_linear_constraints(), 0)
+            self.assertEqual(mod.get_num_quadratic_constraints(), 1)
+            self.assertAlmostEqual(mod2.objective.constant, 0)
+            self.assertDictEqual(mod2.objective.linear.to_dict(), {})
+            self.assertDictEqual(mod2.objective.quadratic.to_dict(), {})
+            cst = mod2.get_quadratic_constraint(0)
+            self.assertDictEqual(cst.linear.to_dict(use_name=True), {"y": 30})
+            self.assertEqual(cst.sense, Constraint.Sense.GE)
+            self.assertAlmostEqual(cst.rhs, -110)
+            self.assertEqual(cst.name, "q0")
 
 
 if __name__ == "__main__":

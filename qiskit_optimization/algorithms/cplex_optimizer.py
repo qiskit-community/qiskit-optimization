@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,10 +15,9 @@
 from typing import Any, Dict, Optional
 from warnings import warn
 
-from qiskit.exceptions import MissingOptionalLibraryError
-
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 from qiskit_optimization.translators import to_docplex_mp
+import qiskit_optimization.optionals as _optionals
 from .optimization_algorithm import (
     OptimizationAlgorithm,
     OptimizationResult,
@@ -26,14 +25,7 @@ from .optimization_algorithm import (
 )
 
 
-try:
-    from cplex import Cplex  # pylint: disable=unused-import
-
-    _HAS_CPLEX = True
-except ImportError:
-    _HAS_CPLEX = False
-
-
+@_optionals.HAS_CPLEX.require_in_instance
 class CplexOptimizer(OptimizationAlgorithm):
     """The CPLEX optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
 
@@ -58,24 +50,14 @@ class CplexOptimizer(OptimizationAlgorithm):
             disp: Whether to print CPLEX output or not.
             cplex_parameters: The parameters for CPLEX.
                 See https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-parameters for details.
-
-        Raises:
-            MissingOptionalLibraryError: CPLEX is not installed.
         """
-        if not _HAS_CPLEX:
-            raise MissingOptionalLibraryError(
-                libname="CPLEX",
-                name="CplexOptimizer",
-                pip_install="pip install 'qiskit-optimization[cplex]'",
-            )
-
         self._disp = disp
         self._cplex_parameters = cplex_parameters
 
     @staticmethod
     def is_cplex_installed():
         """Returns True if cplex is installed"""
-        return _HAS_CPLEX
+        return _optionals.HAS_CPLEX
 
     @property
     def disp(self) -> bool:

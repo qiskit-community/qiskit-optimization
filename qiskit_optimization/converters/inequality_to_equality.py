@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,7 +13,7 @@
 
 import copy
 import math
-from typing import List, Optional, Union, cast
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -44,12 +44,11 @@ class InequalityToEquality(QuadraticProgramConverter):
     def __init__(self, mode: str = "auto") -> None:
         """
         Args:
-            mode: To chose the type of slack variables. There are 3 options for mode.
+            mode: To choose the type of slack variables. There are 3 options for mode.
 
                 - 'integer': All slack variables will be integer variables.
-                - 'continuous': All slack variables will be continuous variables
-                - 'auto': Try to use integer variables but if it's not possible,
-                   use continuous variables
+                - 'continuous': All slack variables will be continuous variables.
+                - 'auto': Use integer variables if possible, otherwise use continuous variables.
         """
         self._src: Optional[QuadraticProgram] = None
         self._dst: Optional[QuadraticProgram] = None
@@ -267,7 +266,7 @@ class InequalityToEquality(QuadraticProgramConverter):
         Returns:
             bool: If the constraint contains float coefficients, this returns True, else False.
         """
-        return any(isinstance(v, float) and not cast(float, v).is_integer() for v in values)
+        return any(isinstance(v, float) and not v.is_integer() for v in values)
 
     @property
     def mode(self) -> str:

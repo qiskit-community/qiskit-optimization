@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -32,8 +32,8 @@ logger = logging.getLogger(__name__)
 class SubstitutionExpression:
     """Represents a substitution of a variable with a linear expression.
 
-    If `variable` is `None`, it substitutes a variable with the constant value.
-    Otherwise, it substitutes a variable with (constant + coefficient * new_variable).
+    If ``variable`` is ``None``, it substitutes a variable with the constant value.
+    Otherwise, it substitutes a variable with (``constant + coefficient * new_variable``).
     """
 
     const: float = 0.0
@@ -55,21 +55,22 @@ def substitute_variables(
         quadratic_program: a quadratic program whose variables are substituted.
 
         constants: replace variable by constant
-            e.g., {'x': 2} means 'x' is substituted with 2
+            e.g., ``{'x': 2}`` means ``x`` is substituted with 2
 
         variables: replace variables by weighted other variable
             need to copy everything using name reference to make sure that indices are matched
             correctly. The lower and upper bounds are updated accordingly.
-            e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
+            e.g., ``{'x': ('y', 2)}`` means ``x`` is substituted with ``y`` * 2
 
     Returns:
         An optimization problem by substituting variables with constants or other variables.
-        If the substitution is valid, `QuadraticProgram.status` is still
-        `QuadraticProgram.Status.VALID`.
-        Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
+        If the substitution is valid, ``QuadraticProgram.status`` is still
+        ``QuadraticProgram.Status.VALID``.
+        Otherwise, it gets ``QuadraticProgram.Status.INFEASIBLE``.
 
     Raises:
         QiskitOptimizationError: if the substitution is invalid as follows.
+
             - Same variable is substituted multiple times.
             - Coefficient of variable substitution is zero.
     """
@@ -113,7 +114,7 @@ class _SubstituteVariables:
     """A class to substitute variables of an optimization problem with constants for other
     variables"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._src: Optional[QuadraticProgram] = None
         self._dst: Optional[QuadraticProgram] = None
         self._subs: Dict[str, SubstitutionExpression] = {}
@@ -154,16 +155,14 @@ class _SubstituteVariables:
         """Checks feasibility of the following condition
         0 `sense` rhs
         """
-        # I use the following pylint option because `rhs` should come to right
-        # pylint: disable=misplaced-comparison-constant
         if sense == ConstraintSense.EQ:
-            if 0 == rhs:
+            if rhs == 0:
                 return True
         elif sense == ConstraintSense.LE:
-            if 0 <= rhs:
+            if rhs >= 0:
                 return True
         elif sense == ConstraintSense.GE:
-            if 0 >= rhs:
+            if rhs <= 0:
                 return True
         return False
 

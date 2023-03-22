@@ -12,11 +12,18 @@
 
 name: 'Install Qiskit Optimization'
 description: 'Installs Qiskit Optimization on developer mode'
-
+inputs:
+  os:
+    description: 'OS'
+    required: true
 runs:
   using: "composite"
   steps: 
     - run : |
+        if [ "${{ inputs.os }}" == "windows-2019" ]; then
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate scsenv
+        fi
         pip install -e .[cplex,cvx,matplotlib,gurobi]
         pip install -U -c constraints.txt -r requirements-dev.txt
       shell: bash

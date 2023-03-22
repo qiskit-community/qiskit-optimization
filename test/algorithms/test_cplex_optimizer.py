@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,28 +13,31 @@
 """ Test Cplex Optimizer """
 
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import CplexOptimizer, OptimizationResultStatus
 from qiskit_optimization.problems import QuadraticProgram
 
 
 @ddt
 class TestCplexOptimizer(QiskitOptimizationTestCase):
-    """Cplex Optimizer Tests."""
+    """CPLEX Optimizer Tests."""
 
     @data(
         ("op_ip1.lp", [0, 2], 6),
-        ("op_mip1.lp", [1, 1, 0], 6),
+        ("op_mip1.lp", [0, 1, 1], 5.5),
         ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_cplex_optimizer(self, config):
-        """Cplex Optimizer Test"""
-        cplex_optimizer = CplexOptimizer(disp=False)
+        """CPLEX Optimizer Test"""
+        cplex_optimizer = CplexOptimizer(
+            disp=False, cplex_parameters={"threads": 1, "randomseed": 1}
+        )
         # unpack configuration
         filename, x, fval = config
 
@@ -53,13 +56,13 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
 
     @data(
         ("op_ip1.lp", [0, 2], 6),
-        ("op_mip1.lp", [1, 1, 0], 6),
+        ("op_mip1.lp", [0, 1, 1], 5.5),
         ("op_lp1.lp", [0.25, 1.75], 5.8750),
     )
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_cplex_optimizer_no_solution(self, config):
-        """Cplex Optimizer Test if no solution is found"""
-        cplex_optimizer = CplexOptimizer(disp=False, cplex_parameters={"timelimit": 0})
+        """CPLEX Optimizer Test if no solution is found"""
+        cplex_optimizer = CplexOptimizer(disp=False, cplex_parameters={"dettimelimit": 0})
         # unpack configuration
         filename, _, _ = config
 

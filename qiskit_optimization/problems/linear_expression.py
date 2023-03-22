@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -208,3 +208,15 @@ class LinearExpression(QuadraticProgramElement):
             l_b += min(lst)
             u_b += max(lst)
         return ExpressionBounds(lowerbound=l_b, upperbound=u_b)
+
+    def __repr__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+
+        return f"<{self.__class__.__name__}: {expr2str(linear=self, truncate=DEFAULT_TRUNCATE)}>"
+
+    def __str__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.prettyprint import expr2str
+
+        return f"{expr2str(linear=self)}"

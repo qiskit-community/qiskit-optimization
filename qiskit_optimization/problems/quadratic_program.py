@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,17 +17,16 @@ from collections.abc import Sequence
 from enum import Enum
 from math import isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
+from warnings import warn
 
 import numpy as np
-from docplex.mp.model import Model
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
+from qiskit.opflow import OperatorBase
 from scipy.sparse import spmatrix
 
-from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.opflow import OperatorBase, PauliSumOp
+import qiskit_optimization.optionals as _optionals
 
-from ..deprecation import DeprecatedType, deprecate_method
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .constraint import Constraint, ConstraintSense
@@ -61,7 +60,10 @@ class QuadraticProgram:
         Args:
             name: The name of the quadratic program.
         """
-        self._name = name
+        if not name.isprintable():
+            warn("Problem name is not printable")
+        self._name = ""
+        self.name = name
         self._status = QuadraticProgram.Status.VALID
 
         self._variables: List[Variable] = []
@@ -76,7 +78,32 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        return self.export_as_lp_string()
+        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+
+        objective = expr2str(
+            constant=self._objective.constant,
+            linear=self.objective.linear,
+            quadratic=self._objective.quadratic,
+            truncate=DEFAULT_TRUNCATE,
+        )
+        num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
+        return (
+            f"<{self.__class__.__name__}: "
+            f"{self.objective.sense.name.lower()} "
+            f"{objective}, "
+            f"{self.get_num_vars()} variables, "
+            f"{num_constraints} constraints, "
+            f"'{self._name}'>"
+        )
+
+    def __str__(self) -> str:
+        num_constraints = self.get_num_linear_constraints() + self.get_num_quadratic_constraints()
+        return (
+            f"{str(self.objective)} "
+            f"({self.get_num_vars()} variables, "
+            f"{num_constraints} constraints, "
+            f"'{self._name}')"
+        )
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
@@ -112,6 +139,7 @@ class QuadraticProgram:
         Args:
             name: The name of the quadratic program.
         """
+        self._check_name(name, "Problem")
         self._name = name
 
     @property
@@ -149,7 +177,7 @@ class QuadraticProgram:
         vartype: VarType,
         name: Optional[str],
     ) -> Variable:
-        if name is None:
+        if not name:
             name = "x"
             key_format = "{}"
         else:
@@ -167,7 +195,7 @@ class QuadraticProgram:
     ) -> Tuple[List[str], List[Variable]]:
         if isinstance(keys, int) and keys < 1:
             raise QiskitOptimizationError(f"Cannot create non-positive number of variables: {keys}")
-        if name is None:
+        if not name:
             name = "x"
         if "{{}}" in key_format:
             raise QiskitOptimizationError(
@@ -202,6 +230,7 @@ class QuadraticProgram:
                 indexed_name, k = _find_name(name, key_format, k)
             if indexed_name in self._variables_index:
                 raise QiskitOptimizationError(f"Variable name already exists: {indexed_name}")
+            self._check_name(indexed_name, "Variable")
             names.append(indexed_name)
             self._variables_index[indexed_name] = self.get_num_vars()
             variable = Variable(self, indexed_name, lowerbound, upperbound, vartype)
@@ -293,6 +322,7 @@ class QuadraticProgram:
             lowerbound: The lowerbound of the variable.
             upperbound: The upperbound of the variable.
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -317,6 +347,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -350,6 +381,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -373,6 +405,7 @@ class QuadraticProgram:
 
         Args:
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -393,6 +426,7 @@ class QuadraticProgram:
 
         Args:
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -420,6 +454,7 @@ class QuadraticProgram:
 
         Args:
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -448,6 +483,7 @@ class QuadraticProgram:
             lowerbound: The lowerbound of the variable.
             upperbound: The upperbound of the variable.
             name: The name of the variable.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
 
         Returns:
             The added variable.
@@ -472,6 +508,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -503,6 +540,7 @@ class QuadraticProgram:
             lowerbound: The lower bound of the variable(s).
             upperbound: The upper bound of the variable(s).
             name: The name(s) of the variable(s).
+                If it's ``None`` or empty ``""``, the default name, e.g., ``x0``, is used.
             key_format: The format used to name/index the variable(s).
             keys: If keys: int, it is interpreted as the number of variables to construct.
                   Otherwise, the elements of the sequence are converted to strings via 'str' and
@@ -597,16 +635,19 @@ class QuadraticProgram:
         name: Optional[str] = None,
     ) -> LinearConstraint:
         """Adds a linear equality constraint to the quadratic program of the form:
-            linear * x sense rhs.
+            ``(linear * x) sense rhs``.
 
         Args:
-            linear: The linear coefficients of the left-hand-side of the constraint.
+            linear: The linear coefficients of the left-hand side of the constraint.
             sense: The sense of the constraint,
-              - '==', '=', 'E', and 'EQ' denote 'equal to'.
-              - '>=', '>', 'G', and 'GE' denote 'greater-than-or-equal-to'.
-              - '<=', '<', 'L', and 'LE' denote 'less-than-or-equal-to'.
-            rhs: The right hand side of the constraint.
+
+              - ``==``, ``=``, ``E``, and ``EQ`` denote 'equal to'.
+              - ``>=``, ``>``, ``G``, and ``GE`` denote 'greater-than-or-equal-to'.
+              - ``<=``, ``<``, ``L``, and ``LE`` denote 'less-than-or-equal-to'.
+
+            rhs: The right-hand side of the constraint.
             name: The name of the constraint.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``c0``, is used.
 
         Returns:
             The added constraint.
@@ -618,6 +659,7 @@ class QuadraticProgram:
         if name:
             if name in self.linear_constraints_index:
                 raise QiskitOptimizationError(f"Linear constraint's name already exists: {name}")
+            self._check_name(name, "Linear constraint")
         else:
             k = self.get_num_linear_constraints()
             while f"c{k}" in self.linear_constraints_index:
@@ -688,17 +730,20 @@ class QuadraticProgram:
         name: Optional[str] = None,
     ) -> QuadraticConstraint:
         """Adds a quadratic equality constraint to the quadratic program of the form:
-            x * Q * x <= rhs.
+            ``(x * quadratic * x + linear * x) sense rhs``.
 
         Args:
             linear: The linear coefficients of the constraint.
             quadratic: The quadratic coefficients of the constraint.
             sense: The sense of the constraint,
-              - '==', '=', 'E', and 'EQ' denote 'equal to'.
-              - '>=', '>', 'G', and 'GE' denote 'greater-than-or-equal-to'.
-              - '<=', '<', 'L', and 'LE' denote 'less-than-or-equal-to'.
-            rhs: The right hand side of the constraint.
+
+              - ``==``, ``=``, ``E``, and ``EQ`` denote 'equal to'.
+              - ``>=``, ``>``, ``G``, and ``GE`` denote 'greater-than-or-equal-to'.
+              - ``<=``, ``<``, ``L``, and ``LE`` denote 'less-than-or-equal-to'.
+
+            rhs: The right-hand side of the constraint.
             name: The name of the constraint.
+                If it's ``None`` or empty ``""``, the default name, e.g., ``q0``, is used.
 
         Returns:
             The added constraint.
@@ -709,6 +754,7 @@ class QuadraticProgram:
         if name:
             if name in self.quadratic_constraints_index:
                 raise QiskitOptimizationError(f"Quadratic constraint name already exists: {name}")
+            self._check_name(name, "Quadratic constraint")
         else:
             k = self.get_num_quadratic_constraints()
             while f"q{k}" in self.quadratic_constraints_index:
@@ -864,46 +910,6 @@ class QuadraticProgram:
                         elem.quadratic_program = self
             setattr(self, attr, val)
 
-    @deprecate_method(
-        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.from_docplex_mp"
-    )
-    def from_docplex(self, model: Model) -> None:
-        """DEPRECATED Loads this quadratic program from a docplex model.
-
-        Note that this supports only basic functions of docplex as follows:
-        - quadratic objective function
-        - linear / quadratic constraints
-        - binary / integer / continuous variables
-
-        Args:
-            model: The docplex model to be loaded.
-
-        Raises:
-            QiskitOptimizationError: if the model contains unsupported elements.
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import from_docplex_mp
-
-        other = from_docplex_mp(model)
-        self._copy_from(other, include_name=True)
-
-    @deprecate_method(
-        "0.2.0", DeprecatedType.FUNCTION, "qiskit_optimization.translators.to_docplex_mp"
-    )
-    def to_docplex(self) -> Model:
-        """DEPRECATED Returns a docplex model corresponding to this quadratic program.
-
-        Returns:
-            The docplex model corresponding to this quadratic program.
-
-        Raises:
-            QiskitOptimizationError: if non-supported elements (should never happen).
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
-
-        return to_docplex_mp(self)
-
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
 
@@ -915,6 +921,7 @@ class QuadraticProgram:
 
         return to_docplex_mp(self).export_as_lp_string()
 
+    @_optionals.HAS_CPLEX.require_in_call
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
 
@@ -923,19 +930,10 @@ class QuadraticProgram:
 
         Raises:
             FileNotFoundError: If the file does not exist.
-            MissingOptionalLibraryError: If CPLEX is not installed.
 
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
-        try:
-            import cplex  # pylint: disable=unused-import
-        except ImportError as ex:
-            raise MissingOptionalLibraryError(
-                libname="CPLEX",
-                name="QuadraticProgram.read_from_lp_file",
-                pip_install="pip install 'qiskit-optimization[cplex]'",
-            ) from ex
 
         def _parse_problem_name(filename: str) -> str:
             # Because docplex model reader uses the base name as model name,
@@ -943,7 +941,7 @@ class QuadraticProgram:
             # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
             prefix = "\\Problem name:"
             model_name = ""
-            with open(filename) as file:
+            with open(filename, encoding="utf8") as file:
                 for line in file:
                     if line.startswith(prefix):
                         model_name = line[len(prefix) :].strip()
@@ -985,21 +983,22 @@ class QuadraticProgram:
 
         Args:
             constants: replace variable by constant
-                e.g., {'x': 2} means 'x' is substituted with 2
+                e.g., ``{'x': 2}`` means ``x`` is substituted with 2
 
             variables: replace variables by weighted other variable
                 need to copy everything using name reference to make sure that indices are matched
                 correctly. The lower and upper bounds are updated accordingly.
-                e.g., {'x': ('y', 2)} means 'x' is substituted with 'y' * 2
+                e.g., ``{'x': ('y', 2)}`` means ``x`` is substituted with ``y * 2``
 
         Returns:
             An optimization problem by substituting variables with constants or other variables.
-            If the substitution is valid, `QuadraticProgram.status` is still
-            `QuadraticProgram.Status.VALID`.
-            Otherwise, it gets `QuadraticProgram.Status.INFEASIBLE`.
+            If the substitution is valid, ``QuadraticProgram.status`` is still
+            ``QuadraticProgram.Status.VALID``.
+            Otherwise, it gets ``QuadraticProgram.Status.INFEASIBLE``.
 
         Raises:
             QiskitOptimizationError: if the substitution is invalid as follows.
+
                 - Same variable is substituted multiple times.
                 - Coefficient of variable substitution is zero.
         """
@@ -1030,7 +1029,7 @@ class QuadraticProgram:
 
     def from_ising(
         self,
-        qubit_op: Union[OperatorBase, PauliSumOp],
+        qubit_op: OperatorBase,
         offset: float = 0.0,
         linear: bool = False,
     ) -> None:
@@ -1117,3 +1116,28 @@ class QuadraticProgram:
         feasible, _, _ = self.get_feasibility_info(x)
 
         return feasible
+
+    def prettyprint(self, wrap: int = 80) -> str:
+        """Returns a pretty printed string of this problem.
+
+        Args:
+            wrap: The text width to wrap the output strings. It is disabled by setting 0.
+                Note that some strings might exceed this value, for example, a long variable
+                name won't be wrapped. The default value is 80.
+
+        Returns:
+            A pretty printed string representing the problem.
+
+        Raises:
+            QiskitOptimizationError: if there is a non-printable name.
+        """
+        # pylint: disable=cyclic-import
+        from qiskit_optimization.translators.prettyprint import prettyprint
+
+        return prettyprint(self, wrap)
+
+    @staticmethod
+    def _check_name(name: str, name_type: str) -> None:
+        """Displays a warning message if a name string is not printable"""
+        if not name.isprintable():
+            warn(f"{name_type} name is not printable: {repr(name)}")

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """An application class for the exact cover."""
-from typing import List, Union
+from typing import List, Union, cast
 
 import numpy as np
 from docplex.mp.model import Model
@@ -39,7 +39,7 @@ class ExactCover(OptimizationApplication):
         self._set = []
         for sub in self._subsets:
             self._set.extend(sub)
-        self._set = np.unique(self._set)
+        self._set = cast(List, np.unique(self._set))
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert an exact cover instance into a
@@ -50,7 +50,7 @@ class ExactCover(OptimizationApplication):
             from the exact cover instance.
         """
         mdl = Model(name="Exact cover")
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(len(self._subsets))}
         mdl.minimize(mdl.sum(x[i] for i in x))
         for element in self._set:
             mdl.add_constraint(

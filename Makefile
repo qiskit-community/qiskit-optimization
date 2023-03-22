@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -42,15 +42,16 @@ all_check: spell style lint copyright mypy clean_sphinx html doctest
 lint:
 	pylint -rn qiskit_optimization test tools
 	python tools/verify_headers.py qiskit_optimization test tools
+	python tools/find_stray_release_notes.py
 
 mypy:
 	mypy qiskit_optimization test tools
 
 style:
-	black --check qiskit_optimization test tools
+	black --check qiskit_optimization test tools docs
 
 black:
-	black qiskit_optimization test tools
+	black qiskit_optimization test tools docs
 
 test:
 	python -m unittest discover -v test
@@ -61,16 +62,16 @@ test_ci:
 
 spell:
 	pylint -rn --disable=all --enable=spelling --spelling-dict=en_US --spelling-private-dict-file=.pylintdict qiskit_optimization test tools
-	make -C docs spell SPHINXOPTS=$(SPHINXOPTS)
+	sphinx-build -M spelling docs docs/_build -W -T --keep-going $(SPHINXOPTS)
 
 copyright:
 	python tools/check_copyright.py
 
 html:
-	make -C docs html SPHINXOPTS=$(SPHINXOPTS)
+	sphinx-build -M html docs docs/_build -W -T --keep-going $(SPHINXOPTS)
 
 doctest:
-	make -C docs doctest SPHINXOPTS=$(SPHINXOPTS)
+	sphinx-build -M doctest docs docs/_build -W -T --keep-going $(SPHINXOPTS)
 
 clean_sphinx:
 	make -C docs clean

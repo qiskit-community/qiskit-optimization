@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,7 +12,7 @@
 
 """An application class for the set packing."""
 
-from typing import List, Union
+from typing import List, Union, cast
 
 import numpy as np
 from docplex.mp.model import Model
@@ -40,7 +40,7 @@ class SetPacking(OptimizationApplication):
         self._set = []
         for sub in self._subsets:
             self._set.extend(sub)
-        self._set = np.unique(self._set)
+        self._set = cast(List, np.unique(self._set))
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert a set packing instance into a
@@ -51,7 +51,7 @@ class SetPacking(OptimizationApplication):
             from the set packing instance.
         """
         mdl = Model(name="Set packing")
-        x = {i: mdl.binary_var(name="x_{0}".format(i)) for i in range(len(self._subsets))}
+        x = {i: mdl.binary_var(name=f"x_{i}") for i in range(len(self._subsets))}
         mdl.maximize(mdl.sum(x[i] for i in x))
         for element in self._set:
             mdl.add_constraint(

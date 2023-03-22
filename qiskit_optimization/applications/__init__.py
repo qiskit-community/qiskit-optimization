@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -34,6 +34,7 @@ Applications
    :toctree: ../stubs/
    :nosignatures:
 
+   BinPacking
    Clique
    ExactCover
    GraphPartition
@@ -41,12 +42,14 @@ Applications
    Maxcut
    NumberPartition
    SetPacking
+   SKModel
    StableSet
    Tsp
    VehicleRouting
    VertexCover
 """
 
+from .bin_packing import BinPacking
 from .clique import Clique
 from .exact_cover import ExactCover
 from .graph_optimization_application import GraphOptimizationApplication
@@ -60,16 +63,20 @@ from .stable_set import StableSet
 from .tsp import Tsp
 from .vehicle_routing import VehicleRouting
 from .vertex_cover import VertexCover
+from .sk_model import SKModel
 
-_all__ = [
+__all__ = [
+    "BinPacking",
     "Clique",
     "ExactCover",
     "GraphOptimizationApplication",
+    "GraphPartition",
     "Knapsack",
     "Maxcut",
     "NumberPartition",
     "OptimizationApplication",
     "SetPacking",
+    "SKModel",
     "StableSet",
     "Tsp",
     "VehicleRouting",

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,7 +13,7 @@
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
 import math
-from typing import Tuple, Union
+from typing import Tuple
 
 import numpy as np
 
@@ -30,9 +30,12 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     i-th variable is mapped to i-th qubit.
     See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
 
+    Args:
+        quad_prog: The problem to be translated.
+
     Returns:
-        qubit_op: The qubit operator for the problem
-        offset: The constant value in the Ising Hamiltonian.
+        A tuple (qubit_op, offset) comprising the qubit operator for the problem
+        and offset for the constant value in the Ising Hamiltonian.
 
     Raises:
         QiskitOptimizationError: If an integer variable or a continuous variable exists
@@ -67,10 +70,10 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
     sense = quad_prog.objective.sense.value
 
-    # convert a constant part of the object function into Hamiltonian.
+    # convert a constant part of the objective function into Hamiltonian.
     offset += quad_prog.objective.constant * sense
 
-    # convert linear parts of the object function into Hamiltonian.
+    # convert linear parts of the objective function into Hamiltonian.
     for idx, coef in quad_prog.objective.linear.to_dict().items():
         z_p = zero.copy()
         weight = coef * sense / 2
@@ -109,13 +112,16 @@ def to_ising(quad_prog: QuadraticProgram) -> Tuple[OperatorBase, float]:
     if isinstance(qubit_op, OperatorBase):
         qubit_op = qubit_op.reduce()
     else:
-        qubit_op = I ^ num_nodes
+        # If there is no variable, we set num_nodes=1 so that qubit_op should be an operator.
+        # If num_nodes=0, I^0 = 1 (int).
+        num_nodes = max(1, num_nodes)
+        qubit_op = 0 * I ^ num_nodes
 
     return qubit_op, offset
 
 
 def from_ising(
-    qubit_op: Union[OperatorBase, PauliSumOp],
+    qubit_op: OperatorBase,
     offset: float = 0.0,
     linear: bool = False,
 ) -> QuadraticProgram:
@@ -182,7 +188,9 @@ def from_ising(
         z_index = np.where(pauli.z)[0]
         num_z = len(z_index)
 
-        if num_z == 1:
+        if num_z == 0:
+            offset += coeff.real
+        elif num_z == 1:
             pauli_coeffs_diag[z_index[0]] = coeff.real
         elif num_z == 2:
             pauli_coeffs_triu[z_index[0], z_index[1]] = coeff.real
@@ -197,7 +205,7 @@ def from_ising(
     # For quadratic pauli terms of operator
     # x_i * x_j = (1 - Z_i - Z_j + Z_i * Z_j)/4
     for (i, j), weight in pauli_coeffs_triu.items():
-        # Add a quadratic term to the object function of `QuadraticProgram`
+        # Add a quadratic term to the objective function of `QuadraticProgram`
         # The coefficient of the quadratic term in `QuadraticProgram` is
         # 4 * weight of the pauli
         quadratic_terms[i, j] = 4 * weight
@@ -208,7 +216,7 @@ def from_ising(
     # After processing quadratic pauli terms, only linear paulis are left
     # x_i = (1 - Z_i)/2
     for i, weight in enumerate(pauli_coeffs_diag):
-        # Add a linear term to the object function of `QuadraticProgram`
+        # Add a linear term to the objective function of `QuadraticProgram`
         # The coefficient of the linear term in `QuadraticProgram` is
         # 2 * weight of the pauli
         if linear:

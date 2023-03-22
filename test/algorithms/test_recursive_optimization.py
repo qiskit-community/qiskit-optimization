@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,41 +10,39 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test Recursive Min Eigen Optimizer."""
+"""Test Recursive Min Eigen Optimizer with the primitive-based minimum eigensolver."""
 
 import unittest
-from test import QiskitOptimizationTestCase, requires_extra_library
+from test import QiskitOptimizationTestCase
 
 import numpy as np
-
-from qiskit import BasicAer
+from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
+from qiskit.algorithms.optimizers import SLSQP
+from qiskit.primitives import Sampler
 from qiskit.utils import algorithm_globals
 
-from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
-
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
     CplexOptimizer,
+    MinimumEigenOptimizer,
     RecursiveMinimumEigenOptimizer,
-    WarmStartQAOAOptimizer,
     SlsqpOptimizer,
+    WarmStartQAOAOptimizer,
 )
-from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import (
-    IntermediateResult,
-)
-from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
 from qiskit_optimization.converters import (
-    IntegerToBinary,
     InequalityToEquality,
+    IntegerToBinary,
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
     """Recursive Min Eigen Optimizer Tests."""
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_min_eigen_optimizer(self):
         """Test the recursive minimum eigen optimizer."""
         filename = "op_ip1.lp"
@@ -73,7 +71,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(cplex_result.x, result.x, 4)
         self.assertAlmostEqual(cplex_result.fval, result.fval)
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_history(self):
         """Tests different options for history."""
         filename = "op_ip1.lp"
@@ -127,12 +125,16 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertGreater(len(result.history[0]), 1)
         self.assertIsNotNone(result.history[1])
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_warm_qaoa(self):
         """Test the recursive optimizer with warm start qaoa."""
-        algorithm_globals.random_seed = 12345
-        backend = BasicAer.get_backend("statevector_simulator")
-        qaoa = QAOA(quantum_instance=backend, reps=1)
+        seed = 1234
+        algorithm_globals.random_seed = seed
+        qaoa = QAOA(
+            sampler=Sampler(),
+            optimizer=SLSQP(),
+            reps=1,
+        )
         warm_qaoa = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True, qaoa=qaoa
         )
@@ -145,7 +147,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         problem.read_from_lp_file(lp_file)
 
         # solve problem with cplex
-        cplex = CplexOptimizer()
+        cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
         cplex_result = cplex.solve(problem)
 
         # solve problem

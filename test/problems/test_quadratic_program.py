@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,13 +14,13 @@
 
 import tempfile
 import unittest
-import warnings
 from os import path
-from test.optimization_test_case import QiskitOptimizationTestCase, requires_extra_library
+from test.optimization_test_case import QiskitOptimizationTestCase
 
-from docplex.mp.model import DOcplexException, Model
-
+from docplex.mp.model import DOcplexException
 from qiskit.opflow import PauliSumOp
+
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
 from qiskit_optimization.problems import Constraint, QuadraticObjective, Variable, VarType
 
@@ -172,7 +172,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var("x_")
 
         d_5 = q_p.continuous_var_dict(1, -1, 2, "", "")
-        self.assertSetEqual(set(d_5.keys()), {""})
+        self.assertSetEqual(set(d_5.keys()), {"x"})
         self.assertSetEqual(
             {var.name for var in q_p.variables},
             {
@@ -189,7 +189,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 "c1",
                 "c2",
                 "x_",
-                "",
+                "x",
             },
         )
         for var in q_p.variables[-1:]:
@@ -200,9 +200,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         with self.assertRaises(QiskitOptimizationError):
             q_p.binary_var_dict(1, "", "")
-
-        with self.assertRaises(QiskitOptimizationError):
-            q_p.integer_var(0, 1, "")
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
@@ -327,7 +324,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var("x_")
 
         d_5 = q_p.integer_var_list(1, -1, 2, "", "")
-        names = [""]
+        names = ["x"]
         self.assertSetEqual(
             {var.name for var in q_p.variables},
             {
@@ -344,7 +341,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 "c1",
                 "c2",
                 "x_",
-                "",
+                "x",
             },
         )
         for i, var in enumerate(q_p.variables[-1:]):
@@ -356,9 +353,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         with self.assertRaises(QiskitOptimizationError):
             q_p.binary_var_list(1, "", "")
-
-        with self.assertRaises(QiskitOptimizationError):
-            q_p.integer_var(0, 1, "")
 
         with self.assertRaises(QiskitOptimizationError):
             q_p = QuadraticProgram()
@@ -741,7 +735,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             q_p.binary_var_list(3)
             _ = q_p.objective.evaluate_gradient({})
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_read_from_lp_file(self):
         """test read lp file"""
         try:
@@ -860,17 +854,20 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         reference_file_name = self.get_resource_path(
             "test_quadratic_program.lp", "problems/resources"
         )
-        with tempfile.NamedTemporaryFile(mode="w+t", suffix=".lp") as temp_output_file:
-            q_p.write_to_lp_file(temp_output_file.name)
-            with open(reference_file_name) as reference:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_output_path = path.join(tmp, "temp.lp")
+            q_p.write_to_lp_file(temp_output_path)
+            with open(reference_file_name, encoding="utf8") as reference, open(
+                temp_output_path, encoding="utf8"
+            ) as temp_output_file:
                 lines1 = temp_output_file.readlines()
                 lines2 = reference.readlines()
                 self.assertListEqual(lines1, lines2)
 
         with tempfile.TemporaryDirectory() as temp_problem_dir:
             q_p.write_to_lp_file(temp_problem_dir)
-            with open(path.join(temp_problem_dir, "my_problem.lp")) as file1, open(
-                reference_file_name
+            with open(path.join(temp_problem_dir, "my_problem.lp"), encoding="utf8") as file1, open(
+                reference_file_name, encoding="utf8"
             ) as file2:
                 lines1 = file1.readlines()
                 lines2 = file2.readlines()
@@ -881,123 +878,6 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
 
         with self.assertRaises(DOcplexException):
             q_p.write_to_lp_file("")
-
-    def test_docplex(self):
-        """DEPRECATED test from_docplex and to_docplex
-
-        This test will be removed when `from_docplex` and `to_docplex` are removed.
-        """
-        q_p = QuadraticProgram("test")
-        q_p.binary_var(name="x")
-        q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
-        q_p.continuous_var(name="z", lowerbound=-1.5, upperbound=3.2)
-        q_p.minimize(
-            constant=1,
-            linear={"x": 1, "y": 2},
-            quadratic={("x", "y"): -1, ("z", "z"): 2},
-        )
-        q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
-        q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
-        q_p2 = QuadraticProgram()
-        with warnings.catch_warnings(record=True) as c_m:
-            warnings.simplefilter("always")
-            model = q_p.to_docplex()
-            msg = str(c_m[0].message)
-            msg_ref = "The to_docplex method is deprecated as of version "
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[:idx], msg_ref)
-            msg_ref = (
-                " and will be removed no sooner than 3 months after the release. "
-                "Instead use the qiskit_optimization.translators.to_docplex_mp function."
-            )
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[-idx:], msg_ref)
-        with warnings.catch_warnings(record=True) as c_m:
-            warnings.simplefilter("always")
-            q_p2.from_docplex(model)
-            msg = str(c_m[0].message)
-            msg_ref = "The from_docplex method is deprecated as of version "
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[:idx], msg_ref)
-            msg_ref = (
-                " and will be removed no sooner than 3 months after the release. "
-                "Instead use the qiskit_optimization.translators.from_docplex_mp function."
-            )
-            idx = min(len(msg), len(msg_ref))
-            self.assertEqual(msg[-idx:], msg_ref)
-
-        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
-
-        mod = Model("test")
-        x = mod.binary_var("x")
-        y = mod.integer_var(-2, 4, "y")
-        z = mod.continuous_var(-1.5, 3.2, "z")
-        mod.minimize(1 + x + 2 * y - x * y + 2 * z * z)
-        mod.add(2 * x - z == 1, "c0")
-        mod.add(2 * x - z + 3 * y * z == 1, "q0")
-        self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            mod.semiinteger_var(lb=1, name="x")
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            mod.add_range(0, 2 * x, 1)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
-            mod.add_equivalence(x, x + y <= 1, 1)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        with self.assertRaises(QiskitOptimizationError):
-            mod = Model()
-            x = mod.binary_var("x")
-            y = mod.binary_var("y")
-            mod.add(x != y)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                q_p.from_docplex(mod)
-
-        # test from_docplex without explicit variable names
-        mod = Model()
-        x = mod.binary_var()
-        y = mod.continuous_var()
-        z = mod.integer_var()
-        mod.minimize(x + y + z + x * y + y * z + x * z)
-        mod.add_constraint(x + y == z)  # linear EQ
-        mod.add_constraint(x + y >= z)  # linear GE
-        mod.add_constraint(x + y <= z)  # linear LE
-        mod.add_constraint(x * y == z)  # quadratic EQ
-        mod.add_constraint(x * y >= z)  # quadratic GE
-        mod.add_constraint(x * y <= z)  # quadratic LE
-        q_p = QuadraticProgram()
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            q_p.from_docplex(mod)
-        var_names = [v.name for v in q_p.variables]
-        self.assertListEqual(var_names, ["x0", "x1", "x2"])
-        senses = [Constraint.Sense.EQ, Constraint.Sense.GE, Constraint.Sense.LE]
-        for i, c in enumerate(q_p.linear_constraints):
-            self.assertDictEqual(c.linear.to_dict(use_name=True), {"x0": 1, "x1": 1, "x2": -1})
-            self.assertEqual(c.rhs, 0)
-            self.assertEqual(c.sense, senses[i])
-        for i, c in enumerate(q_p.quadratic_constraints):
-            self.assertEqual(c.rhs, 0)
-            self.assertDictEqual(c.linear.to_dict(use_name=True), {"x2": -1})
-            self.assertDictEqual(c.quadratic.to_dict(use_name=True), {("x0", "x1"): 1})
-            self.assertEqual(c.sense, senses[i])
 
     def test_substitute_variables(self):
         """test substitute variables"""
@@ -1118,7 +998,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertEqual("c3", constraints[1].name)
         self.assertEqual("c5", constraints[2].name)
 
-    @requires_extra_library
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_quadratic_program_element_when_loaded_from_source(self):
         """Test QuadraticProgramElement when QuadraticProgram is loaded from an external source"""
         with self.subTest("from_ising"):
@@ -1144,6 +1024,148 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
                 self.assertEqual(id(elem.quadratic_program), id(q_p))
         except RuntimeError as ex:
             self.fail(str(ex))
+
+    def test_empty_name(self):
+        """Test empty names"""
+
+        with self.subTest("problem name"):
+            q_p = QuadraticProgram("")
+            self.assertEqual(q_p.name, "")
+
+        with self.subTest("variable name"):
+            q_p = QuadraticProgram()
+            x = q_p.binary_var(name="")
+            y = q_p.integer_var(name="")
+            z = q_p.continuous_var(name="")
+            self.assertEqual(x.name, "x0")
+            self.assertEqual(y.name, "x1")
+            self.assertEqual(z.name, "x2")
+
+        with self.subTest("variable name 2"):
+            q_p = QuadraticProgram()
+            w = q_p.binary_var(name="w")
+            x = q_p.binary_var(name="")
+            y = q_p.integer_var(name="")
+            z = q_p.continuous_var(name="")
+            self.assertEqual(w.name, "w")
+            self.assertEqual(x.name, "x1")
+            self.assertEqual(y.name, "x2")
+            self.assertEqual(z.name, "x3")
+
+        with self.subTest("variable name list"):
+            q_p = QuadraticProgram()
+            x = q_p.binary_var_list(2, name="")
+            y = q_p.integer_var_list(2, name="")
+            z = q_p.continuous_var_list(2, name="")
+            self.assertListEqual([v.name for v in x], ["x0", "x1"])
+            self.assertListEqual([v.name for v in y], ["x2", "x3"])
+            self.assertListEqual([v.name for v in z], ["x4", "x5"])
+
+        with self.subTest("variable name dict"):
+            q_p = QuadraticProgram()
+            x = q_p.binary_var_dict(2, name="")
+            y = q_p.integer_var_dict(2, name="")
+            z = q_p.continuous_var_dict(2, name="")
+            self.assertDictEqual({k: v.name for k, v in x.items()}, {"x0": "x0", "x1": "x1"})
+            self.assertDictEqual({k: v.name for k, v in y.items()}, {"x2": "x2", "x3": "x3"})
+            self.assertDictEqual({k: v.name for k, v in z.items()}, {"x4": "x4", "x5": "x5"})
+
+        with self.subTest("linear constraint name"):
+            q_p = QuadraticProgram()
+            x = q_p.linear_constraint(name="")
+            y = q_p.linear_constraint(name="")
+            self.assertEqual(x.name, "c0")
+            self.assertEqual(y.name, "c1")
+
+        with self.subTest("quadratic constraint name"):
+            q_p = QuadraticProgram()
+            x = q_p.quadratic_constraint(name="")
+            y = q_p.quadratic_constraint(name="")
+            self.assertEqual(x.name, "q0")
+            self.assertEqual(y.name, "q1")
+
+    def test_printable_name(self):
+        """Test non-printable names"""
+        name = "\n"
+
+        with self.assertWarns(UserWarning):
+            _ = QuadraticProgram(name)
+
+        q_p = QuadraticProgram()
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var(name + "bin")
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var_list(10, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.binary_var_dict(10, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var(0, 1, name + "int")
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var_list(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.integer_var_dict(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var(0, 1, name + "cont")
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var_list(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.continuous_var_dict(10, 0, 1, name)
+
+        with self.assertWarns(UserWarning):
+            q_p.linear_constraint(name=name)
+
+        with self.assertWarns(UserWarning):
+            q_p.quadratic_constraint(name=name)
+
+    def test_str_repr(self):
+        """Test str and repr"""
+        q_p = QuadraticProgram("my problem")
+        q_p.binary_var("x")
+        q_p.integer_var(-1, 5, "y")
+        q_p.continuous_var(-1, 5, "z")
+        q_p.minimize(1, {"x": 1, "y": -1, "z": 10}, {("x", "x"): 0.5, ("y", "z"): -1})
+        q_p.linear_constraint({"x": 1, "y": 2}, "==", 1, "lin_eq")
+        q_p.linear_constraint({"x": 1, "y": 2}, "<=", 1, "lin_leq")
+        q_p.linear_constraint({"x": 1, "y": 2}, ">=", 1, "lin_geq")
+        q_p.quadratic_constraint(
+            {"x": 1, "y": 1},
+            {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+            "==",
+            1,
+            "quad_eq",
+        )
+        q_p.quadratic_constraint(
+            {"x": 1, "y": 1},
+            {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+            "<=",
+            1,
+            "quad_leq",
+        )
+        q_p.quadratic_constraint(
+            {"x": 1, "y": 1},
+            {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+            ">=",
+            1,
+            "quad_geq",
+        )
+        self.assertEqual(
+            str(q_p),
+            "minimize 0.5*x^2 - y*z + x - y + 10*z + 1 (3 variables, 6 constraints, 'my problem')",
+        )
+        self.assertEqual(
+            repr(q_p),
+            "<QuadraticProgram: minimize 0.5*x^2 - y*z + x - y + 10*z + 1, "
+            "3 variables, 6 constraints, 'my problem'>",
+        )
 
 
 if __name__ == "__main__":

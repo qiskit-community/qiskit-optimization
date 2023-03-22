@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -115,9 +115,7 @@ class QuadraticExpression(QuadraticProgramElement):
                 coeffs[i, j] = value
             coefficients = coeffs
         else:
-            raise QiskitOptimizationError(
-                "Unsupported format for coefficients: {}".format(coefficients)
-            )
+            raise QiskitOptimizationError(f"Unsupported format for coefficients: {coefficients}")
         return self._triangle_matrix(coefficients)
 
     @staticmethod
@@ -271,7 +269,7 @@ class QuadraticExpression(QuadraticProgramElement):
                 if x.lowerbound * x.upperbound <= 0.0:
                     # lower bound and upper bound have different signs
                     lst.append(0.0)
-                lst.extend([x.lowerbound ** 2, x.upperbound ** 2])
+                lst.extend([x.lowerbound**2, x.upperbound**2])
             else:
                 lst.extend(
                     [
@@ -285,3 +283,15 @@ class QuadraticExpression(QuadraticProgramElement):
             l_b += min(lst2)
             u_b += max(lst2)
         return ExpressionBounds(lowerbound=l_b, upperbound=u_b)
+
+    def __repr__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+
+        return f"<{self.__class__.__name__}: {expr2str(quadratic=self, truncate=DEFAULT_TRUNCATE)}>"
+
+    def __str__(self):
+        # pylint: disable=cyclic-import
+        from ..translators.prettyprint import expr2str
+
+        return f"{expr2str(quadratic=self)}"

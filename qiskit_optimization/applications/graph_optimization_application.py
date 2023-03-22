@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,18 +17,11 @@ from typing import Union, Optional, Dict, List
 
 import networkx as nx
 import numpy as np
-from qiskit.exceptions import MissingOptionalLibraryError
 
+import qiskit_optimization.optionals as _optionals
 from .optimization_application import OptimizationApplication
 from ..algorithms import OptimizationResult
 from ..deprecation import DeprecatedType, deprecate_method
-
-try:
-    import matplotlib as _
-
-    _HAS_MATPLOTLIB = True
-except ImportError:
-    _HAS_MATPLOTLIB = False
 
 
 class GraphOptimizationApplication(OptimizationApplication):
@@ -40,11 +33,13 @@ class GraphOptimizationApplication(OptimizationApplication):
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
-            NetworkX Graph, or as an array or list if format suitable to build out a NetworkX graph.
+                `NetworkX <https://networkx.org/>`_ graph,
+                or as an array or list format suitable to build out a NetworkX graph.
         """
         # The view of the graph is stored which means the graph can not be changed.
         self._graph = nx.Graph(graph).copy(as_view=True)
 
+    @_optionals.HAS_MATPLOTLIB.require_in_call
     def draw(
         self,
         result: Optional[Union[OptimizationResult, np.ndarray]] = None,
@@ -56,16 +51,7 @@ class GraphOptimizationApplication(OptimizationApplication):
         Args:
             result: The calculated result for the problem
             pos: The positions of nodes
-        Raises:
-            MissingOptionalLibraryError: if matplotlib is not installed.
         """
-        if not _HAS_MATPLOTLIB:
-            raise MissingOptionalLibraryError(
-                libname="matplotlib",
-                name="GraphOptimizationApplication",
-                pip_install="pip install 'qiskit-optimization[matplotlib]'",
-            )
-
         if result is None:
             nx.draw(self._graph, pos=pos, with_labels=True)
         else:

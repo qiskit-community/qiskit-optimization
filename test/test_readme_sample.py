@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,87 +17,78 @@ the issue then ensure changes are made to readme too.
 """
 
 import unittest
-from test import QiskitOptimizationTestCase
-from qiskit.utils import algorithm_globals
 
-# pylint: disable=import-outside-toplevel,redefined-builtin
+import contextlib
+import io
+from pathlib import Path
+import re
+from test import QiskitOptimizationTestCase
 
 
 class TestReadmeSample(QiskitOptimizationTestCase):
     """Test sample code from readme"""
 
-    def _sample_code(self):
-        def print(*args):
-            """overloads print to log values"""
-            if args:
-                self.log.debug(args[0], *args[1:])
-
-        # --- Exact copy of sample code ----------------------------------------
-
-        import networkx as nx
-        import numpy as np
-
-        from qiskit_optimization import QuadraticProgram
-        from qiskit_optimization.algorithms import MinimumEigenOptimizer
-
-        from qiskit import BasicAer
-        from qiskit.algorithms import QAOA
-        from qiskit.algorithms.optimizers import SPSA
-
-        # Generate a graph of 4 nodes
-        n = 4
-        graph = nx.Graph()
-        graph.add_nodes_from(np.arange(0, n, 1))
-        elist = [(0, 1, 1.0), (0, 2, 1.0), (0, 3, 1.0), (1, 2, 1.0), (2, 3, 1.0)]
-        graph.add_weighted_edges_from(elist)
-
-        # Compute the weight matrix from the graph
-        w = nx.adjacency_matrix(graph)
-
-        # Formulate the problem as quadratic program
-        problem = QuadraticProgram()
-        _ = [problem.binary_var("x{}".format(i)) for i in range(n)]  # create n binary variables
-        linear = w.dot(np.ones(n))
-        quadratic = -w
-        problem.maximize(linear=linear, quadratic=quadratic)
-
-        # Fix node 0 to be 1 to break the symmetry of the max-cut solution
-        problem.linear_constraint([1, 0, 0, 0], "==", 1)
-
-        # Run quantum algorithm QAOA on qasm simulator
-        spsa = SPSA(maxiter=250)
-        backend = BasicAer.get_backend("qasm_simulator")
-        qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=backend)
-        algorithm = MinimumEigenOptimizer(qaoa)
-        result = algorithm.solve(problem)
-        print(result)  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
-        # ----------------------------------------------------------------------
-
-        return result
-
     def test_readme_sample(self):
         """readme sample test"""
+        # pylint: disable=exec-used
 
-        print("")
-        import numpy as np
+        readme_name = "README.md"
+        readme_path = Path(__file__).parent.parent.joinpath(readme_name)
+        if not readme_path.exists() or not readme_path.is_file():
+            self.fail(msg=f"{readme_name} not found at {readme_path}")
+            return
 
-        # for now do this until test is fixed
-        msg = None
-        for idx in range(3):
+        # gets the first matched code sample
+        # assumes one code sample to test per readme
+        readme_sample = None
+        with open(readme_path, encoding="UTF-8") as readme_file:
+            match_sample = re.search(
+                "```python.*```",
+                readme_file.read(),
+                flags=re.S,
+            )
+            if match_sample:
+                # gets the matched string stripping the markdown code block
+                readme_sample = match_sample.group(0)[9:-3]
+
+        if readme_sample is None:
+            self.skipTest(f"No sample found inside {readme_name}.")
+            return
+
+        with contextlib.redirect_stdout(io.StringIO()) as out:
             try:
-                print(f"Trial number {idx+1}")
-                # Fix the random seed of SPSA (Optional)
-                algorithm_globals.random_seed = 123
-                result = self._sample_code()
-                np.testing.assert_array_almost_equal(result.x, [1, 0, 1, 0])
-                self.assertAlmostEqual(result.fval, 4.0)
-                msg = None
-                break
+                exec(readme_sample, globals())
             except Exception as ex:  # pylint: disable=broad-except
-                msg = str(ex)
+                self.fail(str(ex))
+                return
 
-        if msg is not None:
-            self.skipTest(msg)
+        result_x = None
+        result_fval = None
+        str_ref1 = "variable values:"
+        str_ref2 = "objective function value:"
+        texts = out.getvalue().split("\n")
+        for text in texts:
+            idx = text.find(str_ref1)
+            if idx >= 0:
+                result_x = text[idx + len(str_ref1) :].strip()
+                continue
+            idx = text.find(str_ref2)
+            if idx >= 0:
+                result_fval = float(text[idx + len(str_ref2) :])
+            if result_x is not None and result_fval is not None:
+                break
+
+        if result_x is None:
+            self.fail(f"Failed to find result.x inside {readme_name}.")
+            return
+        if result_fval is None:
+            self.fail(f"Failed to find result.fval inside {readme_name}.")
+            return
+
+        with self.subTest("test result.x"):
+            self.assertEqual(result_x, "x0=1.0, x1=0.0, x2=1.0, x3=0.0")
+        with self.subTest("test result.fval"):
+            self.assertAlmostEqual(result_fval, 4.0)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -22,14 +22,15 @@ to a suite of easy-to-use quantum optimization algorithms that are ready to run 
 classical simulators, as well as on real quantum devices via Qiskit.
 
 This module enables easy, efficient modeling of optimization problems using `docplex
-<https://developer.ibm.com/docloud/documentation/optimization-modeling/modeling-for-python/>`_.
+<https://ibmdecisionoptimization.github.io/docplex-doc/>`_.
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm
-(:class:`~qiskit.algorithms.QAOA`), to
+(:class:`~qiskit.algorithms.minimum_eigensolver.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental :mod:`~qiskit.algorithms` provided by Qiskit Terra. Furthermore, the modular design
+fundamental :mod:`~qiskit.algorithms.minimum_eigensolver` provided by Qiskit Terra.
+Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.

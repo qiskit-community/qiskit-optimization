@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,7 +20,6 @@ import logging
 import os
 import unittest
 import time
-from qiskit.exceptions import MissingOptionalLibraryError
 
 # disable deprecation warnings that can cause log output overflow
 # pylint: disable=unused-argument
@@ -32,24 +31,6 @@ def _noop(*args, **kargs):
 
 # disable warning messages
 # warnings.warn = _noop
-
-
-def requires_extra_library(test_item):
-    """Decorator that skips test if an extra library is not available
-    Args:
-        test_item (callable): function to be decorated.
-    Returns:
-        callable: the decorated function.
-    """
-
-    def wrapper(self, *args):
-        try:
-            test_item(self, *args)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
-        return wrapper
-
-    return wrapper
 
 
 class QiskitOptimizationTestCase(unittest.TestCase, ABC):
@@ -66,7 +47,7 @@ class QiskitOptimizationTestCase(unittest.TestCase, ABC):
     def tearDown(self) -> None:
         elapsed = time.time() - self._started_at
         if elapsed > 5.0:
-            print("({:.2f}s)".format(round(elapsed, 2)), flush=True)
+            print(f"({round(elapsed, 2):.2f}s)", flush=True)
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -77,13 +58,11 @@ class QiskitOptimizationTestCase(unittest.TestCase, ABC):
         # is set.
         if os.getenv("LOG_LEVEL"):
             # Set up formatter.
-            log_fmt = "{}.%(funcName)s:%(levelname)s:%(asctime)s:" " %(message)s".format(
-                cls.__name__
-            )
+            log_fmt = f"{cls.__name__}.%(funcName)s:%(levelname)s:%(asctime)s:" " %(message)s"
             formatter = logging.Formatter(log_fmt)
 
             # Set up the file handler.
-            log_file_name = "%s.log" % cls.moduleName
+            log_file_name = f"{cls.moduleName}.log"
             file_handler = logging.FileHandler(log_file_name)
             file_handler.setFormatter(formatter)
             cls.log.addHandler(file_handler)

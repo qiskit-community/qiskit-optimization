@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -73,7 +73,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             elif x.vartype == Variable.Type.INTEGER:
                 dst.integer_var(x.lowerbound, x.upperbound, x.name)
             else:
-                raise QiskitOptimizationError("Unsupported vartype: {}".format(x.vartype))
+                raise QiskitOptimizationError(f"Unsupported vartype: {x.vartype}")
 
         # get original objective terms
         offset = problem.objective.constant
@@ -94,7 +94,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
             row = constraint.linear.to_dict()
 
             # constant parts of penalty*(Constant-func)**2: penalty*(Constant**2)
-            offset += sense * penalty * constant ** 2
+            offset += sense * penalty * constant**2
 
             # linear parts of penalty*(Constant-func)**2: penalty*(-2*Constant*func)
             for j, coef in row.items():

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,10 +10,11 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Qiskit Optimization VQE Quantum Program."""
+"""The Qiskit Optimization VQE Runtime Client."""
 
 
 from typing import List, Callable, Optional, Any, Dict, Union
+import warnings
 import numpy as np
 
 from qiskit import QuantumCircuit
@@ -26,11 +27,11 @@ from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 
 
-class VQEProgram(MinimumEigensolver):
-    """The Qiskit Optimization VQE Quantum Program to call the VQE runtime as a MinimumEigensolver.
+class VQEClient(MinimumEigensolver):
+    """The Qiskit Optimization VQE Runtime Client to call the VQE runtime as a MinimumEigensolver.
 
-    This program is equivalent to the ``VQEProgram`` in Qiskit Nature, but here also serves as basis
-    for the Qiskit Optimization's ``QAOAProgram``.
+    This program is equivalent to the ``VQEClient`` in Qiskit Nature, but here also serves as
+    basis for the Qiskit Optimization's ``QAOAClient``.
     """
 
     def __init__(
@@ -56,6 +57,7 @@ class VQEProgram(MinimumEigensolver):
             backend: The backend to run the circuits on.
             initial_point: An optional initial point (i.e. initial parameter values)
                 for the optimizer. If ``None`` a random vector is used.
+            provider: Provider that supports the runtime feature.
             shots: The number of shots to be used
             measurement_error_mitigation: Whether or not to use measurement error mitigation.
             callback: a callback that can access the intermediate data during the optimization.
@@ -66,6 +68,9 @@ class VQEProgram(MinimumEigensolver):
             store_intermediate: Whether or not to store intermediate values of the optimization
                 steps. Per default False.
         """
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            super().__init__()
         if optimizer is None:
             optimizer = SPSA(maxiter=300)
 
@@ -109,6 +114,10 @@ class VQEProgram(MinimumEigensolver):
     def program_id(self) -> str:
         """Return the program ID."""
         return self._program_id
+
+    @classmethod
+    def supports_aux_operators(cls) -> bool:
+        return True
 
     @property
     def ansatz(self) -> QuantumCircuit:
@@ -205,22 +214,52 @@ class VQEProgram(MinimumEigensolver):
         """Set the callback."""
         self._callback = callback
 
-    def _wrap_vqe_callback(self) -> Optional[Callable]:
+    def _wrap_vqe_callback(self) -> Optional[Callable[[int, np.ndarray, float, float], None]]:
         """Wraps and returns the given callback to match the signature of the runtime callback."""
 
         def wrapped_callback(*args):
             _, data = args  # first element is the job id
+            if isinstance(data, dict):
+                return  # unexpected params. skip
             iteration_count = data[0]
             params = data[1]
             mean = data[2]
             sigma = data[3]
-            return self._callback(iteration_count, params, mean, sigma)
+            self._callback(iteration_count, params, mean, sigma)
+            return
 
         # if callback is set, return wrapped callback, else return None
         if self._callback:
             return wrapped_callback
         else:
             return None
+
+    def program_inputs(
+        self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
+    ) -> Dict[str, Any]:
+        """Return the inputs for the runtime program.
+
+        Sub-classes can override this method to add their own inputs.
+        """
+        return {
+            "operator": operator,
+            "aux_operators": aux_operators,
+            "ansatz": self.ansatz,
+            "optimizer": self.optimizer,
+            "initial_point": self.initial_point,
+            "shots": self.shots,
+            "measurement_error_mitigation": self.measurement_error_mitigation,
+            "store_intermediate": self.store_intermediate,
+        }
+
+    def _send_job(self, inputs: Dict[str, Any], options: Dict[str, Any]):
+        """Submit a runtime job to the program ``self.program_id``."""
+        return self.provider.runtime.run(
+            program_id=self.program_id,
+            inputs=inputs,
+            options=options,
+            callback=self._wrap_vqe_callback(),
+        )
 
     def compute_minimum_eigenvalue(
         self, operator: OperatorBase, aux_operators: Optional[List[Optional[OperatorBase]]] = None
@@ -255,27 +294,14 @@ class VQEProgram(MinimumEigensolver):
             aux_operators = [_convert_to_paulisumop(aux_op) for aux_op in aux_operators]
 
         # combine the settings with the given operator to runtime inputs
-        inputs = {
-            "operator": operator,
-            "aux_operators": aux_operators,
-            "ansatz": self.ansatz,
-            "optimizer": self.optimizer,
-            "initial_point": self.initial_point,
-            "shots": self.shots,
-            "measurement_error_mitigation": self.measurement_error_mitigation,
-            "store_intermediate": self.store_intermediate,
-        }
+        inputs = self.program_inputs(operator, aux_operators)
 
         # define runtime options
         options = {"backend_name": self.backend.name()}
 
         # send job to runtime and return result
-        job = self.provider.runtime.run(
-            program_id=self.program_id,
-            inputs=inputs,
-            options=options,
-            callback=self._wrap_vqe_callback(),
-        )
+        job = self._send_job(inputs, options)
+
         # print job ID if something goes wrong
         try:
             result = job.result()
@@ -283,7 +309,7 @@ class VQEProgram(MinimumEigensolver):
             raise RuntimeError(f"The job {job.job_id()} failed unexpectedly.") from exc
 
         # re-build result from serialized return value
-        vqe_result = VQEProgramResult()
+        vqe_result = VQERuntimeResult()
         vqe_result.job_id = job.job_id()
         vqe_result.cost_function_evals = result.get("cost_function_evals", None)
         vqe_result.eigenstate = result.get("eigenstate", None)
@@ -299,8 +325,8 @@ class VQEProgram(MinimumEigensolver):
         return vqe_result
 
 
-class VQEProgramResult(VQEResult):
-    """The VQEProgram result object.
+class VQERuntimeResult(VQEResult):
+    """The VQEClient result object.
 
     This result objects contains the same as the VQEResult and additionally the history
     of the optimizer, containing information such as the function and parameter values per step.

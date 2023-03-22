@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,20 +17,21 @@ import time
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 
-from .minimum_eigen_optimizer import MinimumEigenOptimizer
-from .optimization_algorithm import (
-    OptimizationResultStatus,
-    OptimizationAlgorithm,
-    OptimizationResult,
-)
-from .slsqp_optimizer import SlsqpOptimizer
+from ..converters import MaximizeToMinimize
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
+from ..problems.linear_expression import LinearExpression
 from ..problems.quadratic_program import QuadraticProgram
-from ..problems.variable import VarType, Variable
-from ..converters import MaximizeToMinimize
+from ..problems.variable import Variable, VarType
+from .minimum_eigen_optimizer import MinimumEigenOptimizer
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+)
+from .slsqp_optimizer import SlsqpOptimizer
 
 UPDATE_RHO_BY_TEN_PERCENT = 0
 UPDATE_RHO_BY_RESIDUALS = 1
@@ -101,8 +102,8 @@ class ADMMParameters:
         self.warm_start = warm_start
 
     def __repr__(self) -> str:
-        props = ", ".join(["{}={}".format(key, value) for (key, value) in vars(self).items()])
-        return "{0}({1})".format(type(self).__name__, props)
+        props = ", ".join([f"{key}={value}" for (key, value) in vars(self).items()])
+        return f"{type(self).__name__}({props})"
 
 
 class ADMMState:
@@ -239,17 +240,14 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # the solve method.
         self._state = None  # type: Optional[ADMMState]
 
-    def get_compatibility_msg(self, problem: QuadraticProgram) -> Optional[str]:
+    def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with the optimizer implementing this method.
 
         Args:
             problem: The optimization problem to check compatibility.
 
         Returns:
-            Returns True if the problem is compatible, otherwise raises an error.
-
-        Raises:
-            QiskitOptimizationError: If the problem is not compatible with the ADMM optimizer.
+            Returns the incompatibility message. If the message is empty no issues were found.
         """
 
         msg = ""
@@ -266,7 +264,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
                     # binary and continuous vars are mixed.
                     msg += "Binary and continuous variables are not separable in the objective. "
 
-        # if an error occurred, return error message, otherwise, return None
+        # if an error occurred, return error message, otherwise, return the empty string
         return msg
 
     def solve(self, problem: QuadraticProgram) -> ADMMOptimizationResult:
@@ -366,7 +364,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             self._state.dual_residuals.append(dual_residual)
             self._state.cons_r.append(constraint_residual)
             self._state.merits.append(merit)
-            self._state.lambdas.append(np.linalg.norm(self._state.lambda_mult))
+            self._state.lambdas.append(cast(float, np.linalg.norm(self._state.lambda_mult)))
 
             self._state.x0_saved.append(self._state.x0)
             self._state.u_saved.append(self._state.u)
@@ -686,7 +684,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
         # set linear objective for y
         linear_y = -self._state.lambda_mult - self._state.rho * (self._state.x0 - self._state.z)
-        op3.objective.linear = linear_y
+        op3.objective.linear = cast(LinearExpression, linear_y)
 
         return op3
 
@@ -834,12 +832,12 @@ class ADMMOptimizer(OptimizationAlgorithm):
             r, s as primary and dual residuals.
         """
         elements = self._state.x0 - self._state.z - self._state.y
-        primal_residual = np.linalg.norm(elements)
+        primal_residual: float = cast(float, np.linalg.norm(elements))
         if iteration > 0:
             elements_dual = self._state.z - self._state.z_saved[iteration - 1]
         else:
             elements_dual = self._state.z - self._state.z_init
-        dual_residual = self._state.rho * np.linalg.norm(elements_dual)
+        dual_residual: float = cast(float, self._state.rho * np.linalg.norm(elements_dual))
 
         return primal_residual, dual_residual
 

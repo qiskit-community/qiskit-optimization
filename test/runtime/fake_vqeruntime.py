@@ -18,7 +18,7 @@ from qiskit.algorithms.optimizers import Optimizer
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.providers import Provider
-from qiskit_optimization.runtime import VQEProgramResult
+from qiskit_optimization.runtime import VQERuntimeResult
 
 
 class FakeVQEJob:
@@ -26,7 +26,7 @@ class FakeVQEJob:
 
     def result(self) -> Dict[str, Any]:
         """Return a VQE result."""
-        result = VQEProgramResult()
+        result = VQERuntimeResult()
         serialized_result = {
             "optimizer_evals": result.optimizer_evals,
             "optimizer_time": result.optimizer_time,
@@ -85,7 +85,51 @@ class FakeVQERuntime:
         return FakeVQEJob()
 
 
-class FakeRuntimeProvider(Provider):
+class FakeQAOARuntime:
+    """A fake VQE runtime for unit tests."""
+
+    def run(self, program_id, inputs, options, callback=None):
+        """Run the fake program. Checks the input types."""
+
+        if program_id != "qaoa":
+            raise ValueError("program_id is not qaoa.")
+
+        allowed_inputs = {
+            "operator": PauliSumOp,
+            "aux_operators": (list, type(None)),
+            "ansatz": type(None),
+            "initial_point": (np.ndarray, str),
+            "optimizer": (Optimizer, dict),
+            "shots": int,
+            "measurement_error_mitigation": bool,
+            "store_intermediate": bool,
+            "reps": int,
+            "use_pulse_efficient": bool,
+            "use_swap_strategies": bool,
+            "use_initial_mapping": bool,
+            "alpha": float,
+        }
+        for arg, value in inputs.items():
+            if not isinstance(value, allowed_inputs[arg]):
+                raise ValueError(f"{arg} does not have the right type: {allowed_inputs[arg]}")
+
+        allowed_options = {"backend_name": str}
+        for arg, value in options.items():
+            if not isinstance(value, allowed_options[arg]):
+                raise ValueError(f"{arg} does not have the right type: {allowed_inputs[arg]}")
+
+        if callback is not None:
+            try:
+                fake_job_id = "c2985khdm6upobbnmll0"
+                fake_data = [3, np.arange(10), 1.3]
+                _ = callback(fake_job_id, fake_data)
+            except Exception as exc:
+                raise ValueError("Callback failed") from exc
+
+        return FakeVQEJob()
+
+
+class FakeVQERuntimeProvider(Provider):
     """A fake runtime provider for unit tests."""
 
     def has_service(self, service):
@@ -98,3 +142,18 @@ class FakeRuntimeProvider(Provider):
     def runtime(self) -> FakeVQERuntime:
         """Return the runtime."""
         return FakeVQERuntime()
+
+
+class FakeQAOARuntimeProvider(Provider):
+    """A fake runtime provider for unit tests."""
+
+    def has_service(self, service):
+        """Check if a service is available."""
+        if service == "runtime":
+            return True
+        return False
+
+    @property
+    def runtime(self) -> FakeQAOARuntime:
+        """Return the runtime."""
+        return FakeQAOARuntime()

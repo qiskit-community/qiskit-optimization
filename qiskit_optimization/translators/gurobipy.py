@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,13 +14,18 @@
 
 from typing import cast
 
-try:
-    import gurobipy as gp
-    from gurobipy import Model
+import qiskit_optimization.optionals as _optionals
+from qiskit_optimization.exceptions import QiskitOptimizationError
+from qiskit_optimization.problems.constraint import Constraint
+from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
+from qiskit_optimization.problems.variable import Variable
 
-    _HAS_GUROBI = True
-except ImportError:
-    _HAS_GUROBI = False
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
+if _optionals.HAS_GUROBIPY:
+    # pylint: disable=import-error,no-name-in-module
+    from gurobipy import Model
+else:
 
     class Model:  # type: ignore
         """Empty Model class
@@ -30,24 +35,7 @@ except ImportError:
         pass
 
 
-from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit_optimization.exceptions import QiskitOptimizationError
-from qiskit_optimization.problems.constraint import Constraint
-from qiskit_optimization.problems.quadratic_objective import QuadraticObjective
-from qiskit_optimization.problems.variable import Variable
-
-from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-
-
-def _check_gurobipy_is_installed(name: str):
-    if not _HAS_GUROBI:
-        raise MissingOptionalLibraryError(
-            libname="GUROBI",
-            name=name,
-            pip_install="pip install qiskit-optimization[gurobi]",
-        )
-
-
+@_optionals.HAS_GUROBIPY.require_in_call
 def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
     """Returns a gurobipy model corresponding to a quadratic program.
 
@@ -59,12 +47,11 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
 
     Raises:
         QiskitOptimizationError: if non-supported elements (should never happen).
-        MissingOptionalLibraryError: if gurobipy is not installed.
     """
-
-    _check_gurobipy_is_installed("to_gurobipy")
-
     # initialize model
+    # pylint: disable=import-error
+    import gurobipy as gp
+
     mdl = gp.Model(quadratic_program.name)
 
     # add variables
@@ -82,7 +69,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             )
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported variable type: {}".format(x.vartype))
+            raise QiskitOptimizationError(f"Unsupported variable type: {x.vartype}")
 
     # add objective
     objective = quadratic_program.objective.constant
@@ -113,7 +100,7 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             mdl.addConstr(linear_expr <= rhs, name=name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
     # add quadratic constraints
     for i, q_constraint in enumerate(quadratic_program.quadratic_constraints):
@@ -139,16 +126,18 @@ def to_gurobipy(quadratic_program: QuadraticProgram) -> Model:
             mdl.addConstr(quadratic_expr <= rhs, name=name)
         else:
             # should never happen
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(sense))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {sense}")
 
     mdl.update()
     return mdl
 
 
+@_optionals.HAS_GUROBIPY.require_in_call
 def from_gurobipy(model: Model) -> QuadraticProgram:
     """Translate a gurobipy model into a quadratic program.
 
     Note that this supports only basic functions of gurobipy as follows:
+
     - quadratic objective function
     - linear / quadratic constraints
     - binary / integer / continuous variables
@@ -161,10 +150,9 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
 
     Raises:
         QiskitOptimizationError: if the model contains unsupported elements.
-        MissingOptionalLibraryError: if gurobipy is not installed.
     """
-
-    _check_gurobipy_is_installed("from_gurobipy")
+    # pylint: disable=import-error
+    import gurobipy as gp
 
     if not isinstance(model, Model):
         raise QiskitOptimizationError(f"The model is not compatible: {model}")
@@ -188,9 +176,7 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
         elif x.vtype == gp.GRB.INTEGER:
             x_new = quadratic_program.integer_var(x.lb, x.ub, x.VarName)
         else:
-            raise QiskitOptimizationError(
-                "Unsupported variable type: {} {}".format(x.VarName, x.vtype)
-            )
+            raise QiskitOptimizationError(f"Unsupported variable type: {x.VarName} {x.vtype}")
         var_names[x] = x_new.name
 
     # objective sense
@@ -253,7 +239,7 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
         elif sense == gp.GRB.LESS_EQUAL:
             quadratic_program.linear_constraint(lhs, "<=", rhs, name)
         else:
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {constraint}")
 
     # get quadratic constraints
     for constraint in model.getQConstrs():
@@ -283,6 +269,6 @@ def from_gurobipy(model: Model) -> QuadraticProgram:
         elif sense == gp.GRB.LESS_EQUAL:
             quadratic_program.quadratic_constraint(linear, quadratic, "<=", rhs, name)
         else:
-            raise QiskitOptimizationError("Unsupported constraint sense: {}".format(constraint))
+            raise QiskitOptimizationError(f"Unsupported constraint sense: {constraint}")
 
     return quadratic_program

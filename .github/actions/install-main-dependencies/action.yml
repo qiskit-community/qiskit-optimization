@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,17 +12,72 @@
 
 name: 'Install Qiskit Optimization Main Dependencies'
 description: 'Installs Python dependencies from Main'
-
+inputs:
+  os:
+    description: 'OS'
+    required: true
+  python-version:
+    description: 'Python version'
+    required: true
 runs:
   using: "composite"
   steps:
-    - name: Install Dependencies from Main
-      env:
-        DISABLE_CONAN: 1
+    - name: Get main last commit ids
       run: |
-        pip install git+https://github.com/Qiskit/qiskit-terra
-        sudo apt-get -y install nlohmann-json3-dev
-        sudo apt-get -y install libspdlog-dev
-        sudo apt-get -y install libmuparserx-dev
-        pip install git+https://github.com/Qiskit/qiskit-aer
+        echo "TERRA_HASH=$(git ls-remote --heads https://github.com/Qiskit/qiskit-terra.git refs/heads/main  | awk '{print $1}')" >> $GITHUB_ENV
+      shell: bash
+    - name: Terra Cache
+      env:
+        CACHE_VERSION: v1
+      id: terra-cache
+      uses: actions/cache@v3
+      with:
+        path: terra-cache
+        key: terra-cache-${{ inputs.os }}-${{ inputs.python-version }}-${{ env.TERRA_HASH }}-${{ env.CACHE_VERSION }}
+    - name: Install Terra from Main
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.15
+      run: |
+        echo 'Install Terra from Main'
+        if [ "${{ inputs.os }}" == "windows-2019" ]; then
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate scsenv
+        fi
+        BASE_DIR=terra-cache
+        build_from_main=true
+        cache_hit=${{ steps.terra-cache.outputs.cache-hit }}
+        echo "cache hit: ${cache_hit}"
+        if [ "$cache_hit" == "true" ]; then
+          pip_result=0
+          pushd "${BASE_DIR}"
+          python -m pip install *.whl && pip_result=$? || pip_result=$?
+          popd
+          if [ $pip_result == 0 ]; then
+            build_from_main=false
+          fi
+        else
+          mkdir -p ${BASE_DIR}
+        fi
+        if [ "$build_from_main" == "true" ]; then
+          echo 'Create wheel file from main'
+          pip install -U wheel setuptools_rust
+          git clone --depth 1 --branch main https://github.com/Qiskit/qiskit-terra.git /tmp/qiskit-terra
+          pushd /tmp/qiskit-terra
+          python setup.py bdist_wheel
+          popd
+          cp -rf /tmp/qiskit-terra/dist/*.whl "${BASE_DIR}"
+          pushd "${BASE_DIR}"
+          python -m pip install *.whl
+          popd
+          pip uninstall -y setuptools_rust
+        fi
+      shell: bash
+    - name: Install stable Aer
+      run: |
+        echo 'Install stable Aer'
+        if [ "${{ inputs.os }}" == "windows-2019" ]; then
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate scsenv
+        fi
+        pip install -U qiskit-aer
       shell: bash

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -71,7 +71,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         # analyze compatibility of problem
         msg = self.get_compatibility_msg(problem)
         if len(msg) > 0:
-            raise QiskitOptimizationError("Incompatible problem: {}".format(msg))
+            raise QiskitOptimizationError(f"Incompatible problem: {msg}")
 
         for conv in self._converters:
             problem = conv.convert(problem)
@@ -130,7 +130,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
             msg += "Can not convert inequality constraints to equality constraint because \
                     float coefficients are in constraints. "
 
-        # if an error occurred, return error message, otherwise, return None
+        # if an error occurred, return error message, otherwise, return the empty string
         return msg
 
     def is_compatible(self, problem: QuadraticProgram) -> bool:
