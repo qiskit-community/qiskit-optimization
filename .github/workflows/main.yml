@@ -166,15 +166,6 @@ jobs:
           make mypy
         if: ${{ !cancelled() }}
         shell: bash
-      - name: Run lint latest version
-        run: |
-          if [ "${{ matrix.os }}" == "windows-2019" ]; then
-            source "$CONDA/etc/profile.d/conda.sh"
-            conda activate scsenv
-          fi
-          pip install -U -r requirements-dev.txt
-          make lint
-        shell: bash
       - name: Optimization Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
         with:
