@@ -136,13 +136,9 @@ jobs:
       - name: install Windows dependencies
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
-          if [ "${{ matrix.python-version }}" == "3.11" ]; then
-            conda create -y -n scsenv python=${{ matrix.python-version }} -c conda-forge
-          else
-            conda create -y -n scsenv python=${{ matrix.python-version }}
-            conda activate scsenv
-            conda install -y scs lapack cvxpy -c conda-forge
-          fi
+          conda create -y -n scsenv python=${{ matrix.python-version }} -c conda-forge
+          conda activate scsenv
+          conda install -y scs lapack cvxpy -c conda-forge
         if: ${{ matrix.os == 'windows-2019' }}
         shell: bash
       - uses: ./.github/actions/install-main-dependencies
