@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -508,9 +508,9 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             mod = Model()
             x = mod.binary_var("x")
             y = mod.integer_var(lb=-1, ub=2, name="y")
-            mod.add_indicator(binary_var=x, active_value=1, linear_ct=(y == 1))
-            mod.add_indicator(binary_var=x, active_value=1, linear_ct=(y <= 1))
-            mod.add_indicator(binary_var=x, active_value=1, linear_ct=(y >= 1))
+            mod.add_indicator(binary_var=x, active_value=1, linear_ct=y == 1)
+            mod.add_indicator(binary_var=x, active_value=1, linear_ct=y <= 1)
+            mod.add_indicator(binary_var=x, active_value=1, linear_ct=y >= 1)
             quad_prog = from_docplex_mp(mod)
             self.assertEqual(quad_prog.get_num_linear_constraints(), 4)
 
@@ -528,7 +528,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             x = mod.binary_var("x")
             y = mod.integer_var(lb=-1, ub=2, name="y")
             z = mod.continuous_var(lb=-1, ub=2, name="z")
-            mod.add_indicator(binary_var=x, linear_ct=(x + y + 2 * z <= -10))
+            mod.add_indicator(binary_var=x, linear_ct=x + y + 2 * z <= -10)
             quad_prog = from_docplex_mp(mod)
             self.assertEqual(quad_prog.get_num_linear_constraints(), 1)
 
@@ -543,7 +543,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             x = mod.binary_var("x")
             y = mod.integer_var(lb=-1, ub=2, name="y")
             z = mod.continuous_var(lb=-1, ub=2, name="z")
-            mod.add_indicator(binary_var=x, linear_ct=(x + y + 2 * z >= 10))
+            mod.add_indicator(binary_var=x, linear_ct=x + y + 2 * z >= 10)
             quad_prog = from_docplex_mp(mod)
             self.assertEqual(quad_prog.get_num_linear_constraints(), 1)
 
@@ -560,7 +560,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
             x = mod.binary_var("x")
             y = mod.integer_var(lb=-1, ub=2, name="y")
             z = mod.continuous_var(lb=-1, ub=2, name="z")
-            mod.add_indicator(binary_var=x, linear_ct=(x + y + 2 * z == 0))
+            mod.add_indicator(binary_var=x, linear_ct=x + y + 2 * z == 0)
             quad_prog = from_docplex_mp(mod)
             self.assertEqual(quad_prog.get_num_linear_constraints(), 2)
 
