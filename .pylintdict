@@ -11,6 +11,7 @@ args
 arxiv
 autosummary
 backend
+backends
 barkoutsos
 benchmarking
 bitstring
