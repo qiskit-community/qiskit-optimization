@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -23,6 +23,7 @@ from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
 from qiskit.providers.basicaer import QasmSimulatorPy
+from qiskit.providers.fake_provider import FakeArmonk, FakeArmonkV2
 from qiskit.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
@@ -368,6 +369,20 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
                 provider=FakeQAOARuntimeProvider(),
             )
 
+        opt = MinimumEigenOptimizer(solver)
+        result = opt.solve(self.op_ordering)
+        self.assertIsInstance(result, MinimumEigenOptimizationResult)
+
+    @data(FakeArmonk, FakeArmonkV2)
+    def test_runtime_backend_versions(self, backend_cls):
+        """Test the runtime client with a V1 and a V2 backend."""
+        optimizer = SPSA(maxiter=1, learning_rate=0.1, perturbation=0.1)
+        backend = backend_cls()
+        provider = FakeVQERuntimeProvider()
+        ansatz = TwoLocal(1, "ry", reps=0)
+        initial_point = np.array([1])
+
+        solver = VQEClient(ansatz, optimizer, initial_point, provider, backend)
         opt = MinimumEigenOptimizer(solver)
         result = opt.solve(self.op_ordering)
         self.assertIsInstance(result, MinimumEigenOptimizationResult)
