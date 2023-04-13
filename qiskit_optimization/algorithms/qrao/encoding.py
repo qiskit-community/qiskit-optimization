@@ -48,7 +48,10 @@ from qiskit.opflow import (
     StateFn,
     CircuitStateFn,
 )
-from qiskit.quantum_info import SparsePauliOp
+
+
+
+from qiskit.quantum_info import SparsePauliOp, Pauli
 
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
@@ -268,11 +271,17 @@ class QuantumRandomAccessEncoding:
 
     # This defines the convention of the Pauli operators (and their ordering)
     # for each encoding.
+    # OPERATORS = (
+    #     (Z,),  # (1,1,1) QRAC
+    #     (X, Z),  # (2,1,p) QRAC, p ≈ 0.85
+    #     (X, Y, Z),  # (3,1,p) QRAC, p ≈ 0.79
+    # )
     OPERATORS = (
-        (Z,),  # (1,1,1) QRAC
-        (X, Z),  # (2,1,p) QRAC, p ≈ 0.85
-        (X, Y, Z),  # (3,1,p) QRAC, p ≈ 0.79
+        (SparsePauliOp('Z'),),  # (1,1,1) QRAC
+        (SparsePauliOp('X'), SparsePauliOp('Z')),  # (2,1,p) QRAC, p ≈ 0.85
+        (SparsePauliOp('X'), SparsePauliOp('Y'), SparsePauliOp('Z')),  # (3,1,p) QRAC, p ≈ 0.79
     )
+
 
     def __init__(self, max_vars_per_qubit: int = 3):
         if max_vars_per_qubit not in (1, 2, 3):
@@ -401,7 +410,7 @@ class QuantumRandomAccessEncoding:
         # Pauli operator.  To generalize, we replace the `d` in that equation
         # with `d_prime`, defined as follows:
         d_prime = np.sqrt(self.max_vars_per_qubit) ** len(variables)
-        op = self.term2op(*variables).mul(w * d_prime)
+        op = self.term2op(*variables) * (w * d_prime)
         # We perform the following short-circuit *after* calling term2op so at
         # least we have confirmed that the user provided a valid variables list.
         if w == 0.0:
@@ -416,7 +425,22 @@ class QuantumRandomAccessEncoding:
 
         The decision variables provided must all be encoded on different qubits.
         """
-        ops = [I] * self.num_qubits
+        # legacy code
+        # ops = [I] * self.num_qubits
+        # # ops = [SparsePauliOp(['I'])] * self.num_qubits
+        # done = set()
+        # for x in variables:
+        #     pos, op = self._var2op[x]
+        #     if pos in done:
+        #         raise RuntimeError(f"Collision of variables: {variables}")
+        #     ops[pos] = op
+        #     done.add(pos)
+        # pauli_op = reduce(lambda x, y: x ^ y, ops)
+        # # Convert from PauliOp to PauliSumOp
+        # return PauliSumOp(SparsePauliOp(pauli_op.primitive, coeffs=[pauli_op.coeff]))
+
+        # new code
+        ops = [SparsePauliOp('I')] * self.num_qubits
         done = set()
         for x in variables:
             pos, op = self._var2op[x]
@@ -424,9 +448,10 @@ class QuantumRandomAccessEncoding:
                 raise RuntimeError(f"Collision of variables: {variables}")
             ops[pos] = op
             done.add(pos)
-        pauli_op = reduce(lambda x, y: x ^ y, ops)
+        pauli_op = reduce(lambda x, y: x.tensor(y), ops)
         # Convert from PauliOp to PauliSumOp
-        return PauliSumOp(SparsePauliOp(pauli_op.primitive, coeffs=[pauli_op.coeff]))
+        return pauli_op
+
 
     @staticmethod
     def _generate_ising_terms(
@@ -579,7 +604,7 @@ class QuantumRandomAccessEncoding:
         going forward without having to make a copy as a distinct object.
         """
         if self._frozen is False:
-            self._qubit_op = self._qubit_op.reduce()
+            self._qubit_op = self._qubit_op.simplify()
         self._frozen = True
 
     @property

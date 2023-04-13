@@ -21,6 +21,7 @@ import warnings
 import numpy as np
 
 from qiskit import QuantumCircuit
+from qiskit.primitives import Sampler
 from qiskit.providers import Backend
 from qiskit.opflow import PrimitiveOp
 from qiskit.utils import QuantumInstance
@@ -32,6 +33,8 @@ from .rounding_common import (
     RoundingContext,
     RoundingResult,
 )
+
+from qiskit.algorithms.exceptions import AlgorithmError
 
 
 _invalid_backend_names = [
@@ -111,7 +114,7 @@ class MagicRounding(RoundingScheme):
 
     def __init__(
         self,
-        quantum_instance: QuantumInstance,
+        sampler: Sampler,
         *,
         basis_sampling: str = "uniform",
         seed: Optional[int] = None,
@@ -142,7 +145,7 @@ class MagicRounding(RoundingScheme):
                 f"'{basis_sampling}' is not an implemented sampling method. "
                 "Please choose either 'uniform' or 'weighted'."
             )
-        self.quantum_instance = quantum_instance
+        self.sampler = sampler
         self.rng = np.random.RandomState(seed)
         self._basis_sampling = basis_sampling
         super().__init__()
@@ -150,7 +153,7 @@ class MagicRounding(RoundingScheme):
     @property
     def shots(self) -> int:
         """Shots count as configured by the given ``quantum_instance``."""
-        return self.quantum_instance.run_config.shots
+        return self.sampler.options.get("shots")
 
     @property
     def basis_sampling(self):
@@ -189,7 +192,7 @@ class MagicRounding(RoundingScheme):
             q, op = var2op[var]
             # get the decoding outcome index for the variable
             # corresponding to this Pauli op.
-            op_index = self._OP_INDICES[vars_per_qubit][str(op)]
+            op_index = self._OP_INDICES[vars_per_qubit][str(op.paulis[0])]
             # get the bits associated to this magic basis'
             # measurement outcomes
             bit_outcomes = self._DECODING[vars_per_qubit][basis[q]]
@@ -233,7 +236,8 @@ class MagicRounding(RoundingScheme):
 
         len(bases) == len(basis_shots) == len(basis_counts)
         """
-        measure = not _is_original_statevector_simulator(self.quantum_instance.backend)
+        # measure = not _is_original_statevector_simulator(self.quantum_instance.backend)
+        measure = True
         circuits = self._make_circuits(circuit, bases, measure, vars_per_qubit)
 
         # Execute each of the rotated circuits and collect the results
@@ -247,28 +251,33 @@ class MagicRounding(RoundingScheme):
             circuit_indices_by_shots[shots].append(i)
 
         basis_counts: List[Optional[Dict[str, int]]] = [None] * len(circuits)
-        overall_shots = self.quantum_instance.run_config.shots
-        try:
-            for shots, indices in sorted(
-                circuit_indices_by_shots.items(), reverse=True
-            ):
-                self.quantum_instance.set_config(shots=shots)
-                result = self.quantum_instance.execute([circuits[i] for i in indices])
-                counts_list = result.get_counts()
-                if not isinstance(counts_list, List):
-                    # This is the only case where this should happen, and that
-                    # it does at all (namely, when a single-element circuit
-                    # list is provided) is a weird API quirk of Qiskit.
-                    # https://github.com/Qiskit/qiskit-terra/issues/8103
-                    assert len(indices) == 1
-                    counts_list = [counts_list]
-                assert len(indices) == len(counts_list)
-                for i, counts in zip(indices, counts_list):
-                    basis_counts[i] = counts
-        finally:
-            # We've temporarily modified quantum_instance; now we restore it to
-            # its initial state.
-            self.quantum_instance.set_config(shots=overall_shots)
+        overall_shots = self.shots
+
+        for shots, indices in sorted(
+            circuit_indices_by_shots.items(), reverse=True
+        ):
+            # self.quantum_instance.set_config(shots=shots)
+            # result = self.quantum_instance.execute([circuits[i] for i in indices])
+            # counts_list = result.get_counts()
+            try:
+                job = self.sampler.run([circuits[i] for i in indices], shots=shots)
+                result = job.result()
+            except Exception as exc:
+                raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
+
+            counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
+
+            if not isinstance(counts_list, List):
+                # This is the only case where this should happen, and that
+                # it does at all (namely, when a single-element circuit
+                # list is provided) is a weird API quirk of Qiskit.
+                # https://github.com/Qiskit/qiskit-terra/issues/8103
+                assert len(indices) == 1
+                counts_list = [counts_list]
+            assert len(indices) == len(counts_list)
+            for i, counts in zip(indices, counts_list):
+                basis_counts[i] = counts
+
         assert None not in basis_counts
 
         # Process the outcomes and extract expectation of decision vars
