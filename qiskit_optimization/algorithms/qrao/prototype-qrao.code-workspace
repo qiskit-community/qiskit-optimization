@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "../../../../prototype-qrao"
+		},
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../terra"
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"ndarray",
+			"QRAC",
+			"qrao",
+			"qubits",
+			"QUBO"
+		],
+		"esbonio.sphinx.confDir": ""
+	}
+}

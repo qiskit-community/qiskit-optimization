@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,47 +11,53 @@
 # that they have been altered from the originals.
 
 """
-QRAO classes and functions
-==========================
+Quantum Random Access Optimization (:mod:`qiskit_optimization.algorithms.qrao`)
+=======================================================================================
 
-Quantum Random Access Optimization.
+.. currentmodule:: qiskit_optimization.algorithms.qrao
+
+
+Quantum Random Access Encoding and Rounding
+===========================================
 
 .. autosummary::
     :toctree: ../stubs/
+    :nosignatures:
 
-    encoding
-    rounding_common
-    SemideterministicRounding
-    MagicRounding
+    EncodingCommutationVerifier
+    QuantumRandomAccessEncoding
     QuantumRandomAccessOptimizer
-    utils
+    QuantumRandomAccessOptimizationResult
+
+Rounding schemes
+=================
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+
+    MagicRounding
+    MagicRoundingResult
+    RoundingScheme
+    RoundingContext
+    RoundingResult
+    SemideterministicRounding
+    SemideterministicRoundingResult
+
 """
 
-from importlib_metadata import version as metadata_version, PackageNotFoundError
-
-from .encoding import QuantumRandomAccessEncoding
-
-from .rounding_common import RoundingScheme, RoundingContext, RoundingResult
-from .semideterministic_rounding import (
-    SemideterministicRounding,
-    SemideterministicRoundingResult,
-)
+from .encoding_commutation_verifier import EncodingCommutationVerifier
+from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 from .magic_rounding import MagicRounding, MagicRoundingResult
-
 from .quantum_random_access_optimizer import (
-    QuantumRandomAccessOptimizer,
     QuantumRandomAccessOptimizationResult,
+    QuantumRandomAccessOptimizer,
 )
-
-
-try:
-    __version__ = metadata_version("qrao")
-except PackageNotFoundError:  # pragma: no cover
-    # package is not installed
-    pass
-
+from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
+from .semideterministic_rounding import SemideterministicRounding, SemideterministicRoundingResult
 
 __all__ = [
+    "EncodingCommutationVerifier",
     "QuantumRandomAccessEncoding",
     "RoundingScheme",
     "RoundingContext",

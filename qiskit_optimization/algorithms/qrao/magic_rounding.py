@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Magic bases rounding"""
+"""Magic basis rounding module"""
 
 from typing import List, Dict, Tuple, Optional
 from collections import defaultdict
@@ -26,7 +26,7 @@ from qiskit.providers import Backend
 from qiskit.opflow import PrimitiveOp
 from qiskit.utils import QuantumInstance
 
-from .encoding import z_to_31p_qrac_basis_circuit, z_to_21p_qrac_basis_circuit
+from .quantum_random_access_encoding import z_to_31p_qrac_basis_circuit, z_to_21p_qrac_basis_circuit
 from .rounding_common import (
     RoundingSolutionSample,
     RoundingScheme,
@@ -89,10 +89,9 @@ class MagicRoundingResult(RoundingResult):
 
 
 class MagicRounding(RoundingScheme):
-    """ "Magic rounding" method
+    """Magic rounding scheme
 
-    This method is described in https://arxiv.org/abs/2111.03167v2.
-
+    This scheme is described in https://arxiv.org/abs/2111.03167v2.
     """
 
     _DECODING = {
@@ -145,40 +144,122 @@ class MagicRounding(RoundingScheme):
                 f"'{basis_sampling}' is not an implemented sampling method. "
                 "Please choose either 'uniform' or 'weighted'."
             )
-        self.sampler = sampler
+        self._sampler = sampler
         self.rng = np.random.RandomState(seed)
         self._basis_sampling = basis_sampling
         super().__init__()
 
     @property
+    def sampler(self) -> Sampler:
+        """Returns the ``Sampler`` used to sample the magic bases."""
+        return self._sampler
+
+    @property
     def shots(self) -> int:
-        """Shots count as configured by the given ``quantum_instance``."""
-        return self.sampler.options.get("shots")
+        """Returns the number of samples to collect from each magic basis."""
+        return self._sampler.options.get("shots")
 
     @property
     def basis_sampling(self):
         """Basis sampling method (either ``"uniform"`` or ``"weighted"``)."""
         return self._basis_sampling
 
-    @property
-    def quantum_instance(self) -> QuantumInstance:
-        """Provides the ``Backend`` and the ``shots`` (samples) count."""
-        return self._quantum_instance
 
-    @quantum_instance.setter
-    def quantum_instance(self, quantum_instance: QuantumInstance) -> None:
-        backend_name = _backend_name(quantum_instance.backend)
-        if backend_name in _invalid_backend_names:
-            raise ValueError(f"{backend_name} is not supported.")
-        if _is_original_statevector_simulator(quantum_instance.backend):
-            warnings.warn(
-                'Use of "statevector_simulator" is discouraged because it effectively '
-                "brute-forces all possible solutions.  We suggest using the newer "
-                '"aer_simulator_statevector" instead.'
-            )
-        self._quantum_instance = quantum_instance
+    @staticmethod
+    def _make_circuits(
+        circ: QuantumCircuit, bases: List[List[int]], vars_per_qubit: int
+    ) -> List[QuantumCircuit]:
+        circuits = []
+        for basis in bases:
+            if vars_per_qubit == 3:
+                qc = circ.compose(z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
+            elif vars_per_qubit == 2:
+                qc = circ.compose(z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
+            elif vars_per_qubit == 1:
+                qc = circ.copy()
+            qc.measure_all()
+            circuits.append(qc)
+        return circuits
 
-    def _unpack_measurement_outcome(
+    def _evaluate_magic_bases(
+        self, circuit: QuantumCircuit, bases: np.array, basis_shots: np.array, vars_per_qubit: int
+    ) -> List[Dict[str, int]]:
+        """
+        Given a quantum circuit to measure, a list of magic bases to measure, and a list of the
+        shots to use for each magic basis configuration, measure the provided circuit in the magic
+        bases given and return the counts dictionaries associated with each basis measurement.
+
+        Args:
+            circuit: The quantum circuit to measure.
+            bases: A list of magic bases to measure.
+            basis_shots: A list of shots to use for each magic basis configuration.
+            vars_per_qubit: The number of decision variables per qubit.
+
+        Returns:
+            List[Dict[str, int]]: A list of counts dictionaries associated with each basis measurement.
+        """
+        # measure = not _is_original_statevector_simulator(self.quantum_instance.backend)
+        circuits = self._make_circuits(circuit, bases, vars_per_qubit)
+
+        # Execute each of the rotated circuits and collect the results
+
+        # Batch the circuits into jobs where each group has the same number of
+        # shots, so that you can wait for the queue as few times as possible if
+        # using hardware.
+        circuit_indices_by_shots: Dict[int, List[int]] = defaultdict(list)
+        assert len(circuits) == len(basis_shots)
+        for i, shots in enumerate(basis_shots):
+            circuit_indices_by_shots[shots].append(i)
+
+        basis_counts: List[Optional[Dict[str, int]]] = [None] * len(circuits)
+
+        for shots, indices in sorted(circuit_indices_by_shots.items(), reverse=True):
+            # self.quantum_instance.set_config(shots=shots)
+            # result = self.quantum_instance.execute([circuits[i] for i in indices])
+            # counts_list = result.get_counts()
+            try:
+                job = self._sampler.run([circuits[i] for i in indices], shots=shots)
+                result = job.result()
+            except Exception as exc:
+                raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
+
+            counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
+
+            # if not isinstance(counts_list, List):
+            #     # This is the only case where this should happen, and that
+            #     # it does at all (namely, when a single-element circuit
+            #     # list is provided) is a weird API quirk of Qiskit.
+            #     # https://github.com/Qiskit/qiskit-terra/issues/8103
+            #     assert len(indices) == 1
+            #     counts_list = [counts_list]
+            assert len(indices) == len(counts_list)
+            for i, counts in zip(indices, counts_list):
+                basis_counts[i] = counts
+
+        assert None not in basis_counts
+
+        # Process the outcomes and extract expectation of decision vars
+
+        # The "statevector_simulator", unlike all the others, returns
+        # probabilities instead of integer counts.  So if probabilities are
+        # detected, we rescale them.
+        basis_counts = [
+                {key: val * basis_shots[i] for key, val in counts.items()}
+                for i, counts in enumerate(basis_counts)
+            ]
+
+        # if any(
+        #     any(not isinstance(x, numbers.Integral) for x in counts.values())
+        #     for counts in basis_counts
+        # ):
+        #     basis_counts = [
+        #         {key: val * basis_shots[i] for key, val in counts.items()}
+        #         for i, counts in enumerate(basis_counts)
+        #     ]
+
+        return basis_counts
+
+   def _unpack_measurement_outcome(
         self,
         bits: str,
         basis: List[int],
@@ -205,97 +286,6 @@ class MagicRounding(RoundingScheme):
             output_bits.append(variable_value)
         return output_bits
 
-    @staticmethod
-    def _make_circuits(
-        circ: QuantumCircuit, bases: List[List[int]], measure: bool, vars_per_qubit: int
-    ) -> List[QuantumCircuit]:
-        circuits = []
-        for basis in bases:
-            if vars_per_qubit == 3:
-                qc = circ.compose(
-                    z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False
-                )
-            elif vars_per_qubit == 2:
-                qc = circ.compose(
-                    z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False
-                )
-            elif vars_per_qubit == 1:
-                qc = circ.copy()
-            if measure:
-                qc.measure_all()
-            circuits.append(qc)
-        return circuits
-
-    def _evaluate_magic_bases(self, circuit, bases, basis_shots, vars_per_qubit):
-        """
-        Given a circuit you wish to measure, a list of magic bases to measure,
-        and a list of the shots to use for each magic basis configuration.
-
-        Measure the provided circuit in the magic bases given and return the counts
-        dictionaries associated with each basis measurement.
-
-        len(bases) == len(basis_shots) == len(basis_counts)
-        """
-        # measure = not _is_original_statevector_simulator(self.quantum_instance.backend)
-        measure = True
-        circuits = self._make_circuits(circuit, bases, measure, vars_per_qubit)
-
-        # Execute each of the rotated circuits and collect the results
-
-        # Batch the circuits into jobs where each group has the same number of
-        # shots, so that you can wait for the queue as few times as possible if
-        # using hardware.
-        circuit_indices_by_shots: Dict[int, List[int]] = defaultdict(list)
-        assert len(circuits) == len(basis_shots)
-        for i, shots in enumerate(basis_shots):
-            circuit_indices_by_shots[shots].append(i)
-
-        basis_counts: List[Optional[Dict[str, int]]] = [None] * len(circuits)
-        overall_shots = self.shots
-
-        for shots, indices in sorted(
-            circuit_indices_by_shots.items(), reverse=True
-        ):
-            # self.quantum_instance.set_config(shots=shots)
-            # result = self.quantum_instance.execute([circuits[i] for i in indices])
-            # counts_list = result.get_counts()
-            try:
-                job = self.sampler.run([circuits[i] for i in indices], shots=shots)
-                result = job.result()
-            except Exception as exc:
-                raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
-
-            counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
-
-            if not isinstance(counts_list, List):
-                # This is the only case where this should happen, and that
-                # it does at all (namely, when a single-element circuit
-                # list is provided) is a weird API quirk of Qiskit.
-                # https://github.com/Qiskit/qiskit-terra/issues/8103
-                assert len(indices) == 1
-                counts_list = [counts_list]
-            assert len(indices) == len(counts_list)
-            for i, counts in zip(indices, counts_list):
-                basis_counts[i] = counts
-
-        assert None not in basis_counts
-
-        # Process the outcomes and extract expectation of decision vars
-
-        # The "statevector_simulator", unlike all the others, returns
-        # probabilities instead of integer counts.  So if probabilities are
-        # detected, we rescale them.
-        if any(
-            any(not isinstance(x, numbers.Integral) for x in counts.values())
-            for counts in basis_counts
-        ):
-            basis_counts = [
-                {key: val * basis_shots[i] for key, val in counts.items()}
-                for i, counts in enumerate(basis_counts)
-            ]
-
-        return basis_counts
-
     def _compute_dv_counts(self, basis_counts, bases, var2op, vars_per_qubit):
         """
         Given a list of bases, basis_shots, and basis_counts, convert
@@ -309,9 +299,7 @@ class MagicRounding(RoundingScheme):
             for bitstr, count in counts.items():
 
                 # For each bit in the observed bitstring...
-                soln = self._unpack_measurement_outcome(
-                    bitstr, base, var2op, vars_per_qubit
-                )
+                soln = self._unpack_measurement_outcome(bitstr, base, var2op, vars_per_qubit)
                 soln = "".join([str(int(bit)) for bit in soln])
                 if soln in dv_counts:
                     dv_counts[soln] += count
@@ -319,10 +307,38 @@ class MagicRounding(RoundingScheme):
                     dv_counts[soln] = count
         return dv_counts
 
-    def _sample_bases_uniform(self, q2vars, vars_per_qubit):
+    def _sample_bases_uniform(
+        self, q2vars: List[List[int]], vars_per_qubit: int
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Sample measurement bases for each qubit uniformly at random. If the number of shots
+        is not specified, we default to 1024.
+
+        Args:
+            q2vars: A list of lists of integers. Each inner list contains the indices of decision
+                variables mapped to a specific qubit.
+            vars_per_qubit: The maximum number of decision variables that can be mapped to a
+                single qubit..
+
+        Returns:
+            A tuple containing two arrays:
+                bases: A 2D numpy array of shape (num_bases, num_qubits), where each row
+                corresponds to a basis configuration. Each element of the array is an
+                integer in the range [0, 2 ** (vars_per_qubit - 1) - 1]. The integer
+                represents the index of the basis to measure in for the corresponding
+                qubit.
+                basis_shots: A 1D numpy array of shape (num_bases,), where each element
+                corresponds to the number of shots to use for the corresponding basis in
+                the bases array.
+        """
+        # If the number of shots is not specified, we default to 1024.
+        if self.shots is None:
+            shots = 1024
+        else:
+            shots = self.shots
         bases = [
             self.rng.choice(2 ** (vars_per_qubit - 1), size=len(q2vars)).tolist()
-            for _ in range(self.shots)
+            for _ in range(shots)
         ]
         bases, basis_shots = np.unique(bases, axis=0, return_counts=True)
         return bases, basis_shots
@@ -370,21 +386,31 @@ class MagicRounding(RoundingScheme):
             elif vars_per_qubit == 1:
                 basis_probs.append([1.0])
         bases = [
-            [
-                self.rng.choice(2 ** (vars_per_qubit - 1), p=probs)
-                for probs in basis_probs
-            ]
+            [self.rng.choice(2 ** (vars_per_qubit - 1), p=probs) for probs in basis_probs]
             for _ in range(self.shots)
         ]
         bases, basis_shots = np.unique(bases, axis=0, return_counts=True)
         return bases, basis_shots
 
     def round(self, ctx: RoundingContext) -> MagicRoundingResult:
-        """Perform magic rounding"""
+        """Perform magic rounding using the given RoundingContext.
 
+        Args:
+            ctx: The context containing the information needed for the rounding.
+
+        Returns:
+            MagicRoundingResult: The results of the magic rounding process.
+
+        Raises:
+            NotImplementedError: If the circuit is not available for magic rounding.
+
+        """
         start_time = time.time()
-        trace_values = ctx.trace_values
+        expectation_values = ctx.expectation_values
         circuit = ctx.circuit
+        q2vars = ctx.encoding.q2vars
+        var2op = ctx.encoding.var2op
+        vars_per_qubit = ctx.encoding.max_vars_per_qubit
 
         if circuit is None:
             raise NotImplementedError(
@@ -392,38 +418,29 @@ class MagicRounding(RoundingScheme):
                 "semideterministic rounding instead."
             )
 
-        # We've already checked that it is one of these two in the constructor
         if self.basis_sampling == "uniform":
-            bases, basis_shots = self._sample_bases_uniform(
-                ctx.q2vars, ctx._vars_per_qubit
-            )
-        elif self.basis_sampling == "weighted":
-            if trace_values is None:
+            # uniform sampling
+            bases, basis_shots = self._sample_bases_uniform(q2vars, vars_per_qubit)
+        else:
+            # weighted sampling
+            if expectation_values is None:
                 raise NotImplementedError(
                     "Magic rounding with weighted sampling requires the trace values "
                     "to be available, but they are not."
                 )
             bases, basis_shots = self._sample_bases_weighted(
-                ctx.q2vars, trace_values, ctx._vars_per_qubit
-            )
-        else:  # pragma: no cover
-            raise NotImplementedError(
-                f'No such basis sampling method: "{self.basis_sampling}".'
+                q2vars, expectation_values, vars_per_qubit
             )
 
-        assert self.shots == np.sum(basis_shots)
+        # assert self.shots == np.sum(basis_shots)
         # For each of the Magic Bases sampled above, measure
         # the appropriate number of times (given by basis_shots)
         # and return the circuit results
 
-        basis_counts = self._evaluate_magic_bases(
-            circuit, bases, basis_shots, ctx._vars_per_qubit
-        )
+        basis_counts = self._evaluate_magic_bases(circuit, bases, basis_shots, vars_per_qubit)
         # keys will be configurations of decision variables
         # values will be total number of observations.
-        soln_counts = self._compute_dv_counts(
-            basis_counts, bases, ctx.var2op, ctx._vars_per_qubit
-        )
+        soln_counts = self._compute_dv_counts(basis_counts, bases, var2op, vars_per_qubit)
 
         soln_samples = [
             RoundingSolutionSample(
@@ -439,6 +456,7 @@ class MagicRounding(RoundingScheme):
         assert len(bases) == len(basis_shots) == len(basis_counts)
         stop_time = time.time()
 
+        # Create a MagicRoundingResult object to return
         return MagicRoundingResult(
             samples=soln_samples,
             bases=bases,
