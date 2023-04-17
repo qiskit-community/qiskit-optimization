@@ -81,10 +81,10 @@ class QuantumRandomAccessOptimizationResult(OptimizationResult):
         return self._rounding_results
 
     @property
-    def trace_values(self):
+    def expectation_values(self):
         """List of expectation values, one corresponding to each decision variable"""
-        trace_values = [v[0] for v in self._relaxed_results.aux_operators_evaluated]
-        return trace_values
+        expectation_values = [v[0] for v in self._relaxed_results.aux_operators_evaluated]
+        return expectation_values
 
     @property
     def relaxed_fval(self) -> float:
