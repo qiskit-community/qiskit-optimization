@@ -12,14 +12,13 @@
 
 """
 Quantum Random Access Optimization (:mod:`qiskit_optimization.algorithms.qrao`)
-=======================================================================================
+===============================================================================
 
 .. currentmodule:: qiskit_optimization.algorithms.qrao
 
 
-Quantum Random Access Encoding and Rounding
-===========================================
-
+Quantum Random Access Encoding and Optimization
+===============================================
 .. autosummary::
     :toctree: ../stubs/
     :nosignatures:
@@ -30,7 +29,7 @@ Quantum Random Access Encoding and Rounding
     QuantumRandomAccessOptimizationResult
 
 Rounding schemes
-=================
+================
 
 .. autosummary::
     :toctree: ../stubs/

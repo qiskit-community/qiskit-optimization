@@ -24,9 +24,16 @@ from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 class EncodingCommutationVerifier:
     """Class for verifying that the relaxation commutes with the objective function."""
 
-    def __init__(self, encoding: QuantumRandomAccessEncoding):
+    def __init__(self, encoding: QuantumRandomAccessEncoding, estimator: Estimator = None):
+        """
+        Args:
+            encoding: The encoding to verify.
+        """
         self._encoding = encoding
-        self._estimator = Estimator()
+        if estimator is not None:
+            self._estimator = estimator
+        else:
+            self._estimator = Estimator()
 
     def __len__(self) -> int:
         return 2**self._encoding.num_vars
@@ -58,6 +65,8 @@ class EncodingCommutationVerifier:
         try:
             encoded_obj_val = job.result().values[0] + offset
         except Exception as exc:
-            raise QiskitOptimizationError("Estimator job failed.") from exc
+            raise QiskitOptimizationError(
+                "The primitive job to verify commutation failed!"
+            ) from exc
 
         return (str_dvars, obj_val, encoded_obj_val)

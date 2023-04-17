@@ -25,11 +25,11 @@ from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def z_to_31p_qrac_basis_circuit(basis: List[int], bit_flip: int = 0) -> QuantumCircuit:
+def z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (3,1,p)-QRAC.
 
     Args:
-        basis: The basis, 0, 1, 2, or 3, for the qubit.
+        bases: The basis, 0, 1, 2, or 3, for the qubit.
         bit_flip: Whether to flip the state of the qubit. 1 for flip, 0 for no flip.
 
     Returns:
@@ -38,14 +38,14 @@ def z_to_31p_qrac_basis_circuit(basis: List[int], bit_flip: int = 0) -> QuantumC
     Raises:
         ValueError: If the basis is not 0, 1, 2, or 3
     """
-    circ = QuantumCircuit(len(basis))
+    circ = QuantumCircuit(len(bases))
     BETA = np.arccos(1 / np.sqrt(3))  # pylint: disable=invalid-name
 
     if bit_flip:
         # if bit_flip == 1: then flip the state of the first qubit to |1>
         circ.x(0)
 
-    for i, base in enumerate(reversed(basis)):
+    for i, base in enumerate(reversed(bases)):
         if base == 0:
             circ.r(-BETA, -np.pi / 4, i)
         elif base == 1:
@@ -59,11 +59,11 @@ def z_to_31p_qrac_basis_circuit(basis: List[int], bit_flip: int = 0) -> QuantumC
     return circ
 
 
-def z_to_21p_qrac_basis_circuit(basis: int, bit_flip: int = 0) -> QuantumCircuit:
+def z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (2,1,p)-QRAC.
 
     Args:
-        basis: The basis, 0, 1, for the qubit.
+        bases: The basis, 0, 1, for the qubit.
         bit_flip: Whether to flip the state of the qubit. 1 for flip, 0 for no flip.
 
     Returns:
@@ -78,7 +78,7 @@ def z_to_21p_qrac_basis_circuit(basis: int, bit_flip: int = 0) -> QuantumCircuit
         # if bit_flip == 1: then flip the state of the first qubit to |1>
         circ.x(0)
 
-    for i, base in enumerate(reversed(basis)):
+    for i, base in enumerate(reversed(bases)):
         if base == 0:
             circ.r(-1 * np.pi / 4, -np.pi / 2, i)
         elif base == 1:
@@ -117,34 +117,34 @@ def qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
         # observe that the two states that define each magic basis
         # correspond to the same bitstrings but with a global bitflip.
         # Thus the three bits of information we use to construct these states are:
-        # c0,c1 : two bits to pick one of four magic bases
-        # c2: one bit to indicate which magic basis projector we are interested in.
+        # base_index0,base_index1 : two bits to pick one of four magic bases
+        # bit_flip: one bit to indicate which magic basis projector we are interested in.
 
-        c0 = bit_list[0] ^ bit_list[1] ^ bit_list[2]
-        c1 = bit_list[1] ^ bit_list[2]
-        c2 = bit_list[0] ^ bit_list[2]
+        bit_flip = bit_list[0] ^ bit_list[1] ^ bit_list[2]
+        base_index0 = bit_list[1] ^ bit_list[2]
+        base_index1 = bit_list[0] ^ bit_list[2]
 
         # This is a convention chosen to be consistent with https://arxiv.org/pdf/2111.03167v2.pdf
         # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
-        base = 2 * c1 + c2
-        circ = z_to_31p_qrac_basis_circuit(base, c0)
+        base = 2 * base_index0 + base_index1
+        circ = z_to_31p_qrac_basis_circuit(base, bit_flip)
 
     elif len(bit_list) == 2:
         # Prepare (2,1,p)-qrac
         # (00,01) or (10,11)
-        c0 = bit_list[0]
+        bit_flip = bit_list[0]
         # (00,11) or (01,10)
-        c1 = bit_list[0] ^ bit_list[1]
+        base_index0 = bit_list[0] ^ bit_list[1]
 
         # This is a convention chosen to be consistent with https://arxiv.org/pdf/2111.03167v2.pdf
         # # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
-        base = c1
-        circ = z_to_21p_qrac_basis_circuit(base, c0)
+        base = base_index0
+        circ = z_to_21p_qrac_basis_circuit(base, bit_flip)
 
     else:
-        c0 = bit_list[0]
+        bit_flip = bit_list[0]
         circ = QuantumCircuit(1)
-        if c0:
+        if bit_flip:
             circ.x(0)
 
     return circ

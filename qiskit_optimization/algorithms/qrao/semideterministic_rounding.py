@@ -23,7 +23,6 @@ from .rounding_common import (
     RoundingResult,
 )
 
-
 # pylint: disable=too-few-public-methods
 
 
@@ -48,20 +47,14 @@ class SemideterministicRounding(RoundingScheme):
         self.rng = np.random.RandomState(seed)
 
     def round(self, ctx: RoundingContext) -> SemideterministicRoundingResult:
-        """Perform semideterministic rounding"""
+        """Perform semideterministic rounding
 
-        # # trace_values = ctx.expectation_values
+        Args:
+            ctx: Rounding context containing information about the problem and solution.
 
-        # if trace_values is None:
-        #     raise NotImplementedError(
-        #         "Semideterministic rounding requires that trace_values be available."
-        #     )
-
-        # if len(trace_values) != len(ctx.var2op):
-        #     raise ValueError(
-        #         f"trace_values has length {len(trace_values)}, "
-        #         "but there are {len(ctx.var2op)} decision variables."
-        #     )
+        Returns:
+            Result containing the rounded solution.
+        """
 
         def sign(val) -> int:
             return 0 if (val > 0) else 1
