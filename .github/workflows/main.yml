@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -113,12 +113,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8, 3.9, '3.10.6']
+        python-version: [3.7, 3.8, 3.9, '3.10', 3.11]
         include:
           - os: macos-latest
             python-version: 3.8
           - os: macos-latest
-            python-version: '3.10.6'
+            python-version: '3.10'
           - os: windows-2019
             python-version: 3.8
           - os: windows-2019
@@ -136,7 +136,7 @@ jobs:
       - name: install Windows dependencies
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
-          conda create -n scsenv python=${{ matrix.python-version }}
+          conda create -y -n scsenv python=${{ matrix.python-version }} -c conda-forge
           conda activate scsenv
           conda install -y scs lapack cvxpy -c conda-forge
         if: ${{ matrix.os == 'windows-2019' }}
@@ -165,15 +165,6 @@ jobs:
           fi
           make mypy
         if: ${{ !cancelled() }}
-        shell: bash
-      - name: Run lint latest version
-        run: |
-          if [ "${{ matrix.os }}" == "windows-2019" ]; then
-            source "$CONDA/etc/profile.d/conda.sh"
-            conda activate scsenv
-          fi
-          pip install -U -r requirements-dev.txt
-          make lint
         shell: bash
       - name: Optimization Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
@@ -313,7 +304,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v3
         with:
-          name:  ubuntu-latest-3.7
+          name: ubuntu-latest-3.7
           path: /tmp/o37
       - uses: actions/download-artifact@v3
         with:
@@ -325,15 +316,19 @@ jobs:
           path: /tmp/o39
       - uses: actions/download-artifact@v3
         with:
-          name: ubuntu-latest-3.10.6
+          name: ubuntu-latest-3.10
           path: /tmp/o310
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.11
+          path: /tmp/o311
       - uses: actions/download-artifact@v3
         with:
           name: macos-latest-3.8
           path: /tmp/m38
       - uses: actions/download-artifact@v3
         with:
-          name: macos-latest-3.10.6
+          name: macos-latest-3.10
           path: /tmp/m310
       - uses: actions/download-artifact@v3
         with:
@@ -348,7 +343,7 @@ jobs:
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
+          sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/o37/opt.dat
