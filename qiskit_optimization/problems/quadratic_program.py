@@ -1020,7 +1020,9 @@ class QuadraticProgram:
 
         Args:
             opflow: The output object is an OpFlow's operator if True.
-                Otherwise, it is ``SparsePauliOp``. (default: True)
+                Otherwise, it is ``SparsePauliOp``.
+                Refer to :func:`~qiskit_optimization.translators.to_ising`
+                for the default value.
 
         Returns:
             qubit_op: The qubit operator for the problem

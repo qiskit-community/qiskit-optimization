@@ -152,9 +152,10 @@ def from_ising(
 
     .. note::
 
-        The ``qubit_op`` argument can currently accept Opflow operators, but it has been
-        superseded by ``SparsePauliOp``.
-        Opflow will be deprecated in a future release and subsequently removed after that.
+        The ``qubit_op`` argument can currently accept Opflow operators (``OperatorBase`` type),
+        but have been superseded by Qiskit Terra quantum_info ``BaseOperators`` such as
+        ``SparsePauliOp``. Opflow operator support will be deprecated in a future release
+        and subsequently removed after that.
 
     Args:
         qubit_op: The qubit operator of the problem.
@@ -181,9 +182,10 @@ def from_ising(
     # opflow
     if isinstance(qubit_op, OperatorBase):
         warn(
-            "The `qubit_op` argument can currently accept Opflow operators, but it has been "
-            "superseded by `SparsePauliOp`. "
-            "Opflow will be deprecated in a future release and subsequently removed after that.",
+            "The `qubit_op` argument can currently accept Opflow operators (`OperatorBase` type), "
+            "but have been superseded by Qiskit Terra quantum_info `BaseOperators` such as "
+            "`SparsePauliOp`. Opflow operator support will be deprecated in a future release "
+            "and subsequently removed after that.",
             category=PendingDeprecationWarning,
             stacklevel=2,
         )
