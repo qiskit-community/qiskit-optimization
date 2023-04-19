@@ -102,9 +102,9 @@ class QAOAClient(VQEClient):
         warn_deprecated(
             "0.6.0",
             DeprecatedType.CLASS,
-            "VQEClient",
+            "QAOAClient",
             additional_msg=(
-                ". Instead you should use the new primitives based SamplingVQE with the Qiskit IBM "
+                ". Instead you should use the new primitives based QAOA with the Qiskit IBM "
                 "Runtime Sampler primitive. For more details on how to migrate check out this guide, "
                 "here: https://qisk.it/algo_migration#qaoa"
             ),
