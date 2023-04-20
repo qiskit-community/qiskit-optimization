@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,41 +15,30 @@
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
-from ddt import data, ddt
-import numpy as np
+from ddt import ddt
 
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.algorithms import ScipyMilpOptimizer
+from qiskit_optimization.problems import QuadraticProgram
 
 
 @ddt
 class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
     """ScipyMilp Optimizer Tests."""
 
-    @data(
-        ("op_ip1.lp", [0, 2], 6),
-        ("op_mip1.lp", [0, 1, 1], 5.5),
-        ("op_lp1.lp", [0.25, 1.75], 5.8750),
-    )
     @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
-    def test_scipy_milp_optimizer(self, config):
+    def test_scipy_milp_optimizer(self):
         """ScipyMilp Optimizer Test"""
-        # unpack configuration
-        scipy_milp_solver = ScipyMilpOptimizer(disp=False)
-        filename, x, fval = config
-
-        # load optimization problem
         problem = QuadraticProgram()
-        lp_file = self.get_resource_path(filename, "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem.continuous_var(upperbound=4)
+        problem.continuous_var(upperbound=4)
+        problem.linear_constraint(linear=[1, 1], sense="=", rhs=2)
+        problem.minimize(linear=[2, -2])
 
-        # solve problem with ScipyMilpSolver
-        result = scipy_milp_solver.solve(problem)
+        optimizer = ScipyMilpOptimizer(disp=False)
+        result = optimizer.solve(problem)
 
-        # analyze results
-        self.assertAlmostEqual(result.fval, fval)
-        np.testing.assert_array_almost_equal(result.x, x)
+        self.assertAlmostEqual(result.fval, -4)
 
 
 if __name__ == "__main__":

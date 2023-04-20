@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,22 +10,30 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The MILP(Scipy) optimizer wrapped to be used within Qiskit's optimization module."""
+"""The SciPy MILP optimizer wrapped to be used within Qiskit's optimization module."""
 
 import numpy as np
+
 import qiskit_optimization.optionals as _optionals
-from ..problems.quadratic_program import QuadraticProgram
-from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
+from qiskit_optimization import INFINITY, QiskitOptimizationError
+from qiskit_optimization.algorithms.optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+)
+from qiskit_optimization.problems.quadratic_program import (
+    ConstraintSense,
+    QuadraticProgram,
+    VarType,
+)
 
 
 @_optionals.HAS_SCIPY_MILP.require_in_instance
 class ScipyMilpOptimizer(OptimizationAlgorithm):
-    """The MILP optimizer from Scipy wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The MILP optimizer from Scipy wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``scipy.milp``
+    (https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.milp.html)
     to be used within the optimization module.
-
-    Examples:
     """
 
     def __init__(self, disp: bool = False) -> None:
@@ -37,8 +45,8 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
         self._disp = disp
 
     @staticmethod
-    def is_scipy_updated():
-        """Returns True if scipy is updated."""
+    def is_scipy_milp_installed():
+        """Returns True if scipy.milp is installed."""
         return _optionals.HAS_SCIPY_MILP
 
     @property
@@ -46,13 +54,14 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
         """Returns the display setting.
 
         Returns:
-            Whether to print MILP information or not.
+            Whether to print scipy.milp information or not.
         """
         return self._disp
 
     @disp.setter
     def disp(self, disp: bool):
         """Set the display setting.
+
         Args:
             disp: The display setting.
         """
@@ -61,68 +70,82 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
     # pylint:disable=unused-argument
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with this optimizer.
-        The scipy.milp only solves linear problems.
-        Check if the problem is linear by objective function and constraints.
+
+        Checks if the problem has only linear objective function and linear constraints.
+        The ``scipy.milp`` supports only linear objective function and linear constraints.
+
         Args:
             problem: The optimization problem to check compatibility.
 
         Returns:
-            True or False
+            An empty string (if compatible) or a string describing the incompatibility.
         """
-        msg = ""
-        if problem.objective.quadratic.to_dict() != {}:
-            msg += "Quadratic objective function is not supported!"
+        msg = []
+        if problem.objective.quadratic.to_dict():
+            msg.append("scipy.milp supports only linear objective function")
         if problem.quadratic_constraints:
-            msg += "Quadratic constraints are not supported!"
-        return msg
+            msg.append("scipy.milp supports only linear constraints")
+        return "; ".join(msg)
 
     def _generate_problem(self, problem: QuadraticProgram):
 
-        from scipy.optimize import LinearConstraint, Bounds
+        if problem.objective.quadratic.to_dict():
+            raise QiskitOptimizationError(
+                "ScipyMilpOptimizer supports only linear objective function"
+            )
+        if problem.quadratic_constraints:
+            raise QiskitOptimizationError("ScipyMilpOptimizer supports only linear constraints")
+
+        from scipy.optimize import Bounds, LinearConstraint
         from scipy.sparse import lil_matrix
 
-        ## Obtain sense of objective function (+1 for minimization and -1 for maximization)
         sense = problem.objective.sense.value
-
-        ## Obtain coefficient of objective function
         objective = problem.objective.linear.to_array() * sense
 
-        ## Initialize constraints matrix
-        constraints_matrix = lil_matrix((len(problem.linear_constraints), len(problem.variables)))
-
-        ## Initialize constraint value
-        left_constraint = np.array([])
-        right_constraint = np.array([])
-
-        for i, constraint in enumerate(problem.linear_constraints):
-            constraint_dict = constraint.linear.to_dict()
-            for var in constraint_dict:
-                constraints_matrix[i, var] = constraint_dict[var]
-
-            if constraint.sense.value == 1:
-                left_constraint = np.append(left_constraint, constraint.rhs)
-                right_constraint = np.append(right_constraint, np.inf)
-            elif constraint.sense.value == 0:
-                left_constraint = np.append(left_constraint, -np.inf)
-                right_constraint = np.append(right_constraint, constraint.rhs)
-
-        constraints = LinearConstraint(constraints_matrix, left_constraint, right_constraint)
-
-        integrality = np.array([])
+        integrality = []
         for variable in problem.variables:
-            if variable.vartype.value in (1, 2):
-                integrality = np.append(integrality, 1)
+            if variable.vartype == VarType.CONTINUOUS:
+                integrality.append(0)
             else:
-                integrality = np.append(integrality, 0)
+                integrality.append(1)
 
-        lower_bounds = np.array([variable.lowerbound for variable in problem.variables])
-        upper_bounds = np.array([variable.upperbound for variable in problem.variables])
-        bounds = Bounds(lower_bounds, upper_bounds)
+        def conv_inf(val):
+            if val <= -INFINITY:
+                return -np.inf
+            elif val >= INFINITY:
+                return np.inf
+            else:
+                return val
 
-        return objective, constraints, integrality, bounds, sense
+        lower_bounds = [conv_inf(variable.lowerbound) for variable in problem.variables]
+        upper_bounds = [conv_inf(variable.upperbound) for variable in problem.variables]
+        bounds = Bounds(lb=lower_bounds, ub=upper_bounds)
+
+        lhs = []
+        rhs = []
+        mat = lil_matrix((problem.get_num_linear_constraints(), problem.get_num_vars()))
+        for i, constraint in enumerate(problem.linear_constraints):
+            for variable_id, val in constraint.linear.to_dict().items():
+                mat[i, variable_id] = val
+
+            rhs_val = conv_inf(constraint.rhs)
+            if constraint.sense == ConstraintSense.GE:
+                lhs.append(rhs_val)
+                rhs.append(np.inf)
+            elif constraint.sense == ConstraintSense.LE:
+                lhs.append(-np.inf)
+                rhs.append(rhs_val)
+            else:
+                # ConstraintSense.EQ
+                lhs.append(rhs_val)
+                rhs.append(rhs_val)
+
+        constraints = LinearConstraint(mat, lhs, rhs)
+
+        return objective, integrality, bounds, constraints, sense
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
-        """Tries to solves the given problem using the optimizer.
+        """Tries to solve the given problem using the optimizer.
 
         Runs the optimizer to try to solve the optimization problem. If problem is not convex,
         this optimizer may raise an exception due to incompatibility, depending on the settings.
@@ -136,29 +159,28 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
         Raises:
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
-        # pylint: disable=import-error
-        from scipy.optimize import milp
+        from scipy.optimize import milp  # pylint: disable=no-name-in-module
 
-        objective, constraints, integrality, bounds, sense = self._generate_problem(problem)
-        opt_result = milp(
-            c=objective, integrality=integrality, bounds=bounds, constraints=constraints
+        objective, integrality, bounds, constraints, sense = self._generate_problem(problem)
+        raw_result = milp(
+            c=objective,
+            integrality=integrality,
+            bounds=bounds,
+            constraints=constraints,
+            options={"disp": self._disp},
         )
 
         opt_x = []
-        for i, ele in enumerate(opt_result.x):
+        for i, ele in enumerate(raw_result.x):
             if integrality[i]:
                 opt_x.append(round(ele))
             else:
                 opt_x.append(ele)
 
-        # create results
-        result = OptimizationResult(
+        return OptimizationResult(
             x=opt_x,
-            fval=opt_result.fun * sense,
+            fval=raw_result.fun * sense,
             variables=problem.variables,
             status=self._get_feasibility_status(problem, opt_x),
-            raw_results=opt_result,
+            raw_results=raw_result,
         )
-
-        # return solution
-        return result

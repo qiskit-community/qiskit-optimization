@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2022, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -52,6 +52,6 @@ HAS_SCIPY_MILP = LazyImportTester(
     {
         "scipy.optimize": ("milp",),
     },
-    name="Scipy",
-    install="pip install 'qiskit-optimization[scipy]'",
+    name="SciPy MILP",
+    install="pip install 'qiskit-optimization[scipy_milp]'",
 )
