@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,24 +11,38 @@
 # that they have been altered from the originals.
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
-from typing import Optional, Union, List, cast
+from typing import List, Optional, Union, cast
 
 import numpy as np
+from qiskit.algorithms.minimum_eigen_solvers import MinimumEigensolver as LegacyMinimumEigensolver
+from qiskit.algorithms.minimum_eigen_solvers import (
+    MinimumEigensolverResult as LegacyMinimumEigensolverResult,
+)
+from qiskit.algorithms.minimum_eigensolvers import (
+    NumPyMinimumEigensolver,
+    NumPyMinimumEigensolverResult,
+    SamplingMinimumEigensolver,
+    SamplingMinimumEigensolverResult,
+    VQE,
+)
+from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
 
-from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
-from qiskit.opflow import OperatorBase
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
+from ..exceptions import QiskitOptimizationError
+from ..problems.quadratic_program import QuadraticProgram, Variable
 from .optimization_algorithm import (
-    OptimizationResultStatus,
     OptimizationAlgorithm,
     OptimizationResult,
+    OptimizationResultStatus,
     SolutionSample,
 )
-from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import (
-    QuadraticProgramToQubo,
-    QuadraticProgramConverter,
-)
-from ..problems.quadratic_program import QuadraticProgram, Variable
+
+MinimumEigensolver = Union[
+    SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver
+]
+MinimumEigensolverResult = Union[
+    SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult, LegacyMinimumEigensolverResult
+]
 
 
 class MinimumEigenOptimizationResult(OptimizationResult):
@@ -101,7 +115,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.algorithms import QAOA
+        from qiskit.algorithms.minimum_eigensolver import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
@@ -134,14 +148,30 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
 
         Raises:
+            TypeError: If minimum eigensolver has an invalid type.
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-
+        if isinstance(min_eigen_solver, VQE):
+            raise TypeError(
+                "MinimumEigenOptimizer does not support this VQE. You can use  "
+                "qiskit.algorithms.minimum_eigensolvers.SamplingVQE instead."
+            )
+        if not isinstance(
+            min_eigen_solver,
+            (SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver),
+        ):
+            raise TypeError(
+                "MinimumEigenOptimizer supports "
+                "qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver, "
+                "qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver, and "
+                "qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver. "
+                f"But {type(min_eigen_solver)} is given."
+            )
         if not min_eigen_solver.supports_aux_operators():
             raise QiskitOptimizationError(
                 "Given MinimumEigensolver does not return the eigenstate "
-                + "and is not supported by the MinimumEigenOptimizer."
+                "and is not supported by the MinimumEigenOptimizer."
             )
         self._min_eigen_solver = min_eigen_solver
         self._penalty = penalty
@@ -192,7 +222,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
-        operator, offset = problem_.to_ising()
+        operator, offset = problem_.to_ising(opflow=True)
 
         return self._solve_internal(operator, offset, problem_, problem)
 
@@ -206,6 +236,9 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         # only try to solve non-empty Ising Hamiltonians
         eigen_result: Optional[MinimumEigensolverResult] = None
         if operator.num_qubits > 0:
+            # NumPyEigensolver does not accept PauliOp but PauliSumOp
+            if isinstance(operator, PauliOp):
+                operator = PauliSumOp.from_list([(operator.primitive.to_label(), operator.coeff)])
             # approximate ground state of operator using min eigen solver
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results

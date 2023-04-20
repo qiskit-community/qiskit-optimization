@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,15 +17,12 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.algorithms import NumPyMinimumEigensolver
-from qiskit.opflow import Z, I
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit.opflow import I, Z
+
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization import QuadraticProgram, QiskitOptimizationError
-from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
-    CplexOptimizer,
-    ADMMOptimizer,
-)
+from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
+from qiskit_optimization.algorithms import ADMMOptimizer, CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.admm_optimizer import ADMMParameters
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -35,7 +32,6 @@ from qiskit_optimization.converters import (
 )
 from qiskit_optimization.problems import Constraint, Variable
 from qiskit_optimization.translators import from_docplex_mp
-
 
 QUBIT_OP_MAXIMIZE_SAMPLE = (
     -199999.5 * (I ^ I ^ I ^ Z)
@@ -66,7 +62,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op = conv.convert(op)
         conv = MaximizeToMinimize()
         op = conv.convert(op)
-        _, shift = op.to_ising()
+        _, shift = op.to_ising(opflow=True)
         self.assertEqual(shift, 0.0)
 
     def test_valid_variable_type(self):
@@ -75,12 +71,12 @@ class TestConverters(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             op = QuadraticProgram()
             op.integer_var(0, 10, "int_var")
-            _ = op.to_ising()
+            _ = op.to_ising(opflow=True)
         # Continuous variable
         with self.assertRaises(QiskitOptimizationError):
             op = QuadraticProgram()
             op.continuous_var(0, 10, "continuous_var")
-            _ = op.to_ising()
+            _ = op.to_ising(opflow=True)
 
     def test_inequality_binary(self):
         """Test InequalityToEqualityConverter with binary variables"""
@@ -401,7 +397,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear, Constraint.Sense.EQ, 3, "sum1")
         penalize = LinearEqualityToPenalty(penalty=1e5)
         op2 = penalize.convert(op)
-        qubitop, offset = op2.to_ising()
+        qubitop, offset = op2.to_ising(opflow=True)
         self.assertEqual(qubitop, QUBIT_OP_MAXIMIZE_SAMPLE)
         self.assertEqual(offset, OFFSET_MAXIMIZE_SAMPLE)
 

@@ -11,6 +11,7 @@ args
 arxiv
 autosummary
 backend
+backends
 barkoutsos
 benchmarking
 bitstring
@@ -50,6 +51,7 @@ eckstein
 egger
 eigen
 eigensolver
+eigensolvers
 eigenstate
 entangler
 enum
@@ -81,6 +83,7 @@ hamiltonian
 hamiltonians
 hastings
 hoyer
+ibm
 ide
 imode
 init
@@ -127,7 +130,9 @@ nosignatures
 np
 num
 numpy
+numpyminimumeigensolver
 october
+opflow
 optimality
 optimizationresult
 optimizationresultstatus
@@ -219,6 +224,7 @@ upperbound
 variational
 vartype
 vqe
+vqeresult
 writelines
 xixj
 wavefunction

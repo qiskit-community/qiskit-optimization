@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,16 @@
 # that they have been altered from the originals.
 
 """
-Qiskit Optimization Runtime (:mod:`qiskit_optimization.runtime`)
-================================================================
+DEPRECATED Qiskit Optimization Runtime (:mod:`qiskit_optimization.runtime`)
+===========================================================================
 
 .. currentmodule:: qiskit_optimization.runtime
+
+.. warning::
+    This entire module is deprecated as of version 0.6.0 and will be removed no sooner than 3 months
+    after the release. Instead you should update your code to use the Qiskit Runtime Primitives. For
+    more details on how to migrate check out this guide, here: https://qisk.it/algo_migration#vqe
+    and https://qisk.it/algo_migration#qaoa !
 
 Programs that embed Qiskit Runtime in the algorithmic interfaces and facilitate usage of
 algorithms and scripts in the cloud.
@@ -23,25 +29,17 @@ algorithms and scripts in the cloud.
    :toctree: ../stubs/
    :nosignatures:
 
-   VQEProgram
-   VQEProgramResult
    VQEClient
    VQERuntimeResult
-   QAOAProgram
    QAOAClient
 
 """
 
-from .vqe_program import VQEProgram, VQEProgramResult
-from .vqe_client import VQEClient, VQERuntimeResult
-from .qaoa_program import QAOAProgram
 from .qaoa_client import QAOAClient
+from .vqe_client import VQEClient, VQERuntimeResult
 
 __all__ = [
-    "VQEProgram",
-    "VQEProgramResult",
     "VQEClient",
     "VQERuntimeResult",
-    "QAOAProgram",
     "QAOAClient",
 ]

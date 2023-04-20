@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,31 +10,26 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test the QAOA program."""
+"""Test the QAOA client."""
 
+import unittest
+import warnings
 from test import QiskitOptimizationTestCase
 
-import warnings
-import unittest
-from ddt import ddt, data
 import numpy as np
+from ddt import data, ddt
 from qiskit.algorithms.optimizers import COBYLA
-from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.opflow import I, Z
+from qiskit.providers.basicaer import QasmSimulatorPy
 
-from qiskit_optimization.runtime import (
-    QAOAClient,
-    QAOAProgram,
-    VQERuntimeResult,
-    VQEProgramResult,
-)
+from qiskit_optimization.runtime import QAOAClient, VQERuntimeResult
 
 from .fake_vqeruntime import FakeQAOARuntimeProvider
 
 
 @ddt
-class TestQAOAProgram(QiskitOptimizationTestCase):
-    """Test the QAOA program."""
+class TestQAOAClient(QiskitOptimizationTestCase):
+    """Test the QAOA client."""
 
     def setUp(self):
         super().setUp()
@@ -46,34 +41,23 @@ class TestQAOAProgram(QiskitOptimizationTestCase):
     )
     def test_standard_case(self, optimizer):
         """Test a standard use case."""
-        operator = Z ^ I ^ Z
         reps = 2
         initial_point = np.random.RandomState(42).random(2 * reps)
         backend = QasmSimulatorPy()
 
-        for use_deprecated in [False, True]:
-            if use_deprecated:
-                qaoa_cls = QAOAProgram
-                result_cls = VQEProgramResult
-                warnings.filterwarnings("ignore", category=DeprecationWarning)
-            else:
-                qaoa_cls = QAOAClient
-                result_cls = VQERuntimeResult
-
-            qaoa = qaoa_cls(
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=DeprecationWarning)
+            operator = Z ^ I ^ Z
+            qaoa = QAOAClient(
                 optimizer=optimizer,
                 reps=reps,
                 initial_point=initial_point,
                 backend=backend,
                 provider=self.provider,
             )
-
-            if use_deprecated:
-                warnings.filterwarnings("always", category=DeprecationWarning)
-
             result = qaoa.compute_minimum_eigenvalue(operator)
 
-            self.assertIsInstance(result, result_cls)
+        self.assertIsInstance(result, VQERuntimeResult)
 
 
 if __name__ == "__main__":

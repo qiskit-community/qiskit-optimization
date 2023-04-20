@@ -14,28 +14,22 @@
 
 from copy import deepcopy
 from enum import Enum
-from typing import Optional, Union, List, Tuple, Dict, cast
+from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.utils.validation import validate_min
 
-from .minimum_eigen_optimizer import (
-    MinimumEigenOptimizer,
-    MinimumEigenOptimizationResult,
-)
-from .optimization_algorithm import (
-    OptimizationResultStatus,
-    OptimizationAlgorithm,
-    OptimizationResult,
-)
-from ..converters.quadratic_program_to_qubo import (
-    QuadraticProgramToQubo,
-    QuadraticProgramConverter,
-)
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
 from ..problems import Variable
 from ..problems.quadratic_program import QuadraticProgram
+from .minimum_eigen_optimizer import MinimumEigenOptimizationResult, MinimumEigenOptimizer
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+)
 
 
 class IntermediateResult(Enum):
@@ -123,7 +117,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block:: python
 
-        from qiskit.algorithms import QAOA
+        from qiskit.algorithms.minimum_eigensolver import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import (
             MinimumEigenOptimizer, RecursiveMinimumEigenOptimizer
@@ -167,7 +161,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
             min_num_vars_optimizer: This optimizer is used after the recursive scheme for the
                 problem with the remaining variables. Default value is
                 :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` created on top of
-                :class:`~qiskit.algorithms.minimum_eigen_solver.NumPyMinimumEigensolver`.
+                :class:`~qiskit.algorithms.minimum_eigensolver.NumPyMinimumEigensolver`.
             penalty: The factor that is used to scale the penalty terms corresponding to linear
                 equality constraints.
             history: Whether the intermediate results are stored.

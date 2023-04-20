@@ -10,33 +10,36 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test Recursive Min Eigen Optimizer with the primitive-based minimum eigensolver."""
+"""Test Recursive Min Eigen Optimizer with legacy MinimumEigensolver."""
 
 import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
-from qiskit.algorithms.optimizers import SLSQP
-from qiskit.primitives import Sampler
-from qiskit.utils import algorithm_globals
+
+from qiskit import BasicAer
+from qiskit.utils import algorithm_globals, QuantumInstance
+
+from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
-    CplexOptimizer,
     MinimumEigenOptimizer,
+    CplexOptimizer,
     RecursiveMinimumEigenOptimizer,
-    SlsqpOptimizer,
     WarmStartQAOAOptimizer,
+    SlsqpOptimizer,
 )
-from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
+from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import (
+    IntermediateResult,
+)
+from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.converters import (
-    InequalityToEquality,
     IntegerToBinary,
+    InequalityToEquality,
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
-from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
@@ -47,7 +50,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test the recursive minimum eigen optimizer."""
         filename = "op_ip1.lp"
         # get minimum eigen solver
-        min_eigen_solver = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            min_eigen_solver = NumPyMinimumEigensolver()
 
         # construct minimum eigen optimizer
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -65,7 +69,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         cplex_result = cplex.solve(problem)
 
         # solve problem
-        result = recursive_min_eigen_optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(problem)
 
         # analyze results
         np.testing.assert_array_almost_equal(cplex_result.x, result.x, 4)
@@ -81,7 +86,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         problem.read_from_lp_file(lp_file)
 
         # get minimum eigen solver
-        min_eigen_solver = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            min_eigen_solver = NumPyMinimumEigensolver()
 
         # construct minimum eigen optimizer
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -92,7 +98,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             min_num_vars=4,
             history=IntermediateResult.NO_ITERATIONS,
         )
-        result = recursive_min_eigen_optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(problem)
         self.assertIsNotNone(result.replacements)
         self.assertIsNotNone(result.history)
         self.assertIsNotNone(result.history[0])
@@ -105,7 +112,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             min_num_vars=4,
             history=IntermediateResult.LAST_ITERATION,
         )
-        result = recursive_min_eigen_optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(problem)
         self.assertIsNotNone(result.replacements)
         self.assertIsNotNone(result.history)
         self.assertIsNotNone(result.history[0])
@@ -118,7 +126,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             min_num_vars=4,
             history=IntermediateResult.ALL_ITERATIONS,
         )
-        result = recursive_min_eigen_optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(problem)
         self.assertIsNotNone(result.replacements)
         self.assertIsNotNone(result.history)
         self.assertIsNotNone(result.history[0])
@@ -130,11 +139,14 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test the recursive optimizer with warm start qaoa."""
         seed = 1234
         algorithm_globals.random_seed = seed
-        qaoa = QAOA(
-            sampler=Sampler(),
-            optimizer=SLSQP(),
-            reps=1,
-        )
+        backend = BasicAer.get_backend("statevector_simulator")
+        with self.assertWarns(PendingDeprecationWarning):
+            qaoa = QAOA(
+                quantum_instance=QuantumInstance(
+                    backend=backend, seed_simulator=seed, seed_transpiler=seed
+                ),
+                reps=1,
+            )
         warm_qaoa = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True, qaoa=qaoa
         )
@@ -151,7 +163,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         cplex_result = cplex.solve(problem)
 
         # solve problem
-        result = recursive_min_eigen_optimizer.solve(problem)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(problem)
 
         # analyze results
         np.testing.assert_array_almost_equal(cplex_result.x, result.x, 4)
@@ -167,14 +180,16 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         op.linear_constraint(linear={"y": 1, "x": 1}, sense="LE", rhs=3, name="xy_leq")
 
         # construct minimum eigen optimizer
-        min_eigen_solver = NumPyMinimumEigensolver()
+        with self.assertWarns(PendingDeprecationWarning):
+            min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
         # a single converter
         qp2qubo = QuadraticProgramToQubo()
         recursive_min_eigen_optimizer = RecursiveMinimumEigenOptimizer(
             min_eigen_optimizer, min_num_vars=2, converters=qp2qubo
         )
-        result = recursive_min_eigen_optimizer.solve(op)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         # a list of converters
         ineq2eq = InequalityToEquality()
@@ -184,7 +199,8 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         recursive_min_eigen_optimizer = RecursiveMinimumEigenOptimizer(
             min_eigen_optimizer, min_num_vars=2, converters=converters
         )
-        result = recursive_min_eigen_optimizer.solve(op)
+        with self.assertWarns(PendingDeprecationWarning):
+            result = recursive_min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         # invalid converters
         with self.assertRaises(TypeError):

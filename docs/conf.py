@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -86,13 +86,6 @@ nbsphinx_prolog += link_str + "{{ docname }}"
 
 # -- General configuration ---------------------------------------------------
 
-# If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
@@ -102,7 +95,6 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx_design",
     "jupyter_sphinx",
-    "sphinx_autodoc_typehints",
     "reno.sphinxext",
     "sphinx.ext.doctest",
     "nbsphinx",
@@ -115,13 +107,13 @@ html_css_files = ["style.css", "custom.css", "gallery.css"]
 nbsphinx_timeout = 180
 nbsphinx_execute = os.getenv("QISKIT_DOCS_BUILD_TUTORIALS", "never")
 nbsphinx_widgets_path = ""
-exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 nbsphinx_thumbnails = {
     "tutorials/01_quadratic_program": "_static/1_quadratic_program.png",
     "tutorials/02_converters_for_quadratic_programs": "_static/2_converters.png",
     "tutorials/03_minimum_eigen_optimizer": "_static/3_min_eig_opt.png",
     "tutorials/04_grover_optimizer": "_static/4_grover.png",
     "tutorials/05_admm_optimizer": "_static/5_ADMM.png",
+    "**": "_static/no_image.png",
 }
 
 spelling_word_list_filename = "../.pylintdict"
@@ -137,6 +129,12 @@ autosummary_generate_overwrite = False
 # -----------------------------------------------------------------------------
 # Autodoc
 # -----------------------------------------------------------------------------
+# Move type hints from signatures to the parameter descriptions (except in overload cases, where
+# that's not possible).
+autodoc_typehints = "description"
+# Only add type hints from signature to description body if the parameter has documentation.  The
+# return type is always added to the description (if in the signature).
+autodoc_typehints_description_target = "documented_params"
 
 autodoc_default_options = {
     "inherited-members": None,
@@ -166,7 +164,7 @@ gettext_compact = False  # optional.
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "**.ipynb_checkpoints"]
+exclude_patterns = ["**site-packages", "_build", "**.ipynb_checkpoints"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "colorful"
@@ -188,18 +186,7 @@ modindex_common_prefix = ["qiskit_optimization."]
 
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-#
 html_theme = "qiskit_sphinx_theme"
-
-html_theme_path = [".", qiskit_sphinx_theme.get_html_theme_path()]
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
 html_theme_options = {
     "logo_only": False,
     "display_version": True,
@@ -221,6 +208,8 @@ intersphinx_mapping = {
     "docplex.mp": ("https://ibmdecisionoptimization.github.io/docplex-doc/mp", None),
     "qiskit": ("https://qiskit.org/documentation/", None),
 }
+
+html_context = {"analytics_enabled": True}
 # -- Extension configuration -------------------------------------------------
 
 
