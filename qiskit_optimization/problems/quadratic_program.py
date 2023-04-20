@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2022.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -23,6 +23,8 @@ import numpy as np
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
 from qiskit.opflow import OperatorBase
+from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info.operators.base_operator import BaseOperator
 from scipy.sparse import spmatrix
 
 import qiskit_optimization.optionals as _optionals
@@ -78,7 +80,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+        from ..translators.prettyprint import DEFAULT_TRUNCATE, expr2str
 
         objective = expr2str(
             constant=self._objective.constant,
@@ -1007,12 +1009,20 @@ class QuadraticProgram:
 
         return substitute_variables(self, constants, variables)
 
-    def to_ising(self) -> Tuple[OperatorBase, float]:
+    def to_ising(
+        self, opflow: Optional[bool] = None
+    ) -> Tuple[Union[OperatorBase, SparsePauliOp], float]:
         """Return the Ising Hamiltonian of this problem.
 
         Variables are mapped to qubits in the same order, i.e.,
         i-th variable is mapped to i-th qubit.
         See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
+
+        Args:
+            opflow: The output object is an OpFlow's operator if True.
+                Otherwise, it is ``SparsePauliOp``.
+                Refer to :func:`~qiskit_optimization.translators.to_ising`
+                for the default value.
 
         Returns:
             qubit_op: The qubit operator for the problem
@@ -1025,11 +1035,11 @@ class QuadraticProgram:
         # pylint: disable=cyclic-import
         from ..translators.ising import to_ising
 
-        return to_ising(self)
+        return to_ising(self, opflow=opflow)
 
     def from_ising(
         self,
-        qubit_op: OperatorBase,
+        qubit_op: Union[OperatorBase, BaseOperator],
         offset: float = 0.0,
         linear: bool = False,
     ) -> None:
