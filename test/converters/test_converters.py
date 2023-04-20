@@ -18,7 +18,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
-from qiskit.opflow import I, Z
+from qiskit.quantum_info import SparsePauliOp
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
@@ -33,18 +33,18 @@ from qiskit_optimization.converters import (
 from qiskit_optimization.problems import Constraint, Variable
 from qiskit_optimization.translators import from_docplex_mp
 
-QUBIT_OP_MAXIMIZE_SAMPLE = (
-    -199999.5 * (I ^ I ^ I ^ Z)
-    + -399999.5 * (I ^ I ^ Z ^ I)
-    + -599999.5 * (I ^ Z ^ I ^ I)
-    + -799999.5 * (Z ^ I ^ I ^ I)
-    + 100000 * (I ^ I ^ Z ^ Z)
-    + 150000 * (I ^ Z ^ I ^ Z)
-    + 300000 * (I ^ Z ^ Z ^ I)
-    + 200000 * (Z ^ I ^ I ^ Z)
-    + 400000 * (Z ^ I ^ Z ^ I)
-    + 600000 * (Z ^ Z ^ I ^ I)
-)
+QUBIT_OP_MAXIMIZE_SAMPLE = SparsePauliOp.from_list([
+    ("IIIZ", -199999.5),
+    ("IIZI", -399999.5),
+    ("IZII", -599999.5),
+    ("ZIII", -799999.5),
+    ("IIZZ", 100000),
+    ("IZIZ", 150000),
+    ("IZZI", 300000),
+    ("ZIIZ", 200000),
+    ("ZIZI", 400000),
+    ("ZZII", 600000),
+])
 OFFSET_MAXIMIZE_SAMPLE = 1149998
 
 
@@ -397,7 +397,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear, Constraint.Sense.EQ, 3, "sum1")
         penalize = LinearEqualityToPenalty(penalty=1e5)
         op2 = penalize.convert(op)
-        qubitop, offset = op2.to_ising(opflow=True)
+        qubitop, offset = op2.to_ising(opflow=False)
         self.assertEqual(qubitop, QUBIT_OP_MAXIMIZE_SAMPLE)
         self.assertEqual(offset, OFFSET_MAXIMIZE_SAMPLE)
 

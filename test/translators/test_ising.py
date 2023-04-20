@@ -12,6 +12,9 @@
 
 """Test from_ising and to_ising"""
 
+import warnings
+warnings.simplefilter("ignore")
+
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np

@@ -14,15 +14,18 @@
 
 import math
 from typing import Optional, Tuple, Union
-from warnings import warn
+from warnings import warn, catch_warnings, simplefilter
 
 import numpy as np
-from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+
+with catch_warnings():
+    simplefilter("ignore", DeprecationWarning)
+    from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
 
 
 def to_ising(
@@ -134,7 +137,9 @@ def to_ising(
         qubit_op = SparsePauliOp("I" * num_vars, 0)
 
     if opflow:
-        qubit_op = PauliSumOp(qubit_op)
+        with catch_warnings():
+            simplefilter("ignore", DeprecationWarning)
+            qubit_op = PauliSumOp(qubit_op)
 
     return qubit_op, offset
 

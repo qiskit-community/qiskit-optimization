@@ -14,15 +14,18 @@
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from typing import Dict, Union
+from warnings import catch_warnings, simplefilter
 
 import numpy as np
-from qiskit.opflow import StateFn
 from qiskit.quantum_info import Statevector
 from qiskit.result import QuasiDistribution
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
+with catch_warnings():
+    simplefilter("ignore", DeprecationWarning)
+    from qiskit.opflow import StateFn
 
 class OptimizationApplication(ABC):
     """

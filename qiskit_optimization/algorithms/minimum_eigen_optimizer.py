@@ -12,6 +12,7 @@
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
 from typing import List, Optional, Union, cast
+from warnings import catch_warnings, simplefilter
 
 import numpy as np
 from qiskit.algorithms.minimum_eigen_solvers import MinimumEigensolver as LegacyMinimumEigensolver
@@ -25,7 +26,6 @@ from qiskit.algorithms.minimum_eigensolvers import (
     SamplingMinimumEigensolverResult,
     VQE,
 )
-from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
@@ -36,6 +36,12 @@ from .optimization_algorithm import (
     OptimizationResultStatus,
     SolutionSample,
 )
+
+
+with catch_warnings():
+    simplefilter("ignore", DeprecationWarning)
+    from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
+
 
 MinimumEigensolver = Union[
     SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver
@@ -222,7 +228,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
-        operator, offset = problem_.to_ising(opflow=True)
+        operator, offset = problem_.to_ising(opflow=False)
 
         return self._solve_internal(operator, offset, problem_, problem)
 
