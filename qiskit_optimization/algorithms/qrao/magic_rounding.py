@@ -426,8 +426,8 @@ class MagicRounding(RoundingScheme):
             # weighted sampling
             if expectation_values is None:
                 raise NotImplementedError(
-                    "Magic rounding with weighted sampling requires the trace values "
-                    "to be available, but they are not."
+                    "Magic rounding with weighted sampling requires the expectation values of the "
+                    "``RoundingContext`` to be available, but they are not."
                 )
             bases, basis_shots = self._sample_bases_weighted(
                 q2vars, expectation_values, vars_per_qubit
