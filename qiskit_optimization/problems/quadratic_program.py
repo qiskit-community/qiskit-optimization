@@ -17,11 +17,12 @@ from collections.abc import Sequence
 from enum import Enum
 from math import isclose
 from typing import Dict, List, Optional, Tuple, Union, cast
-from warnings import warn, catch_warnings, simplefilter
+from warnings import warn
 
 import numpy as np
 from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
+from qiskit.opflow import OperatorBase
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from scipy.sparse import spmatrix
@@ -36,11 +37,6 @@ from .quadratic_constraint import QuadraticConstraint
 from .quadratic_objective import QuadraticObjective
 from .quadratic_program_element import QuadraticProgramElement
 from .variable import Variable, VarType
-
-with catch_warnings():
-    simplefilter("ignore", DeprecationWarning)
-    from qiskit.opflow import OperatorBase
-
 
 logger = logging.getLogger(__name__)
 

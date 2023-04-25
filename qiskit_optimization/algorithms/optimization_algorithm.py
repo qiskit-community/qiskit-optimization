@@ -17,20 +17,15 @@ from dataclasses import dataclass
 from enum import Enum
 from logging import getLogger
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
-from warnings import catch_warnings, simplefilter
 
 import numpy as np
+from qiskit.opflow import DictStateFn, StateFn
 from qiskit.quantum_info import Statevector
 from qiskit.result import QuasiDistribution
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram, Variable
-
-with catch_warnings():
-    simplefilter("ignore", DeprecationWarning)
-    from qiskit.opflow import DictStateFn, StateFn
-
 
 logger = getLogger(__name__)
 

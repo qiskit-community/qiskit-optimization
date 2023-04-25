@@ -23,9 +23,7 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
-with catch_warnings():
-    simplefilter("ignore", DeprecationWarning)
-    from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
+from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
 
 
 def to_ising(

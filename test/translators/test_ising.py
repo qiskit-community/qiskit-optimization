@@ -12,11 +12,8 @@
 
 """Test from_ising and to_ising"""
 
-import warnings
-
-warnings.simplefilter("ignore")
-
 from test.optimization_test_case import QiskitOptimizationTestCase
+from warnings import catch_warnings, simplefilter
 
 import numpy as np
 from ddt import data, ddt
@@ -37,7 +34,9 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
     def op_from_list(lst, opflow):
         """generate an operator from a list"""
         if opflow:
-            return PauliSumOp.from_list(lst)
+            with catch_warnings():
+                simplefilter("ignore", DeprecationWarning)
+                return PauliSumOp.from_list(lst)
         else:
             return SparsePauliOp.from_list(lst)
 
@@ -173,9 +172,11 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
         """test from_ising and to_ising with Pauli I and Z"""
         with self.subTest("0 * I, linear=False"):
             if opflow:
-                q_p = from_ising(SparsePauliOp("I", 0), linear=False)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(0 * I, linear=False)
             else:
-                q_p = from_ising(0 * I, linear=False)
+                q_p = from_ising(SparsePauliOp("I", 0), linear=False)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -183,15 +184,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
             self.assertAlmostEqual(offset, 0)
 
         with self.subTest("0 * I, linear=True"):
             if opflow:
-                q_p = from_ising(SparsePauliOp("I", 0), linear=True)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(0 * I, linear=True)
             else:
-                q_p = from_ising(0 * I, linear=True)
+                q_p = from_ising(SparsePauliOp("I", 0), linear=True)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -199,15 +202,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
             self.assertAlmostEqual(offset, 0)
 
         with self.subTest("2 * I, linear=False"):
             if opflow:
-                q_p = from_ising(SparsePauliOp("I", 2), linear=False)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(2 * I, linear=False)
             else:
-                q_p = from_ising(2 * I, linear=False)
+                q_p = from_ising(SparsePauliOp("I", 2), linear=False)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -215,15 +220,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), np.zeros((2, 2)))
             self.assertAlmostEqual(offset, 2)
 
         with self.subTest("2 * I, linear=True"):
             if opflow:
-                q_p = from_ising(SparsePauliOp("I", 2), linear=True)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(2 * I, linear=True)
             else:
-                q_p = from_ising(2 * I, linear=True)
+                q_p = from_ising(SparsePauliOp("I", 2), linear=True)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -237,9 +244,11 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
 
         with self.subTest("Z, linear=False"):
             if opflow:
-                q_p = from_ising(Pauli("Z"), linear=False)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(Z, linear=False)
             else:
-                q_p = from_ising(Z, linear=False)
+                q_p = from_ising(Pauli("Z"), linear=False)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -247,15 +256,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[-2]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), Z.to_matrix())
             self.assertAlmostEqual(offset, 0)
 
         with self.subTest("Z, linear=True"):
             if opflow:
-                q_p = from_ising(Pauli("Z"), linear=True)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(Z, linear=True)
             else:
-                q_p = from_ising(Z, linear=True)
+                q_p = from_ising(Pauli("Z"), linear=True)
             self.assertEqual(q_p.get_num_vars(), 1)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -263,15 +274,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [-2])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), Z.to_matrix())
             self.assertAlmostEqual(offset, 0)
 
         with self.subTest("3 * II, linear=False"):
             if opflow:
-                q_p = from_ising(SparsePauliOp("II", 3), linear=False)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(3 * I ^ I, linear=False)
             else:
-                q_p = from_ising(3 * I ^ I, linear=False)
+                q_p = from_ising(SparsePauliOp("II", 3), linear=False)
             self.assertEqual(q_p.get_num_vars(), 2)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -279,15 +292,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0, 0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0, 0], [0, 0]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), np.zeros((4, 4)))
             self.assertAlmostEqual(offset, 3)
 
         with self.subTest("3 * II, linear=True"):
             if opflow:
-                q_p = from_ising(SparsePauliOp("II", 3), linear=True)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(3 * I ^ I, linear=True)
             else:
-                q_p = from_ising(3 * I ^ I, linear=True)
+                q_p = from_ising(SparsePauliOp("II", 3), linear=True)
             self.assertEqual(q_p.get_num_vars(), 2)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -295,15 +310,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0, 0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0, 0], [0, 0]])
 
-            op, offset = to_ising(q_p, opflow=True)
+            op, offset = to_ising(q_p, opflow=opflow)
             np.testing.assert_allclose(op.to_matrix(), np.zeros((4, 4)))
             self.assertAlmostEqual(offset, 3)
 
         with self.subTest("IZ, linear=False"):
             if opflow:
-                q_p = from_ising(Pauli("IZ"), linear=False)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(I ^ Z, linear=False)
             else:
-                q_p = from_ising(I ^ Z, linear=False)
+                q_p = from_ising(Pauli("IZ"), linear=False)
             self.assertEqual(q_p.get_num_vars(), 2)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -311,15 +328,17 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [0, 0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[-2, 0], [0, 0]])
 
-            op, offset = to_ising(q_p, opflow=True)
-            np.testing.assert_allclose(op.to_matrix(), (I ^ Z).to_matrix())
+            op, offset = to_ising(q_p, opflow=opflow)
+            np.testing.assert_allclose(op.to_matrix(), Pauli("IZ").to_matrix())
             self.assertAlmostEqual(offset, 0)
 
         with self.subTest("IZ, linear=True"):
             if opflow:
-                q_p = from_ising(Pauli("IZ"), linear=True)
+                with catch_warnings():
+                    simplefilter("ignore", DeprecationWarning)
+                    q_p = from_ising(I ^ Z, linear=True)
             else:
-                q_p = from_ising(I ^ Z, linear=True)
+                q_p = from_ising(Pauli("IZ"), linear=True)
             self.assertEqual(q_p.get_num_vars(), 2)
             self.assertEqual(q_p.get_num_linear_constraints(), 0)
             self.assertEqual(q_p.get_num_quadratic_constraints(), 0)
@@ -327,8 +346,8 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
             np.testing.assert_allclose(q_p.objective.linear.to_array(), [-2, 0])
             np.testing.assert_allclose(q_p.objective.quadratic.to_array(), [[0, 0], [0, 0]])
 
-            op, offset = to_ising(q_p, opflow=True)
-            np.testing.assert_allclose(op.to_matrix(), (I ^ Z).to_matrix())
+            op, offset = to_ising(q_p, opflow=opflow)
+            np.testing.assert_allclose(op.to_matrix(), Pauli("IZ").to_matrix())
             self.assertAlmostEqual(offset, 0)
 
     @data(True, False)
@@ -360,6 +379,8 @@ class TestIsingTranslator(QiskitOptimizationTestCase):
         with self.assertWarns(UserWarning):
             _ = to_ising(q_p)
 
-        op = PauliSumOp.from_list([("Z", 1)])
+        with catch_warnings():
+            simplefilter("ignore", DeprecationWarning)
+            op = PauliSumOp.from_list([("Z", 1)])
         with self.assertWarns(PendingDeprecationWarning):
             _ = from_ising(op)
