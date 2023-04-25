@@ -296,7 +296,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -346,7 +346,7 @@ jobs:
           sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
         shell: bash
       - name: Coverage combine
-        run: coverage3 combine /tmp/o37/opt.dat
+        run: coverage3 combine /tmp/o38/opt.dat
         shell: bash
       - name: Upload to Coveralls
         env:
