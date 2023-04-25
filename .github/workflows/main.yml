@@ -191,7 +191,7 @@ jobs:
           fi
           coverage3 combine
           mv .coverage ./ci-artifact-data/opt.dat
-        if: ${{ matrix.python-version == 3.7 }}
+        if: ${{ matrix.python-version == 3.8 }}
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
