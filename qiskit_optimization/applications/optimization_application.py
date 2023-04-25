@@ -27,6 +27,7 @@ with catch_warnings():
     simplefilter("ignore", DeprecationWarning)
     from qiskit.opflow import StateFn
 
+
 class OptimizationApplication(ABC):
     """
     An abstract class for optimization applications.

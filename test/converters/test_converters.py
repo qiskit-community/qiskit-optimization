@@ -33,18 +33,20 @@ from qiskit_optimization.converters import (
 from qiskit_optimization.problems import Constraint, Variable
 from qiskit_optimization.translators import from_docplex_mp
 
-QUBIT_OP_MAXIMIZE_SAMPLE = SparsePauliOp.from_list([
-    ("IIIZ", -199999.5),
-    ("IIZI", -399999.5),
-    ("IZII", -599999.5),
-    ("ZIII", -799999.5),
-    ("IIZZ", 100000),
-    ("IZIZ", 150000),
-    ("IZZI", 300000),
-    ("ZIIZ", 200000),
-    ("ZIZI", 400000),
-    ("ZZII", 600000),
-])
+QUBIT_OP_MAXIMIZE_SAMPLE = SparsePauliOp.from_list(
+    [
+        ("IIIZ", -199999.5),
+        ("IIZI", -399999.5),
+        ("IZII", -599999.5),
+        ("ZIII", -799999.5),
+        ("IIZZ", 100000),
+        ("IZIZ", 150000),
+        ("IZZI", 300000),
+        ("ZIIZ", 200000),
+        ("ZIZI", 400000),
+        ("ZZII", 600000),
+    ]
+)
 OFFSET_MAXIMIZE_SAMPLE = 1149998
 
 
