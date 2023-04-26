@@ -29,11 +29,11 @@ from qiskit_optimization.translators import from_ising, to_ising
 class TestIsingTranslator(QiskitOptimizationTestCase):
     """Test from_ising and to_ising"""
 
-    @staticmethod
-    def op_from_list(lst, opflow):
+    def op_from_list(self, lst, opflow):
         """generate an operator from a list"""
         if opflow:
-            return PauliSumOp.from_list(lst)
+            with self.assertWarns(DeprecationWarning):
+                return PauliSumOp.from_list(lst)
         else:
             return SparsePauliOp.from_list(lst)
 
