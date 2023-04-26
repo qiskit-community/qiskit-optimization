@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -56,7 +56,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.min_eigen_solvers = {}
 
         # exact eigen solver
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             self.min_eigen_solvers["exact"] = NumPyMinimumEigensolver()
 
             # QAOA
@@ -123,7 +123,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             cplex_result = cplex.solve(problem)
 
             # solve problem
-            with self.assertWarns(PendingDeprecationWarning):
+            with self.assertWarns(DeprecationWarning):
                 result = min_eigen_optimizer.solve(problem)
             self.assertIsNotNone(result)
 
@@ -147,7 +147,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             filename, lowerbound, fval, status = config
 
             # get minimum eigen solver
-            with self.assertWarns(PendingDeprecationWarning):
+            with self.assertWarns(DeprecationWarning):
                 min_eigen_solver = NumPyMinimumEigensolver()
 
             # set filter
@@ -166,7 +166,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             problem.read_from_lp_file(lp_file)
 
             # solve problem
-            with self.assertWarns(PendingDeprecationWarning):
+            with self.assertWarns(DeprecationWarning):
                 result = min_eigen_optimizer.solve(problem)
             self.assertIsNotNone(result)
 
@@ -187,12 +187,12 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         op.maximize(linear={"x": 1, "y": 2})
         op.linear_constraint(linear={"x": 1, "y": 1}, sense="LE", rhs=3, name="xy_leq")
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             min_eigen_solver = NumPyMinimumEigensolver()
         # a single converter
         qp2qubo = QuadraticProgramToQubo()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=qp2qubo)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         # a list of converters
@@ -202,7 +202,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         max2min = MaximizeToMinimize()
         converters = [ineq2eq, int2bin, penalize, max2min]
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver, converters=converters)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(op)
         self.assertEqual(result.fval, 4)
         with self.assertRaises(TypeError):
@@ -212,10 +212,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def test_samples_numpy_eigen_solver(self):
         """Test samples for NumPyMinimumEigensolver"""
         # test minimize
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(self.op_minimize)
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
@@ -231,10 +231,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             min_eigen_solver = NumPyMinimumEigensolver()
         min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(self.op_maximize)
         opt_sol = 2
         self.assertEqual(result.fval, opt_sol)
@@ -258,10 +258,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         # test minimize
         algorithm_globals.random_seed = 4
         quantum_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(self.op_minimize)
         success = OptimizationResultStatus.SUCCESS
         opt_sol = 1
@@ -282,10 +282,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test maximize
         opt_sol = 2
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(self.op_maximize)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
         self.assertAlmostEqual(sum(s.probability for s in result.raw_samples), 1)
@@ -312,10 +312,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(result.raw_samples[0].status, success)
         # test bit ordering
         opt_sol = -2
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             qaoa = QAOA(optimizer=COBYLA(), quantum_instance=quantum_instance, reps=2)
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             result = min_eigen_optimizer.solve(self.op_ordering)
         self.assertEqual(result.fval, opt_sol)
         np.testing.assert_array_almost_equal(result.x, [0, 1])
@@ -346,10 +346,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         success = OptimizationResultStatus.SUCCESS
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             vqe_mes = VQE(ry_ansatz, optimizer=optimizer, quantum_instance=quantum_instance)
         vqe = MinimumEigenOptimizer(vqe_mes)
-        with self.assertWarns(PendingDeprecationWarning):
+        with self.assertWarns(DeprecationWarning):
             results = vqe.solve(self.op_ordering)
         self.assertEqual(results.fval, opt_sol)
         np.testing.assert_array_almost_equal(results.x, [0, 1])
