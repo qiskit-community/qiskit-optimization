@@ -13,13 +13,11 @@
 """ Test Min Eigen Optimizer with the primitive-based minimum eigensolver """
 
 import unittest
-import warnings
-
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver, SamplingVQE, VQE
+from qiskit.algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
@@ -346,9 +344,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     @data("vqe", "qaoa")
     def test_runtime(self, subroutine):
         """Test vqe and qaoa runtime"""
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntimeProvider
+        from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntimeProvider
 
         optimizer = {"name": "SPSA", "maxiter": 100}
         backend = QasmSimulatorPy()
@@ -381,9 +377,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     @data(FakeArmonk, FakeArmonkV2)
     def test_runtime_backend_versions(self, backend_cls):
         """Test the runtime client with a V1 and a V2 backend."""
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntimeProvider
+        from test.runtime.fake_vqeruntime import FakeVQERuntimeProvider
 
         optimizer = SPSA(maxiter=1, learning_rate=0.1, perturbation=0.1)
         backend = backend_cls()

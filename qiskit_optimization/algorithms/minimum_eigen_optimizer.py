@@ -12,7 +12,6 @@
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
 from typing import List, Optional, Union, cast
-from warnings import catch_warnings, simplefilter
 
 import numpy as np
 from qiskit.algorithms.minimum_eigen_solvers import MinimumEigensolver as LegacyMinimumEigensolver
@@ -20,11 +19,11 @@ from qiskit.algorithms.minimum_eigen_solvers import (
     MinimumEigensolverResult as LegacyMinimumEigensolverResult,
 )
 from qiskit.algorithms.minimum_eigensolvers import (
+    VQE,
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
-    VQE,
 )
 from qiskit.quantum_info import SparsePauliOp
 
@@ -239,13 +238,11 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
             if isinstance(self._min_eigen_solver, LegacyMinimumEigensolver):
-                with catch_warnings():
-                    simplefilter("ignore", DeprecationWarning)
-                    from qiskit.opflow import PauliSumOp
+                from qiskit.opflow import PauliSumOp
 
-                    eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(
-                        PauliSumOp(operator)
-                    )
+                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(
+                    PauliSumOp(operator)
+                )
             else:
                 eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results

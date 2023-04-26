@@ -18,8 +18,9 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from ddt import data, ddt
 from docplex.mp.model import Model
-from qiskit.utils import QuantumInstance, algorithm_globals, optionals
 from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit.utils import QuantumInstance, algorithm_globals, optionals
+
 from qiskit_optimization.algorithms import (
     GroverOptimizer,
     MinimumEigenOptimizer,
@@ -65,21 +66,19 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     ):
         """Prepare GroverOptimizer."""
         if simulator == "statevector":
-            with self.assertWarns(PendingDeprecationWarning):
-                grover_optimizer = GroverOptimizer(
-                    num_value_qubits=num_value_qubits,
-                    num_iterations=num_iterations,
-                    converters=converters,
-                    quantum_instance=self.sv_simulator,
-                )
+            grover_optimizer = GroverOptimizer(
+                num_value_qubits=num_value_qubits,
+                num_iterations=num_iterations,
+                converters=converters,
+                quantum_instance=self.sv_simulator,
+            )
         elif simulator == "qasm":
-            with self.assertWarns(PendingDeprecationWarning):
-                grover_optimizer = GroverOptimizer(
-                    num_value_qubits=num_value_qubits,
-                    num_iterations=num_iterations,
-                    converters=converters,
-                    quantum_instance=self.qasm_simulator,
-                )
+            grover_optimizer = GroverOptimizer(
+                num_value_qubits=num_value_qubits,
+                num_iterations=num_iterations,
+                converters=converters,
+                quantum_instance=self.qasm_simulator,
+            )
         else:
             grover_optimizer = GroverOptimizer(
                 num_value_qubits=num_value_qubits,

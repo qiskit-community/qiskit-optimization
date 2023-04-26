@@ -13,7 +13,6 @@
 """The Qiskit Optimization VQE Runtime Client."""
 
 
-import warnings
 from typing import Any, Callable, Dict, List, Optional, Union
 
 import numpy as np
@@ -80,9 +79,7 @@ class VQEClient(MinimumEigensolver):
                 "here: https://qisk.it/algo_migration#vqe"
             ),
         )
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            super().__init__()
+        super().__init__()
         if optimizer is None:
             optimizer = SPSA(maxiter=300)
 

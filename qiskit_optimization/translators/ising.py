@@ -14,16 +14,15 @@
 
 import math
 from typing import Optional, Tuple, Union
-from warnings import warn, catch_warnings, simplefilter
+from warnings import warn
 
 import numpy as np
+from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-
-from qiskit.opflow import ListOp, OperatorBase, PauliOp, PauliSumOp
 
 
 def to_ising(
@@ -135,9 +134,7 @@ def to_ising(
         qubit_op = SparsePauliOp("I" * num_vars, 0)
 
     if opflow:
-        with catch_warnings():
-            simplefilter("ignore", DeprecationWarning)
-            qubit_op = PauliSumOp(qubit_op)
+        qubit_op = PauliSumOp(qubit_op)
 
     return qubit_op, offset
 
@@ -187,9 +184,9 @@ def from_ising(
         warn(
             "The `qubit_op` argument can currently accept Opflow operators (`OperatorBase` type), "
             "but have been superseded by Qiskit Terra quantum_info `BaseOperators` such as "
-            "`SparsePauliOp`. Opflow operator support will be deprecated in a future release "
+            "`SparsePauliOp`. Opflow operator has been deprecated in Qiskit Terra 0.25.0 "
             "and subsequently removed after that.",
-            category=PendingDeprecationWarning,
+            category=DeprecationWarning,
             stacklevel=2,
         )
     if isinstance(qubit_op, PauliSumOp):

@@ -14,7 +14,6 @@
 
 import logging
 import math
-import warnings
 from copy import deepcopy
 from typing import Dict, List, Optional, Union, cast
 
@@ -28,16 +27,21 @@ from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace
 from qiskit.utils import QuantumInstance, algorithm_globals
 
-from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
-from ..exceptions import QiskitOptimizationError
-from ..problems import Variable
-from ..problems.quadratic_program import QuadraticProgram
-from .optimization_algorithm import (
+from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,
     OptimizationResult,
     OptimizationResultStatus,
     SolutionSample,
 )
+from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
+from qiskit_optimization.deprecation import (
+    DeprecatedType,
+    deprecate_method,
+    deprecate_property,
+    warn_deprecated,
+)
+from qiskit_optimization.exceptions import QiskitOptimizationError
+from qiskit_optimization.problems import QuadraticProgram, Variable
 
 logger = logging.getLogger(__name__)
 
@@ -82,51 +86,35 @@ class GroverOptimizer(OptimizationAlgorithm):
         if quantum_instance is not None and sampler is not None:
             raise ValueError("Only one of quantum_instance or sampler can be passed, not both!")
 
-        self._quantum_instance = None  # type: Optional[QuantumInstance]
-        if quantum_instance is not None:
-            warnings.warn(
-                "The quantum_instance argument has been superseded by the sampler argument. "
-                "This argument will be deprecated in a future release and subsequently "
-                "removed after that.",
-                category=PendingDeprecationWarning,
-                stacklevel=2,
+        if quantum_instance:
+            warn_deprecated(
+                "0.6.0",
+                old_type=DeprecatedType.ARGUMENT,
+                old_name="quantum_instance",
+                new_type=DeprecatedType.ARGUMENT,
+                new_name="sampler",
             )
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=PendingDeprecationWarning)
-                self.quantum_instance = quantum_instance
-
+        self._quantum_instance = quantum_instance  # type: Optional[QuantumInstance]
         self._sampler = sampler
 
     @property
+    @deprecate_property("0.6.0")
     def quantum_instance(self) -> QuantumInstance:
         """The quantum instance to run the circuits.
 
         Returns:
             The quantum instance used in the algorithm.
         """
-        warnings.warn(
-            "The quantum_instance argument has been superseded by the sampler argument. "
-            "This argument will be deprecated in a future release and subsequently "
-            "removed after that.",
-            category=PendingDeprecationWarning,
-            stacklevel=2,
-        )
         return self._quantum_instance
 
     @quantum_instance.setter
+    @deprecate_method("0.6.0")
     def quantum_instance(self, quantum_instance: Union[Backend, QuantumInstance]) -> None:
         """Set the quantum instance used to run the circuits.
 
         Args:
             quantum_instance: The quantum instance to be used in the algorithm.
         """
-        warnings.warn(
-            "The GroverOptimizer.quantum_instance setter is pending deprecation. "
-            "This property will be deprecated in a future release and subsequently "
-            "removed after that.",
-            category=PendingDeprecationWarning,
-            stacklevel=2,
-        )
         if isinstance(quantum_instance, Backend):
             self._quantum_instance = QuantumInstance(quantum_instance)
         else:
