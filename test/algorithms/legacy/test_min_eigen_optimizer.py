@@ -108,7 +108,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             # get minimum eigen solver
             min_eigen_solver = self.min_eigen_solvers[min_eigen_solver_name]
             if backend:
-                min_eigen_solver.quantum_instance = BasicAer.get_backend(backend)
+                with self.assertWarns(DeprecationWarning):
+                    min_eigen_solver.quantum_instance = BasicAer.get_backend(backend)
 
             # construct minimum eigen optimizer
             min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
@@ -379,26 +380,29 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         if subroutine == "vqe":
             ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
             initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
-            solver = VQEClient(
-                ansatz=ry_ansatz,
-                optimizer=optimizer,
-                initial_point=initial_point,
-                backend=backend,
-                provider=FakeVQERuntimeProvider(),
-            )
+            with self.assertWarns(DeprecationWarning):
+                solver = VQEClient(
+                    ansatz=ry_ansatz,
+                    optimizer=optimizer,
+                    initial_point=initial_point,
+                    backend=backend,
+                    provider=FakeVQERuntimeProvider(),
+                )
         else:
             reps = 2
             initial_point = np.random.default_rng(42).random(2 * reps)
-            solver = QAOAClient(
-                optimizer=optimizer,
-                reps=reps,
-                initial_point=initial_point,
-                backend=backend,
-                provider=FakeQAOARuntimeProvider(),
-            )
+            with self.assertWarns(DeprecationWarning):
+                solver = QAOAClient(
+                    optimizer=optimizer,
+                    reps=reps,
+                    initial_point=initial_point,
+                    backend=backend,
+                    provider=FakeQAOARuntimeProvider(),
+                )
 
         opt = MinimumEigenOptimizer(solver)
-        result = opt.solve(self.op_ordering)
+        with self.assertWarns(DeprecationWarning):
+            result = opt.solve(self.op_ordering)
         self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
 
