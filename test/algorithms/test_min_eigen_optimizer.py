@@ -18,7 +18,7 @@ from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntime
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver, SamplingVQE, VQE
+from qiskit.algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
@@ -370,7 +370,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             )
 
         opt = MinimumEigenOptimizer(solver)
-        result = opt.solve(self.op_ordering)
+        with self.assertWarns(DeprecationWarning):
+            result = opt.solve(self.op_ordering)
         self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
     @data(FakeArmonk, FakeArmonkV2)
@@ -384,7 +385,8 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         solver = VQEClient(ansatz, optimizer, initial_point, provider, backend)
         opt = MinimumEigenOptimizer(solver)
-        result = opt.solve(self.op_ordering)
+        with self.assertWarns(DeprecationWarning):
+            result = opt.solve(self.op_ordering)
         self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
 

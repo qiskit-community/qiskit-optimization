@@ -19,13 +19,13 @@ from qiskit.algorithms.minimum_eigen_solvers import (
     MinimumEigensolverResult as LegacyMinimumEigensolverResult,
 )
 from qiskit.algorithms.minimum_eigensolvers import (
+    VQE,
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
-    VQE,
 )
-from qiskit.opflow import OperatorBase, PauliOp, PauliSumOp
+from qiskit.quantum_info import SparsePauliOp
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
@@ -222,13 +222,13 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
-        operator, offset = problem_.to_ising(opflow=True)
+        operator, offset = problem_.to_ising(opflow=False)
 
         return self._solve_internal(operator, offset, problem_, problem)
 
     def _solve_internal(
         self,
-        operator: OperatorBase,
+        operator: SparsePauliOp,
         offset: float,
         converted_problem: QuadraticProgram,
         original_problem: QuadraticProgram,
@@ -236,11 +236,15 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         # only try to solve non-empty Ising Hamiltonians
         eigen_result: Optional[MinimumEigensolverResult] = None
         if operator.num_qubits > 0:
-            # NumPyEigensolver does not accept PauliOp but PauliSumOp
-            if isinstance(operator, PauliOp):
-                operator = PauliSumOp.from_list([(operator.primitive.to_label(), operator.coeff)])
             # approximate ground state of operator using min eigen solver
-            eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
+            if isinstance(self._min_eigen_solver, LegacyMinimumEigensolver):
+                from qiskit.opflow import PauliSumOp
+
+                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(
+                    PauliSumOp(operator)
+                )
+            else:
+                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None
             if eigen_result.eigenstate is not None:
