@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,7 @@ from os import path
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import DOcplexException
-from qiskit.opflow import PauliSumOp
+from qiskit.quantum_info import SparsePauliOp
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY, QiskitOptimizationError, QuadraticProgram
@@ -1003,7 +1003,7 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         """Test QuadraticProgramElement when QuadraticProgram is loaded from an external source"""
         with self.subTest("from_ising"):
             q_p = QuadraticProgram()
-            q_p.from_ising(PauliSumOp.from_list([("IZ", 1), ("ZZ", 2)]))
+            q_p.from_ising(SparsePauliOp.from_list([("IZ", 1), ("ZZ", 2)]))
             self.assertEqual(id(q_p.objective.quadratic_program), id(q_p))
             for elem in q_p.variables:
                 self.assertEqual(id(elem.quadratic_program), id(q_p))

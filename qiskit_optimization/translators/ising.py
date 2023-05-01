@@ -184,9 +184,9 @@ def from_ising(
         warn(
             "The `qubit_op` argument can currently accept Opflow operators (`OperatorBase` type), "
             "but have been superseded by Qiskit Terra quantum_info `BaseOperators` such as "
-            "`SparsePauliOp`. Opflow operator support will be deprecated in a future release "
+            "`SparsePauliOp`. Opflow operators have been deprecated in Qiskit Terra 0.24.0 "
             "and subsequently removed after that.",
-            category=PendingDeprecationWarning,
+            category=DeprecationWarning,
             stacklevel=2,
         )
     if isinstance(qubit_op, PauliSumOp):
