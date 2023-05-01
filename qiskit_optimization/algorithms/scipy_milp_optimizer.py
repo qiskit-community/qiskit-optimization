@@ -27,6 +27,17 @@ from qiskit_optimization.problems.quadratic_program import (
 )
 
 
+def _conv_inf(val):
+    # Note: qiskit-optimization treats INFINITY as infinity
+    # while scipy treats np.inf as infinity
+    if val <= -INFINITY:
+        return -np.inf
+    elif val >= INFINITY:
+        return np.inf
+    else:
+        return val
+
+
 @_optionals.HAS_SCIPY_MILP.require_in_instance
 class ScipyMilpOptimizer(OptimizationAlgorithm):
     """The MILP optimizer from Scipy wrapped as a Qiskit :class:`OptimizationAlgorithm`.
@@ -97,7 +108,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
             raise QiskitOptimizationError("ScipyMilpOptimizer supports only linear constraints")
 
         from scipy.optimize import Bounds, LinearConstraint
-        from scipy.sparse import lil_matrix
+        from scipy.sparse import lil_array
 
         sense = problem.objective.sense.value
         objective = problem.objective.linear.to_array() * sense
@@ -109,38 +120,30 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
             else:
                 integrality.append(1)
 
-        def conv_inf(val):
-            if val <= -INFINITY:
-                return -np.inf
-            elif val >= INFINITY:
-                return np.inf
-            else:
-                return val
-
-        lower_bounds = [conv_inf(variable.lowerbound) for variable in problem.variables]
-        upper_bounds = [conv_inf(variable.upperbound) for variable in problem.variables]
+        lower_bounds = [_conv_inf(variable.lowerbound) for variable in problem.variables]
+        upper_bounds = [_conv_inf(variable.upperbound) for variable in problem.variables]
         bounds = Bounds(lb=lower_bounds, ub=upper_bounds)
 
-        lhs = []
-        rhs = []
-        mat = lil_matrix((problem.get_num_linear_constraints(), problem.get_num_vars()))
+        lower_bounds = []
+        upper_bounds = []
+        mat = lil_array((problem.get_num_linear_constraints(), problem.get_num_vars()))
         for i, constraint in enumerate(problem.linear_constraints):
             for variable_id, val in constraint.linear.to_dict().items():
                 mat[i, variable_id] = val
 
-            rhs_val = conv_inf(constraint.rhs)
+            rhs_val = _conv_inf(constraint.rhs)
             if constraint.sense == ConstraintSense.GE:
-                lhs.append(rhs_val)
-                rhs.append(np.inf)
+                lower_bounds.append(rhs_val)
+                upper_bounds.append(np.inf)
             elif constraint.sense == ConstraintSense.LE:
-                lhs.append(-np.inf)
-                rhs.append(rhs_val)
+                lower_bounds.append(-np.inf)
+                upper_bounds.append(rhs_val)
             else:
                 # ConstraintSense.EQ
-                lhs.append(rhs_val)
-                rhs.append(rhs_val)
+                lower_bounds.append(rhs_val)
+                upper_bounds.append(rhs_val)
 
-        constraints = LinearConstraint(mat, lhs, rhs)
+        constraints = LinearConstraint(mat, lower_bounds, upper_bounds)
 
         return objective, integrality, bounds, constraints, sense
 

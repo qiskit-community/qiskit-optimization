@@ -15,10 +15,12 @@
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
+import numpy as np
 from ddt import ddt
 
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization.algorithms import ScipyMilpOptimizer
+from qiskit_optimization.algorithms import OptimizationResultStatus, ScipyMilpOptimizer
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -35,10 +37,147 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
         problem.linear_constraint(linear=[1, 1], sense="=", rhs=2)
         problem.minimize(linear=[2, -2])
 
-        optimizer = ScipyMilpOptimizer(disp=False)
+        optimizer = ScipyMilpOptimizer()
         result = optimizer.solve(problem)
 
         self.assertAlmostEqual(result.fval, -4)
+
+    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
+    def test_compatibility(self):
+        """Test compatibility"""
+        with self.subTest("quadratic obj min"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.minimize(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            msg = optimizer.get_compatibility_msg(problem)
+            self.assertEqual(msg, "scipy.milp supports only linear objective function")
+        with self.subTest("quadratic obj max"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.maximize(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            msg = optimizer.get_compatibility_msg(problem)
+            self.assertEqual(msg, "scipy.milp supports only linear objective function")
+        with self.subTest("quadratic constraint"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.quadratic_constraint(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            msg = optimizer.get_compatibility_msg(problem)
+            self.assertEqual(msg, "scipy.milp supports only linear constraints")
+        with self.subTest("quadratic obj / quadratic constraint"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.minimize(quadratic={(0, 0): 1})
+            problem.quadratic_constraint(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            msg = optimizer.get_compatibility_msg(problem)
+            self.assertEqual(
+                msg,
+                "scipy.milp supports only linear objective function; "
+                "scipy.milp supports only linear constraints",
+            )
+
+    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
+    def test_error(self):
+        """Test errors"""
+        with self.subTest("quadratic obj min"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.minimize(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertRaises(QiskitOptimizationError):
+                _ = optimizer.solve(problem)
+        with self.subTest("quadratic obj max"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.maximize(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertRaises(QiskitOptimizationError):
+                _ = optimizer.solve(problem)
+        with self.subTest("quadratic constraint"):
+            problem = QuadraticProgram()
+            _ = problem.binary_var("x")
+            problem.quadratic_constraint(quadratic={(0, 0): 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertRaises(QiskitOptimizationError):
+                _ = optimizer.solve(problem)
+
+    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
+    def test_senses(self):
+        """Test constraint senses"""
+        with self.subTest("min / <="):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(0, 1, "x")
+            _ = problem.binary_var("y")
+            problem.minimize(linear={"x": 1, "y": -1})
+            problem.linear_constraint({"x": 2, "y": 1}, "<=", 1)
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            self.assertAlmostEqual(result.fval, -1)
+            np.testing.assert_allclose(result.x, [0, 1])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+        with self.subTest("max / <="):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(0, 1, "x")
+            _ = problem.binary_var("y")
+            problem.maximize(linear={"x": 1, "y": -1})
+            problem.linear_constraint({"x": 2, "y": 1}, "<=", 1)
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            self.assertAlmostEqual(result.fval, 0.5)
+            np.testing.assert_allclose(result.x, [0.5, 0])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+        with self.subTest("min / >="):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(0, 1, "x")
+            _ = problem.binary_var("y")
+            problem.minimize(linear={"x": 1, "y": -1})
+            problem.linear_constraint({"x": 2, "y": 1}, ">=", 1)
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            self.assertAlmostEqual(result.fval, -1.0)
+            np.testing.assert_allclose(result.x, [0, 1.0])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+        with self.subTest("max / >="):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(0, 1, "x")
+            _ = problem.binary_var("y")
+            problem.maximize(linear={"x": 1, "y": -1})
+            problem.linear_constraint({"x": 2, "y": 1}, ">=", 1)
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            self.assertAlmostEqual(result.fval, 1)
+            np.testing.assert_allclose(result.x, [1, 0])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+        with self.subTest("min / =="):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(0, 1, "x")
+            _ = problem.binary_var("y")
+            problem.minimize(linear={"x": 1, "y": -1})
+            problem.linear_constraint({"x": 2, "y": 1}, "==", 2)
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            self.assertAlmostEqual(result.fval, -0.5)
+            np.testing.assert_allclose(result.x, [0.5, 1.0])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+        with self.subTest("max / =="):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(0, 1, "x")
+            _ = problem.binary_var("y")
+            problem.maximize(linear={"x": 1, "y": -1})
+            problem.linear_constraint({"x": 2, "y": 1}, "==", 2)
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            self.assertAlmostEqual(result.fval, 1)
+            np.testing.assert_allclose(result.x, [1, 0])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
 
 
 if __name__ == "__main__":
