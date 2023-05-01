@@ -108,7 +108,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
             raise QiskitOptimizationError("ScipyMilpOptimizer supports only linear constraints")
 
         from scipy.optimize import Bounds, LinearConstraint
-        from scipy.sparse import lil_array
+        from scipy.sparse import lil_array  # pylint: disable=no-name-in-module
 
         sense = problem.objective.sense.value
         objective = problem.objective.linear.to_array() * sense
