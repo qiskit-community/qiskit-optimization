@@ -77,6 +77,10 @@ runs:
           fi
         else
           echo 'Install Terra from Stable'
+          if [ "${{ inputs.os }}" == "windows-2019" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate scsenv
+          fi
           pip install -U qiskit-terra
         fi
       shell: bash
