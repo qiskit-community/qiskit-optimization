@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7]
+        python-version: [3.8]
     steps:
       - name: Print Concurrency Group
         env:
@@ -59,6 +59,7 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
+          terra-main: "false"
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-optimization
         with:
@@ -191,7 +192,7 @@ jobs:
           fi
           coverage3 combine
           mv .coverage ./ci-artifact-data/opt.dat
-        if: ${{ matrix.python-version == 3.7 }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
@@ -296,7 +297,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -346,7 +347,7 @@ jobs:
           sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
         shell: bash
       - name: Coverage combine
-        run: coverage3 combine /tmp/o37/opt.dat
+        run: coverage3 combine /tmp/o38/opt.dat
         shell: bash
       - name: Upload to Coveralls
         env:

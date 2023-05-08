@@ -13,22 +13,24 @@
 """The Qiskit Optimization VQE Runtime Client."""
 
 
-from typing import List, Callable, Optional, Any, Dict, Union
 import warnings
-import numpy as np
+from typing import Any, Callable, Dict, List, Optional, Union
 
+import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult, VQEResult
+from qiskit.algorithms.optimizers import SPSA, Optimizer
 from qiskit.exceptions import QiskitError
+from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.providers import Provider
 from qiskit.providers.backend import Backend, BackendV2
-from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult, VQEResult
-from qiskit.algorithms.optimizers import Optimizer, SPSA
-from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
+
+from qiskit_optimization.deprecation import DeprecatedType, warn_deprecated
 
 
 class VQEClient(MinimumEigensolver):
-    """The Qiskit Optimization VQE Runtime Client to call the VQE runtime as a MinimumEigensolver.
+    """DEPRECATED The Qiskit Optimization VQE Runtime Client.
 
     This program is equivalent to the ``VQEClient`` in Qiskit Nature, but here also serves as
     basis for the Qiskit Optimization's ``QAOAClient``.
@@ -68,6 +70,16 @@ class VQEClient(MinimumEigensolver):
             store_intermediate: Whether or not to store intermediate values of the optimization
                 steps. Per default False.
         """
+        warn_deprecated(
+            "0.6.0",
+            DeprecatedType.CLASS,
+            "VQEClient",
+            additional_msg=(
+                ". Instead you should use the new primitives based SamplingVQE with the Qiskit IBM "
+                "Runtime Sampler primitive. For more details on how to migrate check out this guide, "
+                "here: https://qisk.it/algo_migration#vqe"
+            ),
+        )
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             super().__init__()
@@ -330,13 +342,14 @@ class VQEClient(MinimumEigensolver):
 
 
 class VQERuntimeResult(VQEResult):
-    """The VQEClient result object.
+    """DEPRECATED The VQEClient result object.
 
     This result objects contains the same as the VQEResult and additionally the history
     of the optimizer, containing information such as the function and parameter values per step.
     """
 
     def __init__(self) -> None:
+        warn_deprecated("0.6.0", DeprecatedType.CLASS, "VQERuntimeResult")
         super().__init__()
         self._job_id = None  # type: str
         self._optimizer_history = None  # type: Dict[str, Any]

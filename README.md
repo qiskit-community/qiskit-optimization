@@ -32,7 +32,7 @@ pip install qiskit-optimization
 If you want to work on the very latest work-in-progress versions, either to try features ahead of
 their official release or if you want to contribute to Optimization, then you can install from source.
 To do this follow the instructions in the
- [documentation](https://qiskit.org/documentation/optimization/getting_started.html#installation).
+ [documentation](https://qiskit.org/ecosystem/optimization/getting_started.html#installation).
 
 
 ----------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
 ### Further examples
 
 Learning path notebooks may be found in the
-[optimization tutorials](https://qiskit.org/documentation/optimization/tutorials/index.html) section
+[optimization tutorials](https://qiskit.org/ecosystem/optimization/tutorials/index.html) section
 of the documentation and are a great place to start.
 
 ----------------------------------------------------------------------------------------------------
@@ -132,10 +132,6 @@ Optimization continues to grow with the help and work of
 to the project at different levels.
 If you use Qiskit, please cite as per the provided
 [BibTeX file](https://github.com/Qiskit/qiskit/blob/master/Qiskit.bib).
-
-Please note that if you do not like the way your name is cited in the BibTex file then consult
-the information found in the [.mailmap](https://github.com/Qiskit/qiskit-optimization/blob/main/.mailmap)
-file.
 
 ## License
 

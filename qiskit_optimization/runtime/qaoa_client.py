@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,21 +13,23 @@
 """The Qiskit Optimization QAOA Quantum Program."""
 
 
-from typing import List, Callable, Optional, Any, Dict, Union
-import numpy as np
+from typing import Any, Callable, Dict, List, Optional, Union
 
+import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.algorithms.optimizers import Optimizer
 from qiskit.opflow import OperatorBase
 from qiskit.providers import Provider
 from qiskit.providers.backend import Backend
 
+from qiskit_optimization.deprecation import DeprecatedType, warn_deprecated
 from qiskit_optimization.exceptions import QiskitOptimizationError
+
 from .vqe_client import VQEClient
 
 
 class QAOAClient(VQEClient):
-    """The Qiskit Optimization QAOA Runtime Client."""
+    """DEPRECATED The Qiskit Optimization QAOA Runtime Client."""
 
     def __init__(
         self,
@@ -97,6 +99,16 @@ class QAOAClient(VQEClient):
             QiskitOptimizationError: if optimization_level is not None and use_swap_strategies
                 is True.
         """
+        warn_deprecated(
+            "0.6.0",
+            DeprecatedType.CLASS,
+            "QAOAClient",
+            additional_msg=(
+                ". Instead you should use the new primitives based QAOA with the Qiskit IBM "
+                "Runtime Sampler primitive. For more details on how to migrate check out this guide, "
+                "here: https://qisk.it/algo_migration#qaoa"
+            ),
+        )
         if reps < 1:
             raise QiskitOptimizationError(f"reps must be greater than 0, received {reps}.")
 
