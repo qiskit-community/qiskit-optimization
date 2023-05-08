@@ -22,7 +22,7 @@ from qiskit.algorithms.exceptions import AlgorithmError
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import SparsePauliOp
 
-from .quantum_random_access_encoding import z_to_21p_qrac_basis_circuit, z_to_31p_qrac_basis_circuit
+from .quantum_random_access_encoding import _z_to_21p_qrac_basis_circuit, _z_to_31p_qrac_basis_circuit
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme, RoundingSolutionSample
 
 
@@ -157,9 +157,9 @@ class MagicRounding(RoundingScheme):
         circuits = []
         for basis in bases:
             if vars_per_qubit == 3:
-                qc = circ.compose(z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
+                qc = circ.compose(_z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
             elif vars_per_qubit == 2:
-                qc = circ.compose(z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
+                qc = circ.compose(_z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
             elif vars_per_qubit == 1:
                 qc = circ.copy()
             qc.measure_all()

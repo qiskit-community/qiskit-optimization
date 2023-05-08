@@ -49,7 +49,7 @@ class EncodingCommutationVerifier:
         encoding = self._encoding
         str_dvars = f"{i:0{encoding.num_vars}b}"
         dvars = [int(b) for b in str_dvars]
-        encoded_bitstr_qc = encoding.state_prep(dvars)
+        encoded_bitstr_qc = encoding.state_preparation_circuit(dvars)
 
         # Evaluate the original objective function
         problem = encoding.problem

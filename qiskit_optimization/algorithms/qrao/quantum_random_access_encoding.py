@@ -23,9 +23,9 @@ from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
+from qiskit.opflow import PauliSumOp
 
-
-def z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
+def _z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (3,1,p)-QRAC.
 
     Args:
@@ -41,11 +41,12 @@ def z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumC
     circ = QuantumCircuit(len(bases))
     BETA = np.arccos(1 / np.sqrt(3))  # pylint: disable=invalid-name
 
-    if bit_flip:
-        # if bit_flip == 1: then flip the state of the first qubit to |1>
-        circ.x(0)
 
     for i, base in enumerate(reversed(bases)):
+        if bit_flip:
+            # if bit_flip == 1: then flip the state of the qubit to |1>
+            circ.x(i)
+
         if base == 0:
             circ.r(-BETA, -np.pi / 4, i)
         elif base == 1:
@@ -59,7 +60,7 @@ def z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumC
     return circ
 
 
-def z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircuit:
+def _z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (2,1,p)-QRAC.
 
     Args:
@@ -74,11 +75,12 @@ def z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircuit
     """
     circ = QuantumCircuit(1)
 
-    if bit_flip:
-        # if bit_flip == 1: then flip the state of the first qubit to |1>
-        circ.x(0)
-
     for i, base in enumerate(reversed(bases)):
+        if bit_flip:
+            # if bit_flip == 1: then flip the state of the qubit to |1>
+            circ.x(i)
+
+
         if base == 0:
             circ.r(-1 * np.pi / 4, -np.pi / 2, i)
         elif base == 1:
@@ -88,7 +90,7 @@ def z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircuit
     return circ
 
 
-def qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
+def _qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
     """
     Return the circuit that prepares the state for a (1,1,p), (2,1,p), or (3,1,p)-QRAC.
 
@@ -126,8 +128,8 @@ def qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
 
         # This is a convention chosen to be consistent with https://arxiv.org/pdf/2111.03167v2.pdf
         # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
-        base = 2 * base_index0 + base_index1
-        circ = z_to_31p_qrac_basis_circuit(base, bit_flip)
+        base = [2 * base_index0 + base_index1]
+        circ = _z_to_31p_qrac_basis_circuit(base, bit_flip)
 
     elif len(bit_list) == 2:
         # Prepare (2,1,p)-qrac
@@ -138,8 +140,8 @@ def qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
 
         # This is a convention chosen to be consistent with https://arxiv.org/pdf/2111.03167v2.pdf
         # # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
-        base = base_index0
-        circ = z_to_21p_qrac_basis_circuit(base, bit_flip)
+        base = [base_index0]
+        circ = _z_to_21p_qrac_basis_circuit(base, bit_flip)
 
     else:
         bit_flip = bit_list[0]
@@ -150,7 +152,7 @@ def qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
     return circ
 
 
-def qrac_state_prep_multiqubit(
+def _qrac_state_prep_multiqubit(
     dvars: List[int],
     q2vars: List[List[int]],
     max_vars_per_qubit: int,
@@ -212,28 +214,28 @@ def qrac_state_prep_multiqubit(
         raise ValueError(f"Not all dvars were included in q2vars: {remaining_dvars}")
 
     # Prepare the individual qrac circuit and combine them into a multiqubit circuit
-    qracs = [qrac_state_prep_1q(qi_bits) for qi_bits in variable_mappings]
+    qracs = [_qrac_state_prep_1q(qi_bits) for qi_bits in variable_mappings]
     qrac_circ = reduce(lambda x, y: x.tensor(y), qracs)
     return qrac_circ
 
 
-def q2vars_from_var2op(var2op: Dict[int, Tuple[int, SparsePauliOp]]) -> List[List[int]]:
-    """
-    Converts a dictionary mapping decision variables to qubits and Pauli operators to a list of
-    lists of decision variables.
+# def q2vars_from_var2op(var2op: Dict[int, Tuple[int, SparsePauliOp]]) -> List[List[int]]:
+#     """
+#     Converts a dictionary mapping decision variables to qubits and Pauli operators to a list of
+#     lists of decision variables.
 
-    Args:
-        var2op: A dictionary mapping decision variables to qubits and Pauli operators.
+#     Args:
+#         var2op: A dictionary mapping decision variables to qubits and Pauli operators.
 
-    Returns:
-        A list of lists of decision variables. Each inner list contains the indices of decision
-        variables mapped to a specific qubit.
-    """
-    num_qubits = max(qubit_index for qubit_index, _ in var2op.values()) + 1
-    q2vars: List[List[int]] = [[] for i in range(num_qubits)]
-    for var, (q, _) in var2op.items():
-        q2vars[q].append(var)
-    return q2vars
+#     Returns:
+#         A list of lists of decision variables. Each inner list contains the indices of decision
+#         variables mapped to a specific qubit.
+#     """
+#     num_qubits = max(qubit_index for qubit_index, _ in var2op.values()) + 1
+#     q2vars: List[List[int]] = [[] for i in range(num_qubits)]
+#     for var, (q, _) in var2op.items():
+#         q2vars[q].append(var)
+#     return q2vars
 
 
 class QuantumRandomAccessEncoding:
@@ -348,6 +350,7 @@ class QuantumRandomAccessEncoding:
         """
         if self._frozen is False:
             self._qubit_op = self._qubit_op.simplify()
+            self._qubit_op = PauliSumOp(self._qubit_op)
         self._frozen = True
 
     @property
@@ -571,7 +574,7 @@ class QuantumRandomAccessEncoding:
 
         self.freeze()
 
-    def state_prep(self, dvars: List[int]) -> QuantumCircuit:
+    def state_preparation_circuit(self, dvars: List[int]) -> QuantumCircuit:
         """
         Generate a circuit that prepares the state corresponding to the given binary string.
 
@@ -581,4 +584,4 @@ class QuantumRandomAccessEncoding:
         Returns:
             A QuantumCircuit that prepares the state corresponding to the given binary string.
         """
-        return qrac_state_prep_multiqubit(dvars, self.q2vars, self.max_vars_per_qubit)
+        return _qrac_state_prep_multiqubit(dvars, self.q2vars, self.max_vars_per_qubit)
