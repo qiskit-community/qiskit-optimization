@@ -1,4 +1,16 @@
-"""Tests for qrao"""
+# This code is part of Qiskit.
+#
+# (C) Copyright IBM 2023.
+#
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
+"""Tests for QuantumRandomAccessEncoding"""
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
@@ -170,6 +182,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
         encoding.encode(problem)
         verifier = EncodingCommutationVerifier(encoding)
+        self.assertEqual(len(verifier), 2**encoding.num_vars)
         for _, obj_val, encoded_obj_val in verifier:
             self.assertAlmostEqual(obj_val, encoded_obj_val)
 
