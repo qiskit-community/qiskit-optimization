@@ -53,5 +53,5 @@ HAS_SCIPY_MILP = LazyImportTester(
         "scipy.optimize": ("milp",),
     },
     name="SciPy MILP",
-    install="pip install 'qiskit-optimization[scipy_milp]'",
+    install="pip install scipy>=1.9.0'",
 )

@@ -78,7 +78,6 @@ setuptools.setup(
         "cvx": ["cvxpy"],
         "matplotlib": ["matplotlib"],
         "gurobi": ["gurobipy"],
-        "scipy_milp": ["scipy>=1.9;python_version >= '3.8'"],
     },
     zip_safe=False,
 )

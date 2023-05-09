@@ -19,6 +19,7 @@ import numpy as np
 from ddt import ddt
 
 import qiskit_optimization.optionals as _optionals
+from qiskit_optimization import INFINITY
 from qiskit_optimization.algorithms import OptimizationResultStatus, ScipyMilpOptimizer
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
@@ -41,6 +42,24 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
         result = optimizer.solve(problem)
 
         self.assertAlmostEqual(result.fval, -4)
+
+    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
+    def test_disp(self):
+        """Test disp"""
+        with self.subTest("default"):
+            optimizer = ScipyMilpOptimizer()
+            self.assertFalse(optimizer.disp)
+        with self.subTest("init True"):
+            optimizer = ScipyMilpOptimizer(disp=True)
+            self.assertTrue(optimizer.disp)
+        with self.subTest("setter / True"):
+            optimizer = ScipyMilpOptimizer(disp=False)
+            optimizer.disp = True
+            self.assertTrue(optimizer.disp)
+        with self.subTest("setter / False"):
+            optimizer = ScipyMilpOptimizer(disp=True)
+            optimizer.disp = False
+            self.assertFalse(optimizer.disp)
 
     @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_compatibility(self):
@@ -177,6 +196,73 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
             result = optimizer.solve(problem)
             self.assertAlmostEqual(result.fval, 1)
             np.testing.assert_allclose(result.x, [1, 0])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
+    def test_infinity(self):
+        """Test infinity"""
+        with self.subTest("ub = infinity default"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(name="x")
+            problem.maximize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertWarns(UserWarning):
+                result = optimizer.solve(problem)
+            self.assertEqual(result.status, OptimizationResultStatus.FAILURE)
+
+        with self.subTest("ub = infinity manual"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(upperbound=INFINITY, name="x")
+            problem.maximize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertWarns(UserWarning):
+                result = optimizer.solve(problem)
+            self.assertEqual(result.status, OptimizationResultStatus.FAILURE)
+
+        with self.subTest("ub > infinity"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(upperbound=1e100, name="x")
+            problem.maximize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertWarns(UserWarning):
+                result = optimizer.solve(problem)
+            self.assertEqual(result.status, OptimizationResultStatus.FAILURE)
+
+        with self.subTest("ub < infinity"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(upperbound=1e10, name="x")
+            problem.maximize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            np.testing.assert_allclose(result.x, [1e10])
+            self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
+
+        with self.subTest("lb = -infinity manual"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(lowerbound=-INFINITY, name="x")
+            problem.minimize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertWarns(UserWarning):
+                result = optimizer.solve(problem)
+            self.assertEqual(result.status, OptimizationResultStatus.FAILURE)
+
+        with self.subTest("lb < -infinity"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(lowerbound=-1e100, name="x")
+            problem.minimize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            with self.assertWarns(UserWarning):
+                result = optimizer.solve(problem)
+                print(result)
+            self.assertEqual(result.status, OptimizationResultStatus.FAILURE)
+
+        with self.subTest("lb > -infinity"):
+            problem = QuadraticProgram()
+            _ = problem.continuous_var(lowerbound=-1e10, name="x")
+            problem.minimize(linear={0: 1})
+            optimizer = ScipyMilpOptimizer()
+            result = optimizer.solve(problem)
+            np.testing.assert_allclose(result.x, [-1e10])
             self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
 
 
