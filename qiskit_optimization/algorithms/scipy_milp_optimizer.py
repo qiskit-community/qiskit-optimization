@@ -167,7 +167,7 @@ class ScipyMilpOptimizer(OptimizationAlgorithm):
 
         if raw_result.x is None:
             warn("scipy.milp cannot solve the model. See `raw_results` for details.")
-            x = [0] * problem.get_num_vars()
+            x = [0.0] * problem.get_num_vars()
             status = OptimizationResultStatus.FAILURE
         else:
             x = []
