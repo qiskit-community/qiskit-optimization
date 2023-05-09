@@ -54,15 +54,18 @@ class SemideterministicRounding(RoundingScheme):
 
         Returns:
             Result containing the rounded solution.
+
+        Raises:
+            NotImplementedError: If the expectation values are not available in the context.
         """
 
         def sign(val) -> int:
             return 0 if (val > 0) else 1
 
         if ctx.expectation_values is None:
-                raise NotImplementedError(
-                    "Semideterministric rounding with weighted sampling requires the expectation "
-                    "values of the ``RoundingContext`` to be available, but they are not."
+            raise NotImplementedError(
+                "Semideterministric rounding with weighted sampling requires the expectation "
+                "values of the ``RoundingContext`` to be available, but they are not."
             )
         rounded_vars = [
             sign(e) if not np.isclose(0, e) else self.rng.randint(2) for e in ctx.expectation_values

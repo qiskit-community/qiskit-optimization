@@ -41,6 +41,9 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         self.problem.binary_var("z")
         self.problem.minimize(linear={"x": 1, "y": 2, "z": 3})
 
+
+
+
     def test_magic_rounding(self):
         """Test MagicRounding"""
         encoding = QuantumRandomAccessEncoding()

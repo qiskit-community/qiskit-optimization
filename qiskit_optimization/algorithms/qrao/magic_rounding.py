@@ -441,17 +441,22 @@ class MagicRounding(RoundingScheme):
         # values will be total number of observations.
         soln_counts = self._compute_dv_counts(basis_counts, bases, var2op, vars_per_qubit)
 
+        if self.shots is None:
+            shots = 1024
+        else:
+            shots = self.shots
+
         soln_samples = [
             RoundingSolutionSample(
                 x=np.asarray([int(bit) for bit in soln]),
-                probability=count / self.shots,
+                probability=count / shots,
             )
             for soln, count in soln_counts.items()
         ]
 
         assert np.isclose(
-            sum(soln_counts.values()), self.shots
-        ), f"{sum(soln_counts.values())} != {self.shots}"
+            sum(soln_counts.values()), shots
+        ), f"{sum(soln_counts.values())} != {shots}"
         assert len(bases) == len(basis_shots) == len(basis_counts)
         stop_time = time.time()
 
