@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -65,11 +65,7 @@ def get_random_maxcut_docplex_model(
     nodes = list(range(num_nodes))
     var = [mod.binary_var(name="x" + str(i)) for i in nodes]
     mod.maximize(
-        mod.sum(
-            edges[i, j] * (var[i] + var[j] - 2 * var[i] * var[j])
-            for i in nodes
-            for j in nodes
-        )
+        mod.sum(edges[i, j] * (var[i] + var[j] - 2 * var[i] * var[j]) for i in nodes for j in nodes)
     )
 
     if draw:  # pragma: no cover (tested by treon)

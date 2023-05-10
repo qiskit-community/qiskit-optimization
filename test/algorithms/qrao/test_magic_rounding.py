@@ -15,42 +15,14 @@ import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
-import ddt
-
-from qiskit_optimization.algorithms.qrao import (
-    QuantumRandomAccessEncoding,
-    SemideterministicRounding,
-    SemideterministicRoundingResult,
-    RoundingContext,
-    MagicRounding,
-    MagicRoundingResult,
-)
-from qiskit_optimization.algorithms.qrao.rounding_common import RoundingSolutionSample
-
-from qiskit_optimization.problems import QuadraticProgram
-
+from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.primitives import Sampler
 
-
-import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import (
-    NumPyMinimumEigensolver,
-    NumPyMinimumEigensolverResult,
-    VQE,
-    VQEResult,
-)
-from qiskit.algorithms.optimizers import COBYLA
-from qiskit.circuit.library import QAOAAnsatz, RealAmplitudes
-from qiskit.primitives import Estimator
-from qiskit.utils import algorithm_globals
-
-from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
 from qiskit_optimization.algorithms.qrao import (
+    MagicRounding,
+    MagicRoundingResult,
     QuantumRandomAccessEncoding,
-    QuantumRandomAccessOptimizationResult,
     QuantumRandomAccessOptimizer,
-    RoundingContext,
-    SemideterministicRoundingResult,
 )
 from qiskit_optimization.algorithms.qrao.rounding_common import RoundingSolutionSample
 from qiskit_optimization.problems import QuadraticProgram

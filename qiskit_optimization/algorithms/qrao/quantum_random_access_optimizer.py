@@ -29,7 +29,7 @@ from qiskit_optimization.algorithms import (
     OptimizationResultStatus,
     SolutionSample,
 )
-from qiskit_optimization.converters import QuadraticProgramToQubo
+from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
 from qiskit_optimization.problems import QuadraticProgram, Variable
 
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
@@ -100,6 +100,7 @@ class QuantumRandomAccessOptimizationResult(OptimizationResult):
         """The rounding result."""
         return self._rounding_result
 
+
 class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
     """Quantum Random Access Optimizer class."""
 
@@ -123,7 +124,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         self.min_eigen_solver = min_eigen_solver
         self.penalty = penalty
         # Use ``QuadraticProgramToQubo`` to convert the problem to a QUBO.
-        self._converters = [QuadraticProgramToQubo(penalty=penalty)]
+        self._converters: QuadraticProgramConverter = QuadraticProgramToQubo(penalty=penalty)
         self._max_vars_per_qubit = max_vars_per_qubit
         self.rounding_scheme = rounding_scheme
 

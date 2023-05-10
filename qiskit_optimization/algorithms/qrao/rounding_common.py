@@ -20,6 +20,7 @@ import numpy as np
 
 from qiskit.circuit import QuantumCircuit
 
+from qiskit_optimization.algorithms import SolutionSample
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 
 

@@ -18,12 +18,14 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import rustworkx as rx
+
 from qiskit import QuantumCircuit
+from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
-from qiskit.opflow import PauliSumOp
+
 
 def _z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (3,1,p)-QRAC.
@@ -40,7 +42,6 @@ def _z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> Quantum
     """
     circ = QuantumCircuit(len(bases))
     BETA = np.arccos(1 / np.sqrt(3))  # pylint: disable=invalid-name
-
 
     for i, base in enumerate(reversed(bases)):
         if bit_flip:
@@ -60,7 +61,7 @@ def _z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> Quantum
     return circ
 
 
-def _z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircuit:
+def _z_to_21p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (2,1,p)-QRAC.
 
     Args:
@@ -79,7 +80,6 @@ def _z_to_21p_qrac_basis_circuit(bases: int, bit_flip: int = 0) -> QuantumCircui
         if bit_flip:
             # if bit_flip == 1: then flip the state of the qubit to |1>
             circ.x(i)
-
 
         if base == 0:
             circ.r(-1 * np.pi / 4, -np.pi / 2, i)
@@ -191,13 +191,13 @@ def _qrac_state_prep_multiqubit(
 
         # Map each decision variable associated with the current qubit to a binary value and add it
         # to the qubit bits
-        for dv in qi_vars:
+        for dvar in qi_vars:
             try:
-                qi_bits.append(dvars[dv])
+                qi_bits.append(dvars[dvar])
             except IndexError:
-                raise ValueError(f"Decision variable not included in dvars: {dv}") from None
+                raise ValueError(f"Decision variable not included in dvars: {dvar}") from None
             try:
-                remaining_dvars.remove(dv)
+                remaining_dvars.remove(dvar)
             except KeyError:
                 raise ValueError(
                     f"Unused decision variable(s) in dvars: {remaining_dvars}"
@@ -217,25 +217,6 @@ def _qrac_state_prep_multiqubit(
     qracs = [_qrac_state_prep_1q(qi_bits) for qi_bits in variable_mappings]
     qrac_circ = reduce(lambda x, y: x.tensor(y), qracs)
     return qrac_circ
-
-
-# def q2vars_from_var2op(var2op: Dict[int, Tuple[int, SparsePauliOp]]) -> List[List[int]]:
-#     """
-#     Converts a dictionary mapping decision variables to qubits and Pauli operators to a list of
-#     lists of decision variables.
-
-#     Args:
-#         var2op: A dictionary mapping decision variables to qubits and Pauli operators.
-
-#     Returns:
-#         A list of lists of decision variables. Each inner list contains the indices of decision
-#         variables mapped to a specific qubit.
-#     """
-#     num_qubits = max(qubit_index for qubit_index, _ in var2op.values()) + 1
-#     q2vars: List[List[int]] = [[] for i in range(num_qubits)]
-#     for var, (q, _) in var2op.items():
-#         q2vars[q].append(var)
-#     return q2vars
 
 
 class QuantumRandomAccessEncoding:
@@ -494,6 +475,7 @@ class QuantumRandomAccessEncoding:
         Returns:
             Dict: a dictionary of the variable partition of the quad based on the node coloring.
         """
+        # pylint: disable=E1101
         color2node: Dict[int, List[int]] = defaultdict(list)
         num_nodes = quad.shape[0]
         graph = rx.PyGraph()

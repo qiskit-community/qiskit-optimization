@@ -491,7 +491,7 @@ class OptimizationAlgorithm(ABC):
         cls,
         problem: QuadraticProgram,
         raw_samples: List[SolutionSample],
-        converters: List[QuadraticProgramConverter],
+        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]],
     ) -> Tuple[List[SolutionSample], SolutionSample]:
         """Interpret and sort all samples and return the raw sample corresponding to the best one"""
         converters = cls._check_converters(converters)

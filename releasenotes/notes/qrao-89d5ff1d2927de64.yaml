@@ -21,8 +21,6 @@ features:
             QuantumRandomAccessOptimizer,
             QuantumRandomAccessEncoding,
             SemideterministicRounding,
-            MagicRounding,
-            QuantumRandomAccessOptimizationResult,
         )
         from qiskit_optimization.problems import QuadraticProgram
 

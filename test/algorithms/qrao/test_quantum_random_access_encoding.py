@@ -142,8 +142,8 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
             encoding.encode(self.problem)
             state_prep_circ = encoding.state_preparation_circuit(dvars=dvars)
             circ = QuantumCircuit(1)
-            BETA = np.arccos(1 / np.sqrt(3))
-            circ.r(np.pi - BETA, np.pi / 4, 0)
+            beta = np.arccos(1 / np.sqrt(3))
+            circ.r(np.pi - beta, np.pi / 4, 0)
             self.assertEqual(state_prep_circ, circ)
 
         with self.subTest(msg="(2,1,p) QRAC"):
@@ -218,8 +218,8 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         # Note that the variable embedding has some qubits with 1, 2, and 3 qubits
         elist = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0), (0, 3), (1, 4), (2, 4)]
         graph = nx.from_edgelist(elist)
-        for u, v in elist:
-            graph[u][v]["weight"] = (u + 1) * (v + 2)
+        for w, v in elist:
+            graph[w][v]["weight"] = (w + 1) * (v + 2)
 
         maxcut = Maxcut(graph)
         problem = maxcut.to_quadratic_program()
@@ -238,8 +238,8 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
     def test_random_weighted_maxcut(self, max_vars_per_qubit):
         """Test problem commutation with random weighted MaxCut"""
         graph = nx.random_regular_graph(3, 8)
-        for u, v in graph.edges:
-            graph[u][v]["weight"] = np.random.randint(1, 10)
+        for w, v in graph.edges:
+            graph[w][v]["weight"] = np.random.randint(1, 10)
         maxcut = Maxcut(graph)
         problem = maxcut.to_quadratic_program()
         check_problem_commutation(problem, max_vars_per_qubit)

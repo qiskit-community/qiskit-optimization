@@ -14,7 +14,7 @@
 
 import time
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -37,8 +37,8 @@ class MagicRoundingResult(RoundingResult):
         samples: List[RoundingSolutionSample],
         expectation_values: List[float],
         bases: np.ndarray,
-        basis_shots: int,
-        basis_counts: Dict[str, Dict[str, int]],
+        basis_shots: np.ndarray,
+        basis_counts: List[Dict[str, int]],
         time_taken: Optional[float] = None,
     ):
         """
@@ -141,7 +141,7 @@ class MagicRounding(RoundingScheme):
 
     @staticmethod
     def _make_circuits(
-        circ: QuantumCircuit, bases: List[List[int]], vars_per_qubit: int
+        circ: QuantumCircuit, bases: np.ndarray[Any, Any], vars_per_qubit: int
     ) -> List[QuantumCircuit]:
         """Make a list of circuits to measure in the given magic bases.
 
@@ -166,7 +166,11 @@ class MagicRounding(RoundingScheme):
         return circuits
 
     def _evaluate_magic_bases(
-        self, circuit: QuantumCircuit, bases: np.array, basis_shots: np.array, vars_per_qubit: int
+        self,
+        circuit: QuantumCircuit,
+        bases: np.ndarray,
+        basis_shots: np.ndarray,
+        vars_per_qubit: int,
     ) -> List[Dict[str, int]]:
         """
         Given a quantum circuit to measure, a list of magic bases to measure, and a list of the
@@ -259,8 +263,8 @@ class MagicRounding(RoundingScheme):
 
     def _compute_dv_counts(
         self,
-        basis_counts: Dict[str, Dict[str, int]],
-        bases: List[List[int]],
+        basis_counts: List[Dict[str, int]],
+        bases: np.ndarray[Any, Any],
         var2op: Dict[int, Tuple[int, SparsePauliOp]],
         vars_per_qubit: int,
     ):
@@ -278,14 +282,14 @@ class MagicRounding(RoundingScheme):
         Returns:
             A dictionary of counts for each decision variable configuration.
         """
-        dv_counts = defaultdict(int)
+        dv_counts: Dict[str, int] = defaultdict(int)
         for base, counts in zip(bases, basis_counts):
             # For each measurement outcome...
             for bitstr, count in counts.items():
-                # For each bit in the observed bitstring...
+                # For each bit in the observed bit string...
                 soln = self._unpack_measurement_outcome(bitstr, base, var2op, vars_per_qubit)
-                soln = "".join([str(bit) for bit in soln])
-                dv_counts[soln] += count
+                soln_str = "".join([str(bit) for bit in soln])
+                dv_counts[soln_str] += count
         return dv_counts
 
     def _sample_bases_uniform(
@@ -311,11 +315,11 @@ class MagicRounding(RoundingScheme):
                 corresponds to the number of shots to use for the corresponding basis in
                 the bases array.
         """
-        bases = [
+        bases_ = [
             self.rng.choice(2 ** (vars_per_qubit - 1), size=len(q2vars)).tolist()
             for _ in range(self._shots)
         ]
-        bases, basis_shots = np.unique(bases, axis=0, return_counts=True)
+        bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 
     def _sample_bases_weighted(
@@ -346,16 +350,16 @@ class MagicRounding(RoundingScheme):
         # First, we make sure all Pauli expectation values have absolute value
         # at most 1.  Otherwise, some of the probabilities computed below might
         # be negative.
-        tv = np.clip(expectation_values, -1, 1)
+        clipped_expectation_values = np.clip(expectation_values, -1, 1)
         # basis_probs will have num_qubits number of elements.
         # Each element will be a list of length 4 specifying the
         # probability of picking the corresponding magic basis on that qubit.
         basis_probs = []
         for dvars in q2vars:
             if vars_per_qubit == 3:
-                x = 0.5 * (1 - tv[dvars[0]])
-                y = 0.5 * (1 - tv[dvars[1]]) if (len(dvars) > 1) else 0
-                z = 0.5 * (1 - tv[dvars[2]]) if (len(dvars) > 2) else 0
+                x = 0.5 * (1 - clipped_expectation_values[dvars[0]])
+                y = 0.5 * (1 - clipped_expectation_values[dvars[1]]) if (len(dvars) > 1) else 0
+                z = 0.5 * (1 - clipped_expectation_values[dvars[2]]) if (len(dvars) > 2) else 0
                 # ppp:   mu±   = .5(I ± 1/sqrt(3)( X + Y + Z))
                 # pmm: X mu± X = .5(I ± 1/sqrt(3)( X - Y - Z))
                 # mpm: Y mu± Y = .5(I ± 1/sqrt(3)(-X + Y - Z))
@@ -368,8 +372,8 @@ class MagicRounding(RoundingScheme):
                 # fmt: on
                 basis_probs.append([ppp_mmm, pmm_mpp, mpm_pmp, ppm_mmp])
             elif vars_per_qubit == 2:
-                x = 0.5 * (1 - tv[dvars[0]])
-                z = 0.5 * (1 - tv[dvars[1]]) if (len(dvars) > 1) else 0
+                x = 0.5 * (1 - clipped_expectation_values[dvars[0]])
+                z = 0.5 * (1 - clipped_expectation_values[dvars[1]]) if (len(dvars) > 1) else 0
                 # pp:   xi±   = .5(I ± 1/sqrt(2)( X + Z ))
                 # pm: X xi± X = .5(I ± 1/sqrt(2)( X - Z ))
                 # fmt: off
@@ -379,14 +383,14 @@ class MagicRounding(RoundingScheme):
                 basis_probs.append([pp_mm, pm_mp])
             elif vars_per_qubit == 1:
                 basis_probs.append([1.0])
-        bases = [
+        bases_ = [
             [
                 self.rng.choice(2 ** (vars_per_qubit - 1), p=[p.real for p in probs])
                 for probs in basis_probs
             ]
             for _ in range(self._shots)
         ]
-        bases, basis_shots = np.unique(bases, axis=0, return_counts=True)
+        bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 
     def round(self, ctx: RoundingContext) -> MagicRoundingResult:
@@ -419,8 +423,7 @@ class MagicRounding(RoundingScheme):
             raise ValueError(
                 "Magic rounding requires the sampler to be configured with a number of shots."
             )
-        else:
-            self._shots = self._sampler.options.shots
+        self._shots = self._sampler.options.shots
 
         if self.basis_sampling == "uniform":
             # uniform sampling
