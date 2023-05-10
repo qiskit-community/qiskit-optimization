@@ -31,6 +31,7 @@ concurrency:
 
 jobs:
   Checks:
+    if: github.repository_owner == 'Qiskit'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -108,6 +109,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Optimization:
+    if: github.repository_owner == 'Qiskit'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -222,6 +224,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Tutorials:
+    if: github.repository_owner == 'Qiskit'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -301,6 +304,7 @@ jobs:
           path: docs/_build/html/artifacts/tutorials.tar.gz
         if: ${{ matrix.python-version == 3.8 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
   Deprecation_Messages_and_Coverage:
+    if: github.repository_owner == 'Qiskit'
     needs: [Checks, Optimization, Tutorials]
     runs-on: ubuntu-latest
     strategy:
