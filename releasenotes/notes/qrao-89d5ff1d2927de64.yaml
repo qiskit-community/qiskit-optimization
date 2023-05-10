@@ -1,0 +1,54 @@
+---
+features:
+  - |
+    Added a new optimization algorithm, :class:`~.QuantumRandomAccessOptimizer`. This approach
+    incorporates Quantum Random Access Codes (QRACs) as a tool to encode multiple classical binary
+    variables into a single qubit, thereby saving quantum resources and enabling exploration of
+    larger problem instances on a quantum computer. The encodings produce a local quantum
+    Hamiltonian whose ground state can be approximated with standard algorithms such as VQE and
+    QAOA, and then rounded to yield approximation solutions of the original problem.
+
+    For example:
+
+    .. code-block:: python
+
+        from qiskit.algorithms.optimizers import COBYLA
+        from qiskit.algorithms.minimum_eigensolvers import VQE
+        from qiskit.circuit.library import RealAmplitudes
+        from qiskit.primitives import Estimator
+
+        from qiskit_optimization.algorithms.qrao import (
+            QuantumRandomAccessOptimizer,
+            QuantumRandomAccessEncoding,
+            SemideterministicRounding,
+            MagicRounding,
+            QuantumRandomAccessOptimizationResult,
+        )
+        from qiskit_optimization.problems import QuadraticProgram
+
+        problem = QuadraticProgram()
+        problem.binary_var("x")
+        problem.binary_var("y")
+        problem.binary_var("z")
+        problem.minimize(linear={"x": 1, "y": 2, "z": 3})
+
+        ansatz = RealAmplitudes(1)
+        vqe = VQE(
+            ansatz=ansatz,
+            optimizer=COBYLA(),
+            estimator=Estimator(),
+        )
+        # solve() automatically performs the encoding, optimization, and rounding
+        qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
+        result = qrao.solve(problem)
+
+        # solve_relazed() only performs the optimization. The encoding and rounding must be done manually.
+        # encoding
+        encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
+        encoding.encode(problem)
+        # optimization
+        qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
+        relaxed_results, rounding_context = qrao.solve_relaxed(encoding=encoding)
+        # rounding
+        rounding = SemideterministicRounding()
+        result = rounding.round(rounding_context)

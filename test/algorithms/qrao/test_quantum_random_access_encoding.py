@@ -11,10 +11,14 @@
 # that they have been altered from the originals.
 
 """Tests for QuantumRandomAccessEncoding"""
+import itertools
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
+from ddt import ddt, data, unpack
 import numpy as np
+import networkx as nx
+
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
@@ -23,7 +27,8 @@ from qiskit_optimization.algorithms.qrao import (
     EncodingCommutationVerifier,
     QuantumRandomAccessEncoding,
 )
-from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.problems import QuadraticProgram, QuadraticObjective
+from qiskit_optimization.applications import Maxcut
 
 
 class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
@@ -168,6 +173,7 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
             QuantumRandomAccessEncoding(0)
 
 
+@ddt
 class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
     """Tests for EncodingCommutationVerifier."""
 
@@ -185,6 +191,68 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         self.assertEqual(len(verifier), 2**encoding.num_vars)
         for _, obj_val, encoded_obj_val in verifier:
             self.assertAlmostEqual(obj_val, encoded_obj_val)
+
+    @data(*itertools.product([1, 2, 3], ["minimize", "maximize"]))
+    @unpack
+    def test_one_qubit_qrac(self, max_vars_per_qubit, task):
+        """Test commutation of single qubit QRAC with non-uniform weights, degree 1 terms"""
+
+        problem = QuadraticProgram()
+        nodes = list(range(max_vars_per_qubit))
+        _ = [problem.binary_var(name=f"x{i}") for i in nodes]
+        obj = {f"x{i}": 2 * (i + 1) for i in nodes}
+        if task == "minimize":
+            problem.minimize(linear=obj)
+        else:
+            problem.maximize(linear=obj)
+        check_problem_commutation(problem, max_vars_per_qubit)
+
+    @data(
+        *itertools.product(
+            [1, 2, 3], [QuadraticObjective.Sense.MINIMIZE, QuadraticObjective.Sense.MAXIMIZE]
+        )
+    )
+    @unpack
+    def test_uniform_weights_degree_2(self, max_vars_per_qubit, task):
+        """Test problem commutation with degree 2 terms"""
+        # Note that the variable embedding has some qubits with 1, 2, and 3 qubits
+        elist = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0), (0, 3), (1, 4), (2, 4)]
+        graph = nx.from_edgelist(elist)
+        for u, v in elist:
+            graph[u][v]["weight"] = (u + 1) * (v + 2)
+
+        maxcut = Maxcut(graph)
+        problem = maxcut.to_quadratic_program()
+        problem.objective.sense = task
+        check_problem_commutation(problem, max_vars_per_qubit)
+
+    @data(1, 2, 3)
+    def test_random_unweighted_maxcut(self, max_vars_per_qubit):
+        """Test problem commutation with random unweighted MaxCut"""
+        graph = nx.random_regular_graph(3, 8)
+        maxcut = Maxcut(graph)
+        problem = maxcut.to_quadratic_program()
+        check_problem_commutation(problem, max_vars_per_qubit)
+
+    @data(1, 2, 3)
+    def test_random_weighted_maxcut(self, max_vars_per_qubit):
+        """Test problem commutation with random weighted MaxCut"""
+        graph = nx.random_regular_graph(3, 8)
+        for u, v in graph.edges:
+            graph[u][v]["weight"] = np.random.randint(1, 10)
+        maxcut = Maxcut(graph)
+        problem = maxcut.to_quadratic_program()
+        check_problem_commutation(problem, max_vars_per_qubit)
+
+
+def check_problem_commutation(problem: QuadraticProgram, max_vars_per_qubit: int):
+    """Utility function to check that the problem commutes with its encoding"""
+    encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=max_vars_per_qubit)
+    encoding.encode(problem)
+    verifier = EncodingCommutationVerifier(encoding)
+    assert len(verifier) == 2**encoding.num_vars
+    assert all(np.isclose(obj_val, encoded_obj_val) for _, obj_val, encoded_obj_val in verifier)
+
 
 if __name__ == "__main__":
     unittest.main()

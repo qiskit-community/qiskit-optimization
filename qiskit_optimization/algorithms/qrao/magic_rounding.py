@@ -22,7 +22,10 @@ from qiskit.algorithms.exceptions import AlgorithmError
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import SparsePauliOp
 
-from .quantum_random_access_encoding import _z_to_21p_qrac_basis_circuit, _z_to_31p_qrac_basis_circuit
+from .quantum_random_access_encoding import (
+    _z_to_21p_qrac_basis_circuit,
+    _z_to_31p_qrac_basis_circuit,
+)
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme, RoundingSolutionSample
 
 
@@ -123,17 +126,13 @@ class MagicRounding(RoundingScheme):
         self._sampler = sampler
         self.rng = np.random.RandomState(seed)
         self._basis_sampling = basis_sampling
+        self._shots = None
         super().__init__()
 
     @property
     def sampler(self) -> Sampler:
         """Returns the ``Sampler`` used to sample the magic bases."""
         return self._sampler
-
-    @property
-    def shots(self) -> int:
-        """Returns the number of samples to collect from each magic basis."""
-        return self._sampler.options.get("shots")
 
     @property
     def basis_sampling(self):
@@ -293,8 +292,7 @@ class MagicRounding(RoundingScheme):
         self, q2vars: List[List[int]], vars_per_qubit: int
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Sample measurement bases for each qubit uniformly at random. If the number of shots
-        is not specified, we default to 1024.
+        Sample measurement bases for each qubit uniformly at random.
 
         Args:
             q2vars: A list of lists of integers. Each inner list contains the indices of decision
@@ -313,14 +311,9 @@ class MagicRounding(RoundingScheme):
                 corresponds to the number of shots to use for the corresponding basis in
                 the bases array.
         """
-        # If the number of shots is not specified, we default to 1024.
-        if self.shots is None:
-            shots = 1024
-        else:
-            shots = self.shots
         bases = [
             self.rng.choice(2 ** (vars_per_qubit - 1), size=len(q2vars)).tolist()
-            for _ in range(shots)
+            for _ in range(self._shots)
         ]
         bases, basis_shots = np.unique(bases, axis=0, return_counts=True)
         return bases, basis_shots
@@ -387,8 +380,11 @@ class MagicRounding(RoundingScheme):
             elif vars_per_qubit == 1:
                 basis_probs.append([1.0])
         bases = [
-            [self.rng.choice(2 ** (vars_per_qubit - 1), p=probs) for probs in basis_probs]
-            for _ in range(self.shots)
+            [
+                self.rng.choice(2 ** (vars_per_qubit - 1), p=[p.real for p in probs])
+                for probs in basis_probs
+            ]
+            for _ in range(self._shots)
         ]
         bases, basis_shots = np.unique(bases, axis=0, return_counts=True)
         return bases, basis_shots
@@ -404,7 +400,7 @@ class MagicRounding(RoundingScheme):
 
         Raises:
             NotImplementedError: If the circuit is not available for magic rounding.
-
+            ValueError: If the sampler is not configured with a number of shots.
         """
         start_time = time.time()
         expectation_values = ctx.expectation_values
@@ -418,6 +414,13 @@ class MagicRounding(RoundingScheme):
                 "Magic rounding requires a circuit to be available.  Perhaps try "
                 "semideterministic rounding instead."
             )
+
+        if self._sampler.options.get("shots") is None:
+            raise ValueError(
+                "Magic rounding requires the sampler to be configured with a number of shots."
+            )
+        else:
+            self._shots = self._sampler.options.shots
 
         if self.basis_sampling == "uniform":
             # uniform sampling
@@ -441,22 +444,17 @@ class MagicRounding(RoundingScheme):
         # values will be total number of observations.
         soln_counts = self._compute_dv_counts(basis_counts, bases, var2op, vars_per_qubit)
 
-        if self.shots is None:
-            shots = 1024
-        else:
-            shots = self.shots
-
         soln_samples = [
             RoundingSolutionSample(
                 x=np.asarray([int(bit) for bit in soln]),
-                probability=count / shots,
+                probability=count / self._shots,
             )
             for soln, count in soln_counts.items()
         ]
 
         assert np.isclose(
-            sum(soln_counts.values()), shots
-        ), f"{sum(soln_counts.values())} != {shots}"
+            sum(soln_counts.values()), self._shots
+        ), f"{sum(soln_counts.values())} != {self._shots}"
         assert len(bases) == len(basis_shots) == len(basis_counts)
         stop_time = time.time()
 
