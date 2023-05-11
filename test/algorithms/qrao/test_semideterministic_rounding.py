@@ -22,8 +22,7 @@ from qiskit_optimization.algorithms.qrao import (
     SemideterministicRoundingResult,
     RoundingContext,
 )
-from qiskit_optimization.algorithms.qrao.rounding_common import RoundingSolutionSample
-
+from qiskit_optimization.algorithms import SolutionSample
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -33,21 +32,20 @@ class TestSemideterministicRounding(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         self.problem = QuadraticProgram()
-        self.problem.binary_var("x")
-        self.problem.binary_var("y")
-        self.problem.binary_var("z")
-        self.problem.minimize(linear={"x": 1, "y": 2, "z": 3})
+        var_dict = self.problem.binary_var_dict(5)
+        self.problem.minimize(linear={name: 1 for name in var_dict})
 
     def test_semideterministic_rounding(self):
         """Test SemideterministicRounding"""
         encoding = QuantumRandomAccessEncoding()
+        encoding.encode(self.problem)
         rounding_scheme = SemideterministicRounding(seed=123)
         expectation_values = [1, -1, 0, 0.7, -0.3]
         result = rounding_scheme.round(
             RoundingContext(expectation_values=expectation_values, encoding=encoding)
         )
         self.assertIsInstance(result, SemideterministicRoundingResult)
-        self.assertIsInstance(result.samples[0], RoundingSolutionSample)
+        self.assertIsInstance(result.samples[0], SolutionSample)
         self.assertEqual(result.expectation_values, [1, -1, 0, 0.7, -0.3])
         np.testing.assert_array_almost_equal(result.samples[0].x, [0, 1, 0, 0, 1])
         self.assertEqual(result.samples[0].probability, 1.0)

@@ -24,7 +24,7 @@ from qiskit_optimization.algorithms.qrao import (
     QuantumRandomAccessEncoding,
     QuantumRandomAccessOptimizer,
 )
-from qiskit_optimization.algorithms.qrao.rounding_common import RoundingSolutionSample
+from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -82,14 +82,14 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
-            RoundingSolutionSample(x=np.array([0, 0, 0]), probability=0.2436),
-            RoundingSolutionSample(x=np.array([0, 0, 1]), probability=0.1242),
-            RoundingSolutionSample(x=np.array([0, 1, 0]), probability=0.1646),
-            RoundingSolutionSample(x=np.array([0, 1, 1]), probability=0.0461),
-            RoundingSolutionSample(x=np.array([1, 0, 0]), probability=0.2025),
-            RoundingSolutionSample(x=np.array([1, 0, 1]), probability=0.0831),
-            RoundingSolutionSample(x=np.array([1, 1, 0]), probability=0.1259),
-            RoundingSolutionSample(x=np.array([1, 1, 1]), probability=0.01),
+            make_solution_sample(x=np.array([0, 0, 0]), probability=0.2436, problem=self.problem),
+            make_solution_sample(x=np.array([0, 0, 1]), probability=0.1242, problem=self.problem),
+            make_solution_sample(x=np.array([0, 1, 0]), probability=0.1646, problem=self.problem),
+            make_solution_sample(x=np.array([0, 1, 1]), probability=0.0461, problem=self.problem),
+            make_solution_sample(x=np.array([1, 0, 0]), probability=0.2025, problem=self.problem),
+            make_solution_sample(x=np.array([1, 0, 1]), probability=0.0831, problem=self.problem),
+            make_solution_sample(x=np.array([1, 1, 0]), probability=0.1259, problem=self.problem),
+            make_solution_sample(x=np.array([1, 1, 1]), probability=0.01, problem=self.problem),
         ]
         for i, sample in enumerate(samples):
             np.testing.assert_allclose(sample.x, expected_samples[i].x)
@@ -122,14 +122,14 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
-            RoundingSolutionSample(x=np.array([0, 0, 0]), probability=0.4393),
-            RoundingSolutionSample(x=np.array([0, 0, 1]), probability=0.0613),
-            RoundingSolutionSample(x=np.array([0, 1, 0]), probability=0.1036),
-            RoundingSolutionSample(x=np.array([0, 1, 1]), probability=0.0501),
-            RoundingSolutionSample(x=np.array([1, 0, 0]), probability=0.2202),
-            RoundingSolutionSample(x=np.array([1, 0, 1]), probability=0.0523),
-            RoundingSolutionSample(x=np.array([1, 1, 0]), probability=0.0583),
-            RoundingSolutionSample(x=np.array([1, 1, 1]), probability=0.0149),
+            make_solution_sample(x=np.array([0, 0, 0]), probability=0.4393, problem=self.problem),
+            make_solution_sample(x=np.array([0, 0, 1]), probability=0.0613, problem=self.problem),
+            make_solution_sample(x=np.array([0, 1, 0]), probability=0.1036, problem=self.problem),
+            make_solution_sample(x=np.array([0, 1, 1]), probability=0.0501, problem=self.problem),
+            make_solution_sample(x=np.array([1, 0, 0]), probability=0.2202, problem=self.problem),
+            make_solution_sample(x=np.array([1, 0, 1]), probability=0.0523, problem=self.problem),
+            make_solution_sample(x=np.array([1, 1, 0]), probability=0.0583, problem=self.problem),
+            make_solution_sample(x=np.array([1, 1, 1]), probability=0.0149, problem=self.problem),
         ]
         for i, sample in enumerate(samples):
             np.testing.assert_allclose(sample.x, expected_samples[i].x)
@@ -138,6 +138,20 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             rounding_result.expectation_values,
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
         )
+
+
+def make_solution_sample(
+    x: np.ndarray, probability: float, problem: QuadraticProgram
+) -> SolutionSample:
+    """Make a solution sample."""
+    return SolutionSample(
+        x=x,
+        fval=problem.objective.evaluate(x),
+        probability=probability,
+        status=OptimizationResultStatus.SUCCESS
+        if problem.is_feasible(x)
+        else OptimizationResultStatus.INFEASIBLE,
+    )
 
 
 if __name__ == "__main__":

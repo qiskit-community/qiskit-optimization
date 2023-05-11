@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """Magic basis rounding module"""
+from dataclasses import dataclass
 
-import time
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -22,53 +22,25 @@ from qiskit.algorithms.exceptions import AlgorithmError
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import SparsePauliOp
 
+from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from .quantum_random_access_encoding import (
     _z_to_21p_qrac_basis_circuit,
     _z_to_31p_qrac_basis_circuit,
 )
-from .rounding_common import RoundingContext, RoundingResult, RoundingScheme, RoundingSolutionSample
+from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
 
 
+@dataclass
 class MagicRoundingResult(RoundingResult):
-    """Result of magic rounding"""
+    """Result of magic rounding."""
 
-    def __init__(
-        self,
-        samples: List[RoundingSolutionSample],
-        expectation_values: List[float],
-        bases: np.ndarray,
-        basis_shots: np.ndarray,
-        basis_counts: List[Dict[str, int]],
-        time_taken: Optional[float] = None,
-    ):
-        """
-        Args:
-            samples: List of samples of the rounding.
-            expectation_values: Expectation values of the encoding.
-            bases: The bases used for the magic rounding.
-            basis_shots: The number of shots used for each basis.
-            basis_counts: The counts for each basis.
-            time_taken: Time taken for the rounding.
-        """
-        self._bases = bases
-        self._basis_shots = basis_shots
-        self._basis_counts = basis_counts
-        super().__init__(samples, expectation_values, time_taken=time_taken)
-
-    @property
-    def bases(self):
-        """Return the bases used for the magic rounding."""
-        return self._bases
-
-    @property
-    def basis_shots(self):
-        """Return the number of shots used for each basis."""
-        return self._basis_shots
-
-    @property
-    def basis_counts(self):
-        """Return the counts for each basis."""
-        return self._basis_counts
+    bases: np.ndarray
+    """The bases used for the magic rounding"""
+    basis_shots: np.ndarray
+    """The number of shots used for each basis"""
+    basis_counts: List[Dict[str, int]]
+    """The basis_counts represents the resulting counts obtained by measuring with the bases
+    corresponding to the number of shots specified in basis_shots."""
 
 
 class MagicRounding(RoundingScheme):
@@ -406,7 +378,6 @@ class MagicRounding(RoundingScheme):
             NotImplementedError: If the circuit is not available for magic rounding.
             ValueError: If the sampler is not configured with a number of shots.
         """
-        start_time = time.time()
         expectation_values = ctx.expectation_values
         circuit = ctx.circuit
         q2vars = ctx.encoding.q2vars
@@ -448,9 +419,13 @@ class MagicRounding(RoundingScheme):
         soln_counts = self._compute_dv_counts(basis_counts, bases, var2op, vars_per_qubit)
 
         soln_samples = [
-            RoundingSolutionSample(
+            SolutionSample(
                 x=np.asarray([int(bit) for bit in soln]),
+                fval=ctx.encoding.problem.objective.evaluate([int(bit) for bit in soln]),
                 probability=count / self._shots,
+                status=OptimizationResultStatus.SUCCESS
+                if ctx.encoding.problem.is_feasible([int(bit) for bit in soln])
+                else OptimizationResultStatus.INFEASIBLE,
             )
             for soln, count in soln_counts.items()
         ]
@@ -459,14 +434,12 @@ class MagicRounding(RoundingScheme):
             sum(soln_counts.values()), self._shots
         ), f"{sum(soln_counts.values())} != {self._shots}"
         assert len(bases) == len(basis_shots) == len(basis_counts)
-        stop_time = time.time()
 
         # Create a MagicRoundingResult object to return
         return MagicRoundingResult(
-            samples=soln_samples,
             expectation_values=expectation_values,
+            samples=soln_samples,
             bases=bases,
             basis_shots=basis_shots,
             basis_counts=basis_counts,
-            time_taken=stop_time - start_time,
         )

@@ -283,7 +283,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             The result of the quantum random access optimization.
         """
         samples, best_sol = self._interpret_samples(
-            problem=problem, raw_samples=rounding_result.samples, converters=self._converters
+            problem=problem, raw_samples=rounding_result.samples
         )
 
         relaxed_fval = encoding.problem.objective.sense.value * (
@@ -293,7 +293,6 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             QuantumRandomAccessOptimizationResult,
             self._interpret(
                 x=best_sol.x,
-                converters=self._converters,
                 problem=problem,
                 result_class=QuantumRandomAccessOptimizationResult,
                 samples=samples,

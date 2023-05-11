@@ -11,21 +11,22 @@
 # that they have been altered from the originals.
 
 """Semideterministic rounding module"""
+from dataclasses import dataclass
 
 from typing import Optional
 
 import numpy as np
 
+from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
+
 from .rounding_common import (
-    RoundingSolutionSample,
     RoundingScheme,
     RoundingContext,
     RoundingResult,
 )
 
-# pylint: disable=too-few-public-methods
 
-
+@dataclass
 class SemideterministicRoundingResult(RoundingResult):
     """Result of semideterministic rounding"""
 
@@ -64,21 +65,28 @@ class SemideterministicRounding(RoundingScheme):
 
         if ctx.expectation_values is None:
             raise NotImplementedError(
-                "Semideterministric rounding with weighted sampling requires the expectation "
-                "values of the ``RoundingContext`` to be available, but they are not."
+                "Semideterministric rounding requires the expectation values of the ",
+                "``RoundingContext`` to be available, but they are not.",
             )
-        rounded_vars = [
-            sign(e) if not np.isclose(0, e) else self.rng.randint(2) for e in ctx.expectation_values
-        ]
+        rounded_vars = np.array(
+            [
+                sign(e) if not np.isclose(0, e) else self.rng.randint(2)
+                for e in ctx.expectation_values
+            ]
+        )
 
         soln_samples = [
-            RoundingSolutionSample(
+            SolutionSample(
                 x=np.asarray(rounded_vars),
+                fval=ctx.encoding.problem.objective.evaluate(rounded_vars),
                 probability=1.0,
+                status=OptimizationResultStatus.SUCCESS
+                if ctx.encoding.problem.is_feasible(rounded_vars)
+                else OptimizationResultStatus.INFEASIBLE,
             )
         ]
 
         result = SemideterministicRoundingResult(
-            samples=soln_samples, expectation_values=ctx.expectation_values
+            expectation_values=ctx.expectation_values, samples=soln_samples
         )
         return result

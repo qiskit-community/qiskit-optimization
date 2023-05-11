@@ -9,30 +9,27 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-
 """Common classes for rounding schemes"""
 
-from typing import List, Optional
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-
-import numpy as np
+from typing import List, Optional
 
 from qiskit.circuit import QuantumCircuit
 
 from qiskit_optimization.algorithms import SolutionSample
+
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 
 
-# pylint: disable=too-few-public-methods
-
-
 @dataclass
-class RoundingSolutionSample:
-    """Partial SolutionSample for use in rounding results"""
+class RoundingResult:
+    """Base class for a rounding result"""
 
-    x: np.ndarray
-    probability: float
+    expectation_values: List[float]
+    """Expectation values"""
+    samples: List[SolutionSample]
+    """List of samples after rounding"""
 
 
 class RoundingContext:
@@ -53,36 +50,6 @@ class RoundingContext:
         self.encoding = encoding
         self.expectation_values = expectation_values
         self.circuit = circuit
-
-
-class RoundingResult:
-    """Base class for a rounding result"""
-
-    def __init__(
-        self,
-        samples: List[RoundingSolutionSample],
-        expectation_values: List[float],
-        time_taken: Optional[float] = None,
-    ):
-        """
-        Args:
-            samples: List of samples of the rounding.
-            expectation_values: Expectation values of the encoding.
-            time_taken: Time taken for rounding.
-        """
-        self._samples = samples
-        self._expectation_values = expectation_values
-        self.time_taken = time_taken
-
-    @property
-    def samples(self) -> List[RoundingSolutionSample]:
-        """List of samples for the rounding"""
-        return self._samples
-
-    @property
-    def expectation_values(self):
-        """Expectation values"""
-        return self._expectation_values
 
 
 class RoundingScheme(ABC):

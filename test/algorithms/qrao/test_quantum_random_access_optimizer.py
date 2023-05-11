@@ -26,6 +26,7 @@ from qiskit.circuit.library import QAOAAnsatz, RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.utils import algorithm_globals
 
+from qiskit_optimization.algorithms import SolutionSample
 from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
 from qiskit_optimization.algorithms.qrao import (
     QuantumRandomAccessEncoding,
@@ -34,7 +35,6 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingContext,
     SemideterministicRoundingResult,
 )
-from qiskit_optimization.algorithms.qrao.rounding_common import RoundingSolutionSample
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -170,7 +170,7 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(results.rounding_result.expectation_values[0], 0.26726, places=5)
         self.assertAlmostEqual(results.rounding_result.expectation_values[1], 0.53452, places=5)
         self.assertAlmostEqual(results.rounding_result.expectation_values[2], 0.80178, places=5)
-        self.assertIsInstance(results.rounding_result.samples[0], RoundingSolutionSample)
+        self.assertIsInstance(results.rounding_result.samples[0], SolutionSample)
 
     def test_empty_encoding(self):
         """Test the encoding is empty."""
