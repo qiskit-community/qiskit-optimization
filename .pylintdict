@@ -114,6 +114,7 @@ maxcut
 maxfun
 maxiter
 mdl
+milp
 minimizer
 minimumeigenoptimizer
 multiset
