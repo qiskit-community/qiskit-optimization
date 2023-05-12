@@ -56,7 +56,7 @@ class RoundingScheme(ABC):
     """Base class for a rounding scheme"""
 
     @abstractmethod
-    def round(self, ctx: RoundingContext) -> RoundingResult:
+    def round(self, rounding_context: RoundingContext) -> RoundingResult:
         """Perform rounding
 
         Returns: an instance of RoundingResult

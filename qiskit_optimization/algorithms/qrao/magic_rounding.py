@@ -113,12 +113,12 @@ class MagicRounding(RoundingScheme):
 
     @staticmethod
     def _make_circuits(
-        circ: QuantumCircuit, bases: np.ndarray[Any, Any], vars_per_qubit: int
+        circuit: QuantumCircuit, bases: np.ndarray[Any, Any], vars_per_qubit: int
     ) -> List[QuantumCircuit]:
         """Make a list of circuits to measure in the given magic bases.
 
         Args:
-            circ: Quantum circuit to measure.
+            circuit: Quantum circuit to measure.
             bases: List of magic bases to measure in.
             vars_per_qubit: Number of variables per qubit.
 
@@ -128,11 +128,11 @@ class MagicRounding(RoundingScheme):
         circuits = []
         for basis in bases:
             if vars_per_qubit == 3:
-                qc = circ.compose(_z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
+                qc = circuit.compose(_z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
             elif vars_per_qubit == 2:
-                qc = circ.compose(_z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
+                qc = circuit.compose(_z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
             elif vars_per_qubit == 1:
-                qc = circ.copy()
+                qc = circuit.copy()
             qc.measure_all()
             circuits.append(qc)
         return circuits
@@ -319,6 +319,7 @@ class MagicRounding(RoundingScheme):
                 corresponds to the number of shots to use for the corresponding basis in
                 the bases array.
         """
+        # pylint: disable=C0401
         # First, we make sure all Pauli expectation values have absolute value
         # at most 1.  Otherwise, some of the probabilities computed below might
         # be negative.
@@ -365,11 +366,11 @@ class MagicRounding(RoundingScheme):
         bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 
-    def round(self, ctx: RoundingContext) -> MagicRoundingResult:
+    def round(self, rounding_context: RoundingContext) -> MagicRoundingResult:
         """Perform magic rounding using the given RoundingContext.
 
         Args:
-            ctx: The context containing the information needed for the rounding.
+            rounding_context: The context containing the information needed for the rounding.
 
         Returns:
             MagicRoundingResult: The results of the magic rounding process.
@@ -378,11 +379,11 @@ class MagicRounding(RoundingScheme):
             NotImplementedError: If the circuit is not available for magic rounding.
             ValueError: If the sampler is not configured with a number of shots.
         """
-        expectation_values = ctx.expectation_values
-        circuit = ctx.circuit
-        q2vars = ctx.encoding.q2vars
-        var2op = ctx.encoding.var2op
-        vars_per_qubit = ctx.encoding.max_vars_per_qubit
+        expectation_values = rounding_context.expectation_values
+        circuit = rounding_context.circuit
+        q2vars = rounding_context.encoding.q2vars
+        var2op = rounding_context.encoding.var2op
+        vars_per_qubit = rounding_context.encoding.max_vars_per_qubit
 
         if circuit is None:
             raise NotImplementedError(
@@ -421,10 +422,10 @@ class MagicRounding(RoundingScheme):
         soln_samples = [
             SolutionSample(
                 x=np.asarray([int(bit) for bit in soln]),
-                fval=ctx.encoding.problem.objective.evaluate([int(bit) for bit in soln]),
+                fval=rounding_context.encoding.problem.objective.evaluate([int(bit) for bit in soln]),
                 probability=count / self._shots,
                 status=OptimizationResultStatus.SUCCESS
-                if ctx.encoding.problem.is_feasible([int(bit) for bit in soln])
+                if rounding_context.encoding.problem.is_feasible([int(bit) for bit in soln])
                 else OptimizationResultStatus.INFEASIBLE,
             )
             for soln, count in soln_counts.items()

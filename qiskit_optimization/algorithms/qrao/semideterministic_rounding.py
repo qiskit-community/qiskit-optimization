@@ -47,11 +47,11 @@ class SemideterministicRounding(RoundingScheme):
         super().__init__()
         self.rng = np.random.RandomState(seed)
 
-    def round(self, ctx: RoundingContext) -> SemideterministicRoundingResult:
+    def round(self, rounding_context: RoundingContext) -> SemideterministicRoundingResult:
         """Perform semideterministic rounding
 
         Args:
-            ctx: Rounding context containing information about the problem and solution.
+            rounding_context: Rounding context containing information about the problem and solution.
 
         Returns:
             Result containing the rounded solution.
@@ -63,7 +63,7 @@ class SemideterministicRounding(RoundingScheme):
         def sign(val) -> int:
             return 0 if (val > 0) else 1
 
-        if ctx.expectation_values is None:
+        if rounding_context.expectation_values is None:
             raise NotImplementedError(
                 "Semideterministric rounding requires the expectation values of the ",
                 "``RoundingContext`` to be available, but they are not.",
@@ -71,22 +71,22 @@ class SemideterministicRounding(RoundingScheme):
         rounded_vars = np.array(
             [
                 sign(e) if not np.isclose(0, e) else self.rng.randint(2)
-                for e in ctx.expectation_values
+                for e in rounding_context.expectation_values
             ]
         )
 
         soln_samples = [
             SolutionSample(
                 x=np.asarray(rounded_vars),
-                fval=ctx.encoding.problem.objective.evaluate(rounded_vars),
+                fval=rounding_context.encoding.problem.objective.evaluate(rounded_vars),
                 probability=1.0,
                 status=OptimizationResultStatus.SUCCESS
-                if ctx.encoding.problem.is_feasible(rounded_vars)
+                if rounding_context.encoding.problem.is_feasible(rounded_vars)
                 else OptimizationResultStatus.INFEASIBLE,
             )
         ]
 
         result = SemideterministicRoundingResult(
-            expectation_values=ctx.expectation_values, samples=soln_samples
+            expectation_values=rounding_context.expectation_values, samples=soln_samples
         )
         return result

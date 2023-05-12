@@ -113,11 +113,11 @@ def _qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
 
     if len(bit_list) == 3:
         # Prepare (3,1,p)-qrac
-        # In the following lines, the input bits are XOR'd to match the
+        # In the following lines, the input bits are XORed to match the
         # conventions used in the paper.
         # To understand why this transformation happens,
         # observe that the two states that define each magic basis
-        # correspond to the same bitstrings but with a global bitflip.
+        # correspond to the same bitstrings but with a global bit flip.
         # Thus the three bits of information we use to construct these states are:
         # base_index0,base_index1 : two bits to pick one of four magic bases
         # bit_flip: one bit to indicate which magic basis projector we are interested in.
@@ -152,15 +152,15 @@ def _qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
     return circ
 
 
-def _qrac_state_prep_multiqubit(
-    dvars: List[int],
+def _qrac_state_prep_multi_qubit(
+    x: List[int],
     q2vars: List[List[int]],
     max_vars_per_qubit: int,
 ) -> QuantumCircuit:
-    """Prepares a multiqubit QRAC state.
+    """Prepares a multi qubit QRAC state.
 
     Args:
-        dvars: The state of each decision variable (0 or 1).
+        x: The state of each decision variable (0 or 1).
         q2vars: A list of lists of integers. Each inner list contains the indices of decision variables
         mapped to a specific qubit.
         max_vars_per_qubit: The maximum number of decision variables that can be mapped to a
@@ -170,12 +170,12 @@ def _qrac_state_prep_multiqubit(
         A QuantumCircuit object representing the prepared state.
 
     Raises:
-        ValueError: If any qubit is associated with more than ``max_vars_per_qubit`` variables.
-        ValueError: If a decision variable in ``q2vars`` is not included in ``dvars``.
-        ValueError: If there are unused decision variables in `dvars` after mapping to qubits.
+        ValueError: If any qubit is associated with more than `max_vars_per_qubit` variables.
+        ValueError: If a decision variable in ``q2vars`` is not included in `x`.
+        ValueError: If there are unused decision variables in `x` after mapping to qubits.
     """
     # Create a set of all remaining decision variables
-    remaining_dvars = set(range(len(dvars)))
+    remaining_dvars = set(range(len(x)))
     # Create a list to store the binary mappings of each qubit to its corresponding decision variables
     variable_mappings: List[List[int]] = []
     # Check that each qubit is associated with at most max_vars_per_qubit variables
@@ -193,7 +193,7 @@ def _qrac_state_prep_multiqubit(
         # to the qubit bits
         for dvar in qi_vars:
             try:
-                qi_bits.append(dvars[dvar])
+                qi_bits.append(x[dvar])
             except IndexError:
                 raise ValueError(f"Decision variable not included in dvars: {dvar}") from None
             try:
@@ -213,7 +213,7 @@ def _qrac_state_prep_multiqubit(
     if remaining_dvars:
         raise ValueError(f"Not all dvars were included in q2vars: {remaining_dvars}")
 
-    # Prepare the individual qrac circuit and combine them into a multiqubit circuit
+    # Prepare the individual qrac circuit and combine them into a multi qubit circuit
     qracs = [_qrac_state_prep_1q(qi_bits) for qi_bits in variable_mappings]
     qrac_circ = reduce(lambda x, y: x.tensor(y), qracs)
     return qrac_circ
@@ -272,7 +272,7 @@ class QuantumRandomAccessEncoding:
 
     @property
     def q2vars(self) -> List[List[int]]:
-        """Each element contains the list of decision variable indice(s) encoded on that qubit"""
+        """Each element contains the list of decision variable indices encoded on that qubit"""
         return self._q2vars
 
     @property
@@ -556,14 +556,14 @@ class QuantumRandomAccessEncoding:
 
         self.freeze()
 
-    def state_preparation_circuit(self, dvars: List[int]) -> QuantumCircuit:
+    def state_preparation_circuit(self, x: List[int]) -> QuantumCircuit:
         """
         Generate a circuit that prepares the state corresponding to the given binary string.
 
         Args:
-            dvars: A list of binary values to be encoded into the state.
+            x: A list of binary values to be encoded into the state.
 
         Returns:
             A QuantumCircuit that prepares the state corresponding to the given binary string.
         """
-        return _qrac_state_prep_multiqubit(dvars, self.q2vars, self.max_vars_per_qubit)
+        return _qrac_state_prep_multi_qubit(x, self.q2vars, self.max_vars_per_qubit)

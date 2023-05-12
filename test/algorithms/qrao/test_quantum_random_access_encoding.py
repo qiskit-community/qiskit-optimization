@@ -140,7 +140,7 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         with self.subTest(msg="(3,1,p) QRAC"):
             encoding = QuantumRandomAccessEncoding(3)
             encoding.encode(self.problem)
-            state_prep_circ = encoding.state_preparation_circuit(dvars=dvars)
+            state_prep_circ = encoding.state_preparation_circuit(x=dvars)
             circ = QuantumCircuit(1)
             beta = np.arccos(1 / np.sqrt(3))
             circ.r(np.pi - beta, np.pi / 4, 0)
@@ -149,7 +149,7 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         with self.subTest(msg="(2,1,p) QRAC"):
             encoding = QuantumRandomAccessEncoding(2)
             encoding.encode(self.problem)
-            state_prep_circ = encoding.state_preparation_circuit(dvars=dvars)
+            state_prep_circ = encoding.state_preparation_circuit(x=dvars)
             circ = QuantumCircuit(2)
             circ.x(0)
             circ.r(-3 * np.pi / 4, -np.pi / 2, 0)
@@ -159,7 +159,7 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         with self.subTest(msg="(1,1,p) QRAC"):
             encoding = QuantumRandomAccessEncoding(1)
             encoding.encode(self.problem)
-            state_prep_circ = encoding.state_preparation_circuit(dvars=dvars)
+            state_prep_circ = encoding.state_preparation_circuit(x=dvars)
             circ = QuantumCircuit(3)
             circ.x(0)
             circ.x(1)

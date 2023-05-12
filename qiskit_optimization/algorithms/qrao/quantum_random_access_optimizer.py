@@ -211,7 +211,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         )
         relaxed_result.time_taken = time.time() - start_time_relaxed
 
-        # Get auxiliary expectaion values for rounding.
+        # Get auxiliary expectation values for rounding.
         if relaxed_result.aux_operators_evaluated is not None:
             expectation_values = [v[0] for v in relaxed_result.aux_operators_evaluated]
         else:
