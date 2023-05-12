@@ -160,6 +160,8 @@ qiskit
 qiskit's
 qn
 qp
+qrac
+qrao
 quadratically
 quadraticconstraint
 quadraticobjective
@@ -185,6 +187,7 @@ rz
 sahar
 scipy
 sdp
+semideterministic
 sherrington
 simonetto
 slsqp
