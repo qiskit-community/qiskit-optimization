@@ -422,7 +422,9 @@ class MagicRounding(RoundingScheme):
         soln_samples = [
             SolutionSample(
                 x=np.asarray([int(bit) for bit in soln]),
-                fval=rounding_context.encoding.problem.objective.evaluate([int(bit) for bit in soln]),
+                fval=rounding_context.encoding.problem.objective.evaluate(
+                    [int(bit) for bit in soln]
+                ),
                 probability=count / self._shots,
                 status=OptimizationResultStatus.SUCCESS
                 if rounding_context.encoding.problem.is_feasible([int(bit) for bit in soln])

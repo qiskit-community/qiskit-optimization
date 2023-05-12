@@ -106,6 +106,7 @@ def _qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
         TypeError: if the number of arguments is not 1, 2, or 3
         ValueError: if any of the arguments are not 0 or 1
     """
+    # pylint: disable=C0401
     if len(bit_list) not in (1, 2, 3):
         raise TypeError(f"qrac_state_prep_1q requires 1, 2, or 3 arguments, not {len(bit_list)}.")
     if not all(bit in (0, 1) for bit in bit_list):
