@@ -12,9 +12,9 @@
 
 """The EncodingCommutationVerifier."""
 
-from typing import Tuple
+from __future__ import annotations
 
-from qiskit.primitives import Estimator
+from qiskit.primitives import BaseEstimator, Estimator
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 
@@ -24,10 +24,14 @@ from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 class EncodingCommutationVerifier:
     """Class for verifying that the relaxation commutes with the objective function."""
 
-    def __init__(self, encoding: QuantumRandomAccessEncoding, estimator: Estimator = None):
+    def __init__(
+        self, encoding: QuantumRandomAccessEncoding, estimator: BaseEstimator | None = None
+    ):
         """
         Args:
             encoding: The encoding to verify.
+            estimator: The estimator to use for the verification. If None, qiskit.primitives
+            Estimator will be used by default.
         """
         self._encoding = encoding
         if estimator is not None:
@@ -42,7 +46,7 @@ class EncodingCommutationVerifier:
         for i in range(len(self)):
             yield self[i]
 
-    def __getitem__(self, i: int) -> Tuple[str, float, float]:
+    def __getitem__(self, i: int) -> tuple[str, float, float]:
         if i not in range(len(self)):
             raise IndexError(f"Index out of range: {i}")
 

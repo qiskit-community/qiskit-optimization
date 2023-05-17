@@ -19,7 +19,7 @@ import numpy as np
 from qiskit_optimization.algorithms.qrao import (
     QuantumRandomAccessEncoding,
     SemideterministicRounding,
-    SemideterministicRoundingResult,
+    RoundingResult,
     RoundingContext,
 )
 from qiskit_optimization.algorithms import SolutionSample
@@ -44,10 +44,10 @@ class TestSemideterministicRounding(QiskitOptimizationTestCase):
         result = rounding_scheme.round(
             RoundingContext(expectation_values=expectation_values, encoding=encoding)
         )
-        self.assertIsInstance(result, SemideterministicRoundingResult)
+        self.assertIsInstance(result, RoundingResult)
         self.assertIsInstance(result.samples[0], SolutionSample)
         self.assertEqual(result.expectation_values, [1, -1, 0, 0.7, -0.3])
-        np.testing.assert_array_almost_equal(result.samples[0].x, [0, 1, 0, 0, 1])
+        np.testing.assert_array_almost_equal(result.samples[0].x, [0, 1, 1, 0, 1])
         self.assertEqual(result.samples[0].probability, 1.0)
 
 

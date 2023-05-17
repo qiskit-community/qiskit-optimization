@@ -177,6 +177,15 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
 class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
     """Tests for EncodingCommutationVerifier."""
 
+    def check_problem_commutation(self, problem: QuadraticProgram, max_vars_per_qubit: int):
+        """Utility function to check that the problem commutes with its encoding"""
+        encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=max_vars_per_qubit)
+        encoding.encode(problem)
+        verifier = EncodingCommutationVerifier(encoding)
+        self.assertEqual(len(verifier), 2**encoding.num_vars)
+        for _, obj_val, encoded_obj_val in verifier:
+            np.testing.assert_allclose(obj_val, encoded_obj_val)
+
     def test_encoding_commutation_verifier(self):
         """Test EncodingCommutationVerifier"""
         problem = QuadraticProgram()
@@ -187,10 +196,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
 
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
         encoding.encode(problem)
-        verifier = EncodingCommutationVerifier(encoding)
-        self.assertEqual(len(verifier), 2**encoding.num_vars)
-        for _, obj_val, encoded_obj_val in verifier:
-            self.assertAlmostEqual(obj_val, encoded_obj_val)
+        self.check_problem_commutation(problem, 3)
 
     @data(*itertools.product([1, 2, 3], ["minimize", "maximize"]))
     @unpack
@@ -205,7 +211,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
             problem.minimize(linear=obj)
         else:
             problem.maximize(linear=obj)
-        check_problem_commutation(problem, max_vars_per_qubit)
+        self.check_problem_commutation(problem, max_vars_per_qubit)
 
     @data(
         *itertools.product(
@@ -224,7 +230,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         maxcut = Maxcut(graph)
         problem = maxcut.to_quadratic_program()
         problem.objective.sense = task
-        check_problem_commutation(problem, max_vars_per_qubit)
+        self.check_problem_commutation(problem, max_vars_per_qubit)
 
     @data(1, 2, 3)
     def test_random_unweighted_maxcut(self, max_vars_per_qubit):
@@ -232,7 +238,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         graph = nx.random_regular_graph(3, 8)
         maxcut = Maxcut(graph)
         problem = maxcut.to_quadratic_program()
-        check_problem_commutation(problem, max_vars_per_qubit)
+        self.check_problem_commutation(problem, max_vars_per_qubit)
 
     @data(1, 2, 3)
     def test_random_weighted_maxcut(self, max_vars_per_qubit):
@@ -242,16 +248,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
             graph[w][v]["weight"] = np.random.randint(1, 10)
         maxcut = Maxcut(graph)
         problem = maxcut.to_quadratic_program()
-        check_problem_commutation(problem, max_vars_per_qubit)
-
-
-def check_problem_commutation(problem: QuadraticProgram, max_vars_per_qubit: int):
-    """Utility function to check that the problem commutes with its encoding"""
-    encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=max_vars_per_qubit)
-    encoding.encode(problem)
-    verifier = EncodingCommutationVerifier(encoding)
-    assert len(verifier) == 2**encoding.num_vars
-    assert all(np.isclose(obj_val, encoded_obj_val) for _, obj_val, encoded_obj_val in verifier)
+        self.check_problem_commutation(problem, max_vars_per_qubit)
 
 
 if __name__ == "__main__":

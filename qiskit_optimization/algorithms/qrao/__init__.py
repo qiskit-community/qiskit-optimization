@@ -41,7 +41,6 @@ Rounding schemes
     RoundingContext
     RoundingResult
     SemideterministicRounding
-    SemideterministicRoundingResult
 
 """
 
@@ -51,9 +50,9 @@ from .magic_rounding import MagicRounding, MagicRoundingResult
 from .quantum_random_access_optimizer import (
     QuantumRandomAccessOptimizationResult,
     QuantumRandomAccessOptimizer,
+    SemideterministicRounding,
 )
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
-from .semideterministic_rounding import SemideterministicRounding, SemideterministicRoundingResult
 
 __all__ = [
     "EncodingCommutationVerifier",
@@ -62,7 +61,6 @@ __all__ = [
     "RoundingContext",
     "RoundingResult",
     "SemideterministicRounding",
-    "SemideterministicRoundingResult",
     "MagicRounding",
     "MagicRoundingResult",
     "QuantumRandomAccessOptimizer",

@@ -11,12 +11,14 @@
 # that they have been altered from the originals.
 
 """Quantum Random Access Optimizer class."""
+from __future__ import annotations
 
 import time
-from typing import List, Optional, Tuple, Union, cast
+from typing import cast
 
 import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.algorithms import VariationalResult
 from qiskit.algorithms.minimum_eigensolvers import (
     MinimumEigensolver,
     MinimumEigensolverResult,
@@ -43,11 +45,11 @@ class QuantumRandomAccessOptimizationResult(OptimizationResult):
     def __init__(
         self,
         *,
-        x: Optional[Union[List[float], np.ndarray]],
-        fval: Optional[float],
-        variables: List[Variable],
+        x: list[float] | np.ndarray,
+        fval: float,
+        variables: list[Variable],
         status: OptimizationResultStatus,
-        samples: Optional[List[SolutionSample]],
+        samples: list[SolutionSample],
         encoding: QuantumRandomAccessEncoding,
         relaxed_fval: float,
         relaxed_result: MinimumEigensolverResult,
@@ -107,24 +109,22 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
     def __init__(
         self,
         min_eigen_solver: MinimumEigensolver,
-        penalty: Optional[float] = None,
         max_vars_per_qubit: int = 3,
-        rounding_scheme: Optional[RoundingScheme] = None,
+        rounding_scheme: RoundingScheme | None = None,
+        **kwargs,
     ):
         """
         Args:
             min_eigen_solver: The minimum eigensolver to use for solving the relaxed problem.
-            penalty: The factor that is used to scale the penalty terms corresponding to linear
-                equality constraints. If ``None`` is provided, the penalty will be automatically
-                determined.
+            max_vars_per_qubit: The maximum number of decision variables per qubit.
             rounding_scheme: The rounding scheme.  If ``None`` is provided,
                 ``SemideterministicRounding()`` will be used.
-
         """
         self.min_eigen_solver = min_eigen_solver
-        self.penalty = penalty
         # Use ``QuadraticProgramToQubo`` to convert the problem to a QUBO.
-        self._converters: QuadraticProgramConverter = QuadraticProgramToQubo(penalty=penalty)
+        self._converters: QuadraticProgramConverter = QuadraticProgramToQubo(
+            penalty=kwargs.get("penalty")
+        )
         self._max_vars_per_qubit = max_vars_per_qubit
         self.rounding_scheme = rounding_scheme
 
@@ -159,7 +159,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         return self._rounding_scheme
 
     @rounding_scheme.setter
-    def rounding_scheme(self, rounding_scheme: RoundingScheme) -> None:
+    def rounding_scheme(self, rounding_scheme: RoundingScheme | None) -> None:
         """Set the rounding scheme."""
         if rounding_scheme is None:
             rounding_scheme = SemideterministicRounding()
@@ -182,7 +182,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
     def solve_relaxed(
         self,
         encoding: QuantumRandomAccessEncoding,
-    ) -> Tuple[MinimumEigensolverResult, RoundingContext]:
+    ) -> tuple[MinimumEigensolverResult, RoundingContext]:
         """Solve the relaxed Hamiltonian given by the encoding.
 
         Args:
@@ -218,8 +218,8 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             expectation_values = None
 
         # Get the circuit corresponding to the relaxed solution.
-        if hasattr(self.min_eigen_solver, "ansatz"):
-            circuit = self.min_eigen_solver.ansatz.bind_parameters(relaxed_result.optimal_point)
+        if isinstance(relaxed_result, VariationalResult):
+            circuit = relaxed_result.optimal_circuit.bind_parameters(relaxed_result.optimal_point)
         elif isinstance(self.min_eigen_solver, NumPyMinimumEigensolver):
             statevector = relaxed_result.eigenstate
             circuit = QuantumCircuit(encoding.num_qubits)

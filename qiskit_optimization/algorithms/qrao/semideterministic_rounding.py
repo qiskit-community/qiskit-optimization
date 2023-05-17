@@ -10,15 +10,13 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Semideterministic rounding module"""
-from dataclasses import dataclass
-
-from typing import Optional
+"""Semi-deterministic rounding module"""
+from __future__ import annotations
 
 import numpy as np
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
-
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from .rounding_common import (
     RoundingScheme,
     RoundingContext,
@@ -26,29 +24,26 @@ from .rounding_common import (
 )
 
 
-@dataclass
-class SemideterministicRoundingResult(RoundingResult):
-    """Result of semideterministic rounding"""
-
-
 class SemideterministicRounding(RoundingScheme):
-    """Semideterministic rounding scheme
+    """Semi-deterministic rounding scheme
 
     This is referred to as "Pauli rounding" in
     https://arxiv.org/abs/2111.03167v2.
     """
 
-    def __init__(self, *, seed: Optional[int] = None):
+    def __init__(self, *, atol: float = 1e-8, seed: int | None = None):
         """
         Args:
             seed: Seed for random number generator, which is used to resolve
                 expectation values near zero to either +1 or -1.
+            atol: Absolute tolerance for determining whether an expectation value is zero.
         """
         super().__init__()
-        self.rng = np.random.RandomState(seed)
+        self._rng = np.random.default_rng(seed)
+        self._atol = atol
 
-    def round(self, rounding_context: RoundingContext) -> SemideterministicRoundingResult:
-        """Perform semideterministic rounding
+    def round(self, rounding_context: RoundingContext) -> RoundingResult:
+        """Perform semi-deterministic rounding
 
         Args:
             rounding_context: Rounding context containing information about the problem and solution.
@@ -57,22 +52,18 @@ class SemideterministicRounding(RoundingScheme):
             Result containing the rounded solution.
 
         Raises:
-            NotImplementedError: If the expectation values are not available in the context.
+            QiskitOptimizationError: If the expectation values are not available in the context.
         """
-
-        def sign(val) -> int:
-            return 0 if (val > 0) else 1
-
         if rounding_context.expectation_values is None:
-            raise NotImplementedError(
+            raise QiskitOptimizationError(
                 "Semideterministric rounding requires the expectation values of the ",
                 "``RoundingContext`` to be available, but they are not.",
             )
-        rounded_vars = np.array(
-            [
-                sign(e) if not np.isclose(0, e) else self.rng.randint(2)
-                for e in rounding_context.expectation_values
-            ]
+
+        rounded_vars = np.where(
+            np.isclose(rounding_context.expectation_values, 0, atol=self._atol),
+            self._rng.integers(2, size=len(rounding_context.expectation_values)),
+            np.less_equal(rounding_context.expectation_values, 0).astype(int),
         )
 
         soln_samples = [
@@ -86,7 +77,7 @@ class SemideterministicRounding(RoundingScheme):
             )
         ]
 
-        result = SemideterministicRoundingResult(
+        result = RoundingResult(
             expectation_values=rounding_context.expectation_values, samples=soln_samples
         )
         return result

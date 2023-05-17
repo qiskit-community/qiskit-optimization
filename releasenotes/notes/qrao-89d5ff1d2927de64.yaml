@@ -8,6 +8,16 @@ features:
     Hamiltonian whose ground state can be approximated with standard algorithms such as VQE and
     QAOA, and then rounded to yield approximation solutions of the original problem.
 
+    :class:`~.QuantumRandomAccessOptimizer` has two methods for solving problems,
+    :meth:`~.QuantumRandomAccessOptimizer.solve` and
+    :meth:`~.QuantumRandomAccessOptimizer.solve_relaxed`. The solve method provides a seamless
+    workflow by automatically managing the encoding and rounding procedures, as demonstrated in the
+    example below. This allows for a simplified and streamlined user experience.
+    On the other hand, the solve_relaxed method offers the flexibility to break the computation
+    process into distinct steps. This feature can be  advantageous when we need to compare solutions
+    obtained from different rounding schemes applied to a potential ground state.
+
+
     For example:
 
     .. code-block:: python

@@ -11,10 +11,10 @@
 # that they have been altered from the originals.
 
 """The Quantum Random Access Encoding module."""
+from __future__ import annotations
 
 from collections import defaultdict
 from functools import reduce
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import rustworkx as rx
@@ -27,7 +27,7 @@ from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def _z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
+def _z_to_31p_qrac_basis_circuit(bases: list[int], bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (3,1,p)-QRAC.
 
     Args:
@@ -61,7 +61,7 @@ def _z_to_31p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> Quantum
     return circ
 
 
-def _z_to_21p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> QuantumCircuit:
+def _z_to_21p_qrac_basis_circuit(bases: list[int], bit_flip: int = 0) -> QuantumCircuit:
     """Return the circuit that implements the rotation to the (2,1,p)-QRAC.
 
     Args:
@@ -90,7 +90,7 @@ def _z_to_21p_qrac_basis_circuit(bases: List[int], bit_flip: int = 0) -> Quantum
     return circ
 
 
-def _qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
+def _qrac_state_prep_1q(bit_list: list[int]) -> QuantumCircuit:
     """
     Return the circuit that prepares the state for a (1,1,p), (2,1,p), or (3,1,p)-QRAC.
 
@@ -154,8 +154,8 @@ def _qrac_state_prep_1q(bit_list: List[int]) -> QuantumCircuit:
 
 
 def _qrac_state_prep_multi_qubit(
-    x: List[int],
-    q2vars: List[List[int]],
+    x: list[int],
+    q2vars: list[list[int]],
     max_vars_per_qubit: int,
 ) -> QuantumCircuit:
     """Prepares a multi qubit QRAC state.
@@ -178,7 +178,7 @@ def _qrac_state_prep_multi_qubit(
     # Create a set of all remaining decision variables
     remaining_dvars = set(range(len(x)))
     # Create a list to store the binary mappings of each qubit to its corresponding decision variables
-    variable_mappings: List[List[int]] = []
+    variable_mappings: list[list[int]] = []
     # Check that each qubit is associated with at most max_vars_per_qubit variables
     for qi_vars in q2vars:
         if len(qi_vars) > max_vars_per_qubit:
@@ -188,7 +188,7 @@ def _qrac_state_prep_multi_qubit(
                 f"not {len(qi_vars)} variables."
             )
         # Create a list to store the binary mapping of the current qubit
-        qi_bits: List[int] = []
+        qi_bits: list[int] = []
 
         # Map each decision variable associated with the current qubit to a binary value and add it
         # to the qubit bits
@@ -244,11 +244,11 @@ class QuantumRandomAccessEncoding:
             raise ValueError("max_vars_per_qubit must be 1, 2, or 3")
         self._ops = self.OPERATORS[max_vars_per_qubit - 1]
 
-        self._qubit_op: Optional[SparsePauliOp] = None
-        self._offset: Optional[float] = None
-        self._problem: Optional[QuadraticProgram] = None
-        self._var2op: Dict[int, Tuple[int, SparsePauliOp]] = {}
-        self._q2vars: List[List[int]] = []
+        self._qubit_op: SparsePauliOp | None = None
+        self._offset: float | None = None
+        self._problem: QuadraticProgram | None = None
+        self._var2op: dict[int, tuple[int, SparsePauliOp]] = {}
+        self._q2vars: list[list[int]] = []
         self._frozen = False
 
     @property
@@ -267,12 +267,12 @@ class QuantumRandomAccessEncoding:
         return len(self._ops)
 
     @property
-    def var2op(self) -> Dict[int, Tuple[int, SparsePauliOp]]:
+    def var2op(self) -> dict[int, tuple[int, SparsePauliOp]]:
         """Maps each decision variable to ``(qubit_index, operator)``"""
         return self._var2op
 
     @property
-    def q2vars(self) -> List[List[int]]:
+    def q2vars(self) -> list[list[int]]:
         """Each element contains the list of decision variable indices encoded on that qubit"""
         return self._q2vars
 
@@ -292,23 +292,27 @@ class QuantumRandomAccessEncoding:
         """Relaxed Hamiltonian operator.
 
         Raises:
-            AttributeError: If no objective function has been provided yet, and
-                a qubit Hamiltonian cannot be constructed. Use the `encode` method
-                to manually compile this field.
+            RuntimeError: If the objective function has not been set yet. Use the ``encode`` method
+                to construct the Hamiltonian, or make sure that the objective function has been set.
         """
         if self._qubit_op is None:
-            raise AttributeError(
+            raise RuntimeError(
                 "Cannot return the relaxed Hamiltonian operator: no objective function has been "
-                "provided yet. Please use the ``encode`` method to construct the Hamiltonian, or make "
+                "provided yet. Use the ``encode`` method to construct the Hamiltonian, or make "
                 "sure that the objective function has been set."
             )
         return self._qubit_op
 
     @property
     def offset(self) -> float:
-        """Relaxed Hamiltonian offset"""
+        """Relaxed Hamiltonian offset
+
+        Raises:
+            RuntimeError: If the offset has not been set yet. Use the ``encode`` method to construct
+                the Hamiltonian, or make sure that the objective function has been set.
+        """
         if self._offset is None:
-            raise AttributeError(
+            raise RuntimeError(
                 "Cannot return the relaxed Hamiltonian offset: The offset attribute cannot be "
                 "accessed until the ``encode`` method has been called to generate the qubit "
                 "Hamiltonian. Please call ``encode`` first."
@@ -317,9 +321,14 @@ class QuantumRandomAccessEncoding:
 
     @property
     def problem(self) -> QuadraticProgram:
-        """The ``QuadraticProgram``  encoding a QUBO optimization problem"""
+        """The ``QuadraticProgram``  encoding a QUBO optimization problem
+
+        Raises:
+            RuntimeError: If the ``QuadraticProgram`` has not been set yet. Use the ``encode``
+                method to set the problem.
+        """
         if self._problem is None:
-            raise AttributeError(
+            raise RuntimeError(
                 "This object has not been associated with a ``QuadraticProgram``. "
                 "Please use the ``encode`` method to set the problem."
             )
@@ -330,7 +339,7 @@ class QuantumRandomAccessEncoding:
 
         Once an instance of this class is frozen, ``encode`` can no longer be called.
         """
-        if self._frozen is False:
+        if not self._frozen:
             self._qubit_op = self._qubit_op.simplify()
             self._qubit_op = PauliSumOp(self._qubit_op)
         self._frozen = True
@@ -340,7 +349,7 @@ class QuantumRandomAccessEncoding:
         """Whether the object is frozen or not."""
         return self._frozen
 
-    def _add_variables(self, variables: List[int]) -> None:
+    def _add_variables(self, variables: list[int]) -> None:
         """Add variables to the Encoding object.
 
         Args:
@@ -430,7 +439,7 @@ class QuantumRandomAccessEncoding:
     @staticmethod
     def _generate_ising_coefficients(
         problem: QuadraticProgram,
-    ) -> Tuple[float, np.ndarray, np.ndarray]:
+    ) -> tuple[float, np.ndarray, np.ndarray]:
         """Generate coefficients of Hamiltonian from a given problem."""
         num_vars = problem.get_num_vars()
 
@@ -467,17 +476,17 @@ class QuantumRandomAccessEncoding:
         return offset, linear, quad
 
     @staticmethod
-    def _find_variable_partition(quad: np.ndarray) -> Dict[int, List[int]]:
+    def _find_variable_partition(quad: np.ndarray) -> dict[int, list[int]]:
         """Find the variable partition of the quad based on the node coloring of the graph
 
         Args:
-            quad: coefficients of the quadratic part of the Hamiltonian.
+            coefficients of the quadratic part of the Hamiltonian.
 
         Returns:
-            Dict: a dictionary of the variable partition of the quad based on the node coloring.
+            A dictionary of the variable partition of the quad based on the node coloring.
         """
         # pylint: disable=E1101
-        color2node: Dict[int, List[int]] = defaultdict(list)
+        color2node: dict[int, list[int]] = defaultdict(list)
         num_nodes = quad.shape[0]
         graph = rx.PyGraph()
         graph.add_nodes_from(range(num_nodes))
@@ -557,7 +566,7 @@ class QuantumRandomAccessEncoding:
 
         self.freeze()
 
-    def state_preparation_circuit(self, x: List[int]) -> QuantumCircuit:
+    def state_preparation_circuit(self, x: list[int]) -> QuantumCircuit:
         """
         Generate a circuit that prepares the state corresponding to the given binary string.
 

@@ -10,10 +10,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 """Common classes for rounding schemes"""
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional
 
 from qiskit.circuit import QuantumCircuit
 
@@ -26,30 +26,22 @@ from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 class RoundingResult:
     """Base class for a rounding result"""
 
-    expectation_values: List[float]
+    expectation_values: list[float]
     """Expectation values"""
-    samples: List[SolutionSample]
+    samples: list[SolutionSample]
     """List of samples after rounding"""
 
 
+@dataclass
 class RoundingContext:
     """Information that is provided for rounding"""
 
-    def __init__(
-        self,
-        encoding: QuantumRandomAccessEncoding,
-        expectation_values: List[float],
-        circuit: Optional[QuantumCircuit] = None,
-    ):
-        """
-        Args:
-            encoding: Encoding containing the problem information.
-            expectation_values: Expectation values of the encoding.
-            circuit: circuit corresponding to the encoding and expectation values.
-        """
-        self.encoding = encoding
-        self.expectation_values = expectation_values
-        self.circuit = circuit
+    encoding: QuantumRandomAccessEncoding
+    """Encoding containing the problem information."""
+    expectation_values: list[float]
+    """Expectation values for the relaxed Hamiltonian."""
+    circuit: QuantumCircuit | None = None
+    """Circuit corresponding to the encoding and expectation values."""
 
 
 class RoundingScheme(ABC):

@@ -11,10 +11,11 @@
 # that they have been altered from the originals.
 
 """Magic basis rounding module"""
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -38,15 +39,17 @@ class MagicRoundingResult(RoundingResult):
     """The bases used for the magic rounding"""
     basis_shots: np.ndarray
     """The number of shots used for each basis"""
-    basis_counts: List[Dict[str, int]]
+    basis_counts: list[dict[str, int]]
     """The basis_counts represents the resulting counts obtained by measuring with the bases
     corresponding to the number of shots specified in basis_shots."""
 
 
 class MagicRounding(RoundingScheme):
-    """Magic rounding scheme
+    """Magic rounding scheme that measures in magic bases, and then uses the measurement results
+    to round the solution. Since the magic rounding is based on the measurement results, it
+    requires a quantum backend, which can be either hardware or a simulator.
 
-    This scheme is described in https://arxiv.org/abs/2111.03167v2.
+    The details are described in https://arxiv.org/abs/2111.03167v2.
     """
 
     _DECODING = {
@@ -70,7 +73,7 @@ class MagicRounding(RoundingScheme):
         self,
         sampler: Sampler,
         basis_sampling: str = "uniform",
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ):
         """
         Args:
@@ -96,7 +99,7 @@ class MagicRounding(RoundingScheme):
                 "Please choose either 'uniform' or 'weighted'."
             )
         self._sampler = sampler
-        self.rng = np.random.RandomState(seed)
+        self._rng = np.random.default_rng(seed)
         self._basis_sampling = basis_sampling
         self._shots = None
         super().__init__()
@@ -114,7 +117,7 @@ class MagicRounding(RoundingScheme):
     @staticmethod
     def _make_circuits(
         circuit: QuantumCircuit, bases: np.ndarray, vars_per_qubit: int
-    ) -> List[QuantumCircuit]:
+    ) -> list[QuantumCircuit]:
         """Make a list of circuits to measure in the given magic bases.
 
         Args:
@@ -124,7 +127,13 @@ class MagicRounding(RoundingScheme):
 
         Returns:
             List of quantum circuits to measure in the given magic bases.
+
+        Raises:
+            ValueError: If ``vars_per_qubit`` is not 1, 2, or 3.
         """
+        if vars_per_qubit not in (1, 2, 3):
+            raise ValueError("vars_per_qubit must be 1, 2, or 3.")
+
         circuits = []
         for basis in bases:
             if vars_per_qubit == 3:
@@ -143,7 +152,7 @@ class MagicRounding(RoundingScheme):
         bases: np.ndarray,
         basis_shots: np.ndarray,
         vars_per_qubit: int,
-    ) -> List[Dict[str, int]]:
+    ) -> list[dict[str, int]]:
         """
         Given a quantum circuit to measure, a list of magic bases to measure, and a list of the
         shots to use for each magic basis configuration, measure the provided circuit in the magic
@@ -156,7 +165,7 @@ class MagicRounding(RoundingScheme):
             vars_per_qubit: The number of decision variables per qubit.
 
         Returns:
-            List[Dict[str, int]]: A list of counts dictionaries associated with each basis measurement.
+            A list of counts dictionaries associated with each basis measurement.
 
         Raises:
             AlgorithmError: If the primitive job failed.
@@ -166,8 +175,8 @@ class MagicRounding(RoundingScheme):
         # Batch the circuits into jobs where each group has the same number of
         # shots, so that you can wait for the queue as few times as possible if
         # using hardware.
-        circuit_indices_by_shots: Dict[int, List[int]] = defaultdict(list)
-        basis_counts: List[Optional[Dict[str, int]]] = [None] * len(circuits)
+        circuit_indices_by_shots: dict[int, list[int]] = defaultdict(list)
+        basis_counts: list[dict[str, int] | None] = [None] * len(circuits)
         assert len(circuits) == len(basis_shots)
         for i, shots in enumerate(basis_shots):
             circuit_indices_by_shots[shots].append(i)
@@ -198,10 +207,10 @@ class MagicRounding(RoundingScheme):
     def _unpack_measurement_outcome(
         self,
         bits: str,
-        basis: List[int],
-        var2op: Dict[int, Tuple[int, SparsePauliOp]],
+        basis: list[int],
+        var2op: dict[int, tuple[int, SparsePauliOp]],
         vars_per_qubit: int,
-    ) -> List[int]:
+    ) -> list[int]:
         """
         Given a measurement outcome, a magic basis, and a mapping from decision variables to
         Pauli operators, return the values of the decision variables.
@@ -213,7 +222,7 @@ class MagicRounding(RoundingScheme):
             vars_per_qubit: The number of decision variables per qubit.
 
         Returns:
-            List[int]: The values of the decision variables.
+            The values of the decision variables.
         """
         output_bits = []
         # iterate in order over decision variables
@@ -235,9 +244,9 @@ class MagicRounding(RoundingScheme):
 
     def _compute_dv_counts(
         self,
-        basis_counts: List[Dict[str, int]],
-        bases: np.ndarray[Any, Any],
-        var2op: Dict[int, Tuple[int, SparsePauliOp]],
+        basis_counts: list[dict[str, int]],
+        bases: np.ndarray,
+        var2op: dict[int, tuple[int, SparsePauliOp]],
         vars_per_qubit: int,
     ):
         """
@@ -254,7 +263,7 @@ class MagicRounding(RoundingScheme):
         Returns:
             A dictionary of counts for each decision variable configuration.
         """
-        dv_counts: Dict[str, int] = defaultdict(int)
+        dv_counts: dict[str, int] = defaultdict(int)
         for base, counts in zip(bases, basis_counts):
             # For each measurement outcome...
             for bitstr, count in counts.items():
@@ -265,8 +274,8 @@ class MagicRounding(RoundingScheme):
         return dv_counts
 
     def _sample_bases_uniform(
-        self, q2vars: List[List[int]], vars_per_qubit: int
-    ) -> Tuple[np.ndarray, np.ndarray]:
+        self, q2vars: list[list[int]], vars_per_qubit: int
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Sample measurement bases for each qubit uniformly at random.
 
@@ -288,15 +297,15 @@ class MagicRounding(RoundingScheme):
                 the bases array.
         """
         bases_ = [
-            self.rng.choice(2 ** (vars_per_qubit - 1), size=len(q2vars)).tolist()
+            self._rng.choice(2 ** (vars_per_qubit - 1), size=len(q2vars)).tolist()
             for _ in range(self._shots)
         ]
         bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 
     def _sample_bases_weighted(
-        self, q2vars: List[List[int]], expectation_values: List[float], vars_per_qubit: int
-    ) -> Tuple[np.ndarray, np.ndarray]:
+        self, q2vars: list[list[int]], expectation_values: list[float], vars_per_qubit: int
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Perform weighted sampling from the expectation values. The goal is to make smarter choices
         about which bases to measure in using the expectation values.
@@ -319,7 +328,6 @@ class MagicRounding(RoundingScheme):
                 corresponds to the number of shots to use for the corresponding basis in
                 the bases array.
         """
-        # pylint: disable=C0401
         # First, we make sure all Pauli expectation values have absolute value
         # at most 1.  Otherwise, some of the probabilities computed below might
         # be negative.
@@ -333,6 +341,10 @@ class MagicRounding(RoundingScheme):
                 x = 0.5 * (1 - clipped_expectation_values[dvars[0]])
                 y = 0.5 * (1 - clipped_expectation_values[dvars[1]]) if (len(dvars) > 1) else 0
                 z = 0.5 * (1 - clipped_expectation_values[dvars[2]]) if (len(dvars) > 2) else 0
+                # In the coefficient of the Pauli operator within the magic bases, 'p' represents a
+                # positive sign, while 'm' signifies a negative sign.
+                # The four combinations of these signs are used to define the quantum system behavior
+                #  in the context of magic bases.
                 # ppp:   mu±   = .5(I ± 1/sqrt(3)( X + Y + Z))
                 # pmm: X mu± X = .5(I ± 1/sqrt(3)( X - Y - Z))
                 # mpm: Y mu± Y = .5(I ± 1/sqrt(3)(-X + Y - Z))
@@ -347,6 +359,10 @@ class MagicRounding(RoundingScheme):
             elif vars_per_qubit == 2:
                 x = 0.5 * (1 - clipped_expectation_values[dvars[0]])
                 z = 0.5 * (1 - clipped_expectation_values[dvars[1]]) if (len(dvars) > 1) else 0
+                # In the coefficient of the Pauli operator within the magic bases, 'p' represents a
+                # positive sign, while 'm' signifies a negative sign.
+                # The two combinations of these signs are used to define the quantum system behavior
+                #  in the context of magic bases.
                 # pp:   xi±   = .5(I ± 1/sqrt(2)( X + Z ))
                 # pm: X xi± X = .5(I ± 1/sqrt(2)( X - Z ))
                 # fmt: off
@@ -358,7 +374,7 @@ class MagicRounding(RoundingScheme):
                 basis_probs.append([1.0])
         bases_ = [
             [
-                self.rng.choice(2 ** (vars_per_qubit - 1), p=[p.real for p in probs])
+                self._rng.choice(2 ** (vars_per_qubit - 1), p=[p.real for p in probs])
                 for probs in basis_probs
             ]
             for _ in range(self._shots)
@@ -376,8 +392,10 @@ class MagicRounding(RoundingScheme):
             MagicRoundingResult: The results of the magic rounding process.
 
         Raises:
-            NotImplementedError: If the circuit is not available for magic rounding.
+            ValueError: If the circuit is not available for magic rounding.
             ValueError: If the sampler is not configured with a number of shots.
+            ValueError: If the expectation values are not available for magic rounding with the
+                weighted sampling.
         """
         expectation_values = rounding_context.expectation_values
         circuit = rounding_context.circuit
@@ -386,9 +404,9 @@ class MagicRounding(RoundingScheme):
         vars_per_qubit = rounding_context.encoding.max_vars_per_qubit
 
         if circuit is None:
-            raise NotImplementedError(
+            raise ValueError(
                 "Magic rounding requires a circuit to be available.  Perhaps try "
-                "semideterministic rounding instead."
+                "Semideterministic rounding instead."
             )
 
         if self._sampler.options.get("shots") is None:
@@ -403,7 +421,7 @@ class MagicRounding(RoundingScheme):
         else:
             # weighted sampling
             if expectation_values is None:
-                raise NotImplementedError(
+                raise ValueError(
                     "Magic rounding with weighted sampling requires the expectation values of the "
                     "``RoundingContext`` to be available, but they are not."
                 )
@@ -436,7 +454,9 @@ class MagicRounding(RoundingScheme):
         assert np.isclose(
             sum(soln_counts.values()), self._shots
         ), f"{sum(soln_counts.values())} != {self._shots}"
-        assert len(bases) == len(basis_shots) == len(basis_counts)
+        assert (
+            len(bases) == len(basis_shots) == len(basis_counts)
+        ), f"{bases}, {basis_shots}, {basis_counts} are not the same length"
 
         # Create a MagicRoundingResult object to return
         return MagicRoundingResult(

@@ -33,7 +33,7 @@ from qiskit_optimization.algorithms.qrao import (
     QuantumRandomAccessOptimizationResult,
     QuantumRandomAccessOptimizer,
     RoundingContext,
-    SemideterministicRoundingResult,
+    RoundingResult,
 )
 from qiskit_optimization.problems import QuadraticProgram
 
@@ -166,7 +166,7 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(
             results.relaxed_result.aux_operators_evaluated[2][0], 0.80178, places=5
         )
-        self.assertIsInstance(results.rounding_result, SemideterministicRoundingResult)
+        self.assertIsInstance(results.rounding_result, RoundingResult)
         self.assertAlmostEqual(results.rounding_result.expectation_values[0], 0.26726, places=5)
         self.assertAlmostEqual(results.rounding_result.expectation_values[1], 0.53452, places=5)
         self.assertAlmostEqual(results.rounding_result.expectation_values[2], 0.80178, places=5)
