@@ -40,7 +40,7 @@ features:
         qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
         result = qrao.solve(problem)
 
-        # solve_relazed() only performs the optimization. The encoding and rounding must be done manually.
+        # solve_relaxed() only performs the optimization. The encoding and rounding must be done manually.
         # encoding
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
         encoding.encode(problem)
