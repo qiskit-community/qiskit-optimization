@@ -113,7 +113,7 @@ class MagicRounding(RoundingScheme):
 
     @staticmethod
     def _make_circuits(
-        circuit: QuantumCircuit, bases: np.ndarray[Any, Any], vars_per_qubit: int
+        circuit: QuantumCircuit, bases: np.ndarray, vars_per_qubit: int
     ) -> List[QuantumCircuit]:
         """Make a list of circuits to measure in the given magic bases.
 
