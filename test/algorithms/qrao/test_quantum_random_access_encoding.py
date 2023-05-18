@@ -47,11 +47,8 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         encoding = QuantumRandomAccessEncoding(3)
         self.assertFalse(encoding.frozen)  # frozen is False
         encoding.encode(self.problem)
-        expected_op = PauliSumOp(
-            SparsePauliOp(
-                ["X", "Y", "Z"], coeffs=[-np.sqrt(3) / 2, 2 * -np.sqrt(3) / 2, 3 * -np.sqrt(3) / 2]
-            ),
-            coeff=1.0,
+        expected_op = SparsePauliOp(
+            ["X", "Y", "Z"], coeffs=[-np.sqrt(3) / 2, 2 * -np.sqrt(3) / 2, 3 * -np.sqrt(3) / 2]
         )
 
         self.assertTrue(encoding.frozen)  # frozen is True
@@ -78,14 +75,10 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         encoding = QuantumRandomAccessEncoding(2)
         self.assertFalse(encoding.frozen)  # frozen is False
         encoding.encode(self.problem)
-        expected_op = PauliSumOp(
-            SparsePauliOp(
-                ["XI", "ZI", "IX"],
-                coeffs=[-np.sqrt(2) / 2, 2 * -np.sqrt(2) / 2, 3 * -np.sqrt(2) / 2],
-            ),
-            coeff=1.0,
+        expected_op = SparsePauliOp(
+            ["XI", "ZI", "IX"],
+            coeffs=[-np.sqrt(2) / 2, 2 * -np.sqrt(2) / 2, 3 * -np.sqrt(2) / 2],
         )
-
         self.assertTrue(encoding.frozen)  # frozen is True
         self.assertEqual(encoding.qubit_op, expected_op)
         self.assertEqual(encoding.num_vars, 3)
@@ -110,10 +103,7 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         encoding = QuantumRandomAccessEncoding(1)
         self.assertFalse(encoding.frozen)  # frozen is False
         encoding.encode(self.problem)
-        expected_op = PauliSumOp(
-            SparsePauliOp(["ZII", "IZI", "IIZ"], coeffs=[-0.5, -1.0, -1.5]),
-            coeff=1.0,
-        )
+        expected_op = SparsePauliOp(["ZII", "IZI", "IIZ"], coeffs=[-0.5, -1.0, -1.5])
 
         self.assertTrue(encoding.frozen)  # frozen is True
         self.assertEqual(encoding.qubit_op, expected_op)
@@ -184,7 +174,7 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         verifier = EncodingCommutationVerifier(encoding)
         self.assertEqual(len(verifier), 2**encoding.num_vars)
         for _, obj_val, encoded_obj_val in verifier:
-            np.testing.assert_allclose(obj_val, encoded_obj_val)
+            np.testing.assert_allclose(obj_val, encoded_obj_val, atol=1e-5)
 
     def test_encoding_commutation_verifier(self):
         """Test EncodingCommutationVerifier"""

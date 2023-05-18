@@ -20,7 +20,6 @@ import numpy as np
 import rustworkx as rx
 
 from qiskit import QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
@@ -341,7 +340,6 @@ class QuantumRandomAccessEncoding:
         """
         if not self._frozen:
             self._qubit_op = self._qubit_op.simplify()
-            self._qubit_op = PauliSumOp(self._qubit_op)
         self._frozen = True
 
     @property

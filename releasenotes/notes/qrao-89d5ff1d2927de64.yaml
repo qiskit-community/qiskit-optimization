@@ -5,8 +5,8 @@ features:
     incorporates Quantum Random Access Codes (QRACs) as a tool to encode multiple classical binary
     variables into a single qubit, thereby saving quantum resources and enabling exploration of
     larger problem instances on a quantum computer. The encodings produce a local quantum
-    Hamiltonian whose ground state can be approximated with standard algorithms such as VQE and
-    QAOA, and then rounded to yield approximation solutions of the original problem.
+    Hamiltonian whose ground state can be approximated with standard algorithms such as VQE,
+    and then rounded to yield approximation solutions of the original problem.
 
     :class:`~.QuantumRandomAccessOptimizer` has two methods for solving problems,
     :meth:`~.QuantumRandomAccessOptimizer.solve` and

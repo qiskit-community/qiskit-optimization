@@ -111,7 +111,8 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         min_eigen_solver: MinimumEigensolver,
         max_vars_per_qubit: int = 3,
         rounding_scheme: RoundingScheme | None = None,
-        **kwargs,
+        *,
+        penalty: float | None = None,
     ):
         """
         Args:
@@ -119,14 +120,23 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             max_vars_per_qubit: The maximum number of decision variables per qubit.
             rounding_scheme: The rounding scheme.  If ``None`` is provided,
                 ``SemideterministicRounding()`` will be used.
+            penalty: The penalty factor to use for the ``QuadraticProgramToQubo`` converter.
+
+        Raises:
+            ValueError: If the maximum number of variables per qubit is not 1, 2, or 3.
+            TypeError: If the provided minimum eigensolver does not support auxiliary operators.
         """
+        if max_vars_per_qubit not in (1, 2, 3):
+            raise ValueError("max_vars_per_qubit must be 1, 2, or 3")
+        self._max_vars_per_qubit = max_vars_per_qubit
         self.min_eigen_solver = min_eigen_solver
         # Use ``QuadraticProgramToQubo`` to convert the problem to a QUBO.
+        if rounding_scheme is None:
+            rounding_scheme = SemideterministicRounding()
+        self._rounding_scheme = rounding_scheme
         self._converters: QuadraticProgramConverter = QuadraticProgramToQubo(
-            penalty=kwargs.get("penalty")
+            penalty=penalty,
         )
-        self._max_vars_per_qubit = max_vars_per_qubit
-        self.rounding_scheme = rounding_scheme
 
     @property
     def min_eigen_solver(self) -> MinimumEigensolver:
@@ -159,10 +169,8 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         return self._rounding_scheme
 
     @rounding_scheme.setter
-    def rounding_scheme(self, rounding_scheme: RoundingScheme | None) -> None:
+    def rounding_scheme(self, rounding_scheme: RoundingScheme) -> None:
         """Set the rounding scheme."""
-        if rounding_scheme is None:
-            rounding_scheme = SemideterministicRounding()
         self._rounding_scheme = rounding_scheme
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
@@ -256,7 +264,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         encoding.encode(qubo)
 
         # Solve the relaxed problem
-        (relaxed_result, rounding_context) = self.solve_relaxed(encoding)
+        relaxed_result, rounding_context = self.solve_relaxed(encoding)
 
         # Round the solution
         rounding_result = self.rounding_scheme.round(rounding_context)

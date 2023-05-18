@@ -53,6 +53,8 @@ Algorithms and results
    MinimumEigenOptimizationResult
    MinimumEigenOptimizer
    OptimizationResultStatus
+   QuantumRandomAccessOptimizationResult
+   QuantumRandomAccessOptimizer
    RecursiveMinimumEigenOptimizationResult
    RecursiveMinimumEigenOptimizer
    ScipyMilpOptimizer
@@ -89,6 +91,12 @@ from .optimization_algorithm import (
     OptimizationResultStatus,
     SolutionSample,
 )
+
+from .qrao import (
+    QuantumRandomAccessOptimizer,
+    QuantumRandomAccessOptimizationResult,
+)
+
 from .recursive_minimum_eigen_optimizer import (
     RecursiveMinimumEigenOptimizer,
     RecursiveMinimumEigenOptimizationResult,
@@ -123,6 +131,8 @@ __all__ = [
     "MinimumEigenOptimizer",
     "MinimumEigenOptimizationResult",
     "MultiStartOptimizer",
+    "QuantumRandomAccessOptimizer",
+    "QuantumRandomAccessOptimizationResult",
     "RecursiveMinimumEigenOptimizer",
     "RecursiveMinimumEigenOptimizationResult",
     "IntermediateResult",
