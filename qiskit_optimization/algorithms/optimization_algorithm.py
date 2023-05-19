@@ -104,8 +104,8 @@ class OptimizationResult:
         fval: float | None,
         variables: List[Variable],
         status: OptimizationResultStatus,
-        raw_results: Any | None,
-        samples: List[SolutionSample] | None,
+        raw_results: Any | None = None,
+        samples: List[SolutionSample] | None = None,
     ) -> None:
         """
         Args:
@@ -377,7 +377,7 @@ class OptimizationAlgorithm(ABC):
     @staticmethod
     def _prepare_converters(
         converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
-        penalty: float | None,
+        penalty: float | None = None,
     ) -> List[QuadraticProgramConverter]:
         """Prepare a list of converters from the input.
 

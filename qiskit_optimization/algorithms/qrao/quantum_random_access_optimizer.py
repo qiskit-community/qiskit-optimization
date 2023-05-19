@@ -127,7 +127,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             TypeError: If the provided minimum eigensolver does not support auxiliary operators.
         """
         if max_vars_per_qubit not in (1, 2, 3):
-            raise ValueError("max_vars_per_qubit must be 1, 2, or 3")
+            raise ValueError("max_vars_per_qubit must be 1, 2, or 3, but was {max_vars_per_qubit}.")
         self._max_vars_per_qubit = max_vars_per_qubit
         self.min_eigen_solver = min_eigen_solver
         # Use ``QuadraticProgramToQubo`` to convert the problem to a QUBO.
