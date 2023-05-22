@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from qiskit.primitives import BaseEstimator, Estimator
+from qiskit.primitives import BaseEstimator
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 
@@ -24,20 +24,14 @@ from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 class EncodingCommutationVerifier:
     """Class for verifying that the relaxation commutes with the objective function."""
 
-    def __init__(
-        self, encoding: QuantumRandomAccessEncoding, estimator: BaseEstimator | None = None
-    ):
+    def __init__(self, encoding: QuantumRandomAccessEncoding, estimator: BaseEstimator):
         """
         Args:
             encoding: The encoding to verify.
-            estimator: The estimator to use for the verification. If None, qiskit.primitives
-            Estimator will be used by default.
+            estimator: The estimator to use for the verification.
         """
         self._encoding = encoding
-        if estimator is not None:
-            self._estimator = estimator
-        else:
-            self._estimator = Estimator()
+        self._estimator = estimator
 
     def __len__(self) -> int:
         return 2**self._encoding.num_vars

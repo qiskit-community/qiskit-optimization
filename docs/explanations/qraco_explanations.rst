@@ -162,7 +162,7 @@ associated respectively with the :math:`(1,1,1), (2,1,p),` and
    (2,1,p)\qquad &F^{(2)}(m): \\{-1,1\\}^2 &\mapsto\ \vert\psi^{(2)}_m\rangle \langle\psi^{(2)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{2}}\big({m_0}X+ {m_1}Z \big)\right)  \\
    (3,1,p)\qquad &F^{(3)}(m): \\{-1,1\\}^3 &\mapsto\ \vert\psi^{(3)}_m\rangle \langle\psi^{(3)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{3}}\big({m_0}X+ {m_1}Y + {m_2}Z\big)\right) \\ \end{array}
 
- 
+
 
 .. math:: \text{Table 1: Explicit QRAC States}
 
@@ -195,7 +195,7 @@ the QRAC.
     &\rho = F^{(3)}(m_0,m_1,m_2) & \sqrt{3}\cdot\text{Tr}\big(\rho X\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Y\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Z\big)
    \end{array}
 
- 
+
 
 .. math::  \text{Table 2: Bit recovery from QRAC States}
 
@@ -342,7 +342,7 @@ will have a :math:`2^{-n}` and :math:`4^{-n}` probability of picking the
 correct basis on each qubit to perfectly extract the solution :math:`m`.
 Put differently, if we are given an unknown state :math:`F(m)` the
 probability that :math:`\mathcal{M}^{\otimes n}(F(m))\mapsto F(m)`
-decreases exponentially with the number of qubits measured – it is far
+decreases exponentially with the number of qubits measured - it is far
 more likely to be mapped to some other :math:`F(m^*)`. Similarly, when
 we perform magic rounding on an arbitrary state
 :math:`\rho_\text{relax}`, we have similarly low odds of randomly
@@ -360,11 +360,9 @@ let :math:`\rho^\*` be the maximal eigenstate of H.
 References
 ----------
 
-[1] B. Fuller, C. Hadfield, J. R. Glick, T. Imamichi, T. Itoko, R. J.
-Thompson, Y. Jiao, M. M. Kagele, A. W. Blom-Schieber, R. Raymond, and A.
-Mezzacapo, “Approximate solutions of combinatorial problems via quantum
+[1] Bryce Fuller et al., “Approximate solutions of combinatorial problems via quantum
 relaxations,” (2021), `arXiv:2111.03167 <https://arxiv.org/pdf/2111.03167.pdf>`__,
 
-[2] Stephen Wiesner, “Conjugate coding,” SIGACT News, vol. 15, issue 1,
-pp. 78–88, 1983.
+[2] Stephen Wiesner, “Conjugate coding,” SIGACT News, vol. 15, issue 1,
+pp. 78-88, 1983.
 `link <http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf>`__

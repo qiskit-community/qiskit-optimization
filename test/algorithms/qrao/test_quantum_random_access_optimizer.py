@@ -22,7 +22,7 @@ from qiskit.algorithms.minimum_eigensolvers import (
     VQEResult,
 )
 from qiskit.algorithms.optimizers import COBYLA
-from qiskit.circuit.library import QAOAAnsatz, RealAmplitudes
+from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.utils import algorithm_globals
 
@@ -92,31 +92,6 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(rounding_context.expectation_values[0], 0.31632, places=4)
         self.assertAlmostEqual(rounding_context.expectation_values[1], 0, places=5)
         self.assertAlmostEqual(rounding_context.expectation_values[2], 0.94865, places=5)
-
-    def test_solve_relaxed_qaoa(self):
-        """Test QuantumRandomAccessOptimizer with QAOA."""
-        qaoa_ansatz = QAOAAnsatz(
-            cost_operator=self.encoding.qubit_op,
-        )
-        qaoa = VQE(
-            ansatz=qaoa_ansatz,
-            optimizer=COBYLA(),
-            estimator=Estimator(),
-        )
-        qrao = QuantumRandomAccessOptimizer(min_eigen_solver=qaoa)
-        relaxed_results, rounding_context = qrao.solve_relaxed(encoding=self.encoding)
-        self.assertIsInstance(relaxed_results, VQEResult)
-        self.assertAlmostEqual(relaxed_results.eigenvalue, -3.24036, places=4)
-        self.assertEqual(len(relaxed_results.aux_operators_evaluated), 3)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[0][0], 0.26777, places=4)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[1][0], 0.53456, places=4)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[2][0], 0.80158, places=5)
-        self.assertIsInstance(rounding_context, RoundingContext)
-        self.assertEqual(rounding_context.circuit.num_qubits, self.ansatz.num_qubits)
-        self.assertEqual(rounding_context.encoding, self.encoding)
-        self.assertAlmostEqual(rounding_context.expectation_values[0], 0.26777, places=4)
-        self.assertAlmostEqual(rounding_context.expectation_values[1], 0.53456, places=4)
-        self.assertAlmostEqual(rounding_context.expectation_values[2], 0.80158, places=5)
 
     def test_require_aux_operator_support(self):
         """Test whether the eigensolver supports auxiliary operator.

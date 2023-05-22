@@ -20,7 +20,7 @@ import numpy as np
 import networkx as nx
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.opflow import PauliSumOp
+from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_optimization.algorithms.qrao import (
@@ -171,7 +171,8 @@ class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
         """Utility function to check that the problem commutes with its encoding"""
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=max_vars_per_qubit)
         encoding.encode(problem)
-        verifier = EncodingCommutationVerifier(encoding)
+        estimator = Estimator()
+        verifier = EncodingCommutationVerifier(encoding, estimator)
         self.assertEqual(len(verifier), 2**encoding.num_vars)
         for _, obj_val, encoded_obj_val in verifier:
             np.testing.assert_allclose(obj_val, encoded_obj_val, atol=1e-5)

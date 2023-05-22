@@ -13,17 +13,18 @@
 """Magic basis rounding module"""
 from __future__ import annotations
 
-from dataclasses import dataclass
-
 from collections import defaultdict
+from dataclasses import dataclass
 
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.algorithms.exceptions import AlgorithmError
-from qiskit.primitives import Sampler
+from qiskit.primitives import BaseSampler
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
+from qiskit_optimization.exceptions import QiskitOptimizationError
+
 from .quantum_random_access_encoding import (
     _z_to_21p_qrac_basis_circuit,
     _z_to_31p_qrac_basis_circuit,
@@ -71,7 +72,7 @@ class MagicRounding(RoundingScheme):
 
     def __init__(
         self,
-        sampler: Sampler,
+        sampler: BaseSampler,
         basis_sampling: str = "uniform",
         seed: int | None = None,
     ):
@@ -105,8 +106,8 @@ class MagicRounding(RoundingScheme):
         super().__init__()
 
     @property
-    def sampler(self) -> Sampler:
-        """Returns the ``Sampler`` used to sample the magic bases."""
+    def sampler(self) -> BaseSampler:
+        """Returns the Sampler used to sample the magic bases."""
         return self._sampler
 
     @property
@@ -169,6 +170,11 @@ class MagicRounding(RoundingScheme):
 
         Raises:
             AlgorithmError: If the primitive job failed.
+            QiskitOptimizationError: If the number of circuits and the number of basis types are
+                not the same.
+            QiskitOptimizationError: If the number of circuits and the results from the primitive
+                job are not the same.
+            QiskitOptimizationError: If some of the results from the primitive job are not collected.
         """
         circuits = self._make_circuits(circuit, bases, vars_per_qubit)
         # Execute each of the rotated circuits and collect the results
@@ -177,7 +183,12 @@ class MagicRounding(RoundingScheme):
         # using hardware.
         circuit_indices_by_shots: dict[int, list[int]] = defaultdict(list)
         basis_counts: list[dict[str, int] | None] = [None] * len(circuits)
-        assert len(circuits) == len(basis_shots)
+        if len(circuits) != len(basis_shots):
+            raise QiskitOptimizationError(
+                "The number of circuits and the number of basis types must be the same, "
+                f"{len(circuits)} != {len(basis_shots)}."
+            )
+
         for i, shots in enumerate(basis_shots):
             circuit_indices_by_shots[shots].append(i)
 
@@ -187,15 +198,22 @@ class MagicRounding(RoundingScheme):
                 result = job.result()
             except Exception as exc:
                 raise AlgorithmError(
-                    "The primitive job to evaluate the magic state failed!"
+                    "The primitive job to evaluate the magic state failed."
                 ) from exc
 
             counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
-            assert len(indices) == len(counts_list)
+            if len(counts_list) != len(indices):
+                raise QiskitOptimizationError(
+                    "The number of circuits and the results from the primitive job must be the same,"
+                    f"{len(indices)} != {len(counts_list)}."
+                )
             for i, counts in zip(indices, counts_list):
                 basis_counts[i] = counts
 
-        assert None not in basis_counts
+        if None in basis_counts:
+            raise QiskitOptimizationError(
+                "Some basis counts were not collected. Please check the primitive job."
+            )
 
         basis_counts = [
             {key: val * basis_shots[i] for key, val in counts.items()}

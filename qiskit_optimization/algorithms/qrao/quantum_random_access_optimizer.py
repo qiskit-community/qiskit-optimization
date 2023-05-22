@@ -13,7 +13,7 @@
 """Quantum Random Access Optimizer class."""
 from __future__ import annotations
 
-import time
+import timeit
 from typing import cast
 
 import numpy as np
@@ -213,11 +213,11 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         variable_ops = [encoding._term2op(i) for i in range(encoding.num_vars)]
 
         # Solve the relaxed problem
-        start_time_relaxed = time.time()
+        start_time_relaxed = timeit.default_timer()
         relaxed_result = self.min_eigen_solver.compute_minimum_eigenvalue(
             encoding.qubit_op, aux_operators=variable_ops
         )
-        relaxed_result.time_taken = time.time() - start_time_relaxed
+        relaxed_result.time_taken = timeit.default_timer() - start_time_relaxed
 
         # Get auxiliary expectation values for rounding.
         if relaxed_result.aux_operators_evaluated is not None:

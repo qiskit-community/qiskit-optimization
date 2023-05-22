@@ -117,6 +117,8 @@ mdl
 milp
 minimizer
 minimumeigenoptimizer
+mmp
+mpm
 multiset
 mypy
 nannicini
@@ -144,8 +146,10 @@ parikh
 pauli
 paulis
 peleato
+pmm
 pooya
 pos
+ppp
 pre
 preprint
 prepend
