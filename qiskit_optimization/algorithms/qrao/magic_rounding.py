@@ -314,10 +314,7 @@ class MagicRounding(RoundingScheme):
                 corresponds to the number of shots to use for the corresponding basis in
                 the bases array.
         """
-        bases_ = [
-            self._rng.choice(2 ** (vars_per_qubit - 1), size=len(q2vars)).tolist()
-            for _ in range(self._shots)
-        ]
+        bases_ = self._rng.choice(2 ** (vars_per_qubit - 1), size=(self._shots, len(q2vars)))
         bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 
@@ -390,13 +387,14 @@ class MagicRounding(RoundingScheme):
                 basis_probs.append([pp_mm, pm_mp])
             elif vars_per_qubit == 1:
                 basis_probs.append([1.0])
-        bases_ = [
+        bases_ = np.array(
             [
-                self._rng.choice(2 ** (vars_per_qubit - 1), p=[p.real for p in probs])
+                self._rng.choice(
+                    2 ** (vars_per_qubit - 1), p=[p.real for p in probs], size=self._shots
+                )
                 for probs in basis_probs
             ]
-            for _ in range(self._shots)
-        ]
+        ).T
         bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 

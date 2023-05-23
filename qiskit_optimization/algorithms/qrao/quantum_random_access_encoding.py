@@ -232,7 +232,7 @@ class QuantumRandomAccessEncoding:
 
     # This defines the convention of the Pauli operators (and their ordering)
     # for each encoding.
-    OPERATORS = (
+    _OPERATORS = (
         (SparsePauliOp("Z"),),  # (1,1,1) QRAC
         (SparsePauliOp("X"), SparsePauliOp("Z")),  # (2,1,p) QRAC, p ≈ 0.85
         (SparsePauliOp("X"), SparsePauliOp("Y"), SparsePauliOp("Z")),  # (3,1,p) QRAC, p ≈ 0.79
@@ -241,7 +241,7 @@ class QuantumRandomAccessEncoding:
     def __init__(self, max_vars_per_qubit: int = 3):
         if max_vars_per_qubit not in (1, 2, 3):
             raise ValueError("max_vars_per_qubit must be 1, 2, or 3")
-        self._ops = self.OPERATORS[max_vars_per_qubit - 1]
+        self._ops = self._OPERATORS[max_vars_per_qubit - 1]
 
         self._qubit_op: SparsePauliOp | None = None
         self._offset: float | None = None

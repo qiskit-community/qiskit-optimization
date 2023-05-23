@@ -134,7 +134,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         if rounding_scheme is None:
             rounding_scheme = SemideterministicRounding()
         self._rounding_scheme = rounding_scheme
-        self._converters: QuadraticProgramConverter = QuadraticProgramToQubo(
+        self._converters = QuadraticProgramToQubo(
             penalty=penalty,
         )
 
