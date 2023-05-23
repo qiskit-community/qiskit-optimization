@@ -72,10 +72,10 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         np.testing.assert_allclose(rounding_result.bases, [[0], [1], [2], [3]])
         np.testing.assert_allclose(rounding_result.basis_shots, [2522, 2489, 2566, 2423])
         expected_basis_counts = [
-            {'0': 2423.0, '1': 99.0},
-            {'0': 462.0, '1': 2027.0},
-            {'0': 861.0, '1': 1705.0},
-            {'0': 1220.0, '1': 1203.0},
+            {"0": 2423.0, "1": 99.0},
+            {"0": 462.0, "1": 2027.0},
+            {"0": 861.0, "1": 1705.0},
+            {"0": 1220.0, "1": 1203.0},
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
             self.assertEqual(basis_counts, expected_basis_counts[i])

@@ -31,7 +31,7 @@ from qiskit_optimization.algorithms import (
     OptimizationResultStatus,
     SolutionSample,
 )
-from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
+from qiskit_optimization.converters import QuadraticProgramToQubo
 from qiskit_optimization.problems import QuadraticProgram, Variable
 
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
