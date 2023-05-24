@@ -39,6 +39,7 @@ Next Steps
     Migration Guide <migration/index>
     Tutorials <tutorials/index>
     API Reference <apidocs/qiskit_optimization>
+    Explanations <explanations/index>
     Release Notes <release_notes>
     GitHub <https://github.com/Qiskit/qiskit-optimization>
 

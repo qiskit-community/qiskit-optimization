@@ -282,8 +282,8 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
 
         Args:
             problem: The ``QuadraticProgram`` to be solved.
-            encoding: The ``QuantumRandomAccessEncoding``, which must have already been ``encode()``ed
-                with the corresponding problem.
+            encoding: The ``QuantumRandomAccessEncoding``, for which ``encode()`` must have already
+                been called with the corresponding problem.
             relaxed_result: The relaxed result of the minimum eigensolver.
             rounding_result: The result of the rounding scheme.
 

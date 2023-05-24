@@ -25,13 +25,14 @@ approximated with standard algorithms such as VQE, and then rounded to yield app
 of the original problem.
 
 QRAO through a series of 3 classes:
+
 * The encoding class (:class:`~.QuantumRandomAccessEncoding`): This class encodes the original
-    problem into a relaxed problem that requires fewer resources to solve.
+  problem into a relaxed problem that requires fewer resources to solve.
 * The rounding schemes (:class:`~.SemideterministicRounding` and :class:`~.MagicRounding`): This
-    scheme is used to round the solution obtained from the relaxed problem back to a solution of
-    the original problem.
+  scheme is used to round the solution obtained from the relaxed problem back to a solution of
+  the original problem.
 * The optimizer class (:class:`~.QuantumRandomAccessOptimizer`): This class performs the high-level
-    optimization algorithm, utilizing the capabilities of the encoding class and the rounding scheme.
+  optimization algorithm, utilizing the capabilities of the encoding class and the rounding scheme.
 
 :class:`~.QuantumRandomAccessOptimizer` has two methods for solving problems,
 :meth:`~.QuantumRandomAccessOptimizer.solve` and
