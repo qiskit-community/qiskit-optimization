@@ -276,8 +276,8 @@ we need a strategy for mapping :math:`\rho_\text{relax}` to the image of
 In [1] there are two strategies proposed for rounding
 :math:`\rho_\text{relax}` back to :math:`m \in \\{-1,1\\}^M`.
 
-semi-deterministic Rounding
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Semi-deterministic Rounding
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A natural choice for extracting a solution is to use the results of
 Table :math:`2` and simply estimate
