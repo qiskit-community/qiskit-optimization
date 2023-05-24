@@ -10,7 +10,7 @@ Relaxations
 Consider a binary optimization problem defined on binary variables
 :math:`m_i \in \\{-1,1\\}`. The choice of using :math:`\pm 1` variables
 instead of :math:`0/1` variables is not important, but will be
-notationally convenient for us when we begin to re-cast this problem in
+convenient in terms of notation when we begin to re-cast this problem in
 terms of quantum observables. We will be primarily interested in
 `quadratic unconstrained binary optimization
 (QUBO) <https://en.wikipedia.org/wiki/Quadratic_unconstrained_binary_optimization>`__
@@ -32,7 +32,7 @@ continuous variables. Once a solution is obtained for the relaxed
 problem, the solver must find a strategy for extracting a discrete
 solution from the relaxed solution of continuous values. This process of
 mapping the relaxed solution back onto original problem’s set of
-admissable solutions is often referred to as **rounding**.
+admissible solutions is often referred to as **rounding**.
 
 For a concrete example of relaxation and rounding, see the
 `Goemans-Williamson Algorithm for
@@ -114,7 +114,7 @@ using continuous values.
 
 Crucially, a relaxation is only useful if there is some practical way to
 **round** relaxed solutions back onto the original problem’s set of
-admissable solutions. For this particular quantum relaxation, the
+admissible solutions. For this particular quantum relaxation, the
 rounding scheme is simply given by measuring each qubit of our relaxed
 solution in the :math:`Z`-basis. Measurement will project any quantum
 state onto the set of computational basis states, and consequently, onto
@@ -127,7 +127,7 @@ Quantum Random Access Codes were `first outlined in 1983 by Stephen
 Wiesner
 [2] <http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf>`__
 and were used in the context of communication complexity theory. We will
-not be using QRACs in the way they were originally concieved, instead we
+not be using QRACs in the way they were originally conceived, instead we
 are co-opting them to define our quantum relaxations. For this reason
 will not provide a full introduction to RACs or QRACs, but encourage
 interested readers to seek out more information about them.
@@ -166,7 +166,7 @@ associated respectively with the :math:`(1,1,1), (2,1,p),` and
 
 .. math:: \text{Table 1: Explicit QRAC States}
 
-Note that for when using a :math:`(k,1,p)`-QRAC with bistrings
+Note that for when using a :math:`(k,1,p)`-QRAC with bit strings
 :math:`m \in \\{-1,1\\}^M, M > k`, these embeddings scale naturally via
 composition by tensor product.
 
@@ -182,7 +182,7 @@ Recovering Encoded Bits
 
 Given a QRAC state, we can recover the values of the encoded bits by
 estimating the expectation value of each bit’s corresponding observable.
-Note that there is a rescaling factor which depends on the density of
+Note that there is a re-scaling factor which depends on the density of
 the QRAC.
 
 .. math::
@@ -276,7 +276,7 @@ we need a strategy for mapping :math:`\rho_\text{relax}` to the image of
 In [1] there are two strategies proposed for rounding
 :math:`\rho_\text{relax}` back to :math:`m \in \\{-1,1\\}^M`.
 
-Semideterministic Rounding
+semi-deterministic Rounding
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A natural choice for extracting a solution is to use the results of
@@ -304,7 +304,7 @@ to the following rounding scheme.
 Where :math:`X` is a random variable which returns either -1 or 1 with
 equal probability.
 
-Notice that Semideterministic rounding will faithfully recover :math:`m`
+Notice that semi-deterministic rounding will faithfully recover :math:`m`
 from :math:`F(m)` with a failure probability that decreases
 exponentially with the number of shots used to estimate each
 :math:`\text{Tr}(P_{[i]}\rho_\text{relax})`
@@ -334,7 +334,7 @@ as input a state :math:`\rho_\text{relax}` and samples a bitstring
 
 First, notice that for the :math:`(1,1,1)`-QRAC, there is only one basis
 to choose and the magic state rounding scheme is essentially equivalent
-to the semideterministic rounding scheme.
+to the semi-deterministic rounding scheme.
 
 For the :math:`(2,1,p)` and :math:`(3,1,p)` QRACs, if we apply the magic
 state rounding scheme to an :math:`n`-qubit QRAC state :math:`F(m)`, we
