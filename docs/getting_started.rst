@@ -21,7 +21,7 @@ See :ref:`optional_installs` for more information.
 
     .. tab-item:: Start locally
 
-        The simplest way to get started is to follow the `getting started 'Start locally' guide for 
+        The simplest way to get started is to follow the `getting started 'Start locally' guide for
         Qiskit <https://qiskit.org/documentation/getting_started.html>`__
 
         In your virtual environment where you installed Qiskit simply add ``optimization`` to the
@@ -118,7 +118,7 @@ Ready to get going?...
    <div class="tutorials-callout-container">
       <div class="row">
 
-.. customcalloutitem::
+.. qiskit-call-to-action-item::
    :description: Find out about Qiskit Optimization.
    :header: Dive into the tutorials
    :button_link:  ./tutorials/index.html
