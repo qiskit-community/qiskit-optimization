@@ -177,8 +177,6 @@ modindex_common_prefix = ["qiskit_optimization."]
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "qiskit_sphinx_theme"
-
-html_theme_path = [".", qiskit_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     "logo_only": False,
     "display_version": True,
