@@ -15,6 +15,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+import numpy as np
+
 from qiskit.circuit import QuantumCircuit
 
 from qiskit_optimization.algorithms import SolutionSample
@@ -24,12 +26,19 @@ from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 
 @dataclass
 class RoundingResult:
-    """Base class for a rounding result"""
+    """Result of rounding"""
 
     expectation_values: list[float]
     """Expectation values"""
     samples: list[SolutionSample]
     """List of samples after rounding"""
+    bases: np.ndarray | None = None
+    """The bases used for the magic rounding"""
+    basis_shots: np.ndarray | None = None
+    """The number of shots used for each basis for the magic rounding"""
+    basis_counts: list[dict[str, int]] | None = None
+    """The basis_counts represents the resulting counts obtained by measuring with the bases
+    corresponding to the number of shots specified in basis_shots for the magic rounding."""
 
 
 @dataclass

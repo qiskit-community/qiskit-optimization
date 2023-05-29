@@ -20,9 +20,9 @@ from qiskit.primitives import Sampler
 
 from qiskit_optimization.algorithms.qrao import (
     MagicRounding,
-    MagicRoundingResult,
     QuantumRandomAccessEncoding,
     QuantumRandomAccessOptimizer,
+    RoundingResult,
 )
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.problems import QuadraticProgram
@@ -69,7 +69,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         _, rounding_context = qrao.solve_relaxed(encoding=encoding)
         magic_rounding = MagicRounding(sampler, seed=42)
         rounding_result = magic_rounding.round(rounding_context)
-        self.assertIsInstance(rounding_result, MagicRoundingResult)
+        self.assertIsInstance(rounding_result, RoundingResult)
         np.testing.assert_allclose(rounding_result.bases, [[0], [1], [2], [3]])
         np.testing.assert_allclose(rounding_result.basis_shots, [2534, 2527, 2486, 2453])
         expected_basis_counts = [
@@ -110,7 +110,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         sampler = Sampler(options={"shots": 10000, "seed": 42})
         magic_rounding = MagicRounding(sampler, basis_sampling="weighted", seed=42)
         rounding_result = magic_rounding.round(rounding_context)
-        self.assertIsInstance(rounding_result, MagicRoundingResult)
+        self.assertIsInstance(rounding_result, RoundingResult)
         np.testing.assert_allclose(rounding_result.bases, [[0], [1], [2], [3]])
         np.testing.assert_allclose(rounding_result.basis_shots, [4499, 2700, 1574, 1227])
         expected_basis_counts = [

@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -30,19 +29,6 @@ from .quantum_random_access_encoding import (
     _z_to_31p_qrac_basis_circuit,
 )
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
-
-
-@dataclass
-class MagicRoundingResult(RoundingResult):
-    """Result of magic rounding."""
-
-    bases: np.ndarray
-    """The bases used for the magic rounding"""
-    basis_shots: np.ndarray
-    """The number of shots used for each basis"""
-    basis_counts: list[dict[str, int]]
-    """The basis_counts represents the resulting counts obtained by measuring with the bases
-    corresponding to the number of shots specified in basis_shots."""
 
 
 class MagicRounding(RoundingScheme):
@@ -397,14 +383,14 @@ class MagicRounding(RoundingScheme):
         bases, basis_shots = np.unique(bases_, axis=0, return_counts=True)
         return bases, basis_shots
 
-    def round(self, rounding_context: RoundingContext) -> MagicRoundingResult:
+    def round(self, rounding_context: RoundingContext) -> RoundingResult:
         """Perform magic rounding using the given RoundingContext.
 
         Args:
             rounding_context: The context containing the information needed for the rounding.
 
         Returns:
-            MagicRoundingResult: The results of the magic rounding process.
+            RoundingResult: The results of the magic rounding process.
 
         Raises:
             ValueError: If the circuit is not available for magic rounding.
@@ -474,7 +460,7 @@ class MagicRounding(RoundingScheme):
         ), f"{bases}, {basis_shots}, {basis_counts} are not the same length"
 
         # Create a MagicRoundingResult object to return
-        return MagicRoundingResult(
+        return RoundingResult(
             expectation_values=expectation_values,
             samples=soln_samples,
             bases=bases,
