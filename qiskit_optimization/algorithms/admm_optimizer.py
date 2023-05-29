@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -369,7 +369,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             self._state.x0_saved.append(self._state.x0)
             self._state.u_saved.append(self._state.u)
             self._state.z_saved.append(self._state.z)
-            self._state.z_saved.append(self._state.y)
+            self._state.y_saved.append(self._state.y)
 
             self._update_rho(residual, dual_residual)
 
@@ -777,7 +777,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             if primal_residual > self._params.mu_res * dual_residual:
                 self._state.rho = self._params.tau_incr * self._state.rho
             elif dual_residual > self._params.mu_res * primal_residual:
-                self._state.rho = self._params.tau_decr * self._state.rho
+                self._state.rho = self._state.rho / self._params.tau_decr
 
     def _get_constraint_residual(self) -> float:
         """Compute violation of the constraints of the original problem, as:
