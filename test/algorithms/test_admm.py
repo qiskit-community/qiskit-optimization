@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,6 +13,8 @@
 """Tests of the ADMM algorithm."""
 from test import QiskitOptimizationTestCase
 
+from ddt import ddt, data
+
 import numpy as np
 from docplex.mp.model import Model
 from qiskit_optimization.algorithms import CobylaOptimizer
@@ -21,10 +23,13 @@ from qiskit_optimization.algorithms.admm_optimizer import (
     ADMMParameters,
     ADMMOptimizationResult,
     ADMMState,
+    UPDATE_RHO_BY_RESIDUALS,
+    UPDATE_RHO_BY_TEN_PERCENT,
 )
 from qiskit_optimization.translators import from_docplex_mp
 
 
+@ddt
 class TestADMMOptimizer(QiskitOptimizationTestCase):
     """ADMM Optimizer Tests"""
 
@@ -55,7 +60,8 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(solution.status, solution.samples[0].status)
         self.assertAlmostEqual(solution.samples[0].probability, 1.0)
 
-    def test_admm_ex4(self):
+    @data(UPDATE_RHO_BY_TEN_PERCENT, UPDATE_RHO_BY_RESIDUALS)
+    def test_admm_ex4(self, update_rho_strategy):
         """Example 4 as a unit test. Example 4 is reported in:
         Gambella, C., & Simonetto, A. (2020).
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
@@ -77,7 +83,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
+            vary_rho=update_rho_strategy,
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=False,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -127,7 +138,8 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
-    def test_admm_ex5(self):
+    @data(UPDATE_RHO_BY_TEN_PERCENT, UPDATE_RHO_BY_RESIDUALS)
+    def test_admm_ex5(self, update_rho_strategy):
         """Example 5 as a unit test. Example 5 is reported in:
         Gambella, C., & Simonetto, A. (2020).
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
@@ -148,7 +160,12 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
-            rho_initial=1001, beta=1000, factor_c=900, maxiter=100, three_block=False
+            vary_rho=update_rho_strategy,
+            rho_initial=1001,
+            beta=1000,
+            factor_c=900,
+            maxiter=100,
+            three_block=False,
         )
 
         solver = ADMMOptimizer(params=admm_params)
@@ -200,7 +217,8 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
-    def test_admm_ex6(self):
+    @data(UPDATE_RHO_BY_TEN_PERCENT, UPDATE_RHO_BY_RESIDUALS)
+    def test_admm_ex6(self, update_rho_strategy):
         """Example 6 as a unit test. Example 6 is reported in:
         Gambella, C., & Simonetto, A. (2020).
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
@@ -222,6 +240,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(mdl)
 
         admm_params = ADMMParameters(
+            vary_rho=update_rho_strategy,
             rho_initial=1001,
             beta=1000,
             factor_c=900,

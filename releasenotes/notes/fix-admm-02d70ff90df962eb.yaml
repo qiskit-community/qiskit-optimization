@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Fixed incorrect ``rho`` update when ``vary_rho`` is set to ``UPDATE_RHO_BY_RESIDUALS``
+    in :class:`~qiskit_optimization.algorithms.ADMMOptimizer`.
+  - |
+    Fixed incorrect population of ``y_saved`` in :class:`~qiskit_optimization.algorithms.ADMMState`.
