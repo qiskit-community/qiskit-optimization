@@ -194,10 +194,8 @@ class MagicRounding(RoundingScheme):
 
         for shots, indices in sorted(circuit_indices_by_shots.items(), reverse=True):
             try:
-                # print([circuits[i] for i in indices][0])
                 job = self._sampler.run([circuits[i] for i in indices], shots=shots)
                 result = job.result()
-                print(result)
             except Exception as exc:
                 raise AlgorithmError(
                     "The primitive job to evaluate the magic state failed."

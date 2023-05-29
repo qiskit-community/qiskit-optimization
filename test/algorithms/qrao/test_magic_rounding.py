@@ -79,7 +79,6 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             {"0": 1219.0, "1": 1234.0},
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
-            print(basis_counts)
             self.assertEqual(basis_counts, expected_basis_counts[i])
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
@@ -94,9 +93,8 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             make_solution_sample(x=np.array([1, 1, 1]), probability=0.01, problem=self.problem),
         ]
         for i, sample in enumerate(samples):
-            print(sample.x, sample.probability)
-            # np.testing.assert_allclose(sample.x, expected_samples[i].x)
-            # self.assertAlmostEqual(sample.probability, expected_samples[i].probability)
+            np.testing.assert_allclose(sample.x, expected_samples[i].x)
+            self.assertAlmostEqual(sample.probability, expected_samples[i].probability)
         np.testing.assert_allclose(
             rounding_result.expectation_values,
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
@@ -119,27 +117,25 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             {"0": 4352.0, "1": 147.0},
             {"0": 500.0, "1": 2200.0},
             {"0": 528.0, "1": 1046.0},
-            {"0": 597.0, "1": 630.0},
+            {"0": 630.0, "1": 597.0},
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
-            print(basis_counts)
-            # self.assertEqual(basis_counts, expected_basis_counts[i])
+            self.assertEqual(basis_counts, expected_basis_counts[i])
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
             make_solution_sample(x=np.array([0, 0, 0]), probability=0.4352, problem=self.problem),
-            make_solution_sample(x=np.array([0, 0, 1]), probability=0.063, problem=self.problem),
+            make_solution_sample(x=np.array([0, 0, 1]), probability=0.0597, problem=self.problem),
             make_solution_sample(x=np.array([0, 1, 0]), probability=0.1046, problem=self.problem),
             make_solution_sample(x=np.array([0, 1, 1]), probability=0.05, problem=self.problem),
             make_solution_sample(x=np.array([1, 0, 0]), probability=0.22, problem=self.problem),
             make_solution_sample(x=np.array([1, 0, 1]), probability=0.0528, problem=self.problem),
-            make_solution_sample(x=np.array([1, 1, 0]), probability=0.0597, problem=self.problem),
+            make_solution_sample(x=np.array([1, 1, 0]), probability=0.063, problem=self.problem),
             make_solution_sample(x=np.array([1, 1, 1]), probability=0.0147, problem=self.problem),
         ]
         for i, sample in enumerate(samples):
-            print(sample.x, sample.probability)
-            # np.testing.assert_allclose(sample.x, expected_samples[i].x)
-            # self.assertAlmostEqual(sample.probability, expected_samples[i].probability)
+            np.testing.assert_allclose(sample.x, expected_samples[i].x)
+            self.assertAlmostEqual(sample.probability, expected_samples[i].probability)
         np.testing.assert_allclose(
             rounding_result.expectation_values,
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
