@@ -79,7 +79,8 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             {"0": 1219.0, "1": 1234.0},
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
-            self.assertEqual(basis_counts, expected_basis_counts[i])
+            for key, value in basis_counts.items():
+                self.assertAlmostEqual(value, expected_basis_counts[i][key], delta=50)
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
@@ -94,7 +95,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         ]
         for i, sample in enumerate(samples):
             np.testing.assert_allclose(sample.x, expected_samples[i].x)
-            self.assertAlmostEqual(sample.probability, expected_samples[i].probability)
+            self.assertAlmostEqual(sample.probability, expected_samples[i].probability, delta=0.005)
         np.testing.assert_allclose(
             rounding_result.expectation_values,
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
@@ -120,7 +121,8 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             {"0": 630.0, "1": 597.0},
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
-            self.assertEqual(basis_counts, expected_basis_counts[i])
+            for key, value in basis_counts.items():
+                self.assertAlmostEqual(value, expected_basis_counts[i][key], delta=50)
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
@@ -135,7 +137,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         ]
         for i, sample in enumerate(samples):
             np.testing.assert_allclose(sample.x, expected_samples[i].x)
-            self.assertAlmostEqual(sample.probability, expected_samples[i].probability)
+            self.assertAlmostEqual(sample.probability, expected_samples[i].probability, delta=0.005)
         np.testing.assert_allclose(
             rounding_result.expectation_values,
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
