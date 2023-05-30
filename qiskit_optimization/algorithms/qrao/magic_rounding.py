@@ -397,6 +397,8 @@ class MagicRounding(RoundingScheme):
             ValueError: If the sampler is not configured with a number of shots.
             ValueError: If the expectation values are not available for magic rounding with the
                 weighted sampling.
+            ValueError: If the magic rounding did not return the expected number of shots.
+            ValueError: If the magic rounding did not return the expected number of bases.
         """
         expectation_values = rounding_context.expectation_values
         circuit = rounding_context.circuit
@@ -451,13 +453,15 @@ class MagicRounding(RoundingScheme):
             )
             for soln, count in soln_counts.items()
         ]
-
-        assert np.isclose(
-            sum(soln_counts.values()), self._shots
-        ), f"{sum(soln_counts.values())} != {self._shots}"
-        assert (
-            len(bases) == len(basis_shots) == len(basis_counts)
-        ), f"{bases}, {basis_shots}, {basis_counts} are not the same length"
+        if sum(soln_counts.values()) != self._shots:
+            raise ValueError(
+                f"Magic rounding did not return the expected number of shots.  Expected "
+                f"{self._shots}, got {sum(soln_counts.values())}."
+            )
+        if len(bases) != len(basis_shots) != len(basis_counts):
+            raise ValueError(
+                f"{len(bases)} != {len(basis_shots)} != {len(basis_counts)} are not the same length"
+            )
 
         # Create a MagicRoundingResult object to return
         return RoundingResult(

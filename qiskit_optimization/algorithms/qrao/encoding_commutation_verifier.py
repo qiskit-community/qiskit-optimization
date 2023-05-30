@@ -41,7 +41,7 @@ class EncodingCommutationVerifier:
             yield self[i]
 
     def __getitem__(self, i: int) -> tuple[str, float, float]:
-        if i not in range(len(self)):
+        if i < 0 or i >= len(self):
             raise IndexError(f"Index out of range: {i}")
 
         encoding = self._encoding
