@@ -339,7 +339,7 @@ class QuantumRandomAccessEncoding:
         Once an instance of this class is frozen, ``encode`` can no longer be called.
         """
         if not self._frozen:
-            self._qubit_op = self._qubit_op.simplify()
+            self._qubit_op = self._qubit_op.simplify(atol=0)
         self._frozen = True
 
     @property
