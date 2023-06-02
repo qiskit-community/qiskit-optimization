@@ -79,5 +79,10 @@ setuptools.setup(
         "matplotlib": ["matplotlib"],
         "gurobi": ["gurobipy"],
     },
+    project_urls={
+        "Bug Tracker": "https://github.com/Qiskit/qiskit-optimization/issues",
+        "Documentation": "https://qiskit.org/ecosystem/optimization/",
+        "Source Code": "https://github.com/Qiskit/qiskit-optimization",
+    },
     zip_safe=False,
 )
