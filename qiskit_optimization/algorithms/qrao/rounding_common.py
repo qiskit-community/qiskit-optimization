@@ -47,7 +47,7 @@ class RoundingContext:
 
     encoding: QuantumRandomAccessEncoding
     """Encoding containing the problem information."""
-    expectation_values: list[float]
+    expectation_values: list[float] | None = None
     """Expectation values for the relaxed Hamiltonian."""
     circuit: QuantumCircuit | None = None
     """Circuit corresponding to the encoding and expectation values."""

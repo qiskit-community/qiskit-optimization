@@ -73,7 +73,7 @@ def _z_to_21p_qrac_basis_circuit(bases: list[int], bit_flip: int = 0) -> Quantum
     Raises:
         ValueError: if the basis is not 0 or 1
     """
-    circ = QuantumCircuit(1)
+    circ = QuantumCircuit(len(bases))
 
     for i, base in enumerate(reversed(bases)):
         if bit_flip:
