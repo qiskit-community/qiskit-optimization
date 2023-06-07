@@ -147,6 +147,41 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(results.rounding_result.expectation_values[2], 0.80178, places=5)
         self.assertIsInstance(results.rounding_result.samples[0], SolutionSample)
 
+    def test_solve_quadratic(self):
+        """Test QuantumRandomAccessOptimizer with a quadratic objective function."""
+        # quadratic objective
+        problem2 = QuadraticProgram()
+        problem2.binary_var("x")
+        problem2.binary_var("y")
+        problem2.binary_var("z")
+        problem2.maximize(linear={"x": 1, "y": 2, "z": 3}, quadratic={("y", "z"): -4})
+        np_solver = NumPyMinimumEigensolver()
+        qrao = QuantumRandomAccessOptimizer(min_eigen_solver=np_solver)
+        results = qrao.solve(problem2)
+        self.assertIsInstance(results, QuantumRandomAccessOptimizationResult)
+        self.assertEqual(results.fval, 4)
+        self.assertEqual(len(results.samples), 1)
+        np.testing.assert_array_almost_equal(results.samples[0].x, [1, 0, 1])
+        self.assertAlmostEqual(results.samples[0].fval, 4)
+        self.assertAlmostEqual(results.samples[0].probability, 1.0)
+        self.assertEqual(results.samples[0].status, OptimizationResultStatus.SUCCESS)
+        self.assertAlmostEqual(results.relaxed_fval, -5.98852, places=5)
+        self.assertIsInstance(results.relaxed_result, NumPyMinimumEigensolverResult)
+        self.assertAlmostEqual(results.relaxed_result.eigenvalue, -3.98852, places=5)
+        self.assertEqual(len(results.relaxed_result.aux_operators_evaluated), 3)
+        self.assertAlmostEqual(
+            results.relaxed_result.aux_operators_evaluated[0][0], -0.27735, places=5
+        )
+        self.assertAlmostEqual(
+            results.relaxed_result.aux_operators_evaluated[1][0], 0.96077, places=5
+        )
+        self.assertAlmostEqual(results.relaxed_result.aux_operators_evaluated[2][0], -1, places=5)
+        self.assertIsInstance(results.rounding_result, RoundingResult)
+        self.assertAlmostEqual(results.rounding_result.expectation_values[0], -0.27735, places=5)
+        self.assertAlmostEqual(results.rounding_result.expectation_values[1], 0.96077, places=5)
+        self.assertAlmostEqual(results.rounding_result.expectation_values[2], -1, places=5)
+        self.assertIsInstance(results.rounding_result.samples[0], SolutionSample)
+
     def test_empty_encoding(self):
         """Test the encoding is empty."""
         np_solver = NumPyMinimumEigensolver()
