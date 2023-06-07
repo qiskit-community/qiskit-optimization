@@ -41,6 +41,12 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         self.problem.binary_var("y")
         self.problem.binary_var("z")
         self.problem.minimize(linear={"x": 1, "y": 2, "z": 3})
+        # quadratic objective
+        self.problem2 = QuadraticProgram()
+        self.problem2.binary_var("x")
+        self.problem2.binary_var("y")
+        self.problem2.binary_var("z")
+        self.problem2.maximize(linear={"x": 1, "y": 2, "z": 3}, quadratic={("y", "z"): -4})
 
     def test_31p_qrac_encoding(self):
         """Test (3,1,p) QRAC"""
@@ -70,6 +76,31 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         self.assertEqual(encoding.minimum_recovery_probability, (1 + 1 / np.sqrt(3)) / 2)
         self.assertEqual(encoding.problem, self.problem)
 
+    def test_31p_qrac_encoding_quadratic(self):
+        """Test (3,1,p) QRAC"""
+        encoding = QuantumRandomAccessEncoding(3)
+        self.assertFalse(encoding.frozen)  # frozen is False
+        encoding.encode(self.problem2)
+        expected_op = SparsePauliOp(["XI", "IX", "YX"], coeffs=[np.sqrt(3) / 2, np.sqrt(3) / 2, 3])
+        self.assertTrue(encoding.frozen)  # frozen is True
+        self.assertEqual(encoding.qubit_op, expected_op)
+        self.assertEqual(encoding.num_vars, 3)
+        self.assertEqual(encoding.num_qubits, 2)
+        self.assertEqual(encoding.offset, -2)
+        self.assertEqual(encoding.max_vars_per_qubit, 3)
+        self.assertEqual(encoding.q2vars, [[0, 1], [2]])
+        self.assertEqual(
+            encoding.var2op,
+            {
+                0: (0, SparsePauliOp(["X"], coeffs=[1.0])),
+                1: (0, SparsePauliOp(["Y"], coeffs=[1.0])),
+                2: (1, SparsePauliOp(["X"], coeffs=[1.0])),
+            },
+        )
+        self.assertEqual(encoding.compression_ratio, 1.5)
+        self.assertEqual(encoding.minimum_recovery_probability, (1 + 1 / np.sqrt(3)) / 2)
+        self.assertEqual(encoding.problem, self.problem2)
+
     def test_21p_qrac_encoding(self):
         """Test (2,1,p) QRAC"""
         encoding = QuantumRandomAccessEncoding(2)
@@ -98,6 +129,34 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         self.assertEqual(encoding.minimum_recovery_probability, (1 + 1 / np.sqrt(2)) / 2)
         self.assertEqual(encoding.problem, self.problem)
 
+    def test_21p_qrac_encoding_quadratic(self):
+        """Test (2,1,p) QRAC"""
+        encoding = QuantumRandomAccessEncoding(2)
+        self.assertFalse(encoding.frozen)  # frozen is False
+        encoding.encode(self.problem2)
+        expected_op = SparsePauliOp(
+            ["XI", "IX", "ZX"],
+            coeffs=[np.sqrt(2) / 2, np.sqrt(2) / 2, 2],
+        )
+        self.assertTrue(encoding.frozen)  # frozen is True
+        self.assertEqual(encoding.qubit_op, expected_op)
+        self.assertEqual(encoding.num_vars, 3)
+        self.assertEqual(encoding.num_qubits, 2)
+        self.assertEqual(encoding.offset, -2)
+        self.assertEqual(encoding.max_vars_per_qubit, 2)
+        self.assertEqual(encoding.q2vars, [[0, 1], [2]])
+        self.assertEqual(
+            encoding.var2op,
+            {
+                0: (0, SparsePauliOp(["X"], coeffs=[1.0])),
+                1: (0, SparsePauliOp(["Z"], coeffs=[1.0])),
+                2: (1, SparsePauliOp(["X"], coeffs=[1.0])),
+            },
+        )
+        self.assertEqual(encoding.compression_ratio, 1.5)
+        self.assertEqual(encoding.minimum_recovery_probability, (1 + 1 / np.sqrt(2)) / 2)
+        self.assertEqual(encoding.problem, self.problem2)
+
     def test_11p_qrac_encoding(self):
         """Test (1,1,p) QRAC"""
         encoding = QuantumRandomAccessEncoding(1)
@@ -123,6 +182,32 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
         self.assertEqual(encoding.compression_ratio, 1)
         self.assertEqual(encoding.minimum_recovery_probability, 1)
         self.assertEqual(encoding.problem, self.problem)
+
+    def test_11p_qrac_encoding_quadratic(self):
+        """Test (1,1,p) QRAC"""
+        encoding = QuantumRandomAccessEncoding(1)
+        self.assertFalse(encoding.frozen)  # frozen is False
+        encoding.encode(self.problem2)
+        expected_op = SparsePauliOp(["ZII", "IIZ", "IZZ"], coeffs=[0.5, 0.5, 1])
+
+        self.assertTrue(encoding.frozen)  # frozen is True
+        self.assertEqual(encoding.qubit_op, expected_op)
+        self.assertEqual(encoding.num_vars, 3)
+        self.assertEqual(encoding.num_qubits, 3)
+        self.assertEqual(encoding.offset, -2)
+        self.assertEqual(encoding.max_vars_per_qubit, 1)
+        self.assertEqual(encoding.q2vars, [[0], [1], [2]])
+        self.assertEqual(
+            encoding.var2op,
+            {
+                0: (0, SparsePauliOp(["Z"], coeffs=[1.0])),
+                1: (1, SparsePauliOp(["Z"], coeffs=[1.0])),
+                2: (2, SparsePauliOp(["Z"], coeffs=[1.0])),
+            },
+        )
+        self.assertEqual(encoding.compression_ratio, 1)
+        self.assertEqual(encoding.minimum_recovery_probability, 1)
+        self.assertEqual(encoding.problem, self.problem2)
 
     def test_qrac_state_prep(self):
         """Test that state preparation circuit is correct"""
