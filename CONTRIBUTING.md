@@ -240,7 +240,7 @@ particular will be located at `docs/_build/html/release_notes.html`
 ## Installing Qiskit Optimization from source
 
 Please see the [Installing Qiskit Optimization from
-Source](https://github.com/Qiskit/qiskit-optimization#installation)
+Source](https://github.com/qiskit-community/qiskit-optimization#installation)
 
 Note: Optimization depends on Terra, and has optional dependence on Aer and IBM Q Provider, so
 these should be installed too. The main branch of Optimization is kept working with those other element
@@ -248,7 +248,7 @@ main branches so these should be installed from source too following the instruc
 the same location
 
 Optimization also has some other optional dependents see
-[Optimization optional installs](https://github.com/Qiskit/qiskit-optimization#optional-installs) for
+[Optimization optional installs](https://github.com/qiskit-community/qiskit-optimization#optional-installs) for
 further information. Unit tests that require any of the optional dependents will check
 and skip the test if not installed.
 

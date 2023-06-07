@@ -48,7 +48,7 @@ setuptools.setup(
     description="Qiskit Optimization: A library of quantum computing optimizations",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/Qiskit/qiskit-optimization",
+    url="https://github.com/qiskit-community/qiskit-optimization",
     author="Qiskit Optimization Development Team",
     author_email="hello@qiskit.org",
     license="Apache-2.0",
@@ -80,9 +80,9 @@ setuptools.setup(
         "gurobi": ["gurobipy"],
     },
     project_urls={
-        "Bug Tracker": "https://github.com/Qiskit/qiskit-optimization/issues",
+        "Bug Tracker": "https://github.com/qiskit-community/qiskit-optimization/issues",
         "Documentation": "https://qiskit.org/ecosystem/optimization/",
-        "Source Code": "https://github.com/Qiskit/qiskit-optimization",
+        "Source Code": "https://github.com/qiskit-community/qiskit-optimization",
     },
     zip_safe=False,
 )
