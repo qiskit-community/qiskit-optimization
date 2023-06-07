@@ -8,7 +8,7 @@ Relaxations
 -----------
 
 Consider a binary optimization problem defined on binary variables
-:math:`m_i \in \\{-1,1\\}`. The choice of using :math:`\pm 1` variables
+:math:`m_i \in \{-1,1\}`. The choice of using :math:`\pm 1` variables
 instead of :math:`0/1` variables is not important, but will be
 convenient in terms of notation when we begin to re-cast this problem in
 terms of quantum observables. We will be primarily interested in
@@ -44,7 +44,7 @@ function defined on a graph :math:`G = (V,E)`. Our goal is to find a
 partitioning of our vertices :math:`V` into two sets (:math:`+1` and
 :math:`-1`), such that we maximize the number of edges which connect
 both sets. More concretely, each :math:`v_i \in V` will be assigned a
-binary variable :math:`m_i \in \\{0,1\\}`, and we will define the *cut*
+binary variable :math:`m_i \in \{-1, 1\}`, and we will define the *cut*
 of a variable assignment as:
 
 .. math:: \text{cut}(m) = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-m_i m_j)
@@ -58,7 +58,7 @@ the space of single qubit Pauli observables and by embedding the set of
 feasible inputs to cut(:math:`m`) onto the space of single-qubit quantum
 product states. Let us denote this embedding :math:`F` as:
 
-.. math::  F: \\{-1,1\\}^{M} \mapsto \mathcal{D}(\mathbb{C}^{2^n}),
+.. math::  F: \{-1,1\}^{M} \mapsto \mathcal{D}(\mathbb{C}^{2^n}),
 
 .. math::  \text{cut}(m) \mapsto \text{Tr}\big(H\cdot F(m)\big),
 
@@ -69,12 +69,12 @@ For this to be `a valid
 relaxation <https://en.wikipedia.org/wiki/Relaxation_%28approximation%29#Properties>`__
 of our problem, it must be the case that:
 
-.. math:: \text{cut}(m) \geq \text{Tr}\big(H\cdot F(m)\big)\qquad \forall m \in \\{-1,1\\}^M.
+.. math:: \text{cut}(m) \geq \text{Tr}\big(H\cdot F(m)\big)\qquad \forall m \in \{-1,1\}^M.
 
 In order to guarantee this is true, we will enforce the stronger
 condition that our relaxation **commutes** with our objective function.
 In other words, cut(:math:`m`) is equal to the relaxed objective
-function for all :math:`m \in \\{-1,1\\}^M`, rather than simply upper
+function for all :math:`m \in \{-1,1\}^M`, rather than simply upper
 bounding it. This detail will become crucially important further down
 when we explicitly define our quantum relaxation.
 
@@ -90,23 +90,23 @@ quantum relaxation and rounding.
 
 Consider the embedding
 
-.. math:: F^{(1)}: m \in \\{-1,1\\}^M \mapsto \\{|0\rangle,|1\rangle\\}^{\otimes M},
+.. math:: F^{(1)}: m \in \{-1,1\}^M \mapsto \{|0\rangle,|1\rangle\}^{\otimes M},
 
 .. math:: \text{cut}(m) \mapsto \text{Tr}\big(H^{(1)}F^{(1)}(m)\big),\quad  H^{(1)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-Z_i Z_j),
 
 where :math:`Z_i` indicates the single qubit Pauli-Z observable defined
-on the :math:`i`\ ’th qubit and Identity terms on all other qubits. It
+on the :math:`i`\ ’th qubit and identity terms on all other qubits. It
 is worth convincing yourself that this transformation is a valid
 relaxation of our problem. In particular:
 
-.. math:: \text{cut}(m) = \text{Tr}\big(H^{(1)}F^{(1)}(m)\big) \quad \forall m \in \\{-1,1\\}^M
+.. math:: \text{cut}(m) = \text{Tr}\big(H^{(1)}F^{(1)}(m)\big) \quad \forall m \in \{-1,1\}^M
 
 This sort of embedding is currently used by many near-term quantum
 optimization algorithms, including many `QAOA and VQE based
 approaches <https://github.com/Qiskit/qiskit-optimization/blob/main/docs/tutorials/03_minimum_eigen_optimizer.ipynb>`__.
 Observe how although the relaxed version of our problem can exactly
 reproduce the objective function cut(:math:`m`) for inputs of the form
-:math:`\\{|0\rangle,|1\rangle\\}^{\otimes M}`, we are also free to
+:math:`\{|0\rangle,|1\rangle\}^{\otimes M}`, we are also free to
 evaluate :math:`H^{(1)}` using a continuous superposition of such
 states. This stands in analogy to how one might classically relax an
 optimization problem such that they optimize the objective function
@@ -142,7 +142,9 @@ by performing some measurement. The simple quantum relaxation discussed
 in the previous section is an example of a trivial :math:`(1,1,1)`-QRAC.
 For convenience, we will write the :math:`(2,1,0.854)` and
 :math:`(3,1,0.789)` QRACs as :math:`(2,1,p)` and :math:`(3,1,p)`,
-respectively.
+respectively. It is worth noting :math:`(4, 1, p)`-QRAC :math:`(p > 1/2)`
+has been `proven to be impossible.
+[3] <https://iopscience.iop.org/article/10.1088/1367-2630/8/8/129>`__
 
 As we generalize the simple example above, it will be helpful to write
 out single qubit states decomposed in the Hermitian basis of Pauli
@@ -158,24 +160,24 @@ associated respectively with the :math:`(1,1,1), (2,1,p),` and
 
    \begin{array}{l|ll} \text{QRAC} & &\text{Embedding into } \rho = \vert \psi(m)\rangle\langle\psi(m)\vert \\
    \hline
-   (1,1,1)\qquad &F^{(1)}(m): \\{-1,1\\} &\mapsto\ \vert\psi^{(1)}_m\rangle \langle\psi^{(1)}_m\vert = \frac{1}{2}\Big(I + {m_0}Z \Big) \\
-   (2,1,p)\qquad &F^{(2)}(m): \\{-1,1\\}^2 &\mapsto\ \vert\psi^{(2)}_m\rangle \langle\psi^{(2)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{2}}\big({m_0}X+ {m_1}Z \big)\right)  \\
-   (3,1,p)\qquad &F^{(3)}(m): \\{-1,1\\}^3 &\mapsto\ \vert\psi^{(3)}_m\rangle \langle\psi^{(3)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{3}}\big({m_0}X+ {m_1}Y + {m_2}Z\big)\right) \\ \end{array}
+   (1,1,1)\qquad &F^{(1)}(m): \{-1,1\} &\mapsto\ \vert\psi^{(1)}_m\rangle \langle\psi^{(1)}_m\vert = \frac{1}{2}\Big(I + {m_0}Z \Big) \\
+   (2,1,p)\qquad &F^{(2)}(m): \{-1,1\}^2 &\mapsto\ \vert\psi^{(2)}_m\rangle \langle\psi^{(2)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{2}}\big({m_0}X+ {m_1}Z \big)\right)  \\
+   (3,1,p)\qquad &F^{(3)}(m): \{-1,1\}^3 &\mapsto\ \vert\psi^{(3)}_m\rangle \langle\psi^{(3)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{3}}\big({m_0}X+ {m_1}Y + {m_2}Z\big)\right) \\ \end{array}
 
 
 
 .. math:: \text{Table 1: Explicit QRAC States}
 
 Note that for when using a :math:`(k,1,p)`-QRAC with bit strings
-:math:`m \in \\{-1,1\\}^M, M > k`, these embeddings scale naturally via
+:math:`m \in \{-1,1\}^M, M > k`, these embeddings scale naturally via
 composition by tensor product.
 
-.. math:: m \in \\{-1,1\\}^6,\quad F^{(3)}(m) = F^{(3)}(m_0,m_1,m_2)\otimes F^{(3)}(m_3,m_4,m_5)
+.. math:: m \in \{-1,1\}^6,\quad F^{(3)}(m) = F^{(3)}(m_0,m_1,m_2)\otimes F^{(3)}(m_3,m_4,m_5)
 
 Similarly, when :math:`k \nmid M`, we can simply pad our input bitstring
 with the appropriate number of :math:`+1` values.
 
-.. math:: m \in \\{-1,1\\}^4,\quad F^{(3)}(m) = F^{(3)}(m_0,m_1,m_2)\otimes F^{(3)}(m_3,+1,+1)
+.. math:: m \in \{-1,1\}^4,\quad F^{(3)}(m) = F^{(3)}(m_0,m_1,m_2)\otimes F^{(3)}(m_3,+1,+1)
 
 Recovering Encoded Bits
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,10 +190,10 @@ the QRAC.
 .. math::
 
    \begin{array}{ll|l|l}
-   & \text{Embedding} &  m_0 = &  m_1 = &  m_2 =  &\\
+   & \text{Embedding} &  m_0 = &  m_1 = &  m_2 =  &\
    \hline
-    &\rho = F^{(1)}(m_0) &\text{Tr}\big(\rho Z\big) &  & \\
-    &\rho = F^{(2)}(m_0,m_1) &\sqrt{2}\cdot\text{Tr}\big(\rho X\big) &\sqrt{2}\cdot\text{Tr}\big(\rho Z\big) & \\
+    &\rho = F^{(1)}(m_0) &\text{Tr}\big(\rho Z\big) &  & \
+    &\rho = F^{(2)}(m_0,m_1) &\sqrt{2}\cdot\text{Tr}\big(\rho X\big) &\sqrt{2}\cdot\text{Tr}\big(\rho Z\big) & \
     &\rho = F^{(3)}(m_0,m_1,m_2) & \sqrt{3}\cdot\text{Tr}\big(\rho X\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Y\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Z\big)
    \end{array}
 
@@ -210,11 +212,11 @@ observable that has been assigned to that variable under the embedding
 
 .. math::
 
-   \begin{array}{l|ll} \text{QRAC}  & \text{Problem Hamiltonian}\\
+   \begin{array}{l|ll} \text{QRAC}  & \text{Problem Hamiltonian}\
    \hline
    (1,1,1)\qquad &H^{(1)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-Z_i Z_j)\\
-   (2,1,p)\qquad &H^{(2)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-2\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \\{X,Z\\}\\
-   (3,1,p)\qquad &H^{(3)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-3\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \\{X,Y,Z\\}\\ \end{array}
+   (2,1,p)\qquad &H^{(2)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-2\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Z\}\\
+   (3,1,p)\qquad &H^{(3)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-3\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Y,Z\}\\ \end{array}
 
  
 
@@ -223,7 +225,7 @@ observable that has been assigned to that variable under the embedding
 Note that here, :math:`P_{[i]}` indicates a single-qubit Pauli
 observable corresponding to decision variable :math:`i`. The bracketed
 index here is to make clear that :math:`P_{[i]}` will not necessarily be
-defined on qubit :math:`i`, because the :math:`(2,1,p)` and
+acting on qubit :math:`i`, because the :math:`(2,1,p)` and
 :math:`(3,1,p)` no longer have a 1:1 relationship between qubits and
 decision variables.
 
@@ -240,11 +242,11 @@ ensure the commutativity condition discussed earlier
 Observe that under the :math:`(3,1,p)`-QRAC, any term in our objective
 function of the form :math:`(1 - x_i x_j)` will map to a Hamiltonian
 term of the form :math:`(1-3\cdot P_{[i]} P_{[j]})`. If both
-:math:`P_{[i]}` and :math:`P_{[j]}` are defined on different qubits,
+:math:`P_{[i]}` and :math:`P_{[j]}` are acting on different qubits,
 then :math:`P_{[i]}\cdot P_{[j]} = P_{[i]}\otimes P_{[j]}` and this term
 of our Hamiltonian will behave as we expect.
 
-If however, :math:`P_{[i]}` and :math:`P_{[j]}` are defined on the same
+If however, :math:`P_{[i]}` and :math:`P_{[j]}` are acting on the same
 qubit, the two Paulis will compose directly. Recall that the Pauli
 matrices form a group and are self-inverse, thus we can deduce that the
 product of two distinct Paulis will yield another element of the group
@@ -274,7 +276,7 @@ we need a strategy for mapping :math:`\rho_\text{relax}` to the image of
 :math:`F` so that we may extract a solution to our original problem.
 
 In [1] there are two strategies proposed for rounding
-:math:`\rho_\text{relax}` back to :math:`m \in \\{-1,1\\}^M`.
+:math:`\rho_\text{relax}` back to :math:`m \in \{-1,1\}^M`.
 
 Semi-deterministic Rounding
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -295,9 +297,9 @@ to the following rounding scheme.
 
 .. math::
 
-   m_i = \left\\{\begin{array}{rl}
+   m_i = \left\{\begin{array}{rl}
          +1 & \text{Tr}(P_{[i]}\rho_\text{relax}) > 0 \\
-         X \sim\\{-1,1\\} & \text{Tr}(P_{[i]}\rho_\text{relax}) = 0 \\
+         X \sim\{-1,1\} & \text{Tr}(P_{[i]}\rho_\text{relax}) = 0 \\
          -1 & \text{Tr}(P_{[i]}\rho_\text{relax}) < 0
          \end{array}\right.
 
@@ -316,14 +318,14 @@ Magic State Rounding
    :align: center
    :width: 100%
 
-   Figure 1: Three different encodings, the states and the measurement bases, of variables into a
+   Three different encodings, the states and the measurement bases, of variables into a
    single qubit. (a) One variable per qubit. (b) Two variables per qubit. (c) Three variables per
    qubit. Taken from `[1] <https://arxiv.org/pdf/2111.03167.pdf>`__.
 
 Rather than seeking to independently distinguish each :math:`m_i`, magic
 state rounding randomly selects a measurement basis which will perfectly
 distinguish a particular pair of orthogonal QRAC states
-:math:`\\{ F(m), F(\bar m)\\}`, where :math:`\bar m` indicates that
+:math:`\{ F(m), F(\bar m)\}`, where :math:`\bar m` indicates that
 every bit of :math:`m` has been flipped.
 
 Let :math:`\mathcal{M}` be the randomized rounding procedure which takes
@@ -366,3 +368,8 @@ relaxations,” (2021), `arXiv:2111.03167 <https://arxiv.org/pdf/2111.03167.pdf>
 [2] Stephen Wiesner, “Conjugate coding,” SIGACT News, vol. 15, issue 1,
 pp. 78-88, 1983.
 `link <http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf>`__
+
+[3] Masahito Hayashi, Kazuo Iwama, Harumichi Nishimura, Rudy Raymond, and  Shigeru Yamashita,
+“(4,1)-Quantum random access coding does not exist—one qubit is not enough to recover
+one of four bits,” New Journal of Physics, vol. 8, number 8, pp. 129, 2006.
+`link <https://iopscience.iop.org/article/10.1088/1367-2630/8/8/129>`__
