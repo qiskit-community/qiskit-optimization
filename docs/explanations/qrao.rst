@@ -369,7 +369,7 @@ relaxations,” (2021), `arXiv:2111.03167 <https://arxiv.org/pdf/2111.03167.pdf>
 pp. 78-88, 1983.
 `link <http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf>`__
 
-[3] Masahito Hayashi, Kazuo Iwama, Harumichi Nishimura, Rudy Raymond, and  Shigeru Yamashita,
+[3] Masahito Hayashi et al.,
 “(4,1)-Quantum random access coding does not exist—one qubit is not enough to recover
 one of four bits,” New Journal of Physics, vol. 8, number 8, pp. 129, 2006.
 `link <https://iopscience.iop.org/article/10.1088/1367-2630/8/8/129>`__
