@@ -45,7 +45,7 @@ with open(README_PATH) as readme_file:
 setuptools.setup(
     name="qiskit-optimization",
     version=VERSION,
-    description="Qiskit Optimization: A library of quantum computing optimizations",
+    description="Qiskit Optimization: A library for optimization applications using quantum computing",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/qiskit-community/qiskit-optimization",
