@@ -62,7 +62,7 @@ See :ref:`optional_installs` for more information.
 
           .. code:: sh
 
-             git clone https://github.com/Qiskit/qiskit-optimization.git
+             git clone https://github.com/qiskit-community/qiskit-optimization.git
 
        2. Cloning the repository creates a local folder called ``qiskit-optimization``.
 

@@ -40,7 +40,7 @@ Next Steps
     Tutorials <tutorials/index>
     API Reference <apidocs/qiskit_optimization>
     Release Notes <release_notes>
-    GitHub <https://github.com/Qiskit/qiskit-optimization>
+    GitHub <https://github.com/qiskit-community/qiskit-optimization>
 
 
 .. Hiding - Indices and tables
