@@ -158,15 +158,15 @@ associated respectively with the :math:`(1,1,1), (2,1,p),` and
 
 .. math::
 
-   \begin{array}{l|ll} \text{QRAC} & &\text{Embedding into } \rho = \vert \psi(m)\rangle\langle\psi(m)\vert \\
+   \begin{array}{l|ll}
+   \text{QRAC} & &\text{Embedding into } \rho = \vert \psi(m)\rangle\langle\psi(m)\vert \\
    \hline
-   (1,1,1)\qquad &F^{(1)}(m): \{-1,1\} &\mapsto\ \vert\psi^{(1)}_m\rangle \langle\psi^{(1)}_m\vert = \frac{1}{2}\Big(I + {m_0}Z \Big) \\
-   (2,1,p)\qquad &F^{(2)}(m): \{-1,1\}^2 &\mapsto\ \vert\psi^{(2)}_m\rangle \langle\psi^{(2)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{2}}\big({m_0}X+ {m_1}Z \big)\right)  \\
-   (3,1,p)\qquad &F^{(3)}(m): \{-1,1\}^3 &\mapsto\ \vert\psi^{(3)}_m\rangle \langle\psi^{(3)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{3}}\big({m_0}X+ {m_1}Y + {m_2}Z\big)\right) \\ \end{array}
+   (1,1,1)&F^{(1)}(m): \{-1,1\} &\mapsto\ \vert\psi^{(1)}_m\rangle \langle\psi^{(1)}_m\vert = \frac{1}{2}\Big(I + {m_0}Z \Big) \\
+   (2,1,p)&F^{(2)}(m): \{-1,1\}^2 &\mapsto\ \vert\psi^{(2)}_m\rangle \langle\psi^{(2)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{2}}\big({m_0}X+ {m_1}Z \big)\right)  \\
+   (3,1,p)&F^{(3)}(m): \{-1,1\}^3 &\mapsto\ \vert\psi^{(3)}_m\rangle \langle\psi^{(3)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{3}}\big({m_0}X+ {m_1}Y + {m_2}Z\big)\right) \\
+   \end{array}
 
-
-
-.. math:: \text{Table 1: Explicit QRAC States}
+.. math:: \text{Table 1: QRAC states}
 
 Note that for when using a :math:`(k,1,p)`-QRAC with bit strings
 :math:`m \in \{-1,1\}^M, M > k`, these embeddings scale naturally via
@@ -189,17 +189,15 @@ the QRAC.
 
 .. math::
 
-   \begin{array}{ll|l|l}
-   & \text{Embedding} &  m_0 = &  m_1 = &  m_2 =  &\
+   \begin{array}{l|l|l|l}
+   \text{Embedding} & m_0 & m_1 & m_2\\
    \hline
-    &\rho = F^{(1)}(m_0) &\text{Tr}\big(\rho Z\big) &  & \
-    &\rho = F^{(2)}(m_0,m_1) &\sqrt{2}\cdot\text{Tr}\big(\rho X\big) &\sqrt{2}\cdot\text{Tr}\big(\rho Z\big) & \
-    &\rho = F^{(3)}(m_0,m_1,m_2) & \sqrt{3}\cdot\text{Tr}\big(\rho X\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Y\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Z\big)
+   \rho = F^{(1)}(m_0) &\text{Tr}\big(\rho Z\big) &  & \\
+   \rho = F^{(2)}(m_0,m_1) &\sqrt{2}\cdot\text{Tr}\big(\rho X\big) &\sqrt{2}\cdot\text{Tr}\big(\rho Z\big) & \\
+   \rho = F^{(3)}(m_0,m_1,m_2) & \sqrt{3}\cdot\text{Tr}\big(\rho X\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Y\big) & \sqrt{3}\cdot\text{Tr}\big(\rho Z\big)
    \end{array}
 
-
-
-.. math::  \text{Table 2: Bit recovery from QRAC States}
+.. math::  \text{Table 2: Bit recovery from QRAC states}
 
 Encoded Problem Hamiltonians
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,15 +210,15 @@ observable that has been assigned to that variable under the embedding
 
 .. math::
 
-   \begin{array}{l|ll} \text{QRAC}  & \text{Problem Hamiltonian}\
+   \begin{array}{l|ll}
+   \text{QRAC}  & \text{Problem Hamiltonian}\\
    \hline
-   (1,1,1)\qquad &H^{(1)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-Z_i Z_j)\\
-   (2,1,p)\qquad &H^{(2)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-2\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Z\}\\
-   (3,1,p)\qquad &H^{(3)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-3\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Y,Z\}\\ \end{array}
+   (1,1,1)&H^{(1)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-Z_i Z_j)\\
+   (2,1,p)&H^{(2)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-2\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Z\}\\
+   (3,1,p)&H^{(3)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-3\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Y,Z\}\\
+   \end{array}
 
- 
-
-.. math::  \text{Table 3: Relaxed MaxCut Hamiltonians after QRAC Embedding}
+.. math::  \text{Table 3: Relaxed MaxCut Hamiltonians after QRAC embedding}
 
 Note that here, :math:`P_{[i]}` indicates a single-qubit Pauli
 observable corresponding to decision variable :math:`i`. The bracketed
@@ -353,9 +351,9 @@ magic state rounding does offer a lower bound on the approximation ratio
 under certain conditions.
 
 Let :math:`F(m^*)` be the highest energy state in the image of F, and
-let :math:`\rho^\*` be the maximal eigenstate of H.
+let :math:`\rho^*` be the maximal eigenstate of H.
 
-.. math:: \forall \rho_\text{relax}\quad \text{st}\quad \text{Tr}\left(F(m^*)\cdot H\right) \leq \text{Tr}\left(\rho_\text{relax}\cdot H\right)\leq \text{Tr}\left(\rho^*\cdot H\right)
+.. math:: \forall \rho_\text{relax}\quad \text{s.t.}\quad \text{Tr}\left(F(m^*)\cdot H\right) \leq \text{Tr}\left(\rho_\text{relax}\cdot H\right)\leq \text{Tr}\left(\rho^*\cdot H\right)
 
 .. math:: \frac{\text{expected fval}}{\text{optimal fval}} = \frac{\mathbb{E}\left[\text{Tr}\left(H\cdot \mathcal{M}^{\otimes n}(\rho_\text{relax})\right)\right]}{\text{Tr}\left(H\cdot F(m^*)\right)} \geq \frac{5}{9}
 
