@@ -71,7 +71,7 @@ nbsphinx_prolog = """
         __"""
 
 vers = version.split(".")
-link_str = f" https://github.com/Qiskit/qiskit-optimization/blob/stable/{vers[0]}.{vers[1]}/docs/"
+link_str = f" https://github.com/qiskit-community/qiskit-optimization/blob/stable/{vers[0]}.{vers[1]}/docs/"
 nbsphinx_prolog += link_str + "{{ docname }}"
 
 # -- General configuration ---------------------------------------------------
