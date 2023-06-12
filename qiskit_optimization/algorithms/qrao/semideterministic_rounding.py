@@ -17,11 +17,8 @@ import numpy as np
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.exceptions import QiskitOptimizationError
-from .rounding_common import (
-    RoundingScheme,
-    RoundingContext,
-    RoundingResult,
-)
+
+from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
 
 
 class SemideterministicRounding(RoundingScheme):

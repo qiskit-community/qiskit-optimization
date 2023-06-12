@@ -119,8 +119,8 @@ Rounding schemes
 """
 
 from .encoding_commutation_verifier import EncodingCommutationVerifier
-from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 from .magic_rounding import MagicRounding
+from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 from .quantum_random_access_optimizer import (
     QuantumRandomAccessOptimizationResult,
     QuantumRandomAccessOptimizer,

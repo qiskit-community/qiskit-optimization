@@ -15,10 +15,10 @@ from __future__ import annotations
 
 from collections import defaultdict
 from functools import reduce
+from typing import cast
 
+import networkx as nx
 import numpy as np
-import rustworkx as rx
-
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import SparsePauliOp
 
@@ -451,7 +451,7 @@ class QuantumRandomAccessEncoding:
         # convert linear parts of the objective function into Hamiltonian.
         linear = np.zeros(num_vars)
         for idx, coef in problem.objective.linear.to_dict().items():
-            idx = int(idx)  # hint for mypy
+            idx = cast(int, idx)
             weight = coef * sense / 2
             linear[idx] -= weight
             offset += weight
@@ -459,8 +459,8 @@ class QuantumRandomAccessEncoding:
         # convert quadratic parts of the objective function into Hamiltonian.
         quad = np.zeros((num_vars, num_vars))
         for (i, j), coef in problem.objective.quadratic.to_dict().items():
-            i = int(i)  # hint for mypy
-            j = int(j)  # hint for mypy
+            i = cast(int, i)
+            j = cast(int, j)
             weight = coef * sense / 4
             if i == j:
                 linear[i] -= 2 * weight
@@ -486,10 +486,10 @@ class QuantumRandomAccessEncoding:
         # pylint: disable=E1101
         color2node: dict[int, list[int]] = defaultdict(list)
         num_nodes = quad.shape[0]
-        graph = rx.PyGraph()
+        graph = nx.Graph()
         graph.add_nodes_from(range(num_nodes))
-        graph.add_edges_from_no_data(list(zip(*np.where(quad != 0))))
-        node2color = rx.graph_greedy_color(graph)
+        graph.add_edges_from(list(zip(*np.where(quad != 0))))
+        node2color = nx.greedy_color(graph)
         for node, color in sorted(node2color.items()):
             color2node[color].append(node)
         return color2node
