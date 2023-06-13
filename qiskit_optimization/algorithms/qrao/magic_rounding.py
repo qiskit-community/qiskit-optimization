@@ -36,7 +36,7 @@ class MagicRounding(RoundingScheme):
     to round the solution. Since the magic rounding is based on the measurement results, it
     requires a quantum backend, which can be either hardware or a simulator.
 
-    The details are described in https://arxiv.org/abs/2111.03167v2.
+    The details are described in https://arxiv.org/abs/2111.03167.
     """
 
     _DECODING = {
@@ -68,11 +68,11 @@ class MagicRounding(RoundingScheme):
             basis_sampling: Method to use for sampling the magic bases.  Must
                 be either ``"uniform"`` (default) or ``"weighted"``.
                 ``"uniform"`` samples all magic bases uniformly, and is the
-                method described in https://arxiv.org/abs/2111.03167v2.
+                method described in https://arxiv.org/abs/2111.03167.
                 ``"weighted"`` attempts to choose bases strategically using the
                 Pauli expectation values from the minimum eigensolver.
                 However, the approximation bounds given in
-                https://arxiv.org/abs/2111.03167v2 apply only to ``"uniform"``
+                https://arxiv.org/abs/2111.03167 apply only to ``"uniform"``
                 sampling.
             seed: Seed for random number generator, which is used to sample the
                 magic bases.
@@ -408,13 +408,15 @@ class MagicRounding(RoundingScheme):
 
         if circuit is None:
             raise ValueError(
-                "Magic rounding requires a circuit to be available.  Perhaps try "
-                "Semideterministic rounding instead."
+                "No circuit was provided in the rounding context. "
+                "Magic rounding requires a circuit to be available. "
+                "Perhaps try Semi-deterministic rounding instead."
             )
 
         if self._sampler.options.get("shots") is None:
             raise ValueError(
-                "Magic rounding requires the sampler to be configured with a number of shots."
+                "No number of shots was provided in the rounding context. "
+                "Magic rounding requires a sampler configured with a number of shots."
             )
         self._shots = self._sampler.options.shots
 
@@ -425,6 +427,7 @@ class MagicRounding(RoundingScheme):
             # weighted sampling
             if expectation_values is None:
                 raise ValueError(
+                    "No expectation values were provided in the rounding context. "
                     "Magic rounding with weighted sampling requires the expectation values of the "
                     "``RoundingContext`` to be available, but they are not."
                 )

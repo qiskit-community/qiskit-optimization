@@ -126,7 +126,7 @@ def _qrac_state_prep_1q(bit_list: list[int]) -> QuantumCircuit:
         base_index0 = bit_list[1] ^ bit_list[2]
         base_index1 = bit_list[0] ^ bit_list[2]
 
-        # This is a convention chosen to be consistent with https://arxiv.org/pdf/2111.03167v2.pdf
+        # This is a convention chosen to be consistent with https://arxiv.org/abs/2111.03167
         # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
         base = [2 * base_index0 + base_index1]
         circ = _z_to_31p_qrac_basis_circuit(base, bit_flip)
@@ -138,7 +138,7 @@ def _qrac_state_prep_1q(bit_list: list[int]) -> QuantumCircuit:
         # (00,11) or (01,10)
         base_index0 = bit_list[0] ^ bit_list[1]
 
-        # This is a convention chosen to be consistent with https://arxiv.org/pdf/2111.03167v2.pdf
+        # This is a convention chosen to be consistent with https://arxiv.org/abs/2111.03167
         # # See SI:4 second paragraph and observe that π+ = |0X0|, π- = |1X1|
         base = [base_index0]
         circ = _z_to_21p_qrac_basis_circuit(base, bit_flip)
@@ -224,10 +224,6 @@ class QuantumRandomAccessEncoding:
     the binary variables of a QUBO (quadratic unconstrained binary optimization
     problem).
 
-    Args:
-        max_vars_per_qubit: maximum possible compression ratio.
-            Supported values are 1, 2, or 3.
-
     """
 
     # This defines the convention of the Pauli operators (and their ordering)
@@ -239,6 +235,11 @@ class QuantumRandomAccessEncoding:
     )
 
     def __init__(self, max_vars_per_qubit: int = 3):
+        """
+        Args:
+            max_vars_per_qubit: The maximum number of decision variables per qubit.
+                Integer values 1, 2 and 3 are supported (default to 3).
+        """
         if max_vars_per_qubit not in (1, 2, 3):
             raise ValueError("max_vars_per_qubit must be 1, 2, or 3")
         self._ops = self._OPERATORS[max_vars_per_qubit - 1]
@@ -396,7 +397,7 @@ class QuantumRandomAccessEncoding:
             weight: the coefficient for the term
             *variables: the list of variables for the term
         """
-        # Eq. (31) in https://arxiv.org/abs/2111.03167v2 assumes a weight-2
+        # Eq. (31) in https://arxiv.org/abs/2111.03167 assumes a weight-2
         # Pauli operator.  To generalize, we replace the `d` in that equation
         # with `d_prime`, defined as follows:
         d_prime = np.sqrt(self.max_vars_per_qubit) ** len(variables)

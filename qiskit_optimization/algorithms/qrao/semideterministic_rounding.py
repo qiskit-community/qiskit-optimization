@@ -25,7 +25,7 @@ class SemideterministicRounding(RoundingScheme):
     """Semi-deterministic rounding scheme
 
     This is referred to as "Pauli rounding" in
-    https://arxiv.org/abs/2111.03167v2.
+    https://arxiv.org/abs/2111.03167.
     """
 
     def __init__(self, *, atol: float = 1e-8, seed: int | None = None):

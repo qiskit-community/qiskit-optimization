@@ -118,9 +118,10 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         Args:
             min_eigen_solver: The minimum eigensolver to use for solving the relaxed problem.
             max_vars_per_qubit: The maximum number of decision variables per qubit.
+                Integer values 1, 2 and 3 are supported (default to 3).
             rounding_scheme: The rounding scheme.  If ``None`` is provided,
-                ``SemideterministicRounding()`` will be used.
-            penalty: The penalty factor to use for the ``QuadraticProgramToQubo`` converter.
+                :class:`~.SemideterministicRounding` will be used.
+            penalty: The penalty factor to use for the :class:`~.QuadraticProgramToQubo` converter.
 
         Raises:
             ValueError: If the maximum number of variables per qubit is not 1, 2, or 3.
@@ -193,15 +194,19 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
     ) -> tuple[MinimumEigensolverResult, RoundingContext]:
         """Solve the relaxed Hamiltonian given by the encoding.
 
+        .. note::
+            This method uses the encoding instance given as ``encoding`` and
+            ignores :meth:`max_vars_per_qubit`.
+
         Args:
-            encoding: The ``QuantumRandomAccessEncoding``, which must have already been ``encode()``ed
-                with a ``QuadraticProgram``.
+            encoding: An encoding instance for which :meth:`~QuantumRandomAccessEncoding.encode`
+                has already been called so it has been encoded with a :class:`~.QuadraticProgram`.
 
         Returns:
             The result of the minimum eigensolver, and the rounding context.
 
         Raises:
-            ValueError: If the encoding has not been encoded with a ``QuadraticProgram``.
+            ValueError: If the encoding has not been encoded with a :class:`~.QuadraticProgram`.
         """
         if not encoding.frozen:
             raise ValueError(
@@ -245,16 +250,16 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
 
     def solve(self, problem: QuadraticProgram) -> QuantumRandomAccessOptimizationResult:
         """Solve the relaxed Hamiltonian given by the encoding and round the solution by the given
-            rounding scheme.
+        rounding scheme.
 
         Args:
-            problem: The ``QuadraticProgram`` to be solved.
+            problem: The :class:`~.QuadraticProgram` to be solved.
 
         Returns:
             The result of the quantum random access optimization.
 
         Raises:
-            ValueError: If the encoding has not been encoded with a ``QuadraticProgram``.
+            ValueError: If the encoding has not been encoded with a :class:`~.QuadraticProgram`.
         """
         # Convert the problem to a QUBO
         self._verify_compatibility(problem)
@@ -281,9 +286,9 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         """Process the relaxed result of the minimum eigensolver and rounding scheme.
 
         Args:
-            problem: The ``QuadraticProgram`` to be solved.
-            encoding: The ``QuantumRandomAccessEncoding``, for which ``encode()`` must have already
-                been called with the corresponding problem.
+            problem: The :class:`~.QuadraticProgram` to be solved.
+            encoding: An encoding instance for which :meth:`~QuantumRandomAccessEncoding.encode`
+                has already been called so it has been encoded with a :class:`~.QuadraticProgram`.
             relaxed_result: The relaxed result of the minimum eigensolver.
             rounding_result: The result of the rounding scheme.
 
