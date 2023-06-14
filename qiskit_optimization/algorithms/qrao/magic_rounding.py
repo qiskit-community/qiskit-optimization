@@ -429,7 +429,8 @@ class MagicRounding(RoundingScheme):
                 raise ValueError(
                     "No expectation values were provided in the rounding context. "
                     "Magic rounding with weighted sampling requires the expectation values of the "
-                    "``RoundingContext`` to be available, but they are not."
+                    "``RoundingContext`` to be available, but they are not. "
+                    'Try `basis_sampling="uniform"` instead.'
                 )
             bases, basis_shots = self._sample_bases_weighted(
                 q2vars, expectation_values, vars_per_qubit
