@@ -303,10 +303,6 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             # sampler without shots
             sampler = Sampler()
             magic_rounding = MagicRounding(sampler=sampler)
-            rounding_context = RoundingContext(
-                encoding, expectation_values=[1, 1, 1], circuit=QuantumCircuit(1)
-            )
-            magic_rounding.round(rounding_context)
 
         with self.assertRaises(ValueError):
             # expectation_values is None for weighted basis sampling

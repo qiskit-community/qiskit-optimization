@@ -53,7 +53,7 @@ class SemideterministicRounding(RoundingScheme):
         """
         if rounding_context.expectation_values is None:
             raise QiskitOptimizationError(
-                "Semideterministric rounding requires the expectation values of the ",
+                "Semi-deterministic rounding requires the expectation values of the ",
                 "``RoundingContext`` to be available, but they are not.",
             )
 

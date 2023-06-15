@@ -79,6 +79,7 @@ class MagicRounding(RoundingScheme):
 
         Raises:
             ValueError: If ``basis_sampling`` is not ``"uniform"`` or ``"weighted"``.
+            ValueError: If the sampler is not configured with a number of shots.
         """
         if basis_sampling not in ("uniform", "weighted"):
             raise ValueError(
@@ -88,7 +89,9 @@ class MagicRounding(RoundingScheme):
         self._sampler = sampler
         self._rng = np.random.default_rng(seed)
         self._basis_sampling = basis_sampling
-        self._shots = None
+        if self._sampler.options.get("shots") is None:
+            raise ValueError("Magic rounding requires a sampler configured with a number of shots.")
+        self._shots = sampler.options.shots
         super().__init__()
 
     @property
@@ -171,7 +174,7 @@ class MagicRounding(RoundingScheme):
         basis_counts: list[dict[str, int] | None] = [None] * len(circuits)
         if len(circuits) != len(basis_shots):
             raise QiskitOptimizationError(
-                "The number of circuits and the number of basis types must be the same, "
+                "Internal error: The number of circuits and the number of basis types must be the same, "
                 f"{len(circuits)} != {len(basis_shots)}."
             )
 
@@ -189,7 +192,7 @@ class MagicRounding(RoundingScheme):
             counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
             if len(counts_list) != len(indices):
                 raise QiskitOptimizationError(
-                    "The number of circuits and the results from the primitive job must be the same,"
+                    "Internal error: The number of circuits and the results from the primitive job must be the same,"
                     f"{len(indices)} != {len(counts_list)}."
                 )
             for i, counts in zip(indices, counts_list):
@@ -197,7 +200,7 @@ class MagicRounding(RoundingScheme):
 
         if None in basis_counts:
             raise QiskitOptimizationError(
-                "Some basis counts were not collected. Please check the primitive job."
+                "Internal error: Some basis counts were not collected. Please check the primitive job."
             )
 
         basis_counts = [
@@ -393,12 +396,11 @@ class MagicRounding(RoundingScheme):
             RoundingResult: The results of the magic rounding process.
 
         Raises:
-            ValueError: If the circuit is not available for magic rounding.
-            ValueError: If the sampler is not configured with a number of shots.
-            ValueError: If the expectation values are not available for magic rounding with the
+            ValueError: If the rounding context has no circuits.
+            ValueError: If the rounding context has no expectation values for magic rounding with the
                 weighted sampling.
-            ValueError: If the magic rounding did not return the expected number of shots.
-            ValueError: If the magic rounding did not return the expected number of bases.
+            QiskitOptimizationError: If the magic rounding did not return the expected number of shots.
+            QiskitOptimizationError: If the magic rounding did not return the expected number of bases.
         """
         expectation_values = rounding_context.expectation_values
         circuit = rounding_context.circuit
@@ -412,13 +414,6 @@ class MagicRounding(RoundingScheme):
                 "Magic rounding requires a circuit to be available. "
                 "Perhaps try Semi-deterministic rounding instead."
             )
-
-        if self._sampler.options.get("shots") is None:
-            raise ValueError(
-                "No number of shots was provided in the rounding context. "
-                "Magic rounding requires a sampler configured with a number of shots."
-            )
-        self._shots = self._sampler.options.shots
 
         if self.basis_sampling == "uniform":
             # uniform sampling
@@ -458,13 +453,14 @@ class MagicRounding(RoundingScheme):
             for soln, count in soln_counts.items()
         ]
         if sum(soln_counts.values()) != self._shots:
-            raise ValueError(
-                f"Magic rounding did not return the expected number of shots.  Expected "
-                f"{self._shots}, got {sum(soln_counts.values())}."
+            raise QiskitOptimizationError(
+                f"Internal error: Magic rounding did not return the expected number of shots. "
+                f"Expected {self._shots}, got {sum(soln_counts.values())}."
             )
-        if len(bases) != len(basis_shots) != len(basis_counts):
-            raise ValueError(
-                f"{len(bases)} != {len(basis_shots)} != {len(basis_counts)} are not the same length"
+        if not (len(bases) == len(basis_shots) == len(basis_counts)):
+            raise QiskitOptimizationError(
+                f"Internal error: sizes of bases({len(bases)}), basis_shots({len(basis_shots)}), "
+                f"and basis_counts({len(basis_counts)}) are not equal."
             )
 
         # Create a MagicRoundingResult object to return
