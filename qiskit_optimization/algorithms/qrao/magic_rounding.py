@@ -192,8 +192,8 @@ class MagicRounding(RoundingScheme):
             counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
             if len(counts_list) != len(indices):
                 raise QiskitOptimizationError(
-                    "Internal error: The number of circuits and the results from the primitive job must be the same,"
-                    f"{len(indices)} != {len(counts_list)}."
+                    "Internal error: The number of circuits and the results from the primitive job "
+                    f"must be the same, {len(indices)} != {len(counts_list)}."
                 )
             for i, counts in zip(indices, counts_list):
                 basis_counts[i] = counts
@@ -457,7 +457,7 @@ class MagicRounding(RoundingScheme):
                 f"Internal error: Magic rounding did not return the expected number of shots. "
                 f"Expected {self._shots}, got {sum(soln_counts.values())}."
             )
-        if not (len(bases) == len(basis_shots) == len(basis_counts)):
+        if not len(bases) == len(basis_shots) == len(basis_counts):
             raise QiskitOptimizationError(
                 f"Internal error: sizes of bases({len(bases)}), basis_shots({len(basis_shots)}), "
                 f"and basis_counts({len(basis_counts)}) are not equal."
