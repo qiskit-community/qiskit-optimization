@@ -26,6 +26,19 @@ from qiskit.algorithms.minimum_eigensolvers import (
     SamplingMinimumEigensolverResult,
 )
 from qiskit.quantum_info import SparsePauliOp
+from qiskit_algorithms.minimum_eigensolvers import VQE as TerraVQE
+from qiskit_algorithms.minimum_eigensolvers import (
+    NumPyMinimumEigensolver as TerraNumPyMinimumEigensolver,
+)
+from qiskit_algorithms.minimum_eigensolvers import (
+    NumPyMinimumEigensolverResult as TerraNumPyMinimumEigensolverResult,
+)
+from qiskit_algorithms.minimum_eigensolvers import (
+    SamplingMinimumEigensolver as TerraSamplingMinimumEigensolver,
+)
+from qiskit_algorithms.minimum_eigensolvers import (
+    SamplingMinimumEigensolverResult as TerraSamplingMinimumEigensolverResult,
+)
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
@@ -38,10 +51,18 @@ from .optimization_algorithm import (
 )
 
 MinimumEigensolver = Union[
-    SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver
+    SamplingMinimumEigensolver,
+    NumPyMinimumEigensolver,
+    LegacyMinimumEigensolver,
+    TerraSamplingMinimumEigensolver,
+    TerraNumPyMinimumEigensolver,
 ]
 MinimumEigensolverResult = Union[
-    SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult, LegacyMinimumEigensolverResult
+    SamplingMinimumEigensolverResult,
+    NumPyMinimumEigensolverResult,
+    LegacyMinimumEigensolverResult,
+    TerraSamplingMinimumEigensolverResult,
+    TerraNumPyMinimumEigensolverResult,
 ]
 
 
@@ -152,20 +173,26 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-        if isinstance(min_eigen_solver, VQE):
+        if isinstance(min_eigen_solver, (VQE, TerraVQE)):
             raise TypeError(
                 "MinimumEigenOptimizer does not support this VQE. You can use  "
-                "qiskit.algorithms.minimum_eigensolvers.SamplingVQE instead."
+                "qiskit_algorithms.minimum_eigensolvers.SamplingVQE instead."
             )
         if not isinstance(
             min_eigen_solver,
-            (SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver),
+            (
+                SamplingMinimumEigensolver,
+                NumPyMinimumEigensolver,
+                LegacyMinimumEigensolver,
+                TerraSamplingMinimumEigensolver,
+                TerraNumPyMinimumEigensolver,
+            ),
         ):
             raise TypeError(
                 "MinimumEigenOptimizer supports "
-                "qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver, "
-                "qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver, and "
-                "qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver. "
+                "qiskit_algorithms.minimum_eigensolvers.SamplingMinimumEigensolver, "
+                "qiskit_algorithms.minimum_eigensolvers.NumPyMinimumEigensolver, and "
+                "qiskit_algorithms.minimum_eigen_solvers.MinimumEigensolver. "
                 f"But {type(min_eigen_solver)} is given."
             )
         if not min_eigen_solver.supports_aux_operators():

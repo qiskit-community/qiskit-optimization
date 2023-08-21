@@ -18,13 +18,14 @@ from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntime
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
-from qiskit.algorithms.optimizers import COBYLA, SPSA
+from qiskit.algorithms.optimizers import SPSA as TerraSPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.providers.fake_provider import FakeArmonk, FakeArmonkV2
 from qiskit.utils import algorithm_globals
+from qiskit_algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
+from qiskit_algorithms.optimizers import COBYLA, SPSA
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
@@ -377,7 +378,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     @data(FakeArmonk, FakeArmonkV2)
     def test_runtime_backend_versions(self, backend_cls):
         """Test the runtime client with a V1 and a V2 backend."""
-        optimizer = SPSA(maxiter=1, learning_rate=0.1, perturbation=0.1)
+        optimizer = TerraSPSA(maxiter=1, learning_rate=0.1, perturbation=0.1)
         backend = backend_cls()
         provider = FakeVQERuntimeProvider()
         ansatz = TwoLocal(1, "ry", reps=0)

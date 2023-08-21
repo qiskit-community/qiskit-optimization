@@ -19,13 +19,13 @@ from typing import Dict, List, Optional, Union, cast
 
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
-from qiskit.algorithms import AmplificationProblem
-from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
 from qiskit.primitives import BaseSampler
 from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace
 from qiskit.utils import QuantumInstance, algorithm_globals
+from qiskit_algorithms import AmplificationProblem
+from qiskit_algorithms.amplitude_amplifiers.grover import Grover
 
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,
@@ -168,7 +168,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         return oracle, is_good_state
 
     def solve(self, problem: QuadraticProgram) -> OptimizationResult:
-        """Tries to solves the given problem using the grover optimizer.
+        """Tries to solve the given problem using the grover optimizer.
 
         Runs the optimizer to try to solve the optimization problem. If the problem cannot be,
         converted to a QUBO, this optimizer raises an exception due to incompatibility.

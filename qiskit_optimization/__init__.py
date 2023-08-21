@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2022.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -26,10 +26,11 @@ This module enables easy, efficient modeling of optimization problems using `doc
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm
-(:class:`~qiskit.algorithms.minimum_eigensolver.QAOA`), to
+(:class:`~qiskit_algorithms.minimum_eigensolver.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental :mod:`~qiskit.algorithms.minimum_eigensolver` provided by Qiskit Terra.
+fundamental :mod:`~qiskit_algorithms.minimum_eigensolver` provided by
+`Qiskit Algorithms <https://github.com/qiskit-community/qiskit-algorithms>`_.
 Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
@@ -85,9 +86,9 @@ Submodules
 
 """
 
-from .version import __version__
-from .infinity import INFINITY  # must be at the top of the file
 from .exceptions import QiskitOptimizationError
+from .infinity import INFINITY  # must be at the top of the file
 from .problems.quadratic_program import QuadraticProgram
+from .version import __version__
 
 __all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError", "INFINITY"]
