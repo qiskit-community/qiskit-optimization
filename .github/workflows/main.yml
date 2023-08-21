@@ -116,7 +116,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8, 3.9, '3.10', 3.11]
+        python-version: [3.8, 3.9, '3.10', 3.11]
         include:
           - os: macos-latest
             python-version: 3.8
@@ -222,7 +222,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8]
+        python-version: [3.8, '3.10']
     steps:
       - uses: actions/checkout@v3
         with:
@@ -309,10 +309,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v3
         with:
-          name: ubuntu-latest-3.7
-          path: /tmp/o37
-      - uses: actions/download-artifact@v3
-        with:
           name: ubuntu-latest-3.8
           path: /tmp/o38
       - uses: actions/download-artifact@v3
@@ -348,7 +344,7 @@ jobs:
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o37/opt.dep /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
+          sort -f -u /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/o38/opt.dat
