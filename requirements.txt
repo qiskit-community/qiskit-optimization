@@ -1,5 +1,5 @@
 qiskit-terra>=0.22.4
-qiskit-algorithms>=0.1.0
+qiskit-algorithms
 scipy>=1.4
 numpy>=1.17
 docplex>=2.21.207,!=2.24.231
