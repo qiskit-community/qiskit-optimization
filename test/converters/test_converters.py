@@ -400,7 +400,7 @@ class TestConverters(QiskitOptimizationTestCase):
         penalize = LinearEqualityToPenalty(penalty=1e5)
         op2 = penalize.convert(op)
         qubitop, offset = op2.to_ising(opflow=False)
-        self.assertEqual(qubitop, QUBIT_OP_MAXIMIZE_SAMPLE)
+        self.assertTrue(qubitop.equiv(QUBIT_OP_MAXIMIZE_SAMPLE))
         self.assertEqual(offset, OFFSET_MAXIMIZE_SAMPLE)
 
     def test_ising_to_quadraticprogram_linear(self):
