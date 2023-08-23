@@ -23,9 +23,9 @@ from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.providers.fake_provider import FakeArmonk, FakeArmonkV2
-from qiskit.utils import algorithm_globals
 from qiskit_algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
 from qiskit_algorithms.optimizers import COBYLA, SPSA
+from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (

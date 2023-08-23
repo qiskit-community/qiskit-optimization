@@ -23,9 +23,10 @@ from qiskit.circuit.library import QuadraticForm
 from qiskit.primitives import BaseSampler
 from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace
-from qiskit.utils import QuantumInstance, algorithm_globals
+from qiskit.utils import QuantumInstance
 from qiskit_algorithms import AmplificationProblem
 from qiskit_algorithms.amplitude_amplifiers.grover import Grover
+from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,

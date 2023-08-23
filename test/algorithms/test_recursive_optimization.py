@@ -17,9 +17,9 @@ from test import QiskitOptimizationTestCase
 
 import numpy as np
 from qiskit.primitives import Sampler
-from qiskit.utils import algorithm_globals
 from qiskit_algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
 from qiskit_algorithms.optimizers import SLSQP
+from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
