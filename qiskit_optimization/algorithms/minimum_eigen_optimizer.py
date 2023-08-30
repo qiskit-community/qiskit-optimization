@@ -14,30 +14,12 @@
 from typing import List, Optional, Union, cast
 
 import numpy as np
-from qiskit.algorithms.minimum_eigen_solvers import MinimumEigensolver as LegacyMinimumEigensolver
-from qiskit.algorithms.minimum_eigen_solvers import (
-    MinimumEigensolverResult as LegacyMinimumEigensolverResult,
-)
-from qiskit.algorithms.minimum_eigensolvers import (
-    VQE,
+from qiskit.quantum_info import SparsePauliOp
+from qiskit_algorithms.minimum_eigensolvers import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
-)
-from qiskit.quantum_info import SparsePauliOp
-from qiskit_algorithms.minimum_eigensolvers import VQE as TerraVQE
-from qiskit_algorithms.minimum_eigensolvers import (
-    NumPyMinimumEigensolver as TerraNumPyMinimumEigensolver,
-)
-from qiskit_algorithms.minimum_eigensolvers import (
-    NumPyMinimumEigensolverResult as TerraNumPyMinimumEigensolverResult,
-)
-from qiskit_algorithms.minimum_eigensolvers import (
-    SamplingMinimumEigensolver as TerraSamplingMinimumEigensolver,
-)
-from qiskit_algorithms.minimum_eigensolvers import (
-    SamplingMinimumEigensolverResult as TerraSamplingMinimumEigensolverResult,
 )
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
@@ -53,16 +35,10 @@ from .optimization_algorithm import (
 MinimumEigensolver = Union[
     SamplingMinimumEigensolver,
     NumPyMinimumEigensolver,
-    LegacyMinimumEigensolver,
-    TerraSamplingMinimumEigensolver,
-    TerraNumPyMinimumEigensolver,
 ]
 MinimumEigensolverResult = Union[
     SamplingMinimumEigensolverResult,
     NumPyMinimumEigensolverResult,
-    LegacyMinimumEigensolverResult,
-    TerraSamplingMinimumEigensolverResult,
-    TerraNumPyMinimumEigensolverResult,
 ]
 
 
@@ -136,7 +112,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.algorithms.minimum_eigensolver import QAOA
+        from qiskit_algorithms.minimum_eigensolver import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
@@ -173,28 +149,6 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-        if isinstance(min_eigen_solver, (VQE, TerraVQE)):
-            raise TypeError(
-                "MinimumEigenOptimizer does not support this VQE. You can use  "
-                "qiskit_algorithms.minimum_eigensolvers.SamplingVQE instead."
-            )
-        if not isinstance(
-            min_eigen_solver,
-            (
-                SamplingMinimumEigensolver,
-                NumPyMinimumEigensolver,
-                LegacyMinimumEigensolver,
-                TerraSamplingMinimumEigensolver,
-                TerraNumPyMinimumEigensolver,
-            ),
-        ):
-            raise TypeError(
-                "MinimumEigenOptimizer supports "
-                "qiskit_algorithms.minimum_eigensolvers.SamplingMinimumEigensolver, "
-                "qiskit_algorithms.minimum_eigensolvers.NumPyMinimumEigensolver, and "
-                "qiskit_algorithms.minimum_eigen_solvers.MinimumEigensolver. "
-                f"But {type(min_eigen_solver)} is given."
-            )
         if not min_eigen_solver.supports_aux_operators():
             raise QiskitOptimizationError(
                 "Given MinimumEigensolver does not return the eigenstate "
@@ -264,14 +218,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         eigen_result: Optional[MinimumEigensolverResult] = None
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
-            if isinstance(self._min_eigen_solver, LegacyMinimumEigensolver):
-                from qiskit.opflow import PauliSumOp
-
-                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(
-                    PauliSumOp(operator)
-                )
-            else:
-                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
+            eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None
             if eigen_result.eigenstate is not None:

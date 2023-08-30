@@ -18,8 +18,6 @@ from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.algorithms import QAOA as LegacyQAOA
-from qiskit.algorithms.minimum_eigensolvers import QAOA as TerraQAOA
 from qiskit.circuit import Parameter
 from qiskit_algorithms.minimum_eigensolvers import QAOA
 
@@ -204,7 +202,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         self,
         pre_solver: OptimizationAlgorithm,
         relax_for_pre_solver: bool,
-        qaoa: Union[QAOA, TerraQAOA, LegacyQAOA],
+        qaoa: QAOA,
         epsilon: float = 0.25,
         num_initial_solutions: int = 1,
         warm_start_factory: Optional[WarmStartQAOAFactory] = None,

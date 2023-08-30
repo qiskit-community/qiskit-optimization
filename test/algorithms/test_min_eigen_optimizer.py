@@ -20,10 +20,10 @@ import numpy as np
 from ddt import data, ddt, unpack
 from qiskit.algorithms.optimizers import SPSA as TerraSPSA
 from qiskit.circuit.library import TwoLocal
-from qiskit.primitives import Estimator, Sampler
+from qiskit.primitives import Sampler
 from qiskit.providers.basicaer import QasmSimulatorPy
 from qiskit.providers.fake_provider import FakeArmonk, FakeArmonkV2
-from qiskit_algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
+from qiskit_algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver, SamplingVQE
 from qiskit_algorithms.optimizers import COBYLA, SPSA
 from qiskit_algorithms.utils import algorithm_globals
 
@@ -333,15 +333,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(results.raw_samples[0].x, [0, 1])
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
         self.assertEqual(results.raw_samples[0].status, success)
-
-    def test_errors(self):
-        """Test for errors"""
-        optimizer = SPSA(maxiter=100)
-        ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-        estimator = Estimator()
-        vqe = VQE(estimator, ry_ansatz, optimizer)
-        with self.assertRaises(TypeError):
-            _ = MinimumEigenOptimizer(vqe)
 
     @data("vqe", "qaoa")
     def test_runtime(self, subroutine):
