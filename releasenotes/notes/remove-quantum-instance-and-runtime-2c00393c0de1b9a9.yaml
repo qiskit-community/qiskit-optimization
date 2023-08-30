@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    Support for ``QuantumInstance``-based algorithms has been removed.
+  - |
+    Classes ``VQEClient`` and ``QAOAClient`` have been removed.
+
