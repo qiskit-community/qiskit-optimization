@@ -26,10 +26,10 @@ This module enables easy, efficient modeling of optimization problems using `doc
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm
-(:class:`~qiskit_algorithms.minimum_eigensolver.QAOA`), to
+(:class:`~qiskit_algorithms.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental :mod:`~qiskit_algorithms.minimum_eigensolver` provided by
+fundamental :mod:`~qiskit_algorithms` provided by
 `Qiskit Algorithms <https://github.com/qiskit-community/qiskit-algorithms>`_.
 Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and

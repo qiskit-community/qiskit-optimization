@@ -71,7 +71,7 @@ from qiskit_optimization.translators import from_docplex_mp
 from qiskit.primitives import Sampler
 
 from qiskit_algorithms.utils import algorithm_globals
-from qiskit_algorithms.minimum_eigensolvers import QAOA
+from qiskit_algorithms import QAOA
 from qiskit_algorithms.optimizers import SPSA
 
 # Generate a graph of 4 nodes

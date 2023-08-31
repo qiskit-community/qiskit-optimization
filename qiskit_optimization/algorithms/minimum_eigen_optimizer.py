@@ -15,7 +15,7 @@ from typing import List, Optional, Union, cast
 
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
-from qiskit_algorithms.minimum_eigensolvers import (
+from qiskit_algorithms import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
@@ -112,7 +112,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit_algorithms.minimum_eigensolver import QAOA
+        from qiskit_algorithms import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()

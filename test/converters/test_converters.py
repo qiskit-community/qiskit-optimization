@@ -18,7 +18,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.quantum_info import SparsePauliOp
-from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit_algorithms import NumPyMinimumEigensolver
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QiskitOptimizationError, QuadraticProgram

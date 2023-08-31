@@ -18,7 +18,7 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.primitives.sampler import Sampler
-from qiskit_algorithms.minimum_eigensolvers import QAOA
+from qiskit_algorithms import QAOA
 from qiskit_algorithms.optimizers import SLSQP
 
 import qiskit_optimization.optionals as _optionals
