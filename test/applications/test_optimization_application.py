@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2022, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,7 +17,6 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt
-from qiskit.opflow import StateFn
 from qiskit.result import QuasiDistribution
 
 from qiskit_optimization.applications import OptimizationApplication
@@ -29,7 +28,6 @@ class TestOptimizationApplication(QiskitOptimizationTestCase):
 
     @data(
         np.array([0, 0, 1, 0]),
-        StateFn([0, 0, 1, 0]),
         {"10": 0.8, "01": 0.2},
         QuasiDistribution({"10": 0.8, "01": 0.2}),
     )

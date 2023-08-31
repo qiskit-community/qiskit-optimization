@@ -16,7 +16,6 @@ from collections import OrderedDict
 from typing import Dict, Union
 
 import numpy as np
-from qiskit.opflow import StateFn
 from qiskit.quantum_info import Statevector
 from qiskit.result import QuasiDistribution
 
@@ -93,10 +92,6 @@ class OptimizationApplication(ABC):
         elif isinstance(state_vector, (OrderedDict, dict)):
             # get the binary string with the largest count
             binary_string = max(state_vector.items(), key=lambda kv: kv[1])[0]
-            x = np.asarray([int(y) for y in reversed(list(binary_string))])
-            return x
-        elif isinstance(state_vector, StateFn):
-            binary_string = list(state_vector.sample().keys())[0]
             x = np.asarray([int(y) for y in reversed(list(binary_string))])
             return x
         elif isinstance(state_vector, np.ndarray):

@@ -214,7 +214,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
-        operator, offset = problem_.to_ising(opflow=False)
+        operator, offset = problem_.to_ising()
 
         return self._solve_internal(operator, offset, problem_, problem)
 
