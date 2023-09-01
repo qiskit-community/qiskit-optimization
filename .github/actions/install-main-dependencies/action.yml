@@ -19,20 +19,31 @@ inputs:
   python-version:
     description: 'Python version'
     required: true
+<<<<<<< HEAD
+=======
+  qiskit-main:
+    description: 'Use Qiskit main'
+    required: true
+>>>>>>> 12d63bc (Switch from qiskit-terra to qiskit (#543))
 runs:
   using: "composite"
   steps:
     - name: Get main last commit ids
       run: |
+<<<<<<< HEAD
         echo "TERRA_HASH=$(git ls-remote --heads https://github.com/Qiskit/qiskit-terra.git refs/heads/main  | awk '{print $1}')" >> $GITHUB_ENV
         echo "AER_HASH=$(git ls-remote --heads https://github.com/Qiskit/qiskit-aer.git refs/heads/main  | awk '{print $1}')" >> $GITHUB_ENV
+=======
+        echo "QISKIT_HASH=$(git ls-remote --heads https://github.com/Qiskit/qiskit.git refs/heads/main  | awk '{print $1}')" >> $GITHUB_ENV
+>>>>>>> 12d63bc (Switch from qiskit-terra to qiskit (#543))
       shell: bash
-    - name: Terra Cache
+    - name: Qiskit Cache
       env:
         CACHE_VERSION: v1
-      id: terra-cache
+      id: qiskit-cache
       uses: actions/cache@v3
       with:
+<<<<<<< HEAD
         path: terra-cache
         key: terra-cache-${{ inputs.os }}-${{ inputs.python-version }}-${{ env.TERRA_HASH }}-${{ env.CACHE_VERSION }}
     - name: Aer Cache
@@ -48,6 +59,60 @@ runs:
         MACOSX_DEPLOYMENT_TARGET: 10.15
       run: |
         echo 'Install Terra from Main'
+=======
+        path: qiskit-cache
+        key: qiskit-cache-${{ inputs.os }}-${{ inputs.python-version }}-${{ env.QISKIT_HASH }}-${{ env.CACHE_VERSION }}
+    - name: Install Qiskit from Main
+      env:
+        MACOSX_DEPLOYMENT_TARGET: 10.15
+      run: |
+        if [ "${{ inputs.qiskit-main }}" == "true" ]; then
+          echo 'Install Qiskit from Main'
+          if [ "${{ inputs.os }}" == "windows-2019" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate scsenv
+          fi
+          BASE_DIR=qiskit-cache
+          build_from_main=true
+          cache_hit=${{ steps.qiskit-cache.outputs.cache-hit }}
+          echo "cache hit: ${cache_hit}"
+          if [ "$cache_hit" == "true" ]; then
+            pip_result=0
+            pushd "${BASE_DIR}"
+            python -m pip install *.whl && pip_result=$? || pip_result=$?
+            popd
+            if [ $pip_result == 0 ]; then
+              build_from_main=false
+            fi
+          else
+            mkdir -p ${BASE_DIR}
+          fi
+          if [ "$build_from_main" == "true" ]; then
+            echo 'Create wheel file from main'
+            pip install -U wheel setuptools_rust
+            git clone --depth 1 --branch main https://github.com/Qiskit/qiskit.git /tmp/qiskit
+            pushd /tmp/qiskit
+            python setup.py bdist_wheel
+            popd
+            cp -rf /tmp/qiskit/dist/*.whl "${BASE_DIR}"
+            pushd "${BASE_DIR}"
+            python -m pip install *.whl
+            popd
+            pip uninstall -y setuptools_rust
+          fi
+        else
+          echo 'Install Qiskit from Stable'
+          if [ "${{ inputs.os }}" == "windows-2019" ]; then
+            source "$CONDA/etc/profile.d/conda.sh"
+            conda activate scsenv
+          fi
+          pip install -U qiskit
+        fi
+      shell: bash
+    - name: Install stable Aer
+      run: |
+        echo 'Install stable Aer'
+>>>>>>> 12d63bc (Switch from qiskit-terra to qiskit (#543))
         if [ "${{ inputs.os }}" == "windows-2019" ]; then
           source "$CONDA/etc/profile.d/conda.sh"
           conda activate scsenv
