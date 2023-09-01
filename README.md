@@ -12,8 +12,8 @@ The Optimization module enables easy, efficient modeling of optimization problem
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm QAOA, to Grover Adaptive Search using the
-GroverOptimizer
-leveraging fundamental algorithms provided by Terra. Furthermore, the modular design
+GroverOptimizer, leveraging fundamental algorithms provided by
+[Qiskit Algorithms](https://qiskit.org/ecosystem/algorithms/). Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.

@@ -64,7 +64,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op = conv.convert(op)
         conv = MaximizeToMinimize()
         op = conv.convert(op)
-        _, shift = op.to_ising(opflow=True)
+        _, shift = op.to_ising()
         self.assertEqual(shift, 0.0)
 
     def test_valid_variable_type(self):
@@ -73,12 +73,12 @@ class TestConverters(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             op = QuadraticProgram()
             op.integer_var(0, 10, "int_var")
-            _ = op.to_ising(opflow=True)
+            _ = op.to_ising()
         # Continuous variable
         with self.assertRaises(QiskitOptimizationError):
             op = QuadraticProgram()
             op.continuous_var(0, 10, "continuous_var")
-            _ = op.to_ising(opflow=True)
+            _ = op.to_ising()
 
     def test_inequality_binary(self):
         """Test InequalityToEqualityConverter with binary variables"""
@@ -399,7 +399,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear, Constraint.Sense.EQ, 3, "sum1")
         penalize = LinearEqualityToPenalty(penalty=1e5)
         op2 = penalize.convert(op)
-        qubitop, offset = op2.to_ising(opflow=False)
+        qubitop, offset = op2.to_ising()
         self.assertTrue(qubitop.equiv(QUBIT_OP_MAXIMIZE_SAMPLE))
         self.assertEqual(offset, OFFSET_MAXIMIZE_SAMPLE)
 

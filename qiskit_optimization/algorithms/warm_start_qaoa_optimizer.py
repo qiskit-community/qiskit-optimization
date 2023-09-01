@@ -310,7 +310,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         pre_solutions = opt_result.samples[:num_pre_solutions]
 
         # construct operator and offset
-        operator, offset = converted_problem.to_ising(opflow=False)
+        operator, offset = converted_problem.to_ising()
 
         results: List[MinimumEigenOptimizationResult] = []
         for pre_solution in pre_solutions:

@@ -14,25 +14,17 @@
 
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
-from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntimeProvider
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.optimizers import SPSA as TerraSPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Sampler
-from qiskit.providers.basicaer import QasmSimulatorPy
-from qiskit.providers.fake_provider import FakeArmonk, FakeArmonkV2
 from qiskit_algorithms import QAOA, NumPyMinimumEigensolver, SamplingVQE
 from qiskit_algorithms.optimizers import COBYLA, SPSA
 from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization.algorithms import (
-    CplexOptimizer,
-    MinimumEigenOptimizationResult,
-    MinimumEigenOptimizer,
-)
+from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -42,7 +34,6 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
-from qiskit_optimization.runtime import QAOAClient, VQEClient
 
 
 @ddt
@@ -333,53 +324,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(results.raw_samples[0].x, [0, 1])
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
         self.assertEqual(results.raw_samples[0].status, success)
-
-    @data("vqe", "qaoa")
-    def test_runtime(self, subroutine):
-        """Test vqe and qaoa runtime"""
-        optimizer = {"name": "SPSA", "maxiter": 100}
-        backend = QasmSimulatorPy()
-
-        if subroutine == "vqe":
-            ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-            initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
-            solver = VQEClient(
-                ansatz=ry_ansatz,
-                optimizer=optimizer,
-                initial_point=initial_point,
-                backend=backend,
-                provider=FakeVQERuntimeProvider(),
-            )
-        else:
-            reps = 2
-            initial_point = np.random.default_rng(42).random(2 * reps)
-            solver = QAOAClient(
-                optimizer=optimizer,
-                reps=reps,
-                initial_point=initial_point,
-                backend=backend,
-                provider=FakeQAOARuntimeProvider(),
-            )
-
-        opt = MinimumEigenOptimizer(solver)
-        with self.assertWarns(DeprecationWarning):
-            result = opt.solve(self.op_ordering)
-        self.assertIsInstance(result, MinimumEigenOptimizationResult)
-
-    @data(FakeArmonk, FakeArmonkV2)
-    def test_runtime_backend_versions(self, backend_cls):
-        """Test the runtime client with a V1 and a V2 backend."""
-        optimizer = TerraSPSA(maxiter=1, learning_rate=0.1, perturbation=0.1)
-        backend = backend_cls()
-        provider = FakeVQERuntimeProvider()
-        ansatz = TwoLocal(1, "ry", reps=0)
-        initial_point = np.array([1])
-
-        solver = VQEClient(ansatz, optimizer, initial_point, provider, backend)
-        opt = MinimumEigenOptimizer(solver)
-        with self.assertWarns(DeprecationWarning):
-            result = opt.solve(self.op_ordering)
-        self.assertIsInstance(result, MinimumEigenOptimizationResult)
 
 
 if __name__ == "__main__":
