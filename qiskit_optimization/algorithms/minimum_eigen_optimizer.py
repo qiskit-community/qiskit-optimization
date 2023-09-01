@@ -220,9 +220,9 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             raw_samples = None
             if not hasattr(eigen_result, "eigenstate"):
                 raise QiskitOptimizationError(
-                    "MinimumEigenOptimizer does not support this VQE "
+                    "MinimumEigenOptimizer does not support this minimum eigensolver "
                     f"{type(self._min_eigen_solver)}. "
-                    "You can use qiskit_algorithms.SamplingVQE instead."
+                    "You can use qiskit_algorithms.SamplingMinimumEigensolver instead."
                 )
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
