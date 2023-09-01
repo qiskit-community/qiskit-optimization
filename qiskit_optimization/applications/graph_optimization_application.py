@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,15 +13,15 @@
 """An abstract class for graph optimization application classes."""
 
 from abc import abstractmethod
-from typing import Union, Optional, Dict, List
+from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
 
 import qiskit_optimization.optionals as _optionals
-from .optimization_application import OptimizationApplication
+
 from ..algorithms import OptimizationResult
-from ..deprecation import DeprecatedType, deprecate_method
+from .optimization_application import OptimizationApplication
 
 
 class GraphOptimizationApplication(OptimizationApplication):
@@ -79,19 +79,3 @@ class GraphOptimizationApplication(OptimizationApplication):
             A graph for a problem
         """
         return self._graph
-
-    @staticmethod
-    @deprecate_method(
-        "0.3.0", DeprecatedType.FUNCTION, "networkx.gnm_random_graph", "in NetworkX, directly"
-    )
-    def random_graph(num_nodes: int, num_edges: int, seed: Optional[int] = None) -> nx.Graph:
-        """
-        Args:
-            num_nodes: The number of nodes in a graph
-            num_edges: The number of edges in a graph
-            seed: seed for a random graph
-
-        Returns:
-            A random graph of NetworkX
-        """
-        return nx.gnm_random_graph(num_nodes, num_edges, seed)
