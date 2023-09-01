@@ -14,10 +14,6 @@
 from typing import List, Optional, Union, cast
 
 import numpy as np
-from qiskit.algorithms.minimum_eigen_solvers import MinimumEigensolver as LegacyMinimumEigensolver
-from qiskit.algorithms.minimum_eigen_solvers import (
-    MinimumEigensolverResult as LegacyMinimumEigensolverResult,
-)
 from qiskit.algorithms.minimum_eigensolvers import (
     VQE,
     NumPyMinimumEigensolver,
@@ -37,12 +33,8 @@ from .optimization_algorithm import (
     SolutionSample,
 )
 
-MinimumEigensolver = Union[
-    SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver
-]
-MinimumEigensolverResult = Union[
-    SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult, LegacyMinimumEigensolverResult
-]
+MinimumEigensolver = Union[SamplingMinimumEigensolver, NumPyMinimumEigensolver]
+MinimumEigensolverResult = Union[SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult]
 
 
 class MinimumEigenOptimizationResult(OptimizationResult):
@@ -159,7 +151,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             )
         if not isinstance(
             min_eigen_solver,
-            (SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver),
+            (SamplingMinimumEigensolver, NumPyMinimumEigensolver),
         ):
             raise TypeError(
                 "MinimumEigenOptimizer supports "
@@ -222,7 +214,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
-        operator, offset = problem_.to_ising(opflow=False)
+        operator, offset = problem_.to_ising()
 
         return self._solve_internal(operator, offset, problem_, problem)
 
@@ -237,14 +229,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         eigen_result: Optional[MinimumEigensolverResult] = None
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
-            if isinstance(self._min_eigen_solver, LegacyMinimumEigensolver):
-                from qiskit.opflow import PauliSumOp
-
-                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(
-                    PauliSumOp(operator)
-                )
-            else:
-                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
+            eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None
             if eigen_result.eigenstate is not None:
