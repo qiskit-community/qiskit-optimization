@@ -23,9 +23,7 @@ from qiskit.algorithms import AmplificationProblem
 from qiskit.algorithms.amplitude_amplifiers.grover import Grover
 from qiskit.circuit.library import QuadraticForm
 from qiskit.primitives import BaseSampler
-from qiskit.providers import Backend
-from qiskit.quantum_info import partial_trace
-from qiskit.utils import QuantumInstance, algorithm_globals
+from qiskit.utils import algorithm_globals
 
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,
@@ -34,12 +32,6 @@ from qiskit_optimization.algorithms.optimization_algorithm import (
     SolutionSample,
 )
 from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
-from qiskit_optimization.deprecation import (
-    DeprecatedType,
-    deprecate_method,
-    deprecate_property,
-    warn_deprecated,
-)
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram, Variable
 
@@ -53,7 +45,6 @@ class GroverOptimizer(OptimizationAlgorithm):
         self,
         num_value_qubits: int,
         num_iterations: int = 3,
-        quantum_instance: Optional[Union[Backend, QuantumInstance]] = None,
         converters: Optional[
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
         ] = None,
@@ -65,7 +56,6 @@ class GroverOptimizer(OptimizationAlgorithm):
             num_value_qubits: The number of value qubits.
             num_iterations: The number of iterations the algorithm will search with
                 no improvement.
-            quantum_instance: Instance of selected backend, defaults to Aer's statevector simulator.
             converters: The converters to use for converting a problem into a different form.
                 By default, when None is specified, an internally created instance of
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
@@ -82,43 +72,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._n_iterations = num_iterations
         self._circuit_results = {}  # type: dict
         self._converters = self._prepare_converters(converters, penalty)
-
-        if quantum_instance is not None and sampler is not None:
-            raise ValueError("Only one of quantum_instance or sampler can be passed, not both!")
-
-        if quantum_instance:
-            warn_deprecated(
-                "0.6.0",
-                old_type=DeprecatedType.ARGUMENT,
-                old_name="quantum_instance",
-                new_type=DeprecatedType.ARGUMENT,
-                new_name="sampler",
-            )
-        self._quantum_instance = quantum_instance  # type: Optional[QuantumInstance]
         self._sampler = sampler
-
-    @property
-    @deprecate_property("0.6.0")
-    def quantum_instance(self) -> QuantumInstance:
-        """The quantum instance to run the circuits.
-
-        Returns:
-            The quantum instance used in the algorithm.
-        """
-        return self._quantum_instance
-
-    @quantum_instance.setter
-    @deprecate_method("0.6.0")
-    def quantum_instance(self, quantum_instance: Union[Backend, QuantumInstance]) -> None:
-        """Set the quantum instance used to run the circuits.
-
-        Args:
-            quantum_instance: The quantum instance to be used in the algorithm.
-        """
-        if isinstance(quantum_instance, Backend):
-            self._quantum_instance = QuantumInstance(quantum_instance)
-        else:
-            self._quantum_instance = quantum_instance
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with this optimizer.
@@ -185,11 +139,8 @@ class GroverOptimizer(OptimizationAlgorithm):
             AttributeError: If the quantum instance has not been set.
             QiskitOptimizationError: If the problem is incompatible with the optimizer.
         """
-        if self._sampler is None and self._quantum_instance is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
-
-        if self._quantum_instance is not None and self._sampler is not None:
-            raise ValueError("Only one of quantum_instance or sampler can be passed, not both!")
+        if self._sampler is None:
+            raise ValueError("A sampler must be provided.")
 
         self._verify_compatibility(problem)
 
@@ -222,7 +173,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         # Initialize oracle helper object.
         qr_key_value = QuantumRegister(self._num_key_qubits + self._num_value_qubits)
         orig_constant = problem_.objective.constant
-        measurement = self._quantum_instance is None or not self._quantum_instance.is_statevector
+        measurement = True
         oracle, is_good_state = self._get_oracle(qr_key_value)
 
         while not optimum_found:
@@ -274,14 +225,9 @@ class GroverOptimizer(OptimizationAlgorithm):
                             i[-1 * n_key :]: v for i, v in self._circuit_results.items()
                         }
                     else:
-                        if self._quantum_instance.is_statevector:
-                            indices = list(range(n_key, len(outcome)))
-                            rho = partial_trace(self._circuit_results, indices)
-                            self._circuit_results = cast(Dict, np.diag(rho.data) ** 0.5)
-                        else:
-                            self._circuit_results = {
-                                i[-1 * n_key :]: v for i, v in self._circuit_results.items()
-                            }
+                        self._circuit_results = {
+                            i[-1 * n_key :]: v for i, v in self._circuit_results.items()
+                        }
                     raw_samples = self._eigenvector_to_solutions(
                         self._circuit_results, problem_init
                     )
@@ -347,43 +293,20 @@ class GroverOptimizer(OptimizationAlgorithm):
     def _get_prob_dist(self, qc: QuantumCircuit) -> Dict[str, float]:
         """Gets probabilities from a given backend."""
         # Execute job and filter results.
-        if self._sampler is not None:
-            job = self._sampler.run([qc])
+        job = self._sampler.run([qc])
 
-            try:
-                result = job.result()
-            except Exception as exc:
-                raise QiskitOptimizationError("Sampler job failed.") from exc
-            quasi_dist = result.quasi_dists[0]
-            raw_prob_dist = {
-                k: v
-                for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items()
-                if v >= self._MIN_PROBABILITY
-            }
-            prob_dist = {k[::-1]: v for k, v in raw_prob_dist.items()}
-            self._circuit_results = {i: v**0.5 for i, v in raw_prob_dist.items()}
-        else:
-            result = self._quantum_instance.execute(qc)
-            if self._quantum_instance.is_statevector:
-                state = result.get_statevector(qc)
-                if not isinstance(state, np.ndarray):
-                    state = state.data
-                keys = [
-                    bin(i)[2::].rjust(int(np.log2(len(state))), "0")[::-1]
-                    for i in range(0, len(state))
-                ]
-                probs = [abs(a) ** 2 for a in state]
-                total = math.fsum(probs)
-                probs = [p / total for p in probs]
-                prob_dist = {key: prob for key, prob in zip(keys, probs) if prob > 0}
-                self._circuit_results = state
-            else:
-                state = result.get_counts(qc)
-                shots = self._quantum_instance.run_config.shots
-                prob_dist = {
-                    key[::-1]: val / shots for key, val in sorted(state.items()) if val > 0
-                }
-                self._circuit_results = {b: (v / shots) ** 0.5 for (b, v) in state.items()}
+        try:
+            result = job.result()
+        except Exception as exc:
+            raise QiskitOptimizationError("Sampler job failed.") from exc
+        quasi_dist = result.quasi_dists[0]
+        raw_prob_dist = {
+            k: v
+            for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items()
+            if v >= self._MIN_PROBABILITY
+        }
+        prob_dist = {k[::-1]: v for k, v in raw_prob_dist.items()}
+        self._circuit_results = {i: v**0.5 for i, v in raw_prob_dist.items()}
         return prob_dist
 
     @staticmethod

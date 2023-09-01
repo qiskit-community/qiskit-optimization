@@ -1,0 +1,14 @@
+---
+upgrade:
+  - |
+    The support for ``QuantumInstance``-based algorithms is removed.
+    Qiskit optimization supports only Primitive-based algorithms.
+  - |
+    The support for Opflow is removed to represent Ising Hamiltonians.
+    Qiskit optimization supports only ``qiskit.quantum_info.SparsePauliOp``,
+    instead.
+  - |
+    The classes ``VQEClient``, ``QAOAClient``, and ``VQERuntimeResult``
+    are removed. Instead, users should migrate their code to use the Qiskit
+    Runtime Primitives with session.
+

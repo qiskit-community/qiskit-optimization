@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2019, 2022.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -80,14 +80,13 @@ Submodules
    applications
    converters
    problems
-   runtime
    translators
 
 """
 
-from .version import __version__
-from .infinity import INFINITY  # must be at the top of the file
 from .exceptions import QiskitOptimizationError
+from .infinity import INFINITY  # must be at the top of the file
 from .problems.quadratic_program import QuadraticProgram
+from .version import __version__
 
 __all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError", "INFINITY"]
