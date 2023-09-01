@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The SciPy MILP optimizer wrapped to be used within Qiskit's optimization module."""
+"""The SciPy MILP optimizer wrapped to be used within Qiskit optimization module."""
 
 from warnings import warn
 

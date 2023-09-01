@@ -51,7 +51,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
     ) -> None:
         """
         Args:
-            x: the optimal value found by ``MinimumEigensolver``.
+            x: the optimal value found by ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
             fval: the optimal function value.
             variables: the list of variables of the optimization problem.
             status: the termination status of the optimization algorithm.
@@ -74,15 +74,18 @@ class MinimumEigenOptimizationResult(OptimizationResult):
 
     @property
     def min_eigen_solver_result(self) -> MinimumEigensolverResult:
-        """Returns a result object obtained from the instance of :class:`MinimumEigensolver`."""
+        """Returns a result object obtained from the instance of
+        ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``."""
         return self._min_eigen_solver_result
 
     @property
     def raw_samples(self) -> Optional[List[SolutionSample]]:
-        """Returns the list of raw solution samples of ``MinimumEigensolver``.
+        """Returns the list of raw solution samples of
+        ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
 
         Returns:
-            The list of raw solution samples of ``MinimumEigensolver``.
+            The list of raw solution samples of
+            ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
         """
         return self._raw_samples
 
@@ -215,6 +218,12 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None
+            if not hasattr(eigen_result, "eigenstate"):
+                raise QiskitOptimizationError(
+                    "MinimumEigenOptimizer does not support this VQE "
+                    f"{type(self._min_eigen_solver)}. "
+                    "You can use qiskit_algorithms.SamplingVQE instead."
+                )
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
                     eigen_result.eigenstate, converted_problem

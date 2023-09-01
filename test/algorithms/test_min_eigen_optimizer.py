@@ -18,8 +18,8 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from ddt import data, ddt, unpack
 from qiskit.circuit.library import TwoLocal
-from qiskit.primitives import Sampler
-from qiskit_algorithms import QAOA, NumPyMinimumEigensolver, SamplingVQE
+from qiskit.primitives import Estimator, Sampler
+from qiskit_algorithms import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
 from qiskit_algorithms.optimizers import COBYLA, SPSA
 from qiskit_algorithms.utils import algorithm_globals
 
@@ -33,6 +33,7 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -324,6 +325,16 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(results.raw_samples[0].x, [0, 1])
         self.assertAlmostEqual(results.raw_samples[0].fval, opt_sol)
         self.assertEqual(results.raw_samples[0].status, success)
+
+    def test_errors(self):
+        """Test for errors"""
+        optimizer = SPSA(maxiter=100)
+        ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
+        estimator = Estimator()
+        vqe_mes = VQE(estimator, ry_ansatz, optimizer)
+        vqe = MinimumEigenOptimizer(vqe_mes)
+        with self.assertRaises(QiskitOptimizationError):
+            _ = vqe.solve(self.op_ordering)
 
 
 if __name__ == "__main__":

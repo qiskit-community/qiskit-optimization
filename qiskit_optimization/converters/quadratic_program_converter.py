@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An abstract class for optimization algorithms in Qiskit's optimization module."""
+"""An abstract class for optimization algorithms in Qiskit optimization module."""
 
 from abc import ABC, abstractmethod
 from typing import List, Union
@@ -22,7 +22,7 @@ from ..problems.quadratic_program import QuadraticProgram
 
 class QuadraticProgramConverter(ABC):
     """
-    An abstract class for converters of quadratic programs in Qiskit's optimization module.
+    An abstract class for converters of quadratic programs in Qiskit optimization module.
     """
 
     @abstractmethod

@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""A recursive minimal eigen optimizer in Qiskit's optimization module."""
+"""A recursive minimal eigen optimizer in Qiskit optimization module."""
 
 from copy import deepcopy
 from enum import Enum

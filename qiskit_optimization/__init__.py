@@ -11,12 +11,12 @@
 # that they have been altered from the originals.
 """
 =========================================================
-Qiskit's optimization module (:mod:`qiskit_optimization`)
+Qiskit optimization module (:mod:`qiskit_optimization`)
 =========================================================
 
 .. currentmodule:: qiskit_optimization
 
-Qiskit's optimization module covers the whole range from high-level modeling of optimization
+Qiskit optimization module covers the whole range from high-level modeling of optimization
 problems, with automatic conversion of problems to different required representations,
 to a suite of easy-to-use quantum optimization algorithms that are ready to run on
 classical simulators, as well as on real quantum devices via Qiskit.
@@ -29,14 +29,14 @@ such as the Quantum Approximate Optimization Algorithm
 (:class:`~qiskit_algorithms.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental :mod:`~qiskit_algorithms` provided by
+fundamental :mod:`~qiskit_algorithms.minimum_eigensolvers` provided by
 `Qiskit Algorithms <https://github.com/qiskit-community/qiskit-algorithms>`_.
 Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.
 
-Qiskit's optimization module supports Quadratically Constrained Quadratic Programs – for simplicity
+Qiskit optimization module supports Quadratically Constrained Quadratic Programs – for simplicity
 we refer to them just as Quadratic Programs – with binary, integer, and continuous variables, as
 well as equality and inequality constraints. This class of optimization problems has a vast amount
 of relevant applications, while still being efficiently representable by matrices and vectors.

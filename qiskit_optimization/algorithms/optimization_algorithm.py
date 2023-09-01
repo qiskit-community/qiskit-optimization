@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An abstract class for optimization algorithms in Qiskit's optimization module."""
+"""An abstract class for optimization algorithms in Qiskit optimization module."""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -290,7 +290,7 @@ class OptimizationResult:
 
 
 class OptimizationAlgorithm(ABC):
-    """An abstract class for optimization algorithms in Qiskit's optimization module."""
+    """An abstract class for optimization algorithms in Qiskit optimization module."""
 
     _MIN_PROBABILITY = 1e-6
 
