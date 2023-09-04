@@ -7,9 +7,9 @@ Getting started
 Installation
 ============
 
-Qiskit Optimization depends on the main Qiskit package which has its own
+Qiskit Optimization depends Qiskit. which has its own
 `Qiskit Getting Started <https://qiskit.org/documentation/getting_started.html>`__ detailing the
-installation options for Qiskit and its supported environments/platforms. You should refer to
+installation options and its supported environments/platforms. You should refer to
 that first. Then the information here can be followed which focuses on the additional installation
 specific to Qiskit Optimization.
 
@@ -21,24 +21,23 @@ See :ref:`optional_installs` for more information.
 
     .. tab-item:: Start locally
 
-        The simplest way to get started is to follow the `getting started 'Start locally' guide for
+        The simplest way to get started is to first follow the `getting started 'Start locally' guide for
         Qiskit <https://qiskit.org/documentation/getting_started.html>`__
 
         In your virtual environment where you installed Qiskit simply add ``optimization`` to the
         extra list in a similar manner to how the extra ``visualization`` support is installed for
         Qiskit, i.e:
+        In your virtual environment, where you installed Qiskit, install Qiskit Optimization as follows:
 
         .. code:: sh
 
-            pip install qiskit[optimization]
+            pip install qiskit-optimization
 
-        It is worth pointing out that if you're a zsh user (which is the default shell on newer
-        versions of macOS), you'll need to put ``qiskit[optimization]`` in quotes:
+        .. note::
 
-        .. code:: sh
-
-            pip install 'qiskit[optimization]'
-
+            As Qiskit Optimization depends on Qiskit, you can though simply install it into your
+            environment, as above, and pip will automatically install a compatible version of Qiskit
+            if one is not already installed.
 
     .. tab-item:: Install from source
 
