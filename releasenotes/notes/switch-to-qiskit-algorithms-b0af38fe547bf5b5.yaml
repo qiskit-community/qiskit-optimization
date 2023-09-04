@@ -1,7 +1,7 @@
 ---
 prelude: >
     Qiskit Optimization 0.6 switches from ``qiskit.algorithms`` of Qiskit Terra
-    to `Qiskit Algorithms <https://github.com/qiskit-community/qiskit-algorithms>`_.
+    to `Qiskit Algorithms <https://qiskit.org/ecosystem/algorithms/>`_.
     Qiskit Optimization 0.6 drops supports of the former algorithms based on
     ``qiskit.algorithms`` and ``QuantumInstance`` of Qiskit Terra.
 
@@ -10,7 +10,7 @@ features:
     The :class:`~.MinimumEigenOptimizer` class takes the primitives-based algorithms
     (:class:`qiskit_algorithms.SamplingMinimumEigensolver` and
     :class:`qiskit_algorithms.NumPyMinimumEigensolver`)
-    of `Qiskit Algorithms <https://github.com/qiskit-community/qiskit-algorithms>`_
+    of `Qiskit Algorithms <https://qiskit.org/ecosystem/algorithms/>`_
     as ``min_eigen_solver`` argument.
     The supports of the former algorithms based on ``qiskit.algorithms`` and ``QuantumInstance``
     are removed.

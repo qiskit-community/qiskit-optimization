@@ -29,8 +29,9 @@ such as the Quantum Approximate Optimization Algorithm
 (:class:`~qiskit_algorithms.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental :mod:`~qiskit_algorithms.minimum_eigensolvers` provided by
-`Qiskit Algorithms <https://github.com/qiskit-community/qiskit-algorithms>`_.
+fundamental `minimum eigensolvers <https://qiskit.org/ecosystem/algorithms/apidocs/
+qiskit_algorithms.html#minimum-eigensolvers>`_ provided by
+`Qiskit Algorithms <https://qiskit.org/ecosystem/algorithms/>`_.
 Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
