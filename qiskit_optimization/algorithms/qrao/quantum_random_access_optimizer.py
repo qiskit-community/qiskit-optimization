@@ -18,8 +18,8 @@ from typing import cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.algorithms import VariationalResult
-from qiskit.algorithms.minimum_eigensolvers import (
+from qiskit_algorithms import VariationalResult
+from qiskit_algorithms.minimum_eigensolvers import (
     MinimumEigensolver,
     MinimumEigensolverResult,
     NumPyMinimumEigensolver,
