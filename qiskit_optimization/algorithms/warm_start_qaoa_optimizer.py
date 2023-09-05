@@ -18,9 +18,8 @@ from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.algorithms import QAOA as LegacyQAOA
-from qiskit.algorithms.minimum_eigensolvers import QAOA
 from qiskit.circuit import Parameter
+from qiskit_algorithms import QAOA
 
 from ..converters.quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
@@ -203,7 +202,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         self,
         pre_solver: OptimizationAlgorithm,
         relax_for_pre_solver: bool,
-        qaoa: Union[QAOA, LegacyQAOA],
+        qaoa: QAOA,
         epsilon: float = 0.25,
         num_initial_solutions: int = 1,
         warm_start_factory: Optional[WarmStartQAOAFactory] = None,
@@ -311,7 +310,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         pre_solutions = opt_result.samples[:num_pre_solutions]
 
         # construct operator and offset
-        operator, offset = converted_problem.to_ising(opflow=False)
+        operator, offset = converted_problem.to_ising()
 
         results: List[MinimumEigenOptimizationResult] = []
         for pre_solution in pre_solutions:

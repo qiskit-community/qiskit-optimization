@@ -17,7 +17,7 @@ import time
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit_algorithms import NumPyMinimumEigensolver
 
 from ..converters import MaximizeToMinimize
 from ..problems.constraint import Constraint
@@ -220,7 +220,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         Args:
             qubo_optimizer: An instance of OptimizationAlgorithm that can effectively solve
                 QUBO problems. If not specified then :class:`MinimumEigenOptimizer` initialized
-                with an instance of :class:`NumPyMinimumEigensolver` will be used.
+                with an instance of ``NumPyMinimumEigensolver`` will be used.
             continuous_optimizer: An instance of OptimizationAlgorithm that can solve
                 continuous problems. If not specified then :class:`SlsqpOptimizer` will be used.
             params: An instance of ADMMParameters.

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,15 +10,15 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""A recursive minimal eigen optimizer in Qiskit's optimization module."""
+"""A recursive minimal eigen optimizer in Qiskit optimization module."""
 
 from copy import deepcopy
 from enum import Enum
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.utils.validation import validate_min
+from qiskit_algorithms import NumPyMinimumEigensolver
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
@@ -117,7 +117,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block:: python
 
-        from qiskit.algorithms.minimum_eigensolver import QAOA
+        from qiskit_algorithms import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import (
             MinimumEigenOptimizer, RecursiveMinimumEigenOptimizer
@@ -161,7 +161,7 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
             min_num_vars_optimizer: This optimizer is used after the recursive scheme for the
                 problem with the remaining variables. Default value is
                 :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizer` created on top of
-                :class:`~qiskit.algorithms.minimum_eigensolver.NumPyMinimumEigensolver`.
+                :class:`~qiskit_algorithms.NumPyMinimumEigensolver`.
             penalty: The factor that is used to scale the penalty terms corresponding to linear
                 equality constraints.
             history: Whether the intermediate results are stored.
