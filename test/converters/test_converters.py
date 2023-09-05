@@ -289,6 +289,26 @@ class TestConverters(QiskitOptimizationTestCase):
         lst = [op2.variables[3].vartype, op2.variables[4].vartype]
         self.assertListEqual(lst, [Variable.Type.INTEGER, Variable.Type.CONTINUOUS])
 
+    def test_inequality_le_ge(self):
+        """Test InequalityToEquality for both senses"""
+        op = QuadraticProgram()
+        op.binary_var(name="x")
+        op.minimize(linear={"x": 1})
+        op.linear_constraint({"x": 1}, "<=", 1)
+        op.linear_constraint({"x": 1}, ">=", 0)
+        op_eq = InequalityToEquality().convert(op)
+        self.assertEqual(op_eq.get_num_linear_constraints(), 2)
+        lin0 = op_eq.get_linear_constraint(0)
+        self.assertEqual(lin0.linear.to_dict(use_name=True), {"x": 1.0, "c0@int_slack": 1.0})
+        self.assertEqual(lin0.sense, Constraint.Sense.EQ)
+        self.assertEqual(lin0.rhs, 1)
+        self.assertAlmostEqual(lin0.evaluate([1, 1, 1]), 2)
+        lin1 = op_eq.get_linear_constraint(1)
+        self.assertEqual(lin1.linear.to_dict(use_name=True), {"x": 1.0, "c1@int_slack": -1.0})
+        self.assertEqual(lin1.sense, Constraint.Sense.EQ)
+        self.assertEqual(lin1.rhs, 0)
+        self.assertAlmostEqual(lin1.evaluate([1, 1, 1]), 0)
+
     def test_penalize_sense(self):
         """Test PenalizeLinearEqualityConstraints with senses"""
         op = QuadraticProgram()

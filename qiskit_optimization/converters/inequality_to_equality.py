@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -89,6 +89,46 @@ class InequalityToEquality(QuadraticProgramConverter):
             else:
                 raise QiskitOptimizationError(f"Unsupported variable type {x.vartype}")
 
+        # Note: QuadraticProgram needs to add all variables before adding any constraints.
+
+        # Add slack variables to linear constraints
+        new_linear_constraints = []
+        for lin_const in self._src.linear_constraints:
+            if lin_const.sense == Constraint.Sense.EQ:
+                new_linear_constraints.append(
+                    (lin_const.linear.coefficients, lin_const.sense, lin_const.rhs, lin_const.name)
+                )
+            elif lin_const.sense in [Constraint.Sense.LE, Constraint.Sense.GE]:
+                new_linear_constraints.append(self._add_slack_var_linear_constraint(lin_const))
+            else:
+                raise QiskitOptimizationError(
+                    f"Internal error: type of sense in {lin_const.name} is not supported: "
+                    f"{lin_const.sense}"
+                )
+
+        # Add slack variables to quadratic constraints
+        new_quadratic_constraints = []
+        for quad_const in self._src.quadratic_constraints:
+            if quad_const.sense == Constraint.Sense.EQ:
+                new_quadratic_constraints.append(
+                    (
+                        quad_const.linear.coefficients,
+                        quad_const.quadratic.coefficients,
+                        quad_const.sense,
+                        quad_const.rhs,
+                        quad_const.name,
+                    )
+                )
+            elif quad_const.sense in [Constraint.Sense.LE, Constraint.Sense.GE]:
+                new_quadratic_constraints.append(
+                    self._add_slack_var_quadratic_constraint(quad_const)
+                )
+            else:
+                raise QiskitOptimizationError(
+                    f"Internal error: type of sense in {quad_const.name} is not supported: "
+                    f"{quad_const.sense}"
+                )
+
         # Copy the objective function
         constant = self._src.objective.constant
         linear = self._src.objective.linear.to_dict(use_name=True)
@@ -98,37 +138,13 @@ class InequalityToEquality(QuadraticProgramConverter):
         else:
             self._dst.maximize(constant, linear, quadratic)
 
-        # For linear constraints
-        for lin_const in self._src.linear_constraints:
-            if lin_const.sense == Constraint.Sense.EQ:
-                self._dst.linear_constraint(
-                    lin_const.linear.coefficients, lin_const.sense, lin_const.rhs, lin_const.name
-                )
-            elif lin_const.sense in [Constraint.Sense.LE, Constraint.Sense.GE]:
-                self._add_slack_var_linear_constraint(lin_const)
-            else:
-                raise QiskitOptimizationError(
-                    f"Internal error: type of sense in {lin_const.name} is not supported: "
-                    f"{lin_const.sense}"
-                )
+        # Add linear constraints
+        for lin_const_args in new_linear_constraints:
+            self._dst.linear_constraint(*lin_const_args)
 
-        # For quadratic constraints
-        for quad_const in self._src.quadratic_constraints:
-            if quad_const.sense == Constraint.Sense.EQ:
-                self._dst.quadratic_constraint(
-                    quad_const.linear.coefficients,
-                    quad_const.quadratic.coefficients,
-                    quad_const.sense,
-                    quad_const.rhs,
-                    quad_const.name,
-                )
-            elif quad_const.sense in [Constraint.Sense.LE, Constraint.Sense.GE]:
-                self._add_slack_var_quadratic_constraint(quad_const)
-            else:
-                raise QiskitOptimizationError(
-                    f"Internal error: type of sense in {quad_const.name} is not supported: "
-                    f"{quad_const.sense}"
-                )
+        # Add quadratic constraints
+        for quad_const_args in new_quadratic_constraints:
+            self._dst.quadratic_constraint(*quad_const_args)
 
         return self._dst
 
@@ -181,7 +197,7 @@ class InequalityToEquality(QuadraticProgramConverter):
             elif mode == "continuous":
                 self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
             new_linear[slack_name] = sign
-        self._dst.linear_constraint(new_linear, "==", new_rhs, name)
+        return new_linear, "==", new_rhs, name
 
     def _add_slack_var_quadratic_constraint(self, constraint: QuadraticConstraint):
         quadratic = constraint.quadratic
@@ -234,7 +250,7 @@ class InequalityToEquality(QuadraticProgramConverter):
             elif mode == "continuous":
                 self._dst.continuous_var(name=slack_name, lowerbound=0, upperbound=var_ub)
             new_linear[slack_name] = sign
-        self._dst.quadratic_constraint(new_linear, quadratic.coefficients, "==", new_rhs, name)
+        return new_linear, quadratic.coefficients, "==", new_rhs, name
 
     def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
