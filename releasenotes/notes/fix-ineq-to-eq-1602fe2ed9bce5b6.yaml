@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Fixed an issue of :class:`.InequalityToEquality` converter so that
+    it adds all slack variables before adding the objective function
+    and the constraints.
+    The issue may have caused errors when interpreting solutions.
