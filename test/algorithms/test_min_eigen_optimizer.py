@@ -17,17 +17,14 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
-from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
+from qiskit_algorithms.optimizers import COBYLA, SPSA
+from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization.algorithms import (
-    CplexOptimizer,
-    MinimumEigenOptimizer,
-)
+from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -36,6 +33,7 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -333,9 +331,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
         estimator = Estimator()
-        vqe = VQE(estimator, ry_ansatz, optimizer)
-        with self.assertRaises(TypeError):
-            _ = MinimumEigenOptimizer(vqe)
+        vqe_mes = VQE(estimator, ry_ansatz, optimizer)
+        vqe = MinimumEigenOptimizer(vqe_mes)
+        with self.assertRaises(QiskitOptimizationError):
+            _ = vqe.solve(self.op_ordering)
 
 
 if __name__ == "__main__":

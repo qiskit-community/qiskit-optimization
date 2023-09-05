@@ -17,9 +17,10 @@ from test import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
-from qiskit.utils import algorithm_globals
+from qiskit.utils import optionals
 from qiskit_aer.primitives import Sampler
+from qiskit_algorithms import NumPyMinimumEigensolver
+from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit_optimization.algorithms import (
     GroverOptimizer,
@@ -40,6 +41,7 @@ from qiskit_optimization.translators import from_docplex_mp
 class TestGroverOptimizer(QiskitOptimizationTestCase):
     """GroverOptimizer tests."""
 
+    @unittest.skipUnless(optionals.HAS_AER, "qiskit-aer is required to run this test")
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 1

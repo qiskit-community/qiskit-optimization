@@ -68,10 +68,11 @@ from docplex.mp.model import Model
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from qiskit_optimization.translators import from_docplex_mp
 
-from qiskit.utils import algorithm_globals
 from qiskit.primitives import Sampler
-from qiskit.algorithms.minimum_eigensolvers import QAOA
-from qiskit.algorithms.optimizers import SPSA
+
+from qiskit_algorithms.utils import algorithm_globals
+from qiskit_algorithms import QAOA
+from qiskit_algorithms.optimizers import SPSA
 
 # Generate a graph of 4 nodes
 n = 4

@@ -18,8 +18,8 @@ from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.algorithms.minimum_eigensolvers import QAOA
 from qiskit.circuit import Parameter
+from qiskit_algorithms import QAOA
 
 from ..converters.quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
