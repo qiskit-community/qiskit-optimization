@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    Adds :class:`~qiskit_optimization.algorithms.ScipyMilpOptimizer`
+    as a classical solver based on
+    `scipy.optimize.milp <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.milp.html>`_,
+    which can solve mixed-integer linear program (MILP) problems.
+    Note that ``scipy.optimize.milp`` has been introduced by
+    `SciPy 1.9.0 <https://docs.scipy.org/doc/scipy/release.1.9.0.html>`_.

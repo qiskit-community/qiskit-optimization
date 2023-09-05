@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2021.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,24 +11,29 @@
 # that they have been altered from the originals.
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
-from typing import Optional, Union, List, cast
+from typing import List, Optional, Union, cast
 
 import numpy as np
+from qiskit.quantum_info import SparsePauliOp
+from qiskit_algorithms import (
+    NumPyMinimumEigensolver,
+    NumPyMinimumEigensolverResult,
+    SamplingMinimumEigensolver,
+    SamplingMinimumEigensolverResult,
+)
 
-from qiskit.algorithms import MinimumEigensolver, MinimumEigensolverResult
-from qiskit.opflow import OperatorBase
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
+from ..exceptions import QiskitOptimizationError
+from ..problems.quadratic_program import QuadraticProgram, Variable
 from .optimization_algorithm import (
-    OptimizationResultStatus,
     OptimizationAlgorithm,
     OptimizationResult,
+    OptimizationResultStatus,
     SolutionSample,
 )
-from ..exceptions import QiskitOptimizationError
-from ..converters.quadratic_program_to_qubo import (
-    QuadraticProgramToQubo,
-    QuadraticProgramConverter,
-)
-from ..problems.quadratic_program import QuadraticProgram, Variable
+
+MinimumEigensolver = Union[SamplingMinimumEigensolver, NumPyMinimumEigensolver]
+MinimumEigensolverResult = Union[SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult]
 
 
 class MinimumEigenOptimizationResult(OptimizationResult):
@@ -46,7 +51,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
     ) -> None:
         """
         Args:
-            x: the optimal value found by ``MinimumEigensolver``.
+            x: the optimal value found by ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
             fval: the optimal function value.
             variables: the list of variables of the optimization problem.
             status: the termination status of the optimization algorithm.
@@ -69,15 +74,18 @@ class MinimumEigenOptimizationResult(OptimizationResult):
 
     @property
     def min_eigen_solver_result(self) -> MinimumEigensolverResult:
-        """Returns a result object obtained from the instance of :class:`MinimumEigensolver`."""
+        """Returns a result object obtained from the instance of
+        ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``."""
         return self._min_eigen_solver_result
 
     @property
     def raw_samples(self) -> Optional[List[SolutionSample]]:
-        """Returns the list of raw solution samples of ``MinimumEigensolver``.
+        """Returns the list of raw solution samples of
+        ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
 
         Returns:
-            The list of raw solution samples of ``MinimumEigensolver``.
+            The list of raw solution samples of
+            ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
         """
         return self._raw_samples
 
@@ -101,7 +109,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.algorithms import QAOA
+        from qiskit_algorithms import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
@@ -134,14 +142,14 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` will be used.
 
         Raises:
+            TypeError: If minimum eigensolver has an invalid type.
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-
         if not min_eigen_solver.supports_aux_operators():
             raise QiskitOptimizationError(
                 "Given MinimumEigensolver does not return the eigenstate "
-                + "and is not supported by the MinimumEigenOptimizer."
+                "and is not supported by the MinimumEigenOptimizer."
             )
         self._min_eigen_solver = min_eigen_solver
         self._penalty = penalty
@@ -198,7 +206,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     def _solve_internal(
         self,
-        operator: OperatorBase,
+        operator: SparsePauliOp,
         offset: float,
         converted_problem: QuadraticProgram,
         original_problem: QuadraticProgram,
@@ -210,6 +218,12 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None
+            if not hasattr(eigen_result, "eigenstate"):
+                raise QiskitOptimizationError(
+                    "MinimumEigenOptimizer does not support this minimum eigensolver "
+                    f"{type(self._min_eigen_solver)}. "
+                    "You can use qiskit_algorithms.SamplingMinimumEigensolver instead."
+                )
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
                     eigen_result.eigenstate, converted_problem

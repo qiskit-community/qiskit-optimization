@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    The previously deprecated ``VQEProgram`` and ``QAOAProgram`` classes have been removed.
+    They were originally deprecated in the Qiskit Optimization 0.3.0 release.

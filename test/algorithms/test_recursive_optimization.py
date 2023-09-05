@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,36 +10,33 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test Recursive Min Eigen Optimizer."""
+"""Test Recursive Min Eigen Optimizer with the primitive-based minimum eigensolver."""
 
 import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-
-from qiskit import BasicAer
-from qiskit.utils import algorithm_globals, QuantumInstance
-
-from qiskit.algorithms import NumPyMinimumEigensolver, QAOA
+from qiskit.primitives import Sampler
+from qiskit_algorithms import QAOA, NumPyMinimumEigensolver
+from qiskit_algorithms.optimizers import SLSQP
+from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
-    MinimumEigenOptimizer,
     CplexOptimizer,
+    MinimumEigenOptimizer,
     RecursiveMinimumEigenOptimizer,
-    WarmStartQAOAOptimizer,
     SlsqpOptimizer,
+    WarmStartQAOAOptimizer,
 )
-from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import (
-    IntermediateResult,
-)
-from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.algorithms.recursive_minimum_eigen_optimizer import IntermediateResult
 from qiskit_optimization.converters import (
-    IntegerToBinary,
     InequalityToEquality,
+    IntegerToBinary,
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.problems import QuadraticProgram
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
@@ -133,11 +130,9 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test the recursive optimizer with warm start qaoa."""
         seed = 1234
         algorithm_globals.random_seed = seed
-        backend = BasicAer.get_backend("statevector_simulator")
         qaoa = QAOA(
-            quantum_instance=QuantumInstance(
-                backend=backend, seed_simulator=seed, seed_transpiler=seed
-            ),
+            sampler=Sampler(),
+            optimizer=SLSQP(),
             reps=1,
         )
         warm_qaoa = WarmStartQAOAOptimizer(

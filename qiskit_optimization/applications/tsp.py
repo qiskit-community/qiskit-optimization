@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2021.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,12 +16,13 @@ from typing import Dict, List, Optional, Union
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
+from qiskit_algorithms.utils import algorithm_globals
 
-from qiskit.utils import algorithm_globals
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
+
 from .graph_optimization_application import GraphOptimizationApplication
 
 
@@ -157,20 +158,23 @@ class Tsp(GraphOptimizationApplication):
             for line in infile:
                 if line.startswith("NAME"):
                     name = line.split(":")[1]
-                    name.strip()
+                    name = name.strip()
                 elif line.startswith("TYPE"):
                     typ = line.split(":")[1]
-                    typ.strip()
+                    typ = typ.strip()
                     if typ != "TSP":
                         raise QiskitOptimizationError(
                             f'This supports only "TSP" type. Actual: {typ}'
                         )
+                elif line.startswith("EOF"):
+                    # End Of File tag
+                    break
                 elif line.startswith("DIMENSION"):
                     dim = int(line.split(":")[1])
                     coord = np.zeros((dim, 2))  # type: ignore
                 elif line.startswith("EDGE_WEIGHT_TYPE"):
                     typ = line.split(":")[1]
-                    typ.strip()
+                    typ = typ.strip()
                     if typ != "EUC_2D":
                         raise QiskitOptimizationError(
                             f'This supports only "EUC_2D" edge weight. Actual: {typ}'
@@ -182,14 +186,13 @@ class Tsp(GraphOptimizationApplication):
                     index = int(v[0]) - 1
                     coord[index][0] = float(v[1])
                     coord[index][1] = float(v[2])
-
         x_max = max(coord_[0] for coord_ in coord)
         x_min = min(coord_[0] for coord_ in coord)
         y_max = max(coord_[1] for coord_ in coord)
         y_min = min(coord_[1] for coord_ in coord)
-
+        pos = dict(enumerate(coord))
         graph = nx.random_geometric_graph(
-            len(coord), np.hypot(x_max - x_min, y_max - y_min) + 1, pos=coord
+            len(coord), np.hypot(x_max - x_min, y_max - y_min) + 1, pos=pos
         )
         for w, v in graph.edges:
             delta = [graph.nodes[w]["pos"][i] - graph.nodes[v]["pos"][i] for i in range(2)]

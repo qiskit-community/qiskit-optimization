@@ -6,11 +6,13 @@ aer's
 al
 annealers
 ansatz
+apidocs
 applegate
 args
 arxiv
 autosummary
 backend
+backends
 barkoutsos
 benchmarking
 bitstring
@@ -50,6 +52,7 @@ eckstein
 egger
 eigen
 eigensolver
+eigensolvers
 eigenstate
 entangler
 enum
@@ -81,6 +84,8 @@ hamiltonian
 hamiltonians
 hastings
 hoyer
+https
+ibm
 ide
 imode
 init
@@ -111,6 +116,7 @@ maxcut
 maxfun
 maxiter
 mdl
+milp
 minimizer
 minimumeigenoptimizer
 multiset
@@ -126,7 +132,9 @@ nosignatures
 np
 num
 numpy
+numpyminimumeigensolver
 october
+opflow
 optimality
 optimizationresult
 optimizationresultstatus
@@ -218,10 +226,12 @@ upperbound
 variational
 vartype
 vqe
+vqeresult
 writelines
 xixj
 wavefunction
 wecker
+whitespace
 williamson
 xs
 ys

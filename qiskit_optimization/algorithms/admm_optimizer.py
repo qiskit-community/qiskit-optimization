@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,21 +17,21 @@ import time
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit_algorithms import NumPyMinimumEigensolver
 
-from .minimum_eigen_optimizer import MinimumEigenOptimizer
-from .optimization_algorithm import (
-    OptimizationResultStatus,
-    OptimizationAlgorithm,
-    OptimizationResult,
-)
-from .slsqp_optimizer import SlsqpOptimizer
+from ..converters import MaximizeToMinimize
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
 from ..problems.linear_expression import LinearExpression
 from ..problems.quadratic_program import QuadraticProgram
-from ..problems.variable import VarType, Variable
-from ..converters import MaximizeToMinimize
+from ..problems.variable import Variable, VarType
+from .minimum_eigen_optimizer import MinimumEigenOptimizer
+from .optimization_algorithm import (
+    OptimizationAlgorithm,
+    OptimizationResult,
+    OptimizationResultStatus,
+)
+from .slsqp_optimizer import SlsqpOptimizer
 
 UPDATE_RHO_BY_TEN_PERCENT = 0
 UPDATE_RHO_BY_RESIDUALS = 1
@@ -220,7 +220,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         Args:
             qubo_optimizer: An instance of OptimizationAlgorithm that can effectively solve
                 QUBO problems. If not specified then :class:`MinimumEigenOptimizer` initialized
-                with an instance of :class:`NumPyMinimumEigensolver` will be used.
+                with an instance of ``NumPyMinimumEigensolver`` will be used.
             continuous_optimizer: An instance of OptimizationAlgorithm that can solve
                 continuous problems. If not specified then :class:`SlsqpOptimizer` will be used.
             params: An instance of ADMMParameters.
@@ -369,7 +369,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             self._state.x0_saved.append(self._state.x0)
             self._state.u_saved.append(self._state.u)
             self._state.z_saved.append(self._state.z)
-            self._state.z_saved.append(self._state.y)
+            self._state.y_saved.append(self._state.y)
 
             self._update_rho(residual, dual_residual)
 
@@ -777,7 +777,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
             if primal_residual > self._params.mu_res * dual_residual:
                 self._state.rho = self._params.tau_incr * self._state.rho
             elif dual_residual > self._params.mu_res * primal_residual:
-                self._state.rho = self._params.tau_decr * self._state.rho
+                self._state.rho = self._state.rho / self._params.tau_decr
 
     def _get_constraint_residual(self) -> float:
         """Compute violation of the constraints of the original problem, as:

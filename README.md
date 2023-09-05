@@ -1,6 +1,6 @@
 # Qiskit Optimization
 
-[![License](https://img.shields.io/github/license/Qiskit/qiskit-optimization.svg?style=popout-square)](https://opensource.org/licenses/Apache-2.0)<!--- long-description-skip-begin -->[![Build Status](https://github.com/Qiskit/qiskit-optimization/workflows/Optimization%20Unit%20Tests/badge.svg?branch=main)](https://github.com/Qiskit/qiskit-optimization/actions?query=workflow%3A"Optimization%20Unit%20Tests"+branch%3Amain+event%3Apush)[![](https://img.shields.io/github/release/Qiskit/qiskit-optimization.svg?style=popout-square)](https://github.com/Qiskit/qiskit-optimization/releases)[![](https://img.shields.io/pypi/dm/qiskit-optimization.svg?style=popout-square)](https://pypi.org/project/qiskit-optimization/)[![Coverage Status](https://coveralls.io/repos/github/Qiskit/qiskit-optimization/badge.svg?branch=main)](https://coveralls.io/github/Qiskit/qiskit-optimization?branch=main)<!--- long-description-skip-end -->
+[![License](https://img.shields.io/github/license/Qiskit/qiskit-optimization.svg?style=popout-square)](https://opensource.org/licenses/Apache-2.0)<!--- long-description-skip-begin -->[![Build Status](https://github.com/qiskit-community/qiskit-optimization/workflows/Optimization%20Unit%20Tests/badge.svg?branch=main)](https://github.com/qiskit-community/qiskit-optimization/actions?query=workflow%3A"Optimization%20Unit%20Tests"+branch%3Amain+event%3Apush)[![](https://img.shields.io/github/release/Qiskit/qiskit-optimization.svg?style=popout-square)](https://github.com/qiskit-community/qiskit-optimization/releases)[![](https://img.shields.io/pypi/dm/qiskit-optimization.svg?style=popout-square)](https://pypi.org/project/qiskit-optimization/)[![Coverage Status](https://coveralls.io/repos/github/Qiskit/qiskit-optimization/badge.svg?branch=main)](https://coveralls.io/github/Qiskit/qiskit-optimization?branch=main)<!--- long-description-skip-end -->
 
 **Qiskit Optimization** is an open-source framework that covers the whole range from high-level modeling of optimization
 problems, with automatic conversion of problems to different required representations, to a suite
@@ -12,8 +12,8 @@ The Optimization module enables easy, efficient modeling of optimization problem
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm QAOA, to Grover Adaptive Search using the
-GroverOptimizer
-leveraging fundamental algorithms provided by Terra. Furthermore, the modular design
+GroverOptimizer, leveraging fundamental algorithms provided by
+[Qiskit Algorithms](https://qiskit.org/ecosystem/algorithms/). Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.
@@ -32,7 +32,7 @@ pip install qiskit-optimization
 If you want to work on the very latest work-in-progress versions, either to try features ahead of
 their official release or if you want to contribute to Optimization, then you can install from source.
 To do this follow the instructions in the
- [documentation](https://qiskit.org/documentation/optimization/getting_started.html#installation).
+ [documentation](https://qiskit.org/ecosystem/optimization/getting_started.html#installation).
 
 
 ----------------------------------------------------------------------------------------------------
@@ -68,10 +68,11 @@ from docplex.mp.model import Model
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 from qiskit_optimization.translators import from_docplex_mp
 
-from qiskit.utils import algorithm_globals, QuantumInstance
-from qiskit import BasicAer
-from qiskit.algorithms import QAOA
-from qiskit.algorithms.optimizers import SPSA
+from qiskit.primitives import Sampler
+
+from qiskit_algorithms.utils import algorithm_globals
+from qiskit_algorithms import QAOA
+from qiskit_algorithms.optimizers import SPSA
 
 # Generate a graph of 4 nodes
 n = 4
@@ -97,9 +98,8 @@ seed = 1234
 algorithm_globals.random_seed = seed
 
 spsa = SPSA(maxiter=250)
-backend = BasicAer.get_backend('qasm_simulator')
-q_i = QuantumInstance(backend=backend, seed_simulator=seed, seed_transpiler=seed)
-qaoa = QAOA(optimizer=spsa, reps=5, quantum_instance=q_i)
+sampler = Sampler()
+qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
@@ -108,7 +108,7 @@ print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
 ### Further examples
 
 Learning path notebooks may be found in the
-[optimization tutorials](https://qiskit.org/documentation/optimization/tutorials/index.html) section
+[optimization tutorials](https://qiskit.org/ecosystem/optimization/tutorials/index.html) section
 of the documentation and are a great place to start.
 
 ----------------------------------------------------------------------------------------------------
@@ -116,12 +116,12 @@ of the documentation and are a great place to start.
 ## Contribution Guidelines
 
 If you'd like to contribute to Qiskit, please take a look at our
-[contribution guidelines](https://github.com/Qiskit/qiskit-optimization/blob/main/CONTRIBUTING.md).
-This project adheres to Qiskit's [code of conduct](https://github.com/Qiskit/qiskit-optimization/blob/main/CODE_OF_CONDUCT.md).
+[contribution guidelines](https://github.com/qiskit-community/qiskit-optimization/blob/main/CONTRIBUTING.md).
+This project adheres to Qiskit's [code of conduct](https://github.com/qiskit-community/qiskit-optimization/blob/main/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code.
 
-We use [GitHub issues](https://github.com/Qiskit/qiskit-optimization/issues) for tracking requests and bugs. Please
-[join the Qiskit Slack community](https://ibm.co/joinqiskitslack)
+We use [GitHub issues](https://github.com/qiskit-community/qiskit-optimization/issues) for tracking requests and bugs. Please
+[join the Qiskit Slack community](https://qisk.it/join-slack)
 and for discussion and simple questions.
 For questions that are more suited for a forum, we use the **Qiskit** tag in [Stack Overflow](https://stackoverflow.com/questions/tagged/qiskit).
 
@@ -129,15 +129,11 @@ For questions that are more suited for a forum, we use the **Qiskit** tag in [St
 
 Optimization was inspired, authored and brought about by the collective work of a team of researchers.
 Optimization continues to grow with the help and work of
-[many people](https://github.com/Qiskit/qiskit-optimization/graphs/contributors), who contribute
+[many people](https://github.com/qiskit-community/qiskit-optimization/graphs/contributors), who contribute
 to the project at different levels.
 If you use Qiskit, please cite as per the provided
 [BibTeX file](https://github.com/Qiskit/qiskit/blob/master/Qiskit.bib).
 
-Please note that if you do not like the way your name is cited in the BibTex file then consult
-the information found in the [.mailmap](https://github.com/Qiskit/qiskit-optimization/blob/main/.mailmap)
-file.
-
 ## License
 
-This project uses the [Apache License 2.0](https://github.com/Qiskit/qiskit-optimization/blob/main/LICENSE.txt).
+This project uses the [Apache License 2.0](https://github.com/qiskit-community/qiskit-optimization/blob/main/LICENSE.txt).

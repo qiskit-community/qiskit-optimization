@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021.
+# (C) Copyright IBM 2021, 2022.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -29,8 +29,8 @@ class TestSKModel(QiskitOptimizationTestCase):
         super().setUp()
         self._num_of_sites = 2
         self._seed = 0
-        self._graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, -1], [-1, 0]]))
-        self._new_disorder_graph = nx.convert_matrix.from_numpy_matrix(np.array([[0, 1], [1, 0]]))
+        self._graph = nx.convert_matrix.from_numpy_array(np.array([[0, -1], [-1, 0]]))
+        self._new_disorder_graph = nx.convert_matrix.from_numpy_array(np.array([[0, 1], [1, 0]]))
 
         op = QuadraticProgram()
         for _ in range(2):

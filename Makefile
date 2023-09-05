@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2021, 2022.
+# (C) Copyright IBM 2021, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -42,15 +42,16 @@ all_check: spell style lint copyright mypy clean_sphinx html doctest
 lint:
 	pylint -rn qiskit_optimization test tools
 	python tools/verify_headers.py qiskit_optimization test tools
+	python tools/find_stray_release_notes.py
 
 mypy:
 	mypy qiskit_optimization test tools
 
 style:
-	black --check qiskit_optimization test tools docs
+	black --check qiskit_optimization test tools docs setup.py
 
 black:
-	black qiskit_optimization test tools docs
+	black qiskit_optimization test tools docs setup.py
 
 test:
 	python -m unittest discover -v test

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2020, 2022.
+# (C) Copyright IBM 2020, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,11 +16,12 @@ import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-from ddt import data, ddt
 from docplex.mp.model import Model
-import qiskit
-from qiskit.utils import QuantumInstance, algorithm_globals, optionals
-from qiskit.algorithms import NumPyMinimumEigensolver
+from qiskit.utils import optionals
+from qiskit_aer.primitives import Sampler
+from qiskit_algorithms import NumPyMinimumEigensolver
+from qiskit_algorithms.utils import algorithm_globals
+
 from qiskit_optimization.algorithms import (
     GroverOptimizer,
     MinimumEigenOptimizer,
@@ -37,7 +38,6 @@ from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
 
 
-@ddt
 class TestGroverOptimizer(QiskitOptimizationTestCase):
     """GroverOptimizer tests."""
 
@@ -45,17 +45,18 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 1
-        self.sv_simulator = QuantumInstance(
-            qiskit.providers.aer.Aer.get_backend("aer_simulator_statevector"),
-            seed_simulator=921,
-            seed_transpiler=200,
-        )
-        self.qasm_simulator = QuantumInstance(
-            qiskit.providers.aer.Aer.get_backend("aer_simulator"),
-            seed_simulator=123,
-            seed_transpiler=123,
-        )
+        self.sampler = Sampler(run_options={"seed_simulator": 123})
         self.n_iter = 8
+
+    def _prepare_grover_optimizer(self, num_value_qubits, num_iterations, converters=None):
+        """Prepare GroverOptimizer."""
+        grover_optimizer = GroverOptimizer(
+            num_value_qubits=num_value_qubits,
+            num_iterations=num_iterations,
+            converters=converters,
+            sampler=self.sampler,
+        )
+        return grover_optimizer
 
     def validate_results(self, problem, results):
         """Validate the results object returned by GroverOptimizer."""
@@ -81,8 +82,11 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(model)
 
         # Will not find a negative, should return 0.
-        gmf = GroverOptimizer(1, num_iterations=1, quantum_instance=self.sv_simulator)
-        results = gmf.solve(op)
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=1,
+            num_iterations=1,
+        )
+        results = grover_optimizer.solve(op)
         np.testing.assert_array_almost_equal(results.x, [0, 0])
         self.assertEqual(results.fval, 0.0)
         self.assertAlmostEqual(results.fval, results.intermediate_fval)
@@ -98,8 +102,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(model)
 
         # Get the optimum key and value.
-        gmf = GroverOptimizer(4, num_iterations=self.n_iter, quantum_instance=self.sv_simulator)
-        results = gmf.solve(op)
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=4, num_iterations=self.n_iter
+        )
+        results = grover_optimizer.solve(op)
         self.validate_results(op, results)
 
         self.assertIsNotNone(results.operation_counts)
@@ -117,15 +123,15 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(model)
 
         # Get the optimum key and value.
-        gmf = GroverOptimizer(4, num_iterations=self.n_iter, quantum_instance=self.sv_simulator)
-        results = gmf.solve(op)
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=4, num_iterations=self.n_iter
+        )
+        results = grover_optimizer.solve(op)
         self.validate_results(op, results)
 
-    @data("sv", "qasm")
-    def test_qubo_gas_int_paper_example(self, simulator):
+    def test_qubo_gas_int_paper_example(self):
         """
-        Test the example from https://arxiv.org/abs/1912.04088 using the state vector simulator
-        and the qasm simulator
+        Test the example from https://arxiv.org/abs/1912.04088
         """
 
         # Input.
@@ -137,9 +143,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(model)
 
         # Get the optimum key and value.
-        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        gmf = GroverOptimizer(6, num_iterations=self.n_iter, quantum_instance=q_instance)
-        results = gmf.solve(op)
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=6, num_iterations=self.n_iter
+        )
+        results = grover_optimizer.solve(op)
         self.validate_results(op, results)
 
     def test_converter_list(self):
@@ -155,13 +162,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         # Get the optimum key and value.
         # a single converter.
         qp2qubo = QuadraticProgramToQubo()
-        gmf = GroverOptimizer(
-            4,
-            num_iterations=self.n_iter,
-            quantum_instance=self.sv_simulator,
-            converters=qp2qubo,
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=4, num_iterations=self.n_iter
         )
-        results = gmf.solve(op)
+        results = grover_optimizer.solve(op)
         self.validate_results(op, results)
 
         # a list of converters
@@ -170,26 +174,21 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         penalize = LinearEqualityToPenalty()
         max2min = MaximizeToMinimize()
         converters = [ineq2eq, int2bin, penalize, max2min]
-        gmf = GroverOptimizer(
-            4,
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=4,
             num_iterations=self.n_iter,
-            quantum_instance=self.sv_simulator,
             converters=converters,
         )
-        results = gmf.solve(op)
+        results = grover_optimizer.solve(op)
         self.validate_results(op, results)
         # invalid converters
         with self.assertRaises(TypeError):
             invalid = [qp2qubo, "invalid converter"]
-            GroverOptimizer(
-                4,
-                num_iterations=self.n_iter,
-                quantum_instance=self.sv_simulator,
-                converters=invalid,
+            grover_optimizer = self._prepare_grover_optimizer(
+                4, num_iterations=self.n_iter, converters=invalid
             )
 
-    @data("sv", "qasm")
-    def test_samples_and_raw_samples(self, simulator):
+    def test_samples_and_raw_samples(self):
         """Test samples and raw_samples"""
         algorithm_globals.random_seed = 2
         op = QuadraticProgram()
@@ -197,9 +196,8 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op.binary_var("y")
         op.minimize(linear={"x": 1, "y": 2})
         op.linear_constraint(linear={"x": 1, "y": 1}, sense=">=", rhs=1, name="xy")
-        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
-        grover_optimizer = GroverOptimizer(
-            8, num_iterations=self.n_iter, quantum_instance=q_instance
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=8, num_iterations=self.n_iter
         )
         opt_sol = 1
         success = OptimizationResultStatus.SUCCESS
@@ -220,12 +218,10 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertEqual(results.status, results.raw_samples[0].status)
         np.testing.assert_array_almost_equal([1, 0, 0, 0, 0], results.raw_samples[0].x)
 
-    @data("sv", "qasm")
-    def test_bit_ordering(self, simulator):
+    def test_bit_ordering(self):
         """Test bit ordering"""
         # test minimize
         algorithm_globals.random_seed = 2
-        q_instance = self.sv_simulator if simulator == "sv" else self.qasm_simulator
         mdl = Model("docplex model")
         x = mdl.binary_var("x")
         y = mdl.binary_var("y")
@@ -233,8 +229,8 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         op = from_docplex_mp(mdl)
         opt_sol = -2
         success = OptimizationResultStatus.SUCCESS
-        grover_optimizer = GroverOptimizer(
-            3, num_iterations=self.n_iter, quantum_instance=q_instance
+        grover_optimizer = self._prepare_grover_optimizer(
+            num_value_qubits=3, num_iterations=self.n_iter
         )
         results = grover_optimizer.solve(op)
         self.assertEqual(results.fval, opt_sol)

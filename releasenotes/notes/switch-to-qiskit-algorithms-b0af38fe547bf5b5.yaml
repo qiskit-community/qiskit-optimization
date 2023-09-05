@@ -1,0 +1,24 @@
+---
+prelude: >
+    Qiskit Optimization 0.6 switches from ``qiskit.algorithms`` of Qiskit Terra
+    to `Qiskit Algorithms <https://qiskit.org/ecosystem/algorithms/>`_.
+    Qiskit Optimization 0.6 drops supports of the former algorithms based on
+    ``qiskit.algorithms`` and ``QuantumInstance`` of Qiskit Terra.
+
+features:
+  - |
+    The :class:`~.MinimumEigenOptimizer` class takes the primitives-based algorithms
+    (:class:`qiskit_algorithms.SamplingMinimumEigensolver` and
+    :class:`qiskit_algorithms.NumPyMinimumEigensolver`)
+    of `Qiskit Algorithms <https://qiskit.org/ecosystem/algorithms/>`_
+    as ``min_eigen_solver`` argument.
+    The supports of the former algorithms based on ``qiskit.algorithms`` and ``QuantumInstance``
+    are removed.
+  - |
+    The :class:`~.WarmStartQAOAOptimizer` class takes the primitives-based QAOA
+    (:class:`qiskit_algorithms.minimum_eigensolvers.QAOA`) as ``qaoa`` argument.
+    The support of the former QAOA algorithms based on ``qiskit.algorithms`` is removed.
+  - |
+    The :class:`~.GroverOptimizer` class drops the support of ``QuantumInstance``
+    and argument `quantum_instance` is removed. It supports only the Sampler primitive now.
+
