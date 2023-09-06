@@ -16,17 +16,17 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.primitives import Sampler
+from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 
+from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.algorithms.qrao import (
     MagicRounding,
     QuantumRandomAccessEncoding,
     QuantumRandomAccessOptimizer,
-    RoundingResult,
     RoundingContext,
+    RoundingResult,
 )
-from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.problems import QuadraticProgram
 
 

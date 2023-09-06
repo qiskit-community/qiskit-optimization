@@ -225,7 +225,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         expectation_values: list[complex] | None = None
         if relaxed_result.aux_operators_evaluated is not None:
             expectation_values = [
-                v[0] for v in relaxed_result.aux_operators_evaluated # type: ignore
+                v[0] for v in relaxed_result.aux_operators_evaluated  # type: ignore
             ]
 
         # Get the circuit corresponding to the relaxed solution.

@@ -17,9 +17,9 @@ from collections import defaultdict
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit.primitives import BaseSampler
 from qiskit.quantum_info import SparsePauliOp
+from qiskit_algorithms.exceptions import AlgorithmError
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.exceptions import QiskitOptimizationError
