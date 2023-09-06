@@ -197,6 +197,7 @@ intersphinx_mapping = {
     "networkx": ("https://networkx.org/documentation/stable", None),
     "docplex.mp": ("https://ibmdecisionoptimization.github.io/docplex-doc/mp", None),
     "qiskit": ("https://qiskit.org/documentation/", None),
+    "qiskit_algorithms": ("https://qiskit.org/ecosystem/algorithms", None),
 }
 
 html_context = {"analytics_enabled": True}

@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,10 +16,10 @@ import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
-from qiskit.algorithms.optimizers import SLSQP
 from qiskit.primitives import Sampler
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms import QAOA, NumPyMinimumEigensolver
+from qiskit_algorithms.optimizers import SLSQP
+from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (

@@ -14,18 +14,13 @@
 from typing import List, Optional, Union, cast
 
 import numpy as np
-from qiskit.algorithms.minimum_eigen_solvers import MinimumEigensolver as LegacyMinimumEigensolver
-from qiskit.algorithms.minimum_eigen_solvers import (
-    MinimumEigensolverResult as LegacyMinimumEigensolverResult,
-)
-from qiskit.algorithms.minimum_eigensolvers import (
-    VQE,
+from qiskit.quantum_info import SparsePauliOp
+from qiskit_algorithms import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
-from qiskit.quantum_info import SparsePauliOp
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
@@ -37,12 +32,8 @@ from .optimization_algorithm import (
     SolutionSample,
 )
 
-MinimumEigensolver = Union[
-    SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver
-]
-MinimumEigensolverResult = Union[
-    SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult, LegacyMinimumEigensolverResult
-]
+MinimumEigensolver = Union[SamplingMinimumEigensolver, NumPyMinimumEigensolver]
+MinimumEigensolverResult = Union[SamplingMinimumEigensolverResult, NumPyMinimumEigensolverResult]
 
 
 class MinimumEigenOptimizationResult(OptimizationResult):
@@ -60,7 +51,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
     ) -> None:
         """
         Args:
-            x: the optimal value found by ``MinimumEigensolver``.
+            x: the optimal value found by ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
             fval: the optimal function value.
             variables: the list of variables of the optimization problem.
             status: the termination status of the optimization algorithm.
@@ -83,15 +74,18 @@ class MinimumEigenOptimizationResult(OptimizationResult):
 
     @property
     def min_eigen_solver_result(self) -> MinimumEigensolverResult:
-        """Returns a result object obtained from the instance of :class:`MinimumEigensolver`."""
+        """Returns a result object obtained from the instance of
+        ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``."""
         return self._min_eigen_solver_result
 
     @property
     def raw_samples(self) -> Optional[List[SolutionSample]]:
-        """Returns the list of raw solution samples of ``MinimumEigensolver``.
+        """Returns the list of raw solution samples of
+        ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
 
         Returns:
-            The list of raw solution samples of ``MinimumEigensolver``.
+            The list of raw solution samples of
+            ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
         """
         return self._raw_samples
 
@@ -115,7 +109,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit.algorithms.minimum_eigensolver import QAOA
+        from qiskit_algorithms import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
@@ -152,22 +146,6 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
             TypeError: When one of converters has an invalid type.
             QiskitOptimizationError: When the minimum eigensolver does not return an eigenstate.
         """
-        if isinstance(min_eigen_solver, VQE):
-            raise TypeError(
-                "MinimumEigenOptimizer does not support this VQE. You can use  "
-                "qiskit.algorithms.minimum_eigensolvers.SamplingVQE instead."
-            )
-        if not isinstance(
-            min_eigen_solver,
-            (SamplingMinimumEigensolver, NumPyMinimumEigensolver, LegacyMinimumEigensolver),
-        ):
-            raise TypeError(
-                "MinimumEigenOptimizer supports "
-                "qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver, "
-                "qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver, and "
-                "qiskit.algorithms.minimum_eigen_solvers.MinimumEigensolver. "
-                f"But {type(min_eigen_solver)} is given."
-            )
         if not min_eigen_solver.supports_aux_operators():
             raise QiskitOptimizationError(
                 "Given MinimumEigensolver does not return the eigenstate "
@@ -222,7 +200,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ = self._convert(problem, self._converters)
 
         # construct operator and offset
-        operator, offset = problem_.to_ising(opflow=False)
+        operator, offset = problem_.to_ising()
 
         return self._solve_internal(operator, offset, problem_, problem)
 
@@ -237,16 +215,15 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         eigen_result: Optional[MinimumEigensolverResult] = None
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
-            if isinstance(self._min_eigen_solver, LegacyMinimumEigensolver):
-                from qiskit.opflow import PauliSumOp
-
-                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(
-                    PauliSumOp(operator)
-                )
-            else:
-                eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
+            eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)
             # analyze results
             raw_samples = None
+            if not hasattr(eigen_result, "eigenstate"):
+                raise QiskitOptimizationError(
+                    "MinimumEigenOptimizer does not support this minimum eigensolver "
+                    f"{type(self._min_eigen_solver)}. "
+                    "You can use qiskit_algorithms.SamplingMinimumEigensolver instead."
+                )
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
                     eigen_result.eigenstate, converted_problem

@@ -14,24 +14,17 @@
 
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
-from test.runtime.fake_vqeruntime import FakeQAOARuntimeProvider, FakeVQERuntimeProvider
 
 import numpy as np
 from ddt import data, ddt, unpack
-from qiskit.algorithms.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
-from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
-from qiskit.providers.basicaer import QasmSimulatorPy
-from qiskit.providers.fake_provider import FakeArmonk, FakeArmonkV2
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
+from qiskit_algorithms.optimizers import COBYLA, SPSA
+from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
-from qiskit_optimization.algorithms import (
-    CplexOptimizer,
-    MinimumEigenOptimizationResult,
-    MinimumEigenOptimizer,
-)
+from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
 from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
 from qiskit_optimization.converters import (
     InequalityToEquality,
@@ -40,8 +33,8 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
-from qiskit_optimization.runtime import QAOAClient, VQEClient
 
 
 @ddt
@@ -338,56 +331,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         optimizer = SPSA(maxiter=100)
         ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
         estimator = Estimator()
-        vqe = VQE(estimator, ry_ansatz, optimizer)
-        with self.assertRaises(TypeError):
-            _ = MinimumEigenOptimizer(vqe)
-
-    @data("vqe", "qaoa")
-    def test_runtime(self, subroutine):
-        """Test vqe and qaoa runtime"""
-        optimizer = {"name": "SPSA", "maxiter": 100}
-        backend = QasmSimulatorPy()
-
-        if subroutine == "vqe":
-            ry_ansatz = TwoLocal(5, "ry", "cz", reps=3, entanglement="full")
-            initial_point = np.random.default_rng(42).random(ry_ansatz.num_parameters)
-            solver = VQEClient(
-                ansatz=ry_ansatz,
-                optimizer=optimizer,
-                initial_point=initial_point,
-                backend=backend,
-                provider=FakeVQERuntimeProvider(),
-            )
-        else:
-            reps = 2
-            initial_point = np.random.default_rng(42).random(2 * reps)
-            solver = QAOAClient(
-                optimizer=optimizer,
-                reps=reps,
-                initial_point=initial_point,
-                backend=backend,
-                provider=FakeQAOARuntimeProvider(),
-            )
-
-        opt = MinimumEigenOptimizer(solver)
-        with self.assertWarns(DeprecationWarning):
-            result = opt.solve(self.op_ordering)
-        self.assertIsInstance(result, MinimumEigenOptimizationResult)
-
-    @data(FakeArmonk, FakeArmonkV2)
-    def test_runtime_backend_versions(self, backend_cls):
-        """Test the runtime client with a V1 and a V2 backend."""
-        optimizer = SPSA(maxiter=1, learning_rate=0.1, perturbation=0.1)
-        backend = backend_cls()
-        provider = FakeVQERuntimeProvider()
-        ansatz = TwoLocal(1, "ry", reps=0)
-        initial_point = np.array([1])
-
-        solver = VQEClient(ansatz, optimizer, initial_point, provider, backend)
-        opt = MinimumEigenOptimizer(solver)
-        with self.assertWarns(DeprecationWarning):
-            result = opt.solve(self.op_ordering)
-        self.assertIsInstance(result, MinimumEigenOptimizationResult)
+        vqe_mes = VQE(estimator, ry_ansatz, optimizer)
+        vqe = MinimumEigenOptimizer(vqe_mes)
+        with self.assertRaises(QiskitOptimizationError):
+            _ = vqe.solve(self.op_ordering)
 
 
 if __name__ == "__main__":

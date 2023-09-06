@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2022.
+# (C) Copyright IBM 2018, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,12 +16,13 @@ from typing import Dict, List, Optional, Union
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
+from qiskit_algorithms.utils import algorithm_globals
 
-from qiskit.utils import algorithm_globals
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
+
 from .graph_optimization_application import GraphOptimizationApplication
 
 

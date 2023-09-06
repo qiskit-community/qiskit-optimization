@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""An abstract class for optimization algorithms in Qiskit's optimization module."""
+"""An abstract class for optimization algorithms in Qiskit optimization module."""
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -20,7 +20,6 @@ from logging import getLogger
 from typing import Any, Dict, List, Tuple, Type, Union, cast
 
 import numpy as np
-from qiskit.opflow import DictStateFn, StateFn
 from qiskit.quantum_info import Statevector
 from qiskit.result import QuasiDistribution
 
@@ -292,7 +291,7 @@ class OptimizationResult:
 
 
 class OptimizationAlgorithm(ABC):
-    """An abstract class for optimization algorithms in Qiskit's optimization module."""
+    """An abstract class for optimization algorithms in Qiskit optimization module."""
 
     _MIN_PROBABILITY = 1e-6
 
@@ -523,7 +522,7 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _eigenvector_to_solutions(
-        eigenvector: Union[QuasiDistribution, Statevector, dict, np.ndarray, StateFn],
+        eigenvector: Union[QuasiDistribution, Statevector, dict, np.ndarray],
         qubo: QuadraticProgram,
         min_probability: float = _MIN_PROBABILITY,
     ) -> List[SolutionSample]:
@@ -539,26 +538,9 @@ class OptimizationAlgorithm(ABC):
             state as bitstring along with the QUBO evaluated at that bitstring and the
             probability of sampling this bitstring from the eigenvector.
 
-        Examples:
-            >>> op = MatrixOp(numpy.array([[1, 1], [1, -1]]) / numpy.sqrt(2))
-            >>> eigenvectors = {'0': 12, '1': 1}
-            >>> print(eigenvector_to_solutions(eigenvectors, op))
-            [('0', 0.7071067811865475, 0.9230769230769231),
-            ('1', -0.7071067811865475, 0.07692307692307693)]
-
-            >>> op = MatrixOp(numpy.array([[1, 1], [1, -1]]) / numpy.sqrt(2))
-            >>> eigenvectors = numpy.array([1, 1] / numpy.sqrt(2), dtype=complex)
-            >>> print(eigenvector_to_solutions(eigenvectors, op))
-            [('0', 0.7071067811865475, 0.4999999999999999),
-            ('1', -0.7071067811865475, 0.4999999999999999)]
-
         Raises:
             TypeError: If the type of eigenvector is not supported.
         """
-        if isinstance(eigenvector, DictStateFn):
-            eigenvector = eigenvector.primitive
-        elif isinstance(eigenvector, StateFn):
-            eigenvector = eigenvector.to_matrix()
 
         def generate_solution(bitstr, qubo, probability):
             x = np.fromiter(list(bitstr[::-1]), dtype=int)

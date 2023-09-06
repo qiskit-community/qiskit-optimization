@@ -17,8 +17,8 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from docplex.mp.model import Model
-from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.quantum_info import SparsePauliOp
+from qiskit_algorithms import NumPyMinimumEigensolver
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
@@ -64,7 +64,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op = conv.convert(op)
         conv = MaximizeToMinimize()
         op = conv.convert(op)
-        _, shift = op.to_ising(opflow=True)
+        _, shift = op.to_ising()
         self.assertEqual(shift, 0.0)
 
     def test_valid_variable_type(self):
@@ -73,12 +73,12 @@ class TestConverters(QiskitOptimizationTestCase):
         with self.assertRaises(QiskitOptimizationError):
             op = QuadraticProgram()
             op.integer_var(0, 10, "int_var")
-            _ = op.to_ising(opflow=True)
+            _ = op.to_ising()
         # Continuous variable
         with self.assertRaises(QiskitOptimizationError):
             op = QuadraticProgram()
             op.continuous_var(0, 10, "continuous_var")
-            _ = op.to_ising(opflow=True)
+            _ = op.to_ising()
 
     def test_inequality_binary(self):
         """Test InequalityToEqualityConverter with binary variables"""
@@ -289,6 +289,26 @@ class TestConverters(QiskitOptimizationTestCase):
         lst = [op2.variables[3].vartype, op2.variables[4].vartype]
         self.assertListEqual(lst, [Variable.Type.INTEGER, Variable.Type.CONTINUOUS])
 
+    def test_inequality_le_ge(self):
+        """Test InequalityToEquality for both senses"""
+        op = QuadraticProgram()
+        op.binary_var(name="x")
+        op.minimize(linear={"x": 1})
+        op.linear_constraint({"x": 1}, "<=", 1)
+        op.linear_constraint({"x": 1}, ">=", 0)
+        op_eq = InequalityToEquality().convert(op)
+        self.assertEqual(op_eq.get_num_linear_constraints(), 2)
+        lin0 = op_eq.get_linear_constraint(0)
+        self.assertEqual(lin0.linear.to_dict(use_name=True), {"x": 1.0, "c0@int_slack": 1.0})
+        self.assertEqual(lin0.sense, Constraint.Sense.EQ)
+        self.assertEqual(lin0.rhs, 1)
+        self.assertAlmostEqual(lin0.evaluate([1, 1, 1]), 2)
+        lin1 = op_eq.get_linear_constraint(1)
+        self.assertEqual(lin1.linear.to_dict(use_name=True), {"x": 1.0, "c1@int_slack": -1.0})
+        self.assertEqual(lin1.sense, Constraint.Sense.EQ)
+        self.assertEqual(lin1.rhs, 0)
+        self.assertAlmostEqual(lin1.evaluate([1, 1, 1]), 0)
+
     def test_penalize_sense(self):
         """Test PenalizeLinearEqualityConstraints with senses"""
         op = QuadraticProgram()
@@ -399,7 +419,7 @@ class TestConverters(QiskitOptimizationTestCase):
         op.linear_constraint(linear, Constraint.Sense.EQ, 3, "sum1")
         penalize = LinearEqualityToPenalty(penalty=1e5)
         op2 = penalize.convert(op)
-        qubitop, offset = op2.to_ising(opflow=False)
+        qubitop, offset = op2.to_ising()
         self.assertTrue(qubitop.equiv(QUBIT_OP_MAXIMIZE_SAMPLE))
         self.assertEqual(offset, OFFSET_MAXIMIZE_SAMPLE)
 
