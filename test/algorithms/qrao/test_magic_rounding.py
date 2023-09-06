@@ -16,7 +16,7 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.primitives import Sampler
 
 from qiskit_optimization.algorithms.qrao import (

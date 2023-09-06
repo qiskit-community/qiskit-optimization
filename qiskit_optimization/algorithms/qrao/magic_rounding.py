@@ -17,7 +17,7 @@ from collections import defaultdict
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.algorithms.exceptions import AlgorithmError
+from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit.primitives import BaseSampler
 from qiskit.quantum_info import SparsePauliOp
 
@@ -307,7 +307,7 @@ class MagicRounding(RoundingScheme):
         return bases, basis_shots
 
     def _sample_bases_weighted(
-        self, q2vars: list[list[int]], expectation_values: list[float], vars_per_qubit: int
+        self, q2vars: list[list[int]], expectation_values: list[complex] | None, vars_per_qubit: int
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Perform weighted sampling from the expectation values. The goal is to make smarter choices

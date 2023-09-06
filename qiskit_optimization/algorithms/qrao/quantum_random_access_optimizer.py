@@ -13,16 +13,15 @@
 """Quantum Random Access Optimizer class."""
 from __future__ import annotations
 
-import timeit
 from typing import cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit_algorithms import VariationalResult
-from qiskit_algorithms.minimum_eigensolvers import (
+from qiskit_algorithms import (
     MinimumEigensolver,
     MinimumEigensolverResult,
-    NumPyMinimumEigensolver,
+    NumPyMinimumEigensolverResult,
+    VariationalResult,
 )
 
 from qiskit_optimization.algorithms import (
@@ -217,23 +216,22 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         # Get the list of operators that correspond to each decision variable.
         variable_ops = [encoding._term2op(i) for i in range(encoding.num_vars)]
 
-        # Solve the relaxed problem
-        start_time_relaxed = timeit.default_timer()
+        # Solve the relaxed problem.
         relaxed_result = self.min_eigen_solver.compute_minimum_eigenvalue(
             encoding.qubit_op, aux_operators=variable_ops
         )
-        relaxed_result.time_taken = timeit.default_timer() - start_time_relaxed
 
         # Get auxiliary expectation values for rounding.
+        expectation_values: list[complex] | None = None
         if relaxed_result.aux_operators_evaluated is not None:
-            expectation_values = [v[0] for v in relaxed_result.aux_operators_evaluated]
-        else:
-            expectation_values = None
+            expectation_values = [
+                v[0] for v in relaxed_result.aux_operators_evaluated # type: ignore
+            ]
 
         # Get the circuit corresponding to the relaxed solution.
         if isinstance(relaxed_result, VariationalResult):
             circuit = relaxed_result.optimal_circuit.bind_parameters(relaxed_result.optimal_point)
-        elif isinstance(self.min_eigen_solver, NumPyMinimumEigensolver):
+        elif isinstance(relaxed_result, NumPyMinimumEigensolverResult):
             statevector = relaxed_result.eigenstate
             circuit = QuantumCircuit(encoding.num_qubits)
             circuit.initialize(statevector)

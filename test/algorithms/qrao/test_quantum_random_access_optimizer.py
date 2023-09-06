@@ -15,13 +15,13 @@ import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
-from qiskit.algorithms.minimum_eigensolvers import (
+from qiskit_algorithms.minimum_eigensolvers import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     VQE,
     VQEResult,
 )
-from qiskit.algorithms.optimizers import COBYLA
+from qiskit_algorithms.optimizers import COBYLA
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.utils import algorithm_globals

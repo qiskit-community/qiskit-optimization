@@ -27,7 +27,7 @@ from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 class RoundingResult:
     """Result of rounding"""
 
-    expectation_values: list[float]
+    expectation_values: list[complex] | None
     """Expectation values"""
     samples: list[SolutionSample]
     """List of samples after rounding"""
@@ -46,7 +46,7 @@ class RoundingContext:
 
     encoding: QuantumRandomAccessEncoding
     """Encoding containing the problem information."""
-    expectation_values: list[float] | None = None
+    expectation_values: list[complex] | None
     """Expectation values for the relaxed Hamiltonian."""
     circuit: QuantumCircuit | None = None
     """Circuit corresponding to the encoding and expectation values."""
