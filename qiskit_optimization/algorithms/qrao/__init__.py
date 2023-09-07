@@ -48,8 +48,8 @@ For example:
 
 .. code-block:: python
 
-    from qiskit.algorithms.optimizers import COBYLA
-    from qiskit.algorithms.minimum_eigensolvers import VQE
+    from qiskit_algorithms.optimizers import COBYLA
+    from qiskit_algorithms import VQE
     from qiskit.circuit.library import RealAmplitudes
     from qiskit.primitives import Estimator
 
