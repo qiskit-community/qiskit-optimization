@@ -15,7 +15,7 @@ import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
-from qiskit_algorithms.minimum_eigensolvers import (
+from qiskit_algorithms import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     VQE,
