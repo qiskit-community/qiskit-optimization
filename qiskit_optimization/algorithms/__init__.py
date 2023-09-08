@@ -62,6 +62,14 @@ Algorithms and results
    WarmStartQAOAOptimizer
    WarmStartQAOAFactory
 
+Submodules
+==========
+
+.. autosummary::
+   :toctree:
+
+   qrao
+
 """
 
 from .admm_optimizer import (
