@@ -11,12 +11,13 @@
 # that they have been altered from the originals.
 
 """An abstract class for optimization algorithms in Qiskit optimization module."""
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from logging import getLogger
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
+from typing import Any, Dict, List, Tuple, Type, Union, cast
 
 import numpy as np
 from qiskit.quantum_info import Statevector
@@ -98,12 +99,12 @@ class OptimizationResult:
 
     def __init__(
         self,
-        x: Optional[Union[List[float], np.ndarray]],
-        fval: Optional[float],
+        x: Union[List[float], np.ndarray] | None,
+        fval: float | None,
         variables: List[Variable],
         status: OptimizationResultStatus,
-        raw_results: Optional[Any] = None,
-        samples: Optional[List[SolutionSample]] = None,
+        raw_results: Any | None = None,
+        samples: List[SolutionSample] | None = None,
     ) -> None:
         """
         Args:
@@ -215,7 +216,7 @@ class OptimizationResult:
         return correlations
 
     @property
-    def x(self) -> Optional[np.ndarray]:
+    def x(self) -> np.ndarray | None:
         """Returns the variable values found in the optimization or None in case of FAILURE.
 
         Returns:
@@ -224,7 +225,7 @@ class OptimizationResult:
         return self._x
 
     @property
-    def fval(self) -> Optional[float]:
+    def fval(self) -> float | None:
         """Returns the objective function value.
 
         Returns:
@@ -374,8 +375,8 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _prepare_converters(
-        converters: Optional[Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]],
-        penalty: Optional[float] = None,
+        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
+        penalty: float | None = None,
     ) -> List[QuadraticProgramConverter]:
         """Prepare a list of converters from the input.
 
@@ -430,7 +431,7 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _check_converters(
-        converters: Optional[Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]]
+        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
     ) -> List[QuadraticProgramConverter]:
         if converters is None:
             converters = []
@@ -445,9 +446,7 @@ class OptimizationAlgorithm(ABC):
         cls,
         x: np.ndarray,
         problem: QuadraticProgram,
-        converters: Optional[
-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
-        ] = None,
+        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None = None,
         result_class: Type[OptimizationResult] = OptimizationResult,
         **kwargs,
     ) -> OptimizationResult:
@@ -490,7 +489,7 @@ class OptimizationAlgorithm(ABC):
         cls,
         problem: QuadraticProgram,
         raw_samples: List[SolutionSample],
-        converters: List[QuadraticProgramConverter],
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
     ) -> Tuple[List[SolutionSample], SolutionSample]:
         """Interpret and sort all samples and return the raw sample corresponding to the best one"""
         converters = cls._check_converters(converters)
