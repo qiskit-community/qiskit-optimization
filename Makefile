@@ -1,4 +1,4 @@
-# This code is part of Qiskit.
+# This code is part of a Qiskit project.
 #
 # (C) Copyright IBM 2021, 2023.
 #
@@ -75,7 +75,7 @@ doctest:
 
 clean_sphinx:
 	make -C docs clean
-	
+
 coverage:
 	coverage3 run --source qiskit_optimization -m unittest discover -s test -q
 	coverage3 report
