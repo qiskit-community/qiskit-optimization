@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    Updated :func:`~.to_ising` to support returning ``qiskit.quantum_info.SparsePauliOp``.
+    The feature to return an Opflow operator is removed.
+  - |
+    Updated :func:`~.from_ising` to support accepting ``qiskit.quantum_info.SparsePauliOp``.
+    The feature to accept an Opflow operator is removed.
