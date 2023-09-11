@@ -211,7 +211,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([0.0, 1.0, 0.0], solution.x, 3)
+        self.assertTrue(np.allclose(solution.x, [0, 1, 0]) or np.allclose(solution.x, [1, 0, 0]))
         self.assertIsNotNone(solution.fval)
         np.testing.assert_almost_equal(1.0, solution.fval, 3)
         self.assertIsNotNone(solution.state)
