@@ -228,7 +228,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
 
         # Get the circuit corresponding to the relaxed solution.
         if isinstance(relaxed_result, VariationalResult):
-            circuit = relaxed_result.optimal_circuit.bind_parameters(relaxed_result.optimal_point)
+            circuit = relaxed_result.optimal_circuit.assign_parameters(relaxed_result.optimal_point)
         elif isinstance(relaxed_result, NumPyMinimumEigensolverResult):
             statevector = relaxed_result.eigenstate
             circuit = QuantumCircuit(encoding.num_qubits)
