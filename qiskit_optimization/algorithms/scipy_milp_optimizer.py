@@ -16,7 +16,6 @@ from warnings import warn
 
 import numpy as np
 
-import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,
@@ -41,7 +40,6 @@ def _conv_inf(val):
         return val
 
 
-@_optionals.HAS_SCIPY_MILP.require_in_instance
 class ScipyMilpOptimizer(OptimizationAlgorithm):
     """The MILP optimizer from Scipy wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
