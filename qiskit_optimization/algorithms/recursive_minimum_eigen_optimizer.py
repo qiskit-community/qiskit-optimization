@@ -17,8 +17,8 @@ from enum import Enum
 from typing import Dict, List, Optional, Tuple, Union, cast
 
 import numpy as np
-from qiskit.utils.validation import validate_min
 from qiskit_algorithms import NumPyMinimumEigensolver
+from qiskit_algorithms.utils.validation import validate_min
 
 from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
 from ..exceptions import QiskitOptimizationError
