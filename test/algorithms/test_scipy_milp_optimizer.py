@@ -18,7 +18,6 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from ddt import ddt
 
-import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import INFINITY
 from qiskit_optimization.algorithms import OptimizationResultStatus, ScipyMilpOptimizer
 from qiskit_optimization.exceptions import QiskitOptimizationError
@@ -29,7 +28,6 @@ from qiskit_optimization.problems import QuadraticProgram
 class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
     """ScipyMilp Optimizer Tests."""
 
-    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_scipy_milp_optimizer(self):
         """ScipyMilp Optimizer Test"""
         problem = QuadraticProgram()
@@ -43,7 +41,6 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
 
         self.assertAlmostEqual(result.fval, -4)
 
-    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_disp(self):
         """Test disp"""
         with self.subTest("default"):
@@ -61,7 +58,6 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
             optimizer.disp = False
             self.assertFalse(optimizer.disp)
 
-    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_compatibility(self):
         """Test compatibility"""
         with self.subTest("quadratic obj min"):
@@ -98,7 +94,6 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
                 "scipy.milp supports only linear constraints",
             )
 
-    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_error(self):
         """Test errors"""
         with self.subTest("quadratic obj min"):
@@ -123,7 +118,6 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
             with self.assertRaises(QiskitOptimizationError):
                 _ = optimizer.solve(problem)
 
-    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_senses(self):
         """Test constraint senses"""
         with self.subTest("min / <="):
@@ -198,7 +192,6 @@ class TestScipyMilpOptimizer(QiskitOptimizationTestCase):
             np.testing.assert_allclose(result.x, [1, 0])
             self.assertEqual(result.status, OptimizationResultStatus.SUCCESS)
 
-    @unittest.skipIf(not _optionals.HAS_SCIPY_MILP, "Scipy MILP solver not available.")
     def test_infinity(self):
         """Test infinity"""
         with self.subTest("ub = infinity default"):

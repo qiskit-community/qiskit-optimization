@@ -47,11 +47,3 @@ HAS_MATPLOTLIB = LazyImportTester(
     name="Matplotlib",
     install="pip install 'qiskit-optimization[matplotlib]'",
 )
-
-HAS_SCIPY_MILP = LazyImportTester(
-    {
-        "scipy.optimize": ("milp",),
-    },
-    name="SciPy MILP",
-    install="pip install scipy>=1.9.0'",
-)
