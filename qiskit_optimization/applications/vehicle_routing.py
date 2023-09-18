@@ -155,7 +155,7 @@ class VehicleRouting(GraphOptimizationApplication):
             result: The calculated result for the problem
             pos: The positions of nodes
         """
-        import matplotlib.pyplot as plt
+        import matplotlib as mpl
 
         route_list = self.interpret(result)
         nx.draw(self._graph, with_labels=True, pos=pos)
@@ -166,7 +166,7 @@ class VehicleRouting(GraphOptimizationApplication):
             width=8,
             alpha=0.5,
             edge_color=self._edge_color(route_list),
-            edge_cmap=plt.cm.plasma,
+            edge_cmap=mpl.colormaps["plasma"],
         )
 
     def _edgelist(self, route_list: List[List[List[int]]]):
