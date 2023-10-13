@@ -20,7 +20,7 @@ Translators between :class:`~qiskit_optimization.problems.QuadraticProgram` and
 other optimization models or other objects.
 
 Translators
-======================
+----------------------
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:

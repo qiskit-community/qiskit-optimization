@@ -22,7 +22,7 @@ result for the problem, based on the original problem before conversion, to retu
 :class:`~qiskit_optimization.algorithms.OptimizationResult`.
 
 Base class for converters
-=========================
+-------------------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -31,7 +31,7 @@ Base class for converters
    QuadraticProgramConverter
 
 Converters
-==========
+----------
 
 .. autosummary::
    :toctree: ../stubs/
