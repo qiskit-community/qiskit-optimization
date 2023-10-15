@@ -17,7 +17,7 @@ Optimization problems (:mod:`qiskit_optimization.problems`)
 .. currentmodule:: qiskit_optimization.problems
 
 Quadratic program
-=================
+-----------------
 Structures for defining an optimization problem.
 
 Note:

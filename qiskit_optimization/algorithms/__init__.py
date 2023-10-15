@@ -19,7 +19,7 @@ Algorithms for optimization problems.
 .. currentmodule:: qiskit_optimization.algorithms
 
 Base classes for algorithms and results
-=======================================
+---------------------------------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -31,7 +31,7 @@ Base classes for algorithms and results
    BaseAggregator
 
 Algorithms and results
-======================
+----------------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -63,7 +63,7 @@ Algorithms and results
    WarmStartQAOAFactory
 
 Submodules
-==========
+----------
 
 .. autosummary::
    :toctree:
