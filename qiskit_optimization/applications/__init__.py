@@ -19,7 +19,7 @@ Optimization applications (:mod:`qiskit_optimization.applications`)
 Applications for common optimization problems.
 
 Base classes for applications
-=======================================
+---------------------------------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -29,7 +29,7 @@ Base classes for applications
    GraphOptimizationApplication
 
 Applications
-======================
+--------------------
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:

@@ -93,7 +93,7 @@ For example:
 
 
 Quantum Random Access Encoding and Optimization
-===============================================
+-----------------------------------------------
 .. autosummary::
     :toctree: ../stubs/
     :nosignatures:
@@ -104,7 +104,7 @@ Quantum Random Access Encoding and Optimization
     QuantumRandomAccessOptimizationResult
 
 Rounding schemes
-================
+----------------
 
 .. autosummary::
     :toctree: ../stubs/
