@@ -1,9 +1,9 @@
 ---
 prelude: >
-    Qiskit Optimization 0.6 switches from ``qiskit.algorithms`` of Qiskit Terra
+    Qiskit Optimization 0.6 switches from ``qiskit.algorithms`` of Qiskit
     to `Qiskit Algorithms <https://qiskit.org/ecosystem/algorithms/>`_.
     Qiskit Optimization 0.6 drops supports of the former algorithms based on
-    ``qiskit.algorithms``, ``QuantumInstance``, and Opflow of Qiskit Terra.
+    ``qiskit.algorithms``, ``QuantumInstance``, and Opflow of Qiskit.
 
 upgrade:
   - |
