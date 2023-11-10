@@ -2,7 +2,7 @@
 prelude: >
   Qiskit Optimization has been migrated to the `qiskit-community Github organization <https://github.com/qiskit-community>`_
   to further emphasize that it is a community-driven project.
-  To reflect this change and because we are onboarding additional codeowners and maintainers,
+  To reflect this change and because we are on-boarding additional code owners and maintainers,
   with this version (0.6) we have decided to *remove all deprecated* code, regardless of the time of its deprecation.
   This ensures that the new members of the development team do not have a large bulk of legacy code to maintain.
 

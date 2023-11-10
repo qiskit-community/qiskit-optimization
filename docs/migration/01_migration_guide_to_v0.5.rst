@@ -55,23 +55,14 @@ an extension that allows users to access the eigen states.
 
 The following is the corresponding table.
 
-+-------------------------------------+--------------------------------+
-| Former algorithm                    | New algorithm                  |
-+=====================================+================================+
-| ``qis                               | ``qiskit.                      |
-| kit.algorithms.MinimumEigenSolver`` | algorithms.minimum_eigensolver |
-|                                     | s.SamplingMinimumEigensolver`` |
-+-------------------------------------+--------------------------------+
-| ``qiskit.a                          | ``qis                          |
-| lgorithms.NumPyMinimumEigensolver`` | kit.algorithms.minimum_eigenso |
-|                                     | lver.NumPyMinimumEigensolver`` |
-+-------------------------------------+--------------------------------+
-| ``qiskit.algorithms.QAOA``          | ``qiskit.algorith              |
-|                                     | ms.minimum_eigensolvers.QAOA`` |
-+-------------------------------------+--------------------------------+
-| ``qiskit.algorithms.VQE``           | ``qiskit.algorithms.mini       |
-|                                     | mum_eigensolvers.SamplingVQE`` |
-+-------------------------------------+--------------------------------+
+.. csv-table::
+    :header: Former algorithm, New algorithm
+
+    ``qiskit.algorithms.MinimumEigenSolver``, ``qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver``
+    ``qiskit.algorithms.NumPyMinimumEigensolver``, ``qiskit.algorithms.minimum_eigensolver.NumPyMinimumEigensolver``
+    ``qiskit.algorithms.QAOA``, ``qiskit.algorithms.minimum_eigensolvers.QAOA``
+    ``qiskit.algorithms.VQE``, ``qiskit.algorithms.minimum_eigensolvers.SamplingVQE``
+
 
 Setup of a problem
 
