@@ -68,9 +68,7 @@ are that it cannot proceed to completion.
    :toctree: ../stubs/
    :nosignatures:
 
-    INFINITY
-
-A constant for infinity.
+    ~qiskit_optimization.infinity.INFINITY
 
 Submodules
 ==========
