@@ -13,12 +13,12 @@
 """Test from_docplex_mp and to_docplex_mp"""
 
 import unittest
-import qiskit_optimization.optionals as _optionals
 
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import Model
 
+import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
 from qiskit_optimization.translators.docplex_mp import from_docplex_mp, to_docplex_mp
