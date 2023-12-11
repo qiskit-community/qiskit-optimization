@@ -16,7 +16,7 @@ import logging
 from collections.abc import Sequence
 from enum import Enum
 from math import isclose
-from typing import Dict, List, Optional, Tuple, Union, cast, Callable, List
+from typing import Dict, List, Optional, Tuple, Union, cast, Callable
 from warnings import warn
 from gzip import open as gzip_open
 from pathlib import Path

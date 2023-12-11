@@ -24,7 +24,7 @@ from qiskit_optimization.translators.docplex_mp import from_docplex_mp, to_docpl
 class TestDocplexMpTranslator(QiskitOptimizationTestCase):
     """Test from_docplex_mp and to_docplex_mp"""
 
-    def test_from_and_to(self):
+    def test_from_and_to_lp(self):
         """test from_docplex_mp and to_docplex_mp"""
         q_p = QuadraticProgram("test")
         q_p.binary_var(name="x")
@@ -48,6 +48,31 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         mod.add(2 * x - z == 1, "c0")
         mod.add(2 * x - z + 3 * y * z == 1, "q0")
         self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
+
+    def test_from_and_to_mps(self):
+        """test from_docplex_mp and to_docplex_mp"""
+        q_p = QuadraticProgram("test")
+        q_p.binary_var(name="x")
+        q_p.integer_var(name="y", lowerbound=-2, upperbound=4)
+        q_p.continuous_var(name="z", lowerbound=-1.5, upperbound=3.2)
+        q_p.minimize(
+            constant=1,
+            linear={"x": 1, "y": 2},
+            quadratic={("x", "y"): -1, ("z", "z"): 2},
+        )
+        q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
+        q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
+        q_p2 = from_docplex_mp(to_docplex_mp(q_p))
+        self.assertEqual(q_p.export_as_mps_string(), q_p2.export_as_mps_string())
+
+        mod = Model("test")
+        x = mod.binary_var("x")
+        y = mod.integer_var(-2, 4, "y")
+        z = mod.continuous_var(-1.5, 3.2, "z")
+        mod.minimize(1 + x + 2 * y - x * y + 2 * z * z)
+        mod.add(2 * x - z == 1, "c0")
+        mod.add(2 * x - z + 3 * y * z == 1, "q0")
+        self.assertEqual(q_p.export_as_mps_string(), mod.export_as_mps_string())
 
     def test_from_without_variable_names(self):
         """test from_docplex_mp without explicit variable names"""
