@@ -782,31 +782,31 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         self.assertEqual(cst[2].sense, Constraint.Sense.GE)
         self.assertEqual(cst[2].rhs, 1)
 
-        cst = q_p.quadratic_constraints
-        self.assertEqual(cst[0].name, "quad_eq")
-        self.assertDictEqual(cst[0].linear.to_dict(use_name=True), {"x": 1, "y": 1})
+        qst = q_p.quadratic_constraints
+        self.assertEqual(qst[0].name, "quad_eq")
+        self.assertDictEqual(qst[0].linear.to_dict(use_name=True), {"x": 1, "y": 1})
         self.assertDictEqual(
-            cst[0].quadratic.to_dict(use_name=True),
+            qst[0].quadratic.to_dict(use_name=True),
             {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
         )
-        self.assertEqual(cst[0].sense, Constraint.Sense.EQ)
-        self.assertEqual(cst[0].rhs, 1)
-        self.assertEqual(cst[1].name, "quad_leq")
-        self.assertDictEqual(cst[1].linear.to_dict(use_name=True), {"x": 1, "y": 1})
+        self.assertEqual(qst[0].sense, Constraint.Sense.EQ)
+        self.assertEqual(qst[0].rhs, 1)
+        self.assertEqual(qst[1].name, "quad_leq")
+        self.assertDictEqual(qst[1].linear.to_dict(use_name=True), {"x": 1, "y": 1})
         self.assertDictEqual(
-            cst[1].quadratic.to_dict(use_name=True),
+            qst[1].quadratic.to_dict(use_name=True),
             {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
         )
-        self.assertEqual(cst[1].sense, Constraint.Sense.LE)
-        self.assertEqual(cst[1].rhs, 1)
-        self.assertEqual(cst[2].name, "quad_geq")
-        self.assertDictEqual(cst[2].linear.to_dict(use_name=True), {"x": 1, "y": 1})
+        self.assertEqual(qst[1].sense, Constraint.Sense.LE)
+        self.assertEqual(qst[1].rhs, 1)
+        self.assertEqual(qst[2].name, "quad_geq")
+        self.assertDictEqual(qst[2].linear.to_dict(use_name=True), {"x": 1, "y": 1})
         self.assertDictEqual(
-            cst[2].quadratic.to_dict(use_name=True),
+            qst[2].quadratic.to_dict(use_name=True),
             {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
         )
-        self.assertEqual(cst[2].sense, Constraint.Sense.GE)
-        self.assertEqual(cst[2].rhs, 1)
+        self.assertEqual(qst[2].sense, Constraint.Sense.GE)
+        self.assertEqual(qst[2].rhs, 1)
 
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_read_from_lp_file(self):
