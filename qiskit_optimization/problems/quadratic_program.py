@@ -925,6 +925,7 @@ class QuadraticProgram:
 
         return to_docplex_mp(self).export_as_lp_string()
 
+    @_optionals.HAS_CPLEX.require_in_call
     def export_as_mps_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
 
@@ -957,7 +958,10 @@ class QuadraticProgram:
 
         # check whether this file type is supported
         extension = "".join(Path(filename).suffixes)
-        if extension.removesuffix(".gz") not in extensions:
+        main_extension = extension
+        if main_extension.endswith('.gz'):
+            main_extension = main_extension[:-3]
+        if main_extension not in extensions:
             raise IOError("File type not supported for model reading.")
 
         # uncompress and parse
@@ -975,7 +979,7 @@ class QuadraticProgram:
         else:
             model = ModelReader().read(
                 filename,
-                model_name=name_parse_fun(uncompressed.name)
+                model_name=name_parse_fun(filename)
                 if name_parse_fun is not None
                 else None,
             )

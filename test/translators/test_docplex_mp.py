@@ -12,6 +12,9 @@
 
 """Test from_docplex_mp and to_docplex_mp"""
 
+import unittest
+import qiskit_optimization.optionals as _optionals
+
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 from docplex.mp.model import Model
@@ -49,6 +52,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         mod.add(2 * x - z + 3 * y * z == 1, "q0")
         self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
 
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_from_and_to_mps(self):
         """test from_docplex_mp and to_docplex_mp"""
         q_p = QuadraticProgram("test")

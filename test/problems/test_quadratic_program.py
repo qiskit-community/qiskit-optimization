@@ -740,10 +740,12 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         """test read lp file"""
         try:
             q_p = QuadraticProgram()
-            with self.assertRaises(FileNotFoundError):
+            with self.assertRaises(IOError):
                 q_p.read_from_lp_file("")
-            with self.assertRaises(FileNotFoundError):
+            with self.assertRaises(IOError):
                 q_p.read_from_lp_file("no_file.txt")
+            with self.assertRaises(FileNotFoundError):
+                q_p.read_from_lp_file("no_file.lp")
             lp_file = self.get_resource_path("test_quadratic_program.lp", "problems/resources")
             q_p.read_from_lp_file(lp_file)
             self.assertEqual(q_p.name, "my problem")
