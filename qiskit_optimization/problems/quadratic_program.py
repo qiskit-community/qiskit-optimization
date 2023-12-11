@@ -20,7 +20,7 @@ from typing import Dict, List, Optional, Tuple, Union, cast, Callable
 from warnings import warn
 from gzip import open as gzip_open
 from pathlib import Path
-from tempfile import TemporaryFile
+from tempfile import NamedTemporaryFile
 
 import numpy as np
 from docplex.mp.model_reader import ModelReader
@@ -949,8 +949,7 @@ class QuadraticProgram:
             name_parse_fun: Function that parses the model name from the input file.
 
         Raises:
-            FileNotFoundError: If the file does not exist.
-            IOError: If the file type is not recognized or not supported.
+            IOError: If the file type is not recognized, not supported or the file is not found.
 
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
@@ -967,11 +966,13 @@ class QuadraticProgram:
         # uncompress and parse
         if extension.endswith(".gz"):
             with gzip_open(filename, "rb") as compressed:
-                with TemporaryFile(suffix=extension[:-2]) as uncompressed:
+                with NamedTemporaryFile(suffix=extension[:-3]) as uncompressed:
                     uncompressed.write(compressed.read())
+                    uncompressed.seek(0)
+                    uncompressed.flush()
 
                     model = ModelReader().read(
-                        filename,
+                        uncompressed.name,
                         model_name=name_parse_fun(uncompressed.name)
                         if name_parse_fun is not None
                         else None,
@@ -996,8 +997,7 @@ class QuadraticProgram:
             filename: The filename of the file to be loaded.
 
         Raises:
-            FileNotFoundError: If the file does not exist.
-            IOError: If the file type is not recognized or not supported.
+            IOError: If the file type is not recognized, not supported or the file is not found.
 
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
@@ -1033,7 +1033,21 @@ class QuadraticProgram:
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
-        self._read_from_file(filename, [".mps"], None)
+
+        def _parse_problem_name(filename: str) -> str:
+            # Because docplex model reader uses the base name as model name,
+            # we parse the model name in the LP file manually.
+            # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
+            prefix = "NAME "
+            model_name = ""
+            with open(filename, encoding="utf8") as file:
+                for line in file:
+                    if line.startswith(prefix):
+                        model_name = line[len(prefix) :].strip()
+                        break
+            return model_name
+
+        self._read_from_file(filename, [".mps"], _parse_problem_name)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
@@ -1069,7 +1083,18 @@ class QuadraticProgram:
         from ..translators.docplex_mp import to_docplex_mp
 
         mdl = to_docplex_mp(self)
-        mdl.export_as_mps(filename)
+        full_path = mdl.export_as_mps(filename)
+
+        # docplex does not write the model's name out, so we do this here manually
+        with open(full_path, "r", encoding="utf8") as mps_file:
+            txt = mps_file.read()
+
+        with open(full_path, "w", encoding="utf8") as mps_file:
+            for line in txt.splitlines():
+                if line.startswith("NAME"):
+                    mps_file.write(f"NAME {self._name}\n")
+                else:
+                    mps_file.write(line + "\n")
 
     def substitute_variables(
         self,
