@@ -924,7 +924,7 @@ class QuadraticProgram:
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self).export_as_lp_string()
-    
+
     def export_as_mps_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
 
@@ -935,16 +935,18 @@ class QuadraticProgram:
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self).export_as_mps_string()
-    
+
     @_optionals.HAS_CPLEX.require_in_call
-    def _read_from_file(self, filename : str, extensions : List[str], name_parse_fun : Callable) -> None:
-        """Loads a quadratic program from an LP or MPS file. Also deals with 
+    def _read_from_file(
+        self, filename: str, extensions: List[str], name_parse_fun: Callable
+    ) -> None:
+        """Loads a quadratic program from an LP or MPS file. Also deals with
         gzipped files.
 
         Args:
             filename: The filename of the file to be loaded.
             name_parse_fun: Function that parses the model name from the input file.
-        
+
         Raises:
             FileNotFoundError: If the file does not exist.
             IOError: If the file type is not recognized or not supported.
@@ -964,15 +966,23 @@ class QuadraticProgram:
                 with TemporaryFile(suffix=extension[:-2]) as uncompressed:
                     uncompressed.write(compressed.read())
 
-                    model = ModelReader().read(filename, 
-                                               model_name=name_parse_fun(uncompressed.name) if name_parse_fun is not None else None)
+                    model = ModelReader().read(
+                        filename,
+                        model_name=name_parse_fun(uncompressed.name)
+                        if name_parse_fun is not None
+                        else None,
+                    )
         else:
-            model = ModelReader().read(filename, 
-                                       model_name=name_parse_fun(uncompressed.name) if name_parse_fun is not None else None)
-            
+            model = ModelReader().read(
+                filename,
+                model_name=name_parse_fun(uncompressed.name)
+                if name_parse_fun is not None
+                else None,
+            )
+
         # pylint: disable=cyclic-import
         from ..translators.docplex_mp import from_docplex_mp
-        
+
         other = from_docplex_mp(model)
         self._copy_from(other, include_name=True)
 
