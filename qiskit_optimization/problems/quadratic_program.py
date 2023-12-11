@@ -12,6 +12,7 @@
 
 """Quadratic Program."""
 
+import os
 import logging
 from collections.abc import Sequence
 from enum import Enum
@@ -966,7 +967,8 @@ class QuadraticProgram:
         # uncompress and parse
         if extension.endswith(".gz"):
             with gzip_open(filename, "rb") as compressed:
-                with NamedTemporaryFile(suffix=extension[:-3]) as uncompressed:
+                # requires delete=False to avoid permission issues under windows
+                with NamedTemporaryFile(suffix=extension[:-3], delete=False) as uncompressed:
                     uncompressed.write(compressed.read())
                     uncompressed.seek(0)
                     uncompressed.flush()
@@ -977,6 +979,9 @@ class QuadraticProgram:
                         if name_parse_fun is not None
                         else None,
                     )
+                    uncompressed.close()
+                    os.unlink(uncompressed.name)
+
         else:
             model = ModelReader().read(
                 filename,
@@ -1009,7 +1014,7 @@ class QuadraticProgram:
             # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
             prefix = "\\Problem name:"
             model_name = ""
-            with open(filename, "r", encoding="utf8") as file:
+            with open(filename, encoding="utf8") as file:
                 for line in file:
                     if line.startswith(prefix):
                         model_name = line[len(prefix) :].strip()
@@ -1040,7 +1045,7 @@ class QuadraticProgram:
             # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
             prefix = "NAME "
             model_name = ""
-            with open(filename, "r", encoding="utf8") as file:
+            with open(filename, encoding="utf8") as file:
                 for line in file:
                     if line.startswith(prefix):
                         model_name = line[len(prefix) :].strip()
@@ -1059,7 +1064,7 @@ class QuadraticProgram:
 
         Raises:
             OSError: If this cannot open a file.
-            DOcplexException: If filename is an empty stringakefile
+            DOcplexException: If filename is an empty string
         """
         # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
