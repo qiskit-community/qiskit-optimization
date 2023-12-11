@@ -959,7 +959,7 @@ class QuadraticProgram:
         # check whether this file type is supported
         extension = "".join(Path(filename).suffixes)
         main_extension = extension
-        if main_extension.endswith('.gz'):
+        if main_extension.endswith(".gz"):
             main_extension = main_extension[:-3]
         if main_extension not in extensions:
             raise IOError("File type not supported for model reading.")
@@ -979,9 +979,7 @@ class QuadraticProgram:
         else:
             model = ModelReader().read(
                 filename,
-                model_name=name_parse_fun(filename)
-                if name_parse_fun is not None
-                else None,
+                model_name=name_parse_fun(filename) if name_parse_fun is not None else None,
             )
 
         # pylint: disable=cyclic-import
