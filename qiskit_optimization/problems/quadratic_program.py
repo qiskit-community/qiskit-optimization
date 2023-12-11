@@ -16,8 +16,11 @@ import logging
 from collections.abc import Sequence
 from enum import Enum
 from math import isclose
-from typing import Dict, List, Optional, Tuple, Union, cast
+from typing import Dict, List, Optional, Tuple, Union, cast, Callable, List
 from warnings import warn
+from gzip import open as gzip_open
+from pathlib import Path
+from tempfile import TemporaryFile
 
 import numpy as np
 from docplex.mp.model_reader import ModelReader
@@ -921,16 +924,68 @@ class QuadraticProgram:
         from ..translators.docplex_mp import to_docplex_mp
 
         return to_docplex_mp(self).export_as_lp_string()
+    
+    def export_as_mps_string(self) -> str:
+        """Returns the quadratic program as a string of LP format.
+
+        Returns:
+            A string representing the quadratic program.
+        """
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import to_docplex_mp
+
+        return to_docplex_mp(self).export_as_mps_string()
+    
+    @_optionals.HAS_CPLEX.require_in_call
+    def _read_from_file(self, filename : str, extensions : List[str], name_parse_fun : Callable) -> None:
+        """Loads a quadratic program from an LP or MPS file. Also deals with 
+        gzipped files.
+
+        Args:
+            filename: The filename of the file to be loaded.
+            name_parse_fun: Function that parses the model name from the input file.
+        
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            IOError: If the file type is not recognized or not supported.
+
+        Note:
+            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
+        """
+
+        # check whether this file type is supported
+        extension = "".join(Path(filename).suffixes)
+        if extension.removesuffix(".gz") not in extensions:
+            raise IOError("File type not supported for model reading.")
+
+        # uncompress and parse
+        if extension.endswith(".gz"):
+            with gzip_open(filename, "rb") as compressed:
+                with TemporaryFile(suffix=extension[:-2]) as uncompressed:
+                    uncompressed.write(compressed.read())
+
+                    model = ModelReader().read(filename, 
+                                               model_name=name_parse_fun(uncompressed.name) if name_parse_fun is not None else None)
+        else:
+            model = ModelReader().read(filename, 
+                                       model_name=name_parse_fun(uncompressed.name) if name_parse_fun is not None else None)
+            
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import from_docplex_mp
+        
+        other = from_docplex_mp(model)
+        self._copy_from(other, include_name=True)
 
     @_optionals.HAS_CPLEX.require_in_call
     def read_from_lp_file(self, filename: str) -> None:
-        """Loads the quadratic program from a LP file.
+        """Loads the quadratic program from a LP file (may be gzip'ed).
 
         Args:
             filename: The filename of the file to be loaded.
 
         Raises:
             FileNotFoundError: If the file does not exist.
+            IOError: If the file type is not recognized or not supported.
 
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
@@ -950,12 +1005,23 @@ class QuadraticProgram:
                         break
             return model_name
 
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import from_docplex_mp
+        self._read_from_file(filename, [".lp"], _parse_problem_name)
 
-        model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
-        other = from_docplex_mp(model)
-        self._copy_from(other, include_name=True)
+    @_optionals.HAS_CPLEX.require_in_call
+    def read_from_mps_file(self, filename: str) -> None:
+        """Loads the quadratic program from a MPS file (may be gzip'ed).
+
+        Args:
+            filename: The filename of the file to be loaded.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            IOError: If the file type is not recognized or not supported.
+
+        Note:
+            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
+        """
+        self._read_from_file(filename, [".mps"], None)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
@@ -974,6 +1040,24 @@ class QuadraticProgram:
 
         mdl = to_docplex_mp(self)
         mdl.export_as_lp(filename)
+
+    def write_to_mps_file(self, filename: str) -> None:
+        """Writes the quadratic program to an MPS file.
+
+        Args:
+            filename: The filename of the file the model is written to.
+              If filename is a directory, file name 'my_problem.mps' is appended.
+              If filename does not end with '.mps', suffix '.mps' is appended.
+
+        Raises:
+            OSError: If this cannot open a file.
+            DOcplexException: If filename is an empty string
+        """
+        # pylint: disable=cyclic-import
+        from ..translators.docplex_mp import to_docplex_mp
+
+        mdl = to_docplex_mp(self)
+        mdl.export_as_mps(filename)
 
     def substitute_variables(
         self,
