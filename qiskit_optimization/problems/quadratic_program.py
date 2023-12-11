@@ -1009,7 +1009,7 @@ class QuadraticProgram:
             # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
             prefix = "\\Problem name:"
             model_name = ""
-            with open(filename, encoding="utf8") as file:
+            with open(filename, "r", encoding="utf8") as file:
                 for line in file:
                     if line.startswith(prefix):
                         model_name = line[len(prefix) :].strip()
@@ -1040,7 +1040,7 @@ class QuadraticProgram:
             # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
             prefix = "NAME "
             model_name = ""
-            with open(filename, encoding="utf8") as file:
+            with open(filename, "r", encoding="utf8") as file:
                 for line in file:
                     if line.startswith(prefix):
                         model_name = line[len(prefix) :].strip()
@@ -1059,7 +1059,7 @@ class QuadraticProgram:
 
         Raises:
             OSError: If this cannot open a file.
-            DOcplexException: If filename is an empty string
+            DOcplexException: If filename is an empty stringakefile
         """
         # pylint: disable=cyclic-import
         from ..translators.docplex_mp import to_docplex_mp
