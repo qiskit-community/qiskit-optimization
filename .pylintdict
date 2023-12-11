@@ -81,6 +81,7 @@ gurobi
 gurobioptimizer
 gurobipy
 gutmann
+gzip'ed
 hamilton
 hamiltonian
 hamiltonians
@@ -125,6 +126,7 @@ minimizer
 minimumeigenoptimizer
 mmp
 mpm
+mps
 multiset
 mypy
 nannicini
@@ -233,6 +235,7 @@ transpiling
 travelling
 troyer
 tsplib
+uncompress
 undirected
 upperbound
 variational

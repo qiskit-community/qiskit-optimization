@@ -942,7 +942,7 @@ class QuadraticProgram:
         self, filename: str, extensions: List[str], name_parse_fun: Callable
     ) -> None:
         """Loads a quadratic program from an LP or MPS file. Also deals with
-        gzipped files.
+        gzip'ed files.
 
         Args:
             filename: The filename of the file to be loaded.
