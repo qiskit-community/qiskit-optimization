@@ -34,6 +34,14 @@ Translators
 """
 
 from .docplex_mp import from_docplex_mp, to_docplex_mp
+from .file_io import (
+    export_as_lp_string,
+    export_as_mps_string,
+    read_from_lp_file,
+    read_from_mps_file,
+    write_to_lp_file,
+    write_to_mps_file,
+)
 from .gurobipy import from_gurobipy, to_gurobipy
 from .ising import from_ising, to_ising
 
@@ -44,4 +52,10 @@ __all__ = [
     "to_gurobipy",
     "from_ising",
     "to_ising",
+    "export_as_lp_string",
+    "export_as_mps_string",
+    "read_from_lp_file",
+    "read_from_mps_file",
+    "write_to_lp_file",
+    "write_to_mps_file",
 ]

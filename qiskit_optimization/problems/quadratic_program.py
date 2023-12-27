@@ -12,19 +12,14 @@
 
 """Quadratic Program."""
 
-import os
 import logging
 from collections.abc import Sequence
 from enum import Enum
 from math import isclose
-from typing import Dict, List, Optional, Tuple, Union, cast, Callable
+from typing import Dict, List, Optional, Tuple, Union, cast
 from warnings import warn
-from gzip import open as gzip_open
-from pathlib import Path
-from tempfile import NamedTemporaryFile
 
 import numpy as np
-from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -921,78 +916,19 @@ class QuadraticProgram:
         Returns:
             A string representing the quadratic program.
         """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
-
-        return to_docplex_mp(self).export_as_lp_string()
-
-    @_optionals.HAS_CPLEX.require_in_call
-    def export_as_mps_string(self) -> str:
-        """Returns the quadratic program as a string of LP format.
-
-        Returns:
-            A string representing the quadratic program.
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
-
-        return to_docplex_mp(self).export_as_mps_string()
-
-    @_optionals.HAS_CPLEX.require_in_call
-    def _read_from_file(
-        self, filename: str, extensions: List[str], name_parse_fun: Callable
-    ) -> None:
-        """Loads a quadratic program from an LP or MPS file. Also deals with
-        gzip'ed files.
-
-        Args:
-            filename: The filename of the file to be loaded.
-            name_parse_fun: Function that parses the model name from the input file.
-
-        Raises:
-            IOError: If the file type is not recognized, not supported or the file is not found.
-
-        Note:
-            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
-        """
-
-        # check whether this file type is supported
-        extension = "".join(Path(filename).suffixes)
-        main_extension = extension
-        if main_extension.endswith(".gz"):
-            main_extension = main_extension[:-3]
-        if main_extension not in extensions:
-            raise IOError("File type not supported for model reading.")
-
-        # uncompress and parse
-        if extension.endswith(".gz"):
-            with gzip_open(filename, "rb") as compressed:
-                # requires delete=False to avoid permission issues under windows
-                with NamedTemporaryFile(suffix=extension[:-3], delete=False) as uncompressed:
-                    uncompressed.write(compressed.read())
-                    uncompressed.seek(0)
-                    uncompressed.flush()
-
-                    model = ModelReader().read(
-                        uncompressed.name,
-                        model_name=name_parse_fun(uncompressed.name)
-                        if name_parse_fun is not None
-                        else None,
-                    )
-                    uncompressed.close()
-                    os.unlink(uncompressed.name)
-
-        else:
-            model = ModelReader().read(
-                filename,
-                model_name=name_parse_fun(filename) if name_parse_fun is not None else None,
-            )
+        warn(
+            "The QuadraticProgram.export_as_lp_string function is pending deprecation. "
+            "Please use export_as_lp_string from qiskit_optimization.translators.file_io instead."
+            "This function will be deprecated in a future release and subsequently "
+            "removed after that.",
+            category=PendingDeprecationWarning,
+            stacklevel=2,
+        )
 
         # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import from_docplex_mp
+        from ..translators.file_io import export_as_lp_string
 
-        other = from_docplex_mp(model)
-        self._copy_from(other, include_name=True)
+        return export_as_lp_string(self)
 
     @_optionals.HAS_CPLEX.require_in_call
     def read_from_lp_file(self, filename: str) -> None:
@@ -1008,51 +944,19 @@ class QuadraticProgram:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
 
-        def _parse_problem_name(filename: str) -> str:
-            # Because docplex model reader uses the base name as model name,
-            # we parse the model name in the LP file manually.
-            # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
-            prefix = "\\Problem name:"
-            model_name = ""
-            with open(filename, encoding="utf8") as file:
-                for line in file:
-                    if line.startswith(prefix):
-                        model_name = line[len(prefix) :].strip()
-                    if not line.startswith("\\"):
-                        break
-            return model_name
+        warn(
+            "The QuadraticProgram.read_from_lp_file function is pending deprecation. "
+            "Please use read_from_lp_file from qiskit_optimization.translators.file_io instead."
+            "This function will be deprecated in a future release and subsequently "
+            "removed after that.",
+            category=PendingDeprecationWarning,
+            stacklevel=2,
+        )
 
-        self._read_from_file(filename, [".lp"], _parse_problem_name)
+        # pylint: disable=cyclic-import
+        from ..translators.file_io import read_from_lp_file
 
-    @_optionals.HAS_CPLEX.require_in_call
-    def read_from_mps_file(self, filename: str) -> None:
-        """Loads the quadratic program from a MPS file (may be gzip'ed).
-
-        Args:
-            filename: The filename of the file to be loaded.
-
-        Raises:
-            FileNotFoundError: If the file does not exist.
-            IOError: If the file type is not recognized or not supported.
-
-        Note:
-            This method requires CPLEX to be installed and present in ``PYTHONPATH``.
-        """
-
-        def _parse_problem_name(filename: str) -> str:
-            # Because docplex model reader uses the base name as model name,
-            # we parse the model name in the LP file manually.
-            # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
-            prefix = "NAME "
-            model_name = ""
-            with open(filename, encoding="utf8") as file:
-                for line in file:
-                    if line.startswith(prefix):
-                        model_name = line[len(prefix) :].strip()
-                        break
-            return model_name
-
-        self._read_from_file(filename, [".mps"], _parse_problem_name)
+        self._copy_from(read_from_lp_file(filename), include_name=True)
 
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
@@ -1066,40 +970,20 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
+
+        warn(
+            "The QuadraticProgram.write_to_lp_file function is pending deprecation. "
+            "Please use write_to_lp_file from qiskit_optimization.translators.file_io instead."
+            "This function will be deprecated in a future release and subsequently "
+            "removed after that.",
+            category=PendingDeprecationWarning,
+            stacklevel=2,
+        )
+
         # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
+        from ..translators.file_io import write_to_lp_file
 
-        mdl = to_docplex_mp(self)
-        mdl.export_as_lp(filename)
-
-    def write_to_mps_file(self, filename: str) -> None:
-        """Writes the quadratic program to an MPS file.
-
-        Args:
-            filename: The filename of the file the model is written to.
-              If filename is a directory, file name 'my_problem.mps' is appended.
-              If filename does not end with '.mps', suffix '.mps' is appended.
-
-        Raises:
-            OSError: If this cannot open a file.
-            DOcplexException: If filename is an empty string
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
-
-        mdl = to_docplex_mp(self)
-        full_path = mdl.export_as_mps(filename)
-
-        # docplex does not write the model's name out, so we do this here manually
-        with open(full_path, "r", encoding="utf8") as mps_file:
-            txt = mps_file.read()
-
-        with open(full_path, "w", encoding="utf8") as mps_file:
-            for line in txt.splitlines():
-                if line.startswith("NAME"):
-                    mps_file.write(f"NAME {self._name}\n")
-                else:
-                    mps_file.write(line + "\n")
+        write_to_lp_file(self, filename)
 
     def substitute_variables(
         self,
