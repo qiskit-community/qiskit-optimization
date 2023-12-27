@@ -174,7 +174,6 @@ def read_from_mps_file(filename: str) -> QuadraticProgram:
     return _read_from_file(filename, [".mps"], _parse_problem_name)
 
 
-@_optionals.HAS_CPLEX.require_in_call
 def write_to_lp_file(q_p: QuadraticProgram, filename: str):
     """Writes the quadratic program to an LP file.
 
