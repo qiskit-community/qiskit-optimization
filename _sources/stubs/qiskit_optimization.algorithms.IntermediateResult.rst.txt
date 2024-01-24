@@ -1,0 +1,28 @@
+﻿
+
+IntermediateResult
+=================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: IntermediateResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: IntermediateResult.NO_ITERATIONS
+   .. autoattribute:: IntermediateResult.LAST_ITERATION
+   .. autoattribute:: IntermediateResult.ALL_ITERATIONS
+   
+   
+
+   
+   
+   

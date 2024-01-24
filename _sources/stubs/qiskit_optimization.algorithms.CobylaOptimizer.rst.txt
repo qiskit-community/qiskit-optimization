@@ -1,0 +1,37 @@
+﻿
+
+CobylaOptimizer
+==============================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: CobylaOptimizer
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: CobylaOptimizer.clip
+   .. autoattribute:: CobylaOptimizer.trials
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: CobylaOptimizer.get_compatibility_msg
+   .. automethod:: CobylaOptimizer.is_compatible
+   .. automethod:: CobylaOptimizer.multi_start_solve
+   .. automethod:: CobylaOptimizer.solve
+
+   
+   

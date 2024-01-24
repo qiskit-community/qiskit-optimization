@@ -1,0 +1,38 @@
+﻿
+
+LinearExpression
+=============================================
+
+.. currentmodule:: qiskit_optimization.problems
+
+.. autoclass:: LinearExpression
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: LinearExpression.bounds
+   .. autoattribute:: LinearExpression.coefficients
+   .. autoattribute:: LinearExpression.quadratic_program
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: LinearExpression.evaluate
+   .. automethod:: LinearExpression.evaluate_gradient
+   .. automethod:: LinearExpression.to_array
+   .. automethod:: LinearExpression.to_dict
+
+   
+   

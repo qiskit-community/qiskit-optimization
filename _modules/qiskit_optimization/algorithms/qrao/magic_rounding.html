@@ -1,0 +1,960 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>qiskit_optimization.algorithms.qrao.magic_rounding - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../../../../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../../../../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/01_quadratic_program.html">Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/02_converters_for_quadratic_programs.html">Converters for Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/03_minimum_eigen_optimizer.html">Minimum Eigen Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/04_grover_optimizer.html">Grover Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/05_admm_optimizer.html">ADMM Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/06_examples_max_cut_and_tsp.html">Max-Cut and Traveling Salesman Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/07_examples_vehicle_routing.html">Vehicle Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/08_cvar_optimization.html">Improving Variational Quantum Optimization using CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/09_application_classes.html">Application Classes for Optimization Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/10_warm_start_qaoa.html">Warm-starting quantum optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/11_using_classical_optimization_solvers_and_models.html">Using Classical Optimization Solvers and Models with Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorials/12_quantum_random_access_optimizer.html">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">English</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/_modules/qiskit_optimization/algorithms/qrao/magic_rounding.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/_modules/qiskit_optimization/algorithms/qrao/magic_rounding.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/_modules/qiskit_optimization/algorithms/qrao/magic_rounding.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/_modules/qiskit_optimization/algorithms/qrao/magic_rounding.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for qiskit_optimization.algorithms.qrao.magic_rounding</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of a Qiskit project.</span>
+<span class="c1">#</span>
+<span class="c1"># (C) Copyright IBM 2023.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
+<span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
+<span class="c1"># of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Any modifications or derivative works of this code must retain this</span>
+<span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
+<span class="c1"># that they have been altered from the originals.</span>
+
+<span class="sd">&quot;&quot;&quot;Magic basis rounding module&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
+<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">OptimizationResultStatus</span><span class="p">,</span> <span class="n">SolutionSample</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.exceptions</span> <span class="kn">import</span> <span class="n">QiskitOptimizationError</span>
+
+<span class="kn">from</span> <span class="nn">.quantum_random_access_encoding</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_z_to_21p_qrac_basis_circuit</span><span class="p">,</span>
+    <span class="n">_z_to_31p_qrac_basis_circuit</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.rounding_common</span> <span class="kn">import</span> <span class="n">RoundingContext</span><span class="p">,</span> <span class="n">RoundingResult</span><span class="p">,</span> <span class="n">RoundingScheme</span>
+
+
+<div class="viewcode-block" id="MagicRounding"><a class="viewcode-back" href="../../../../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html#qiskit_optimization.algorithms.qrao.MagicRounding">[docs]</a><span class="k">class</span> <span class="nc">MagicRounding</span><span class="p">(</span><span class="n">RoundingScheme</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Magic rounding scheme that measures in magic bases, and then uses the measurement results</span>
+<span class="sd">    to round the solution. Since the magic rounding is based on the measurement results, it</span>
+<span class="sd">    requires a quantum backend, which can be either hardware or a simulator.</span>
+
+<span class="sd">    The details are described in https://arxiv.org/abs/2111.03167.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_DECODING</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="p">(</span>  <span class="c1"># Eq. (8)</span>
+            <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]},</span>  <span class="c1"># I mu+ I, I mu- I</span>
+            <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># X mu+ X, X mu- X</span>
+            <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># Y mu+ Y, Y mu- Y</span>
+            <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]},</span>  <span class="c1"># Z mu+ Z, Z mu- Z</span>
+        <span class="p">),</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">(</span>  <span class="c1"># Sec. VII</span>
+            <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]},</span>  <span class="c1"># I xi+ I, I xi- I</span>
+            <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>  <span class="c1"># X xi+ X, X xi- X</span>
+        <span class="p">),</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="p">({</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]},),</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Pauli op string to label index in ops</span>
+    <span class="n">_OP_INDICES</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="mi">3</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span><span class="p">,</span>
+        <span class="n">basis_sampling</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sampler: Sampler to use for sampling the magic bases.</span>
+<span class="sd">            basis_sampling: Method to use for sampling the magic bases.  Must</span>
+<span class="sd">                be either ``&quot;uniform&quot;`` (default) or ``&quot;weighted&quot;``.</span>
+<span class="sd">                ``&quot;uniform&quot;`` samples all magic bases uniformly, and is the</span>
+<span class="sd">                method described in https://arxiv.org/abs/2111.03167.</span>
+<span class="sd">                ``&quot;weighted&quot;`` attempts to choose bases strategically using the</span>
+<span class="sd">                Pauli expectation values from the minimum eigensolver.</span>
+<span class="sd">                However, the approximation bounds given in</span>
+<span class="sd">                https://arxiv.org/abs/2111.03167 apply only to ``&quot;uniform&quot;``</span>
+<span class="sd">                sampling.</span>
+<span class="sd">            seed: Seed for random number generator, which is used to sample the</span>
+<span class="sd">                magic bases.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If ``basis_sampling`` is not ``&quot;uniform&quot;`` or ``&quot;weighted&quot;``.</span>
+<span class="sd">            ValueError: If the sampler is not configured with a number of shots.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">basis_sampling</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;weighted&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">basis_sampling</span><span class="si">}</span><span class="s2">&#39; is not an implemented sampling method. &quot;</span>
+                <span class="s2">&quot;Please choose either &#39;uniform&#39; or &#39;weighted&#39;.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="n">sampler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basis_sampling</span> <span class="o">=</span> <span class="n">basis_sampling</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shots&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Magic rounding requires a sampler configured with a number of shots.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">shots</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseSampler</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Sampler used to sample the magic bases.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">basis_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Basis sampling method (either ``&quot;uniform&quot;`` or ``&quot;weighted&quot;``).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_sampling</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_make_circuits</span><span class="p">(</span>
+        <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">bases</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a list of circuits to measure in the given magic bases.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuit: Quantum circuit to measure.</span>
+<span class="sd">            bases: List of magic bases to measure in.</span>
+<span class="sd">            vars_per_qubit: Number of variables per qubit.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of quantum circuits to measure in the given magic bases.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If ``vars_per_qubit`` is not 1, 2, or 3.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">vars_per_qubit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;vars_per_qubit must be 1, 2, or 3.&quot;</span><span class="p">)</span>
+
+        <span class="n">circuits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vars_per_qubit</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">qc</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">_z_to_31p_qrac_basis_circuit</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">vars_per_qubit</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">qc</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">_z_to_21p_qrac_basis_circuit</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">vars_per_qubit</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">qc</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">qc</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>
+            <span class="n">circuits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">circuits</span>
+
+    <span class="k">def</span> <span class="nf">_evaluate_magic_bases</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+        <span class="n">bases</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">basis_shots</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">vars_per_qubit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a quantum circuit to measure, a list of magic bases to measure, and a list of the</span>
+<span class="sd">        shots to use for each magic basis configuration, measure the provided circuit in the magic</span>
+<span class="sd">        bases given and return the counts dictionaries associated with each basis measurement.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuit: The quantum circuit to measure.</span>
+<span class="sd">            bases: A list of magic bases to measure.</span>
+<span class="sd">            basis_shots: A list of shots to use for each magic basis configuration.</span>
+<span class="sd">            vars_per_qubit: The number of decision variables per qubit.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of counts dictionaries associated with each basis measurement.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AlgorithmError: If the primitive job failed.</span>
+<span class="sd">            QiskitOptimizationError: If the number of circuits and the number of basis types are</span>
+<span class="sd">                not the same.</span>
+<span class="sd">            QiskitOptimizationError: If the number of circuits and the results from the primitive</span>
+<span class="sd">                job are not the same.</span>
+<span class="sd">            QiskitOptimizationError: If some of the results from the primitive job are not collected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">circuits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_circuits</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">)</span>
+        <span class="c1"># Execute each of the rotated circuits and collect the results</span>
+        <span class="c1"># Batch the circuits into jobs where each group has the same number of</span>
+        <span class="c1"># shots, so that you can wait for the queue as few times as possible if</span>
+        <span class="c1"># using hardware.</span>
+        <span class="n">circuit_indices_by_shots</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">basis_counts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_shots</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="s2">&quot;Internal error: The number of circuits and the number of basis types must be the same, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_shots</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shots</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">basis_shots</span><span class="p">):</span>
+            <span class="n">circuit_indices_by_shots</span><span class="p">[</span><span class="n">shots</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">shots</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">circuit_indices_by_shots</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">circuits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">],</span> <span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span>
+                    <span class="s2">&quot;The primitive job to evaluate the magic state failed.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="n">counts_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">dist</span><span class="o">.</span><span class="n">binary_probabilities</span><span class="p">()</span> <span class="k">for</span> <span class="n">dist</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">counts_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Internal error: The number of circuits and the results from the primitive job &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;must be the same, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">counts_list</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">counts_list</span><span class="p">):</span>
+                <span class="n">basis_counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
+
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">basis_counts</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="s2">&quot;Internal error: Some basis counts were not collected. Please check the primitive job.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">basis_counts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="o">*</span> <span class="n">basis_shots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">basis_counts</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">basis_counts</span>
+
+    <span class="k">def</span> <span class="nf">_unpack_measurement_outcome</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bits</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">var2op</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">SparsePauliOp</span><span class="p">]],</span>
+        <span class="n">vars_per_qubit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a measurement outcome, a magic basis, and a mapping from decision variables to</span>
+<span class="sd">        Pauli operators, return the values of the decision variables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bits: The measurement outcome.</span>
+<span class="sd">            basis: The magic basis used for the measurement.</span>
+<span class="sd">            var2op: A mapping from decision variables to Pauli operators.</span>
+<span class="sd">            vars_per_qubit: The number of decision variables per qubit.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The values of the decision variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_bits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># iterate in order over decision variables</span>
+        <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">var2op</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="c1"># get the decoding outcome index for the variable</span>
+            <span class="c1"># corresponding to this Pauli op.</span>
+            <span class="n">op_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_OP_INDICES</span><span class="p">[</span><span class="n">vars_per_qubit</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">paulis</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+            <span class="c1"># get the bits associated to this magic basis&#39;</span>
+            <span class="c1"># measurement outcomes</span>
+            <span class="n">bit_outcomes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DECODING</span><span class="p">[</span><span class="n">vars_per_qubit</span><span class="p">][</span><span class="n">basis</span><span class="p">[</span><span class="n">q</span><span class="p">]]</span>
+            <span class="c1"># select which measurement outcome we observed</span>
+            <span class="c1"># this gives up to 3 bits of information</span>
+            <span class="n">magic_bits</span> <span class="o">=</span> <span class="n">bit_outcomes</span><span class="p">[</span><span class="n">bits</span><span class="p">[</span><span class="n">q</span><span class="p">]]</span>
+            <span class="c1"># Assign our variable&#39;s value depending on</span>
+            <span class="c1"># which pauli our variable was associated to</span>
+            <span class="n">variable_value</span> <span class="o">=</span> <span class="n">magic_bits</span><span class="p">[</span><span class="n">op_index</span><span class="p">]</span>
+            <span class="n">output_bits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_bits</span>
+
+    <span class="k">def</span> <span class="nf">_compute_dv_counts</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">basis_counts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="n">bases</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">var2op</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">SparsePauliOp</span><span class="p">]],</span>
+        <span class="n">vars_per_qubit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a list of bases, basis_shots, and basis_counts, convert</span>
+<span class="sd">        each observed bitstrings to its corresponding decision variable</span>
+<span class="sd">        configuration. Return the counts of each decision variable configuration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basis_counts: A list of counts dictionaries associated with each basis measurement.</span>
+<span class="sd">            bases: A list of magic bases to measure.</span>
+<span class="sd">            var2op: A mapping from decision variables to Pauli operators.</span>
+<span class="sd">            vars_per_qubit: The number of decision variables per qubit.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dictionary of counts for each decision variable configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dv_counts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bases</span><span class="p">,</span> <span class="n">basis_counts</span><span class="p">):</span>
+            <span class="c1"># For each measurement outcome...</span>
+            <span class="k">for</span> <span class="n">bitstr</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># For each bit in the observed bit string...</span>
+                <span class="n">soln</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_measurement_outcome</span><span class="p">(</span><span class="n">bitstr</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">var2op</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">)</span>
+                <span class="n">soln_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">soln</span><span class="p">])</span>
+                <span class="n">dv_counts</span><span class="p">[</span><span class="n">soln_str</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
+        <span class="k">return</span> <span class="n">dv_counts</span>
+
+    <span class="k">def</span> <span class="nf">_sample_bases_uniform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">q2vars</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">vars_per_qubit</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample measurement bases for each qubit uniformly at random.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            q2vars: A list of lists of integers. Each inner list contains the indices of decision</span>
+<span class="sd">                variables mapped to a specific qubit.</span>
+<span class="sd">            vars_per_qubit: The maximum number of decision variables that can be mapped to a</span>
+<span class="sd">                single qubit..</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple containing two arrays:</span>
+<span class="sd">                bases: A 2D numpy array of shape (num_bases, num_qubits), where each row</span>
+<span class="sd">                corresponds to a basis configuration. Each element of the array is an</span>
+<span class="sd">                integer in the range [0, 2 ** (vars_per_qubit - 1) - 1]. The integer</span>
+<span class="sd">                represents the index of the basis to measure in for the corresponding</span>
+<span class="sd">                qubit.</span>
+<span class="sd">                basis_shots: A 1D numpy array of shape (num_bases,), where each element</span>
+<span class="sd">                corresponds to the number of shots to use for the corresponding basis in</span>
+<span class="sd">                the bases array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bases_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">vars_per_qubit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">q2vars</span><span class="p">)))</span>
+        <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">bases_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span>
+
+    <span class="k">def</span> <span class="nf">_sample_bases_weighted</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">q2vars</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">expectation_values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform weighted sampling from the expectation values. The goal is to make smarter choices</span>
+<span class="sd">        about which bases to measure in using the expectation values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            q2vars: A list of lists of integers. Each inner list contains the indices of decision</span>
+<span class="sd">                variables mapped to a specific qubit.</span>
+<span class="sd">            expectation_values: A list of expectation values for each decision variable.</span>
+<span class="sd">            vars_per_qubit: The maximum number of decision variables that can be mapped to a</span>
+<span class="sd">                single qubit.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple containing two arrays:</span>
+<span class="sd">                bases: A 2D numpy array of shape (num_bases, num_qubits), where each row</span>
+<span class="sd">                corresponds to a basis configuration. Each element of the array is an</span>
+<span class="sd">                integer in the range [0, 2 ** (vars_per_qubit - 1) - 1]. The integer</span>
+<span class="sd">                represents the index of the basis to measure in for the corresponding</span>
+<span class="sd">                qubit.</span>
+<span class="sd">                basis_shots: A 1D numpy array of shape (num_bases,), where each element</span>
+<span class="sd">                corresponds to the number of shots to use for the corresponding basis in</span>
+<span class="sd">                the bases array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First, we make sure all Pauli expectation values have absolute value</span>
+        <span class="c1"># at most 1.  Otherwise, some of the probabilities computed below might</span>
+        <span class="c1"># be negative.</span>
+        <span class="n">clipped_expectation_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">expectation_values</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># basis_probs will have num_qubits number of elements.</span>
+        <span class="c1"># Each element will be a list of length 4 specifying the</span>
+        <span class="c1"># probability of picking the corresponding magic basis on that qubit.</span>
+        <span class="n">basis_probs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dvars</span> <span class="ow">in</span> <span class="n">q2vars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vars_per_qubit</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clipped_expectation_values</span><span class="p">[</span><span class="n">dvars</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clipped_expectation_values</span><span class="p">[</span><span class="n">dvars</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clipped_expectation_values</span><span class="p">[</span><span class="n">dvars</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="c1"># In the coefficient of the Pauli operator within the magic bases, &#39;p&#39; represents a</span>
+                <span class="c1"># positive sign, while &#39;m&#39; signifies a negative sign.</span>
+                <span class="c1"># The four combinations of these signs are used to define the quantum system behavior</span>
+                <span class="c1">#  in the context of magic bases.</span>
+                <span class="c1"># ppp:   mu±   = .5(I ± 1/sqrt(3)( X + Y + Z))</span>
+                <span class="c1"># pmm: X mu± X = .5(I ± 1/sqrt(3)( X - Y - Z))</span>
+                <span class="c1"># mpm: Y mu± Y = .5(I ± 1/sqrt(3)(-X + Y - Z))</span>
+                <span class="c1"># mmp: Z mu± Z = .5(I ± 1/sqrt(3)(-X - Y + Z))</span>
+                <span class="c1"># fmt: off</span>
+                <span class="n">ppp_mmm</span> <span class="o">=</span>   <span class="n">x</span>   <span class="o">*</span>   <span class="n">y</span>   <span class="o">*</span>   <span class="n">z</span>   <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span>
+                <span class="n">pmm_mpp</span> <span class="o">=</span>   <span class="n">x</span>   <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span>   <span class="n">y</span>   <span class="o">*</span>   <span class="n">z</span>
+                <span class="n">mpm_pmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span>   <span class="n">y</span>   <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span>   <span class="n">x</span>   <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span>   <span class="n">z</span>
+                <span class="n">ppm_mmp</span> <span class="o">=</span>   <span class="n">x</span>   <span class="o">*</span>   <span class="n">y</span>   <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span>   <span class="n">z</span>
+                <span class="c1"># fmt: on</span>
+                <span class="n">basis_probs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ppp_mmm</span><span class="p">,</span> <span class="n">pmm_mpp</span><span class="p">,</span> <span class="n">mpm_pmp</span><span class="p">,</span> <span class="n">ppm_mmp</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">vars_per_qubit</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clipped_expectation_values</span><span class="p">[</span><span class="n">dvars</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">clipped_expectation_values</span><span class="p">[</span><span class="n">dvars</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="c1"># In the coefficient of the Pauli operator within the magic bases, &#39;p&#39; represents a</span>
+                <span class="c1"># positive sign, while &#39;m&#39; signifies a negative sign.</span>
+                <span class="c1"># The two combinations of these signs are used to define the quantum system behavior</span>
+                <span class="c1">#  in the context of magic bases.</span>
+                <span class="c1"># pp:   xi±   = .5(I ± 1/sqrt(2)( X + Z ))</span>
+                <span class="c1"># pm: X xi± X = .5(I ± 1/sqrt(2)( X - Z ))</span>
+                <span class="c1"># fmt: off</span>
+                <span class="n">pp_mm</span> <span class="o">=</span>   <span class="n">x</span>   <span class="o">*</span>   <span class="n">z</span>   <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span>
+                <span class="n">pm_mp</span> <span class="o">=</span>   <span class="n">x</span>   <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span>   <span class="n">z</span>
+                <span class="c1"># fmt: on</span>
+                <span class="n">basis_probs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pp_mm</span><span class="p">,</span> <span class="n">pm_mp</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">vars_per_qubit</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">basis_probs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">1.0</span><span class="p">])</span>
+        <span class="n">bases_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                    <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">vars_per_qubit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">probs</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shots</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">probs</span> <span class="ow">in</span> <span class="n">basis_probs</span>
+            <span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">bases_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span>
+
+<div class="viewcode-block" id="MagicRounding.round"><a class="viewcode-back" href="../../../../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html#qiskit_optimization.algorithms.qrao.MagicRounding.round">[docs]</a>    <span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rounding_context</span><span class="p">:</span> <span class="n">RoundingContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoundingResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform magic rounding using the given RoundingContext.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rounding_context: The context containing the information needed for the rounding.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            RoundingResult: The results of the magic rounding process.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the rounding context has no circuits.</span>
+<span class="sd">            ValueError: If the rounding context has no expectation values for magic rounding with the</span>
+<span class="sd">                weighted sampling.</span>
+<span class="sd">            QiskitOptimizationError: If the magic rounding did not return the expected number of shots.</span>
+<span class="sd">            QiskitOptimizationError: If the magic rounding did not return the expected number of bases.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">expectation_values</span> <span class="o">=</span> <span class="n">rounding_context</span><span class="o">.</span><span class="n">expectation_values</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">rounding_context</span><span class="o">.</span><span class="n">circuit</span>
+        <span class="n">q2vars</span> <span class="o">=</span> <span class="n">rounding_context</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">q2vars</span>
+        <span class="n">var2op</span> <span class="o">=</span> <span class="n">rounding_context</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">var2op</span>
+        <span class="n">vars_per_qubit</span> <span class="o">=</span> <span class="n">rounding_context</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">max_vars_per_qubit</span>
+
+        <span class="k">if</span> <span class="n">circuit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No circuit was provided in the rounding context. &quot;</span>
+                <span class="s2">&quot;Magic rounding requires a circuit to be available. &quot;</span>
+                <span class="s2">&quot;Perhaps try Semi-deterministic rounding instead.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_sampling</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+            <span class="c1"># uniform sampling</span>
+            <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_bases_uniform</span><span class="p">(</span><span class="n">q2vars</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># weighted sampling</span>
+            <span class="k">if</span> <span class="n">expectation_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;No expectation values were provided in the rounding context. &quot;</span>
+                    <span class="s2">&quot;Magic rounding with weighted sampling requires the expectation values of the &quot;</span>
+                    <span class="s2">&quot;``RoundingContext`` to be available, but they are not. &quot;</span>
+                    <span class="s1">&#39;Try `basis_sampling=&quot;uniform&quot;` instead.&#39;</span>
+                <span class="p">)</span>
+            <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_bases_weighted</span><span class="p">(</span>
+                <span class="n">q2vars</span><span class="p">,</span> <span class="n">expectation_values</span><span class="p">,</span> <span class="n">vars_per_qubit</span>
+            <span class="p">)</span>
+
+        <span class="c1"># For each of the Magic Bases sampled above, measure</span>
+        <span class="c1"># the appropriate number of times (given by basis_shots)</span>
+        <span class="c1"># and return the circuit results</span>
+        <span class="n">basis_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_magic_bases</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">basis_shots</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">)</span>
+        <span class="c1"># keys will be configurations of decision variables</span>
+        <span class="c1"># values will be total number of observations.</span>
+        <span class="n">soln_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dv_counts</span><span class="p">(</span><span class="n">basis_counts</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">var2op</span><span class="p">,</span> <span class="n">vars_per_qubit</span><span class="p">)</span>
+
+        <span class="n">soln_samples</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">SolutionSample</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">soln</span><span class="p">]),</span>
+                <span class="n">fval</span><span class="o">=</span><span class="n">rounding_context</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+                    <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">soln</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">probability</span><span class="o">=</span><span class="n">count</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="p">,</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">OptimizationResultStatus</span><span class="o">.</span><span class="n">SUCCESS</span>
+                <span class="k">if</span> <span class="n">rounding_context</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">is_feasible</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">soln</span><span class="p">])</span>
+                <span class="k">else</span> <span class="n">OptimizationResultStatus</span><span class="o">.</span><span class="n">INFEASIBLE</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">soln</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">soln_counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">soln_counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Internal error: Magic rounding did not return the expected number of shots. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">soln_counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_shots</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_counts</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Internal error: sizes of bases(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span><span class="si">}</span><span class="s2">), basis_shots(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_shots</span><span class="p">)</span><span class="si">}</span><span class="s2">), &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;and basis_counts(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_counts</span><span class="p">)</span><span class="si">}</span><span class="s2">) are not equal.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Create a MagicRoundingResult object to return</span>
+        <span class="k">return</span> <span class="n">RoundingResult</span><span class="p">(</span>
+            <span class="n">expectation_values</span><span class="o">=</span><span class="n">expectation_values</span><span class="p">,</span>
+            <span class="n">samples</span><span class="o">=</span><span class="n">soln_samples</span><span class="p">,</span>
+            <span class="n">bases</span><span class="o">=</span><span class="n">bases</span><span class="p">,</span>
+            <span class="n">basis_shots</span><span class="o">=</span><span class="n">basis_shots</span><span class="p">,</span>
+            <span class="n">basis_counts</span><span class="o">=</span><span class="n">basis_counts</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=add265a1"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/thebelab-helper.js"></script>
+    <script src="../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

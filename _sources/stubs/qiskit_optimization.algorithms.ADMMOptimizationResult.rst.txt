@@ -1,0 +1,42 @@
+﻿
+
+ADMMOptimizationResult
+=====================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: ADMMOptimizationResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: ADMMOptimizationResult.fval
+   .. autoattribute:: ADMMOptimizationResult.raw_results
+   .. autoattribute:: ADMMOptimizationResult.samples
+   .. autoattribute:: ADMMOptimizationResult.state
+   .. autoattribute:: ADMMOptimizationResult.status
+   .. autoattribute:: ADMMOptimizationResult.variable_names
+   .. autoattribute:: ADMMOptimizationResult.variables
+   .. autoattribute:: ADMMOptimizationResult.variables_dict
+   .. autoattribute:: ADMMOptimizationResult.x
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: ADMMOptimizationResult.get_correlations
+   .. automethod:: ADMMOptimizationResult.prettyprint
+
+   
+   

@@ -1,0 +1,26 @@
+﻿
+
+EncodingCommutationVerifier
+===============================================================
+
+.. currentmodule:: qiskit_optimization.algorithms.qrao
+
+.. autoclass:: EncodingCommutationVerifier
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+
+   
+   

@@ -1,0 +1,1226 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Qiskit Optimization API Reference" href="../apidocs/qiskit_optimization.html" /><link rel="prev" title="Using Classical Optimization Solvers and Models with Qiskit Optimization" href="11_using_classical_optimization_solvers_and_models.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Quantum Random Access Optimization - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_quadratic_program.html">Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_converters_for_quadratic_programs.html">Converters for Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">Minimum Eigen Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_grover_optimizer.html">Grover Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">ADMM Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_examples_max_cut_and_tsp.html">Max-Cut and Traveling Salesman Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_examples_vehicle_routing.html">Vehicle Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">Improving Variational Quantum Optimization using CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">Application Classes for Optimization Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">Warm-starting quantum optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Using Classical Optimization Solvers and Models with Qiskit Optimization</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">English</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/12_quantum_random_access_optimizer.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/12_quantum_random_access_optimizer.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/12_quantum_random_access_optimizer.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/12_quantum_random_access_optimizer.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/12_quantum_random_access_optimizer.ipynb">docs/tutorials/12_quantum_random_access_optimizer.ipynb</a>.</p>
+</div>
+<section id="Quantum-Random-Access-Optimization">
+<h1>Quantum Random Access Optimization<a class="headerlink" href="#Quantum-Random-Access-Optimization" title="Permalink to this heading">#</a></h1>
+<p>The Quantum Random Access Optimization (QRAO) module is designed to enable users to leverage a new quantum method for combinatorial optimization problems [1]. This approach incorporates Quantum Random Access Codes (QRACs) as a tool to encode multiple classical binary variables into a single qubit, thereby saving quantum resources and enabling exploration of larger problem instances on a quantum computer. The encodings produce a local quantum Hamiltonian whose ground state can be approximated
+with standard algorithms such as VQE, and then rounded to yield approximation solutions of the original problem.</p>
+<p>QRAO through a series of 3 classes: 1. The encoding class (<code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessEncoding</span></code>): This class encodes the original problem into a relaxed problem that requires fewer resources to solve. 2. The rounding schemes (<code class="docutils literal notranslate"><span class="pre">SemideterministicRounding</span></code> and <code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code>): This scheme is used to round the solution obtained from the relaxed problem back to a solution of the original problem. 3. The optimizer class (<code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizer</span></code>): This class performs the high-level
+optimization algorithm, utilizing the capabilities of the encoding class and the rounding scheme.</p>
+<p><em>References</em></p>
+<p>[1] Bryce Fuller et al., <em>Approximate Solutions of Combinatorial Problems via Quantum Relaxations,</em> <a class="reference external" href="https://arxiv.org/abs/2111.03167">arXiv:2111.03167</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms.qrao</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QuantumRandomAccessEncoding</span><span class="p">,</span>
+    <span class="n">SemideterministicRounding</span><span class="p">,</span>
+    <span class="n">QuantumRandomAccessOptimizer</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="Set-up-a-combinatorial-optimization-problem">
+<h2>Set up a combinatorial optimization problem<a class="headerlink" href="#Set-up-a-combinatorial-optimization-problem" title="Permalink to this heading">#</a></h2>
+<p>In this tutorial, we will consider a random max-cut problem instance and use QRAO to try to find a maximum cut; in other words, a partition of the graph’s vertices (nodes) into two sets that maximizes the number of edges between the sets.</p>
+<p>To begin, we utilize the <code class="docutils literal notranslate"><span class="pre">Maxcut</span></code> class from Qiskit Optimization’s application module. It allows us to generate a <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> representation of the given graph.</p>
+<p>Note that once our problem has been represented as a <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>, it will need to be converted to the correct type, a <a class="reference external" href="https://en.wikipedia.org/wiki/Quadratic_unconstrained_binary_optimization">quadratic unconstrained binary optimization (QUBO)</a> problem, so that it is compatible with QRAO. A <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> generated by <code class="docutils literal notranslate"><span class="pre">Maxcut</span></code> is already a QUBO, but if you define your own problem be sure you convert it to a QUBO before proceeding. Here is <a class="reference external" href="https://qiskit.org/documentation/optimization/tutorials/02_converters_for_quadratic_programs.html">a
+tutorial</a> on converting <code class="docutils literal notranslate"><span class="pre">QuadraticPrograms</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_optimization.applications</span> <span class="kn">import</span> <span class="n">Maxcut</span>
+
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">num_nodes</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">random_regular_graph</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">))</span>
+
+<span class="n">maxcut</span> <span class="o">=</span> <span class="n">Maxcut</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">maxcut</span><span class="o">.</span><span class="n">to_quadratic_program</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: Max-cut
+
+Maximize
+  -2*x_0*x_1 - 2*x_0*x_3 - 2*x_0*x_4 - 2*x_1*x_2 - 2*x_1*x_5 - 2*x_2*x_3
+  - 2*x_2*x_4 - 2*x_3*x_5 - 2*x_4*x_5 + 3*x_0 + 3*x_1 + 3*x_2 + 3*x_3 + 3*x_4
+  + 3*x_5
+
+Subject to
+  No constraints
+
+  Binary variables (6)
+    x_0 x_1 x_2 x_3 x_4 x_5
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_12_quantum_random_access_optimizer_4_1.png" src="../_images/tutorials_12_quantum_random_access_optimizer_4_1.png" />
+</div>
+</div>
+</section>
+<section id="Encode-the-problem-into-a-quantum-Hamiltonian">
+<h2>Encode the problem into a quantum Hamiltonian<a class="headerlink" href="#Encode-the-problem-into-a-quantum-Hamiltonian" title="Permalink to this heading">#</a></h2>
+<p>Once we have appropriately configured our problem, we proceed to encode it using the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessEncoding</span></code> class from the <code class="docutils literal notranslate"><span class="pre">qrao</span></code> module. This encoding step allows us to generate a quantum Hamiltonian operator that represents our problem. In particular, we employ a Quantum Random Access Code (QRAC) to encode multiple classical binary variables (corresponding to the nodes of our max-cut graph) into each qubit.</p>
+<p>It’s important to note that the resulting “relaxed” Hamiltonian, produced by this encoding, will not be diagonal. This differs from the standard workflow in <code class="docutils literal notranslate"><span class="pre">qiskit-optimization</span></code>, which typically generates a diagonal (Ising) Hamiltonian suitable for optimization using a <code class="docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code>. You can find a tutorial on the <code class="docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code> <a class="reference external" href="https://qiskit.org/documentation/optimization/tutorials/03_minimum_eigen_optimizer.html">here</a>.</p>
+<p>In our encoding process, we employ a <span class="math notranslate nohighlight">\((3,1,p)-\)</span>QRAC, where each qubit can accommodate a maximum of 3 classical binary variables. The parameter <span class="math notranslate nohighlight">\(p\)</span> represents the bit recovery probability achieved through measurement. Depending on the nature of the problem, some qubits may have fewer than 3 classical variables assigned to them. To evaluate the compression achieved, we can examine the <code class="docutils literal notranslate"><span class="pre">compression_ratio</span></code> attribute of the encoding, which provides the ratio between the number of
+original binary variables and the number of qubits used (at best, a factor of 3).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms.qrao</span> <span class="kn">import</span> <span class="n">QuantumRandomAccessEncoding</span>
+
+
+<span class="c1"># Create an encoding object with a maximum of 3 variables per qubit, aka a (3,1,p)-QRAC</span>
+<span class="n">encoding</span> <span class="o">=</span> <span class="n">QuantumRandomAccessEncoding</span><span class="p">(</span><span class="n">max_vars_per_qubit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Encode the QUBO problem into an encoded Hamiltonian</span>
+<span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+
+<span class="c1"># This is our encoded Hamiltonian</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Our encoded Hamiltonian is:</span><span class="se">\n</span><span class="s2">( </span><span class="si">{</span><span class="n">encoding</span><span class="o">.</span><span class="n">qubit_op</span><span class="si">}</span><span class="s2"> ).</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;We achieve a compression ratio of &quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">encoding</span><span class="o">.</span><span class="n">num_vars</span><span class="si">}</span><span class="s2"> binary variables : </span><span class="si">{</span><span class="n">encoding</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2"> qubits) &quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;≈ </span><span class="si">{</span><span class="n">encoding</span><span class="o">.</span><span class="n">compression_ratio</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Our encoded Hamiltonian is:
+( SparsePauliOp([&#39;XX&#39;, &#39;XY&#39;, &#39;XZ&#39;, &#39;YX&#39;, &#39;ZX&#39;, &#39;YY&#39;, &#39;YZ&#39;, &#39;ZY&#39;, &#39;ZZ&#39;],
+              coeffs=[1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j,
+ 1.5+0.j]) ).
+
+We achieve a compression ratio of (6 binary variables : 2 qubits) ≈ 3.0.
+
+</pre></div></div>
+</div>
+</section>
+<section id="Solve-the-problem-using-the-QuantumRandomAccessOptimizer">
+<h2>Solve the problem using the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizer</span></code><a class="headerlink" href="#Solve-the-problem-using-the-QuantumRandomAccessOptimizer" title="Permalink to this heading">#</a></h2>
+<p>Having successfully encoded our input problem as a relaxed Hamiltonian, we proceed to solve it using the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizer</span></code>. This optimizer allows us to find an approximate solution to the relaxed problem by leveraging quantum computing techniques.</p>
+<p>To set up the optimizer, we need to specify two crucial components:</p>
+<ol class="arabic simple">
+<li><p><strong>Minimum Eigensolver</strong>: We specify a minimum eigensolver to heuristically search for the ground state of the relaxed problem Hamiltonian. As an example, we can use the Variational Quantum Eigensolver (VQE). For simulation purposes, we’ll employ an simulator, but you can choose a quantum device as the backend if desired.</p></li>
+<li><p><strong>Rounding Scheme</strong>: To map the ground state results back to a solution for the original problem, we specify a rounding scheme. By default, the <code class="docutils literal notranslate"><span class="pre">SemideterministicRounding</span></code> is used, but alternative scheme, <code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code>, is also available.</p></li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms.qrao</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QuantumRandomAccessOptimizer</span><span class="p">,</span>
+    <span class="n">SemideterministicRounding</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Prepare the VQE algorithm</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">Estimator</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="c1"># Use semi-deterministic rounding, known as &quot;Pauli rounding&quot;</span>
+<span class="c1"># in https://arxiv.org/pdf/2111.03167v2.pdf</span>
+<span class="c1"># (This is the default if no rounding scheme is specified.)</span>
+<span class="n">semidterministic_rounding</span> <span class="o">=</span> <span class="n">SemideterministicRounding</span><span class="p">()</span>
+
+<span class="c1"># Construct the optimizer</span>
+<span class="n">qrao</span> <span class="o">=</span> <span class="n">QuantumRandomAccessOptimizer</span><span class="p">(</span><span class="n">min_eigen_solver</span><span class="o">=</span><span class="n">vqe</span><span class="p">,</span> <span class="n">rounding_scheme</span><span class="o">=</span><span class="n">semidterministic_rounding</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, we move forward with solving the problem by invoking the <code class="docutils literal notranslate"><span class="pre">solve()</span></code> method. It’s important to note that when calling <code class="docutils literal notranslate"><span class="pre">solve()</span></code>, we pass the <code class="docutils literal notranslate"><span class="pre">problem</span></code> itself as an argument. Although we previously used <code class="docutils literal notranslate"><span class="pre">encode()</span></code> in <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessEncoding</span></code> to provide a clear understanding of the flow, <code class="docutils literal notranslate"><span class="pre">solve(problem)</span></code> automatically encodes the problem internally using <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessEncoding</span></code>. This provides a streamlined and simplified workflow that eliminates the need for
+explicit encoding steps.</p>
+<p>The result is provides us as a <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizationResult</span></code>. The <code class="docutils literal notranslate"><span class="pre">x</span></code> contains the binary values representing the best solution found, while the <code class="docutils literal notranslate"><span class="pre">fval</span></code> contains the corresponding objective value.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">relaxed_fval</span></code> provides the expectation value of the relaxed Hamiltonian, adjusted to be in the units of the original optimization problem. For maximization problems, the best possible relaxed function value will always be greater than or equal to the best possible objective function value of the original problem. In practice, this often holds true for the best found value and best found objective function value as well.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solve the optimization problem</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">qrao</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The objective function value: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;relaxed function value: </span><span class="si">{</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">results</span><span class="o">.</span><span class="n">relaxed_fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The objective function value: 6.0
+x: [0 1 1 1 1 0]
+relaxed function value: 8.999999982343004
+
+</pre></div></div>
+</div>
+<section id="Interpret-the-solution">
+<h3>Interpret the solution<a class="headerlink" href="#Interpret-the-solution" title="Permalink to this heading">#</a></h3>
+<p>In the context of <a class="reference external" href="https://en.wikipedia.org/wiki/Maximum_cut">max-cut</a>, the result’s “optimal value” tells us which subset each node belongs to given the partition found by the optimizer.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">maxcut_partition</span> <span class="o">=</span> <span class="n">maxcut</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The obtained solution places a partition between nodes </span><span class="si">{</span><span class="n">maxcut_partition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;and nodes </span><span class="si">{</span><span class="n">maxcut_partition</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+<span class="n">maxcut</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The obtained solution places a partition between nodes [0, 5] and nodes [1, 2, 3, 4].
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_12_quantum_random_access_optimizer_13_1.png" src="../_images/tutorials_12_quantum_random_access_optimizer_13_1.png" />
+</div>
+</div>
+</section>
+<section id="Inspect-the-results-of-subroutines">
+<h3>Inspect the results of subroutines<a class="headerlink" href="#Inspect-the-results-of-subroutines" title="Permalink to this heading">#</a></h3>
+<p>The <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.MinimumEigensolverResult.html">MinimumEigensolverResult</a> that results from performing VQE on the relaxed Hamiltonian is available:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">relaxed_result</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;qiskit_algorithms.minimum_eigensolvers.vqe.VQEResult at 0x7fe311b324f0&gt;
+</pre></div></div>
+</div>
+<p>The result of the rounding scheme is also worth considering. In this example, we used the <code class="docutils literal notranslate"><span class="pre">SemideterministricRounding</span></code>. It’s important to note that with semi-deterministic rounding, a single sample is generated as the result, making it the optimal solution candidate.</p>
+<p>However, if we use the <code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code> instead, multiple samples would be generated, each with a probability associated with it. These probabilities sum up to one, providing a distribution of potential optimal solutions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">samples</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[SolutionSample(x=array([0, 1, 1, 1, 1, 0]), fval=6.0, probability=1.0, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)]
+</pre></div></div>
+</div>
+</section>
+<section id="Exact-Problem-Solution-with-the-NumpyMinimumEigensolver">
+<h3>Exact Problem Solution with the <code class="docutils literal notranslate"><span class="pre">NumpyMinimumEigensolver</span></code><a class="headerlink" href="#Exact-Problem-Solution-with-the-NumpyMinimumEigensolver" title="Permalink to this heading">#</a></h3>
+<p>To assess the performance of QRAO in approximating the optimal solution, we can utilize the <code class="docutils literal notranslate"><span class="pre">NumpyMinimumEigensolver</span></code>, an exact classical optimizer. We can obtain the exact optimal solution to the problem as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+
+<span class="n">exact_mes</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">exact</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">exact_mes</span><span class="p">)</span>
+<span class="n">exact_result</span> <span class="o">=</span> <span class="n">exact</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">exact_result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 9.0
+variable values: x_0=0.0, x_1=1.0, x_2=0.0, x_3=1.0, x_4=1.0, x_5=0.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<p>The approximation ratio (QRAO’s objective function value divided by the optimal objective function value) tells us how closely QRAO approximated the optimal solution to the problem.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QRAO Approximate Optimal Function Value:&quot;</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">fval</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exact Optimal Function Value:&quot;</span><span class="p">,</span> <span class="n">exact_result</span><span class="o">.</span><span class="n">fval</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Approximation Ratio: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">fval</span><span class="w"> </span><span class="o">/</span><span class="w">  </span><span class="n">exact_result</span><span class="o">.</span><span class="n">fval</span><span class="w"> </span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+QRAO Approximate Optimal Function Value: 6.0
+Exact Optimal Function Value: 9.0
+Approximation Ratio: 0.67
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Solve-the-problem-using-the-QuantumRandomAccessOptimizer-with-MagicRounding">
+<h2>Solve the problem using the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizer</span></code> with <code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code><a class="headerlink" href="#Solve-the-problem-using-the-QuantumRandomAccessOptimizer-with-MagicRounding" title="Permalink to this heading">#</a></h2>
+<p>Magic rounding is a quantum technique employed to map the ground state results of our encoded Hamiltonian back to a solution of the original problem. Unlike semi-deterministic rounding, magic rounding requires a quantum backend, which can be either hardware or a simulator. The backend is passed to the <code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code> class through a <code class="docutils literal notranslate"><span class="pre">Sampler</span></code>, which also determines the total number of shots (samples) that magic rounding will utilize. Note that to specify the backend, you need to choose a
+<code class="docutils literal notranslate"><span class="pre">Sampler</span></code> from providers such as Aer or IBM Runtime. Consequently, we need to specify <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> and <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> for the optimizer and the rounding scheme, respectively.</p>
+<p>In practice, users may choose to set a significantly higher number of magic rounding shots compared to the shots used by the minimum eigensolver for the relaxed problem. This difference arises because the minimum eigensolver estimates expectation values, while the magic rounding scheme returns the sample corresponding to the maximum function value found. The number of magic rounding shots directly impacts the diversity of the computational basis we can generate. When estimating an expectation
+value, increasing the number of shots enhances the convergence to the true value. However, when aiming to identify the largest possible function value, we often sample from the tail of a distribution of outcomes. As a result, until we observe the highest value outcome in our distribution, each additional shot increases the expected return value.</p>
+<p>In this tutorial, we use the <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> for solving the relaxed Hamiltonian and the <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> for performing magic rounding. Here, 10 times as many shots are used in the <code class="docutils literal notranslate"><span class="pre">Sampler</span></code>. As the number of qubits increases, you may need more shots or <code class="docutils literal notranslate"><span class="pre">weighted</span></code> basis sampling, as explained above.”</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms.qrao</span> <span class="kn">import</span> <span class="n">MagicRounding</span>
+
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">})</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">})</span>
+
+<span class="c1"># Prepare the VQE algorithm</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Use magic rounding</span>
+<span class="n">magic_rounding</span> <span class="o">=</span> <span class="n">MagicRounding</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">)</span>
+
+<span class="c1"># Construct the optimizer</span>
+<span class="n">qrao</span> <span class="o">=</span> <span class="n">QuantumRandomAccessOptimizer</span><span class="p">(</span><span class="n">min_eigen_solver</span><span class="o">=</span><span class="n">vqe</span><span class="p">,</span> <span class="n">rounding_scheme</span><span class="o">=</span><span class="n">magic_rounding</span><span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">qrao</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The objective function value: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;relaxed function value: </span><span class="si">{</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">results</span><span class="o">.</span><span class="n">relaxed_fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The objective function value: 9.0
+x: [1 0 1 0 0 1]
+relaxed function value: 8.999995758642516
+
+</pre></div></div>
+</div>
+<p>Since magic rounding relies on nondeterministic measurements, the method collects a number of samples based on the shots count provided to the <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> mentioned earlier. These samples are then consolidated, taking into account duplicates and calculating the empirical probability for each <code class="docutils literal notranslate"><span class="pre">SolutionSample</span></code>. Each sample in the consolidation process includes a corresponding function value (<code class="docutils literal notranslate"><span class="pre">fval</span></code>).</p>
+<p>From the consolidated samples, we select the sample with the “optimal” function value. In the case of a max-cut problem, this means choosing the sample with the largest function value as our solution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of distinct samples is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 samples with the largest fval:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">samples</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The number of distinct samples is 56.
+Top 10 samples with the largest fval:
+SolutionSample(x=array([1, 0, 1, 0, 0, 1]), fval=9.0, probability=0.0096, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 0, 1, 1, 0]), fval=9.0, probability=0.011199999999999998, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 0, 0, 1, 1, 0]), fval=6.0, probability=0.0196, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 1, 1, 0, 0, 1]), fval=6.0, probability=0.0206, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 1, 1, 1, 0]), fval=6.0, probability=0.0203, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 0, 0, 0, 0, 1]), fval=6.0, probability=0.0214, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 0, 1, 0, 0, 0]), fval=6.0, probability=0.0197, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 0, 1, 1, 1]), fval=6.0, probability=0.020699999999999996, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 0, 1, 0, 1, 1]), fval=6.0, probability=0.0228, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 0, 1, 0, 0]), fval=6.0, probability=0.024000000000000004, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+</pre></div></div>
+</div>
+</section>
+<section id="Alternative:-Solve-the-Problem-in-Two-Explicit-Steps">
+<h2>Alternative: Solve the Problem in Two Explicit Steps<a class="headerlink" href="#Alternative:-Solve-the-Problem-in-Two-Explicit-Steps" title="Permalink to this heading">#</a></h2>
+<p>In the previous part of this tutorial, we utilized the <code class="docutils literal notranslate"><span class="pre">qrao.solve()</span></code> method, which solved the encoded problem (the ground state of the relaxed Hamiltonian) and performed rounding to map the ground state results back to a solution of the original problem. However, it is also possible to explicitly break down the calculation into these two distinct steps. This can be beneficial, especially when comparing solutions obtained across multiple rounding schemes applied to a candidate ground state.</p>
+<p>In this section, we will explore how to perform each of these steps explicitly.</p>
+</section>
+<section id="Manually-solve-the-relaxed-problem.">
+<h2>Manually solve the relaxed problem.<a class="headerlink" href="#Manually-solve-the-relaxed-problem." title="Permalink to this heading">#</a></h2>
+<p>Let’s start by invoking the <code class="docutils literal notranslate"><span class="pre">qrao.solve_relaxed()</span></code> method to directly solve the relaxed problem encoded by <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessEncoding</span></code>. This method allows us to focus solely on solving the relaxed problem without performing rounding.</p>
+<p>By invoking <code class="docutils literal notranslate"><span class="pre">qrao.solve_relaxed()</span></code>, we obtain two essential outputs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MinimumEigensolverResult</span></code>: This object contains the results of running the minimum eigen optimizer such as the VQE on the relaxed problem. It provides information about the eigenvalue, and other relevant details. You can refer to the Qiskit Algorithms <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.algorithms.MinimumEigensolverResult.html">documentation</a> for a comprehensive explanation of the entries within this object.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RoundingContext</span></code>: This object encapsulates essential information about the encoding and the solution of the relaxed problem in a form that is ready for consumption by the rounding schemes.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Encode the QUBO problem into a relaxed Hamiltonian</span>
+<span class="n">encoding</span> <span class="o">=</span> <span class="n">QuantumRandomAccessEncoding</span><span class="p">(</span><span class="n">max_vars_per_qubit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+
+<span class="c1"># Solve the relaxed problem</span>
+<span class="n">relaxed_results</span><span class="p">,</span> <span class="n">rounding_context</span> <span class="o">=</span> <span class="n">qrao</span><span class="o">.</span><span class="n">solve_relaxed</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">relaxed_results</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">relaxed_results</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+aux_operators_evaluated: [(0.010834485173358988, {&#39;variance&#39;: 0.9999999911928379, &#39;shots&#39;: 1000}), (0.026075694416300015, {&#39;variance&#39;: 0.9999999911926416, &#39;shots&#39;: 1000}), (0.01044933784106082, {&#39;variance&#39;: 0.9999999999999999, &#39;shots&#39;: 1000}), (-0.04120945001189341, {&#39;variance&#39;: 0.9999999999999999, &#39;shots&#39;: 1000}), (0.028659359200668803, {&#39;variance&#39;: 0.9999999991301689, &#39;shots&#39;: 1000}), (0.0140861071530678, {&#39;variance&#39;: 0.9999999991299727, &#39;shots&#39;: 1000})]
+combine: &lt;bound method AlgorithmResult.combine of &lt;qiskit_algorithms.minimum_eigensolvers.vqe.VQEResult object at 0x7fe311bc8a00&gt;&gt;
+cost_function_evals: 125
+eigenvalue: -4.4999963592563175
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+optimal_circuit:      ┌──────────────────────────────────────────────────────────┐
+q_0: ┤0                                                         ├
+     │  RealAmplitudes(θ[0],θ[1],θ[2],θ[3],θ[4],θ[5],θ[6],θ[7]) │
+q_1: ┤1                                                         ├
+     └──────────────────────────────────────────────────────────┘
+optimal_parameters: {ParameterVectorElement(θ[0]): 0.8435923652525493, ParameterVectorElement(θ[1]): 3.3250925009847143, ParameterVectorElement(θ[2]): 0.831780475663921, ParameterVectorElement(θ[3]): -2.983319002738171, ParameterVectorElement(θ[4]): 2.062462319072777, ParameterVectorElement(θ[5]): -0.4724970429168071, ParameterVectorElement(θ[6]): 0.1865524872503596, ParameterVectorElement(θ[7]): 4.227286108126292}
+optimal_point: [ 0.84359237  3.3250925   0.83178048 -2.983319    2.06246232 -0.47249704
+  0.18655249  4.22728611]
+optimal_value: -4.4999963592563175
+optimizer_evals: None
+optimizer_result: {   &#39;fun&#39;: -4.4999963592563175,
+    &#39;jac&#39;: None,
+    &#39;nfev&#39;: 125,
+    &#39;nit&#39;: None,
+    &#39;njev&#39;: None,
+    &#39;x&#39;: array([ 0.84359237,  3.3250925 ,  0.83178048, -2.983319  ,  2.06246232,
+       -0.47249704,  0.18655249,  4.22728611])}
+optimizer_time: 0.3538167476654053
+</pre></div></div>
+</div>
+</section>
+<section id="Manually-perform-rounding-on-the-relaxed-problem-results">
+<h2>Manually perform rounding on the relaxed problem results<a class="headerlink" href="#Manually-perform-rounding-on-the-relaxed-problem-results" title="Permalink to this heading">#</a></h2>
+<p>Next, we proceed with rounding the results obtained from solving the relaxed problem. To achieve this, we call the <code class="docutils literal notranslate"><span class="pre">round()</span></code> method on an instance of the desired rounding scheme and pass it the <code class="docutils literal notranslate"><span class="pre">RoundingContext</span></code> object. Below, we provide an example for both rounding schemes, utilizing the relaxed solution obtained in the previous step.</p>
+<p>By manually performing the rounding step, we have more flexibility and control over the rounding scheme applied to the relaxed problem results. This allows for greater exploration and comparison of different rounding strategies.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Round the relaxed solution using semi-deterministic rounding</span>
+<span class="n">semidterministic_rounding</span> <span class="o">=</span> <span class="n">SemideterministicRounding</span><span class="p">()</span>
+<span class="n">sdr_results</span> <span class="o">=</span> <span class="n">semidterministic_rounding</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rounding_context</span><span class="p">)</span>
+<span class="n">qrao_results_sdr</span> <span class="o">=</span> <span class="n">qrao</span><span class="o">.</span><span class="n">process_result</span><span class="p">(</span>
+    <span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">relaxed_result</span><span class="o">=</span><span class="n">relaxed_results</span><span class="p">,</span> <span class="n">rounding_result</span><span class="o">=</span><span class="n">sdr_results</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The objective function value: </span><span class="si">{</span><span class="n">qrao_results_sdr</span><span class="o">.</span><span class="n">fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">qrao_results_sdr</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;relaxed function value: </span><span class="si">{</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">qrao_results_sdr</span><span class="o">.</span><span class="n">relaxed_fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;The number of distinct samples is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">qrao_results_sdr</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The objective function value: 3.0
+x: [0 0 0 1 0 0]
+relaxed function value: -8.999996359256318
+The number of distinct samples is 1.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">magic_rounding</span> <span class="o">=</span> <span class="n">MagicRounding</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">)</span>
+<span class="n">mr_results</span> <span class="o">=</span> <span class="n">magic_rounding</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rounding_context</span><span class="p">)</span>
+<span class="n">qrao_results_mr</span> <span class="o">=</span> <span class="n">qrao</span><span class="o">.</span><span class="n">process_result</span><span class="p">(</span>
+    <span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">relaxed_result</span><span class="o">=</span><span class="n">relaxed_results</span><span class="p">,</span> <span class="n">rounding_result</span><span class="o">=</span><span class="n">mr_results</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The objective function value: </span><span class="si">{</span><span class="n">qrao_results_mr</span><span class="o">.</span><span class="n">fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;x: </span><span class="si">{</span><span class="n">qrao_results_mr</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;relaxed function value: </span><span class="si">{</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">qrao_results_mr</span><span class="o">.</span><span class="n">relaxed_fval</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;The number of distinct samples is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">qrao_results_mr</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The objective function value: 9.0
+x: [1 0 1 0 0 1]
+relaxed function value: -8.999996359256318
+The number of distinct samples is 56.
+</pre></div></div>
+</div>
+</section>
+<section id="Appendix">
+<h2>Appendix<a class="headerlink" href="#Appendix" title="Permalink to this heading">#</a></h2>
+<section id="How-to-verify-correctness-of-your-encoding">
+<h3>How to verify correctness of your encoding<a class="headerlink" href="#How-to-verify-correctness-of-your-encoding" title="Permalink to this heading">#</a></h3>
+<p>We assume for sake of the QRAO method that <strong>the relaxation commutes with the objective function.</strong> This notebook demonstrates how one can verify this for any problem (a <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> in the language of Qiskit Optimization). One might want to verify this for pedagogical purposes, or as a sanity check when investigating unexpected behavior with the QRAO. Any problem that does not commute should be considered a bug, and if such a problem is discovered, we encourage that you submit it as <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/issues">an
+issue on GitHub</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">EncodingCommutationVerifier</span></code> class allows one to conveniently iterate over all decision variable states and compare each objective value with the corresponding encoded objective value, in order to identify any discrepancy.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms.qrao</span> <span class="kn">import</span> <span class="n">EncodingCommutationVerifier</span>
+
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">num_nodes</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">random_regular_graph</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">))</span>
+
+<span class="n">maxcut</span> <span class="o">=</span> <span class="n">Maxcut</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">maxcut</span><span class="o">.</span><span class="n">to_quadratic_program</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: Max-cut
+
+Maximize
+  -2*x_0*x_1 - 2*x_0*x_3 - 2*x_0*x_4 - 2*x_1*x_2 - 2*x_1*x_5 - 2*x_2*x_3
+  - 2*x_2*x_4 - 2*x_3*x_5 - 2*x_4*x_5 + 3*x_0 + 3*x_1 + 3*x_2 + 3*x_3 + 3*x_4
+  + 3*x_5
+
+Subject to
+  No constraints
+
+  Binary variables (6)
+    x_0 x_1 x_2 x_3 x_4 x_5
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_12_quantum_random_access_optimizer_35_1.png" src="../_images/tutorials_12_quantum_random_access_optimizer_35_1.png" />
+</div>
+</div>
+<p>As before, we <code class="docutils literal notranslate"><span class="pre">encode()</span></code> the problem using the QuantumRandomAccessEncoding class:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">encoding</span> <span class="o">=</span> <span class="n">QuantumRandomAccessEncoding</span><span class="p">(</span><span class="n">max_vars_per_qubit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Encoded Problem:</span><span class="se">\n</span><span class="s2">=================&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">encoding</span><span class="o">.</span><span class="n">qubit_op</span><span class="p">)</span>  <span class="c1"># The Hamiltonian without the offset</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset = &quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Variables encoded on each qubit: &quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">.</span><span class="n">q2vars</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Encoded Problem:
+=================
+SparsePauliOp([&#39;XX&#39;, &#39;XY&#39;, &#39;XZ&#39;, &#39;YX&#39;, &#39;ZX&#39;, &#39;YY&#39;, &#39;YZ&#39;, &#39;ZY&#39;, &#39;ZZ&#39;],
+              coeffs=[1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j, 1.5+0.j,
+ 1.5+0.j])
+Offset =  -4.5
+Variables encoded on each qubit:  [[0, 2, 5], [1, 3, 4]]
+</pre></div></div>
+</div>
+<p>Finally, we iterate over every decision variable state using <code class="docutils literal notranslate"><span class="pre">EncodingCommutationVerifier</span></code> and verify that, in each case, the problem objective value matches the encoded objective value:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">verifier</span> <span class="o">=</span> <span class="n">EncodingCommutationVerifier</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">Estimator</span><span class="p">())</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">verifier</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="o">**</span><span class="n">encoding</span><span class="o">.</span><span class="n">num_vars</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number results of the encoded problem is not equal to 2 ** num_vars.&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">str_dvars</span><span class="p">,</span> <span class="n">obj_val</span><span class="p">,</span> <span class="n">encoded_obj_val</span> <span class="ow">in</span> <span class="n">verifier</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">obj_val</span><span class="p">,</span> <span class="n">encoded_obj_val</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Violation identified: </span><span class="si">{</span><span class="n">str_dvars</span><span class="si">}</span><span class="s2"> evaluates to </span><span class="si">{</span><span class="n">obj_val</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;but the encoded problem evaluates to </span><span class="si">{</span><span class="n">encoded_obj_val</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>If you are able to construct a problem that causes a violation, it is quite possible that you have discovered a bug in the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessEncoding</span></code> logic. We would greatly appreciate it if you could share the problem with us by <a class="reference external" href="https://github.com/Qiskit/qiskit-optimization/issues">submitting it as an issue</a> on GitHub.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="k">qiskit_version_table</span>
+<span class="o">%</span><span class="k">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.2</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.6.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Wed Jan 24 21:05:51 2024 UTC</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {"6fc4d5efd2c9473091403f7f9f460ef9": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "e5e1a0d69f3c40aeac94ff229d6ba7c8": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "d4387b1184f74822b7b34b5f034197dd": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_6fc4d5efd2c9473091403f7f9f460ef9", "placeholder": "\u200b", "style": "IPY_MODEL_e5e1a0d69f3c40aeac94ff229d6ba7c8", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
+</script></section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="../apidocs/qiskit_optimization.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Qiskit Optimization API Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="11_using_classical_optimization_solvers_and_models.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Using Classical Optimization Solvers and Models with Qiskit Optimization</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Quantum Random Access Optimization</a><ul>
+<li><a class="reference internal" href="#Set-up-a-combinatorial-optimization-problem">Set up a combinatorial optimization problem</a></li>
+<li><a class="reference internal" href="#Encode-the-problem-into-a-quantum-Hamiltonian">Encode the problem into a quantum Hamiltonian</a></li>
+<li><a class="reference internal" href="#Solve-the-problem-using-the-QuantumRandomAccessOptimizer">Solve the problem using the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizer</span></code></a><ul>
+<li><a class="reference internal" href="#Interpret-the-solution">Interpret the solution</a></li>
+<li><a class="reference internal" href="#Inspect-the-results-of-subroutines">Inspect the results of subroutines</a></li>
+<li><a class="reference internal" href="#Exact-Problem-Solution-with-the-NumpyMinimumEigensolver">Exact Problem Solution with the <code class="docutils literal notranslate"><span class="pre">NumpyMinimumEigensolver</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Solve-the-problem-using-the-QuantumRandomAccessOptimizer-with-MagicRounding">Solve the problem using the <code class="docutils literal notranslate"><span class="pre">QuantumRandomAccessOptimizer</span></code> with <code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code></a></li>
+<li><a class="reference internal" href="#Alternative:-Solve-the-Problem-in-Two-Explicit-Steps">Alternative: Solve the Problem in Two Explicit Steps</a></li>
+<li><a class="reference internal" href="#Manually-solve-the-relaxed-problem.">Manually solve the relaxed problem.</a></li>
+<li><a class="reference internal" href="#Manually-perform-rounding-on-the-relaxed-problem-results">Manually perform rounding on the relaxed problem results</a></li>
+<li><a class="reference internal" href="#Appendix">Appendix</a><ul>
+<li><a class="reference internal" href="#How-to-verify-correctness-of-your-encoding">How to verify correctness of your encoding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=add265a1"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
