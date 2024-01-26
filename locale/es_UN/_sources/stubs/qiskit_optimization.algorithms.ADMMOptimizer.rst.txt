@@ -1,0 +1,35 @@
+﻿
+
+ADMMOptimizer
+============================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: ADMMOptimizer
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: ADMMOptimizer.parameters
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: ADMMOptimizer.get_compatibility_msg
+   .. automethod:: ADMMOptimizer.is_compatible
+   .. automethod:: ADMMOptimizer.solve
+
+   
+   

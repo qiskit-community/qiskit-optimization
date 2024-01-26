@@ -1,0 +1,1061 @@
+<!doctype html>
+<html class="no-js" lang="es-UN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Índice" href="../genindex.html" /><link rel="search" title="Búsqueda" href="../search.html" /><link rel="next" title="Optimizador Propio Mínimo" href="03_minimum_eigen_optimizer.html" /><link rel="prev" title="Programas Cuadráticos" href="01_quadratic_program.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Conversores para Programas Cuadráticos - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Búsqueda">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Guía de Migración de Qiskit Optimization v0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Guía de Migración de Qiskit Optimization v0.6</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_quadratic_program.html">Programas Cuadráticos</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Conversores para Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">Optimizador Propio Mínimo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_grover_optimizer.html">Optimizador de Grover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">Optimizador ADMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_examples_max_cut_and_tsp.html">Max-Cut y Problema del Vendedor Viajero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_examples_vehicle_routing.html">Rutas de Vehículos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">Mejora de la Optimización Cuántica Variacional mediante CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">Clases de Aplicación para Problemas de Optimización</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">Optimización cuántica de arranque en caliente (warm-starting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Uso de Modelos y Solucionadores de Optimización Clásicos con Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_quantum_random_access_optimizer.html">Optimización Cuántica de Acceso Aleatorio</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Antecedentes sobre la Optimización Cuántica de Acceso Aleatorio (Quantum Random Access Optimization): <em>Relajaciones cuánticas, códigos cuánticos de acceso aleatorio, esquemas de redondeo</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Spanish</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/02_converters_for_quadratic_programs.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/02_converters_for_quadratic_programs.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/02_converters_for_quadratic_programs.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/02_converters_for_quadratic_programs.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Esta página fue generada a partir de <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/02_converters_for_quadratic_programs.ipynb">docs/tutorials/02_converters_for_quadratic_programs.ipynb</a>.</p>
+</div>
+<section id="Conversores-para-Programas-Cuadráticos">
+<h1>Conversores para Programas Cuadráticos<a class="headerlink" href="#Conversores-para-Programas-Cuadráticos" title="Enlace permanente a este encabezado">#</a></h1>
+<p>Los problemas de optimización en el módulo de optimización de Qiskit se representan con la clase <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>, que es una representación genérica y poderosa de los problemas de optimización. En general, los algoritmos de optimización se definen para una determinada formulación de un programa cuadrático y necesitamos convertir nuestro problema al tipo correcto.</p>
+<p>Por ejemplo, Qiskit Optimization proporciona varios algoritmos de optimización que pueden manejar problemas de <a class="reference external" href="https://en.wikipedia.org/wiki/Quadratic_unconstrained_binary_optimization">Optimización Binaria Cuadrática Sin Restricciones</a> (Quadratic Unconstrained Binary Optimization, QUBO). Estos se mapean a Hamiltonianos Ising, para los cuales Qiskit Optimization usa el objeto <code class="docutils literal notranslate"><span class="pre">qiskit.quantum_info.SparsePauliOp</span></code>, y luego se aproxima su estado fundamental. Para esta optimización, se pueden utilizar algoritmos comúnmente conocidos como VQE o QAOA como rutina subyacente. Consulta el siguiente tutorial sobre el <a class="reference internal" href="03_minimum_eigen_optimizer.html"><span class="doc">Optimizador Propio Mínimo</span></a> para obtener más detalles. Ten en cuenta que también existen otros algoritmos que funcionan de manera diferente, como por ejemplo el <code class="docutils literal notranslate"><span class="pre">GroverOptimizer</span></code>.</p>
+<p>Para mapear un problema al formato de entrada correcto, el módulo de optimización de Qiskit Optimization ofrece una variedad de convertidores. En este tutorial proporcionamos una descripción general de esta funcionalidad. Actualmente, Qiskit Optimization contiene los siguientes convertidores.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">InequalityToEquality</span></code>: convertir restricciones de desigualdad en restricciones de igualdad con variables de holgura (slack) adicionales.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IntegerToBinary</span></code>: convertir variables enteras en variables binarias y los coeficientes correspondientes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinearEqualityToPenalty</span></code>: convertir las restricciones de igualdad en términos adicionales de la función objetivo.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinearInequalityToPenalty</span></code>: convertir las restricciones de desigualdad en términos adicionales de la función objetivo.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MaximizeToMinimize</span></code>: convertir al problema de minimización equivalente.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MinimizeToMaximize</span></code>: convertir al problema de maximización equivalente.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QuadraticProgramToQubo</span></code>: un contenedor que incluye <code class="docutils literal notranslate"><span class="pre">InequalityToEquality</span></code>, <code class="docutils literal notranslate"><span class="pre">IntegerToBinary</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearEqualityToPenalty</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearInequalityToPenalty</span></code> y <code class="docutils literal notranslate"><span class="pre">MaximizeToMinimize</span></code> por conveniencia.</p></li>
+</ul>
+<section id="InequalityToEquality">
+<h2>InequalityToEquality<a class="headerlink" href="#InequalityToEquality" title="Enlace permanente a este encabezado">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">InequalityToEqualityConverter</span></code> convierte las restricciones de desigualdad en restricciones de igualdad con variables de holgura adicionales para eliminar las restricciones de desigualdad del <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>. Los límites superiores y los límites inferiores de las variables de holgura se calcularán a partir de la diferencia entre el lado izquierdo y el lado derecho de las restricciones. Los signos de las variables de holgura dependen de los símbolos en restricciones como <span class="math notranslate nohighlight">\(\leq\)</span> y <span class="math notranslate nohighlight">\(\geq\)</span>.</p>
+<p>A continuación se muestra un ejemplo de un problema de maximización con dos restricciones de desigualdad. Las variables <span class="math notranslate nohighlight">\(x\)</span> y <span class="math notranslate nohighlight">\(y\)</span> son variables binarias y la variable <span class="math notranslate nohighlight">\(z\)</span> es una variable entera.</p>
+<p>Con <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>, un modelo de optimización del problema se escribe de la siguiente manera.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization</span> <span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.translators.docplex_mp</span> <span class="kn">import</span> <span class="n">to_docplex_mp</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qp</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">()</span>
+<span class="n">qp</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">qp</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">qp</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">lowerbound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upperbound</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+
+<span class="n">qp</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="n">qp</span><span class="o">.</span><span class="n">linear_constraint</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;LE&quot;</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;xyz_leq&quot;</span><span class="p">)</span>
+<span class="n">qp</span><span class="o">.</span><span class="n">linear_constraint</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;GE&quot;</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;xyz_geq&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name:
+
+Maximize
+  3*x + 2*y + z
+
+Subject to
+  Linear constraints (2)
+    x + y + z &lt;= 5.5  &#39;xyz_leq&#39;
+    x + y + z &gt;= 2.5  &#39;xyz_geq&#39;
+
+  Integer variables (1)
+    0 &lt;= z &lt;= 7
+
+  Binary variables (2)
+    x y
+
+</pre></div></div>
+</div>
+<p>Llama al método <code class="docutils literal notranslate"><span class="pre">convert</span></code> de <code class="docutils literal notranslate"><span class="pre">InequalityToEquality</span></code> para convertirlo.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.converters</span> <span class="kn">import</span> <span class="n">InequalityToEquality</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ineq2eq</span> <span class="o">=</span> <span class="n">InequalityToEquality</span><span class="p">()</span>
+<span class="n">qp_eq</span> <span class="o">=</span> <span class="n">ineq2eq</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp_eq</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name:
+
+Maximize
+  3*x + 2*y + z
+
+Subject to
+  Linear constraints (2)
+    x + xyz_leq@int_slack + y + z == 5  &#39;xyz_leq&#39;
+    x - xyz_geq@int_slack + y + z == 3  &#39;xyz_geq&#39;
+
+  Integer variables (3)
+    0 &lt;= z &lt;= 7
+    0 &lt;= xyz_leq@int_slack &lt;= 5
+    0 &lt;= xyz_geq@int_slack &lt;= 6
+
+  Binary variables (2)
+    x y
+
+</pre></div></div>
+</div>
+<p>Después de la conversión, la formulación del problema se parece al resultado anterior. Como podemos ver, las restricciones de desigualdad se reemplazan con restricciones de igualdad con variables de holgura (variables slack) enteras adicionales, <span class="math notranslate nohighlight">\(xyz\_leg\text{&#64;}int\_slack\)</span> y <span class="math notranslate nohighlight">\(xyz\_geq\text{&#64;}int\_slack\)</span>.</p>
+<p>Expliquemos cómo funciona la conversión. Por ejemplo, el límite inferior del lado izquierdo de la primera restricción es <span class="math notranslate nohighlight">\(0\)</span> que es el caso de <span class="math notranslate nohighlight">\(x=0\)</span>, <span class="math notranslate nohighlight">\(y=0\)</span>, y <span class="math notranslate nohighlight">\(z=0\)</span>. Por lo tanto, el límite superior de la variable entera adicional debe ser <span class="math notranslate nohighlight">\(5\)</span> para poder satisfacer incluso el caso de <span class="math notranslate nohighlight">\(x=0\)</span>, <span class="math notranslate nohighlight">\(y=0\)</span>, y <span class="math notranslate nohighlight">\(z=0\)</span>. Ten en cuenta que cortamos la parte después del punto decimal en la formulación convertida, ya que el lado izquierdo de la primera restricción en la formulación original puede ser solo valores enteros. Para la segunda restricción, básicamente aplicamos el mismo enfoque. Sin embargo, el símbolo en la segunda restricción es <span class="math notranslate nohighlight">\(\geq\)</span>, por lo que agregamos un signo menos antes de <span class="math notranslate nohighlight">\(xyz\_geq\text{&#64;}int\_slack\)</span> para poder satisfacer incluso el caso de <span class="math notranslate nohighlight">\(x=1, y=1\)</span>, y <span class="math notranslate nohighlight">\(z=7\)</span>.</p>
+<p>Veamos cómo funciona el método <code class="docutils literal notranslate"><span class="pre">interpret</span></code>. El propósito de este método es convertir la solución del problema convertido a la del problema original. Para utilizar este método, primero necesitaríamos resolver el problema. Para los fines de este tutorial, usaremos docplex para resolverlo. Primero traduciremos el problema cuadrático a un modelo docplex.mp.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">CplexOptimizer</span>
+
+<span class="n">cplex_optimizer</span> <span class="o">=</span> <span class="n">CplexOptimizer</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_orig</span> <span class="o">=</span> <span class="n">cplex_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_orig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fval=8.0, x=1.0, y=1.0, z=3.0, status=SUCCESS
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_eq</span> <span class="o">=</span> <span class="n">cplex_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp_eq</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_eq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fval=8.0, x=1.0, y=1.0, z=3.0, xyz_leq@int_slack=0.0, xyz_geq@int_slack=2.0, status=SUCCESS
+</pre></div></div>
+</div>
+<p>El resultado <code class="docutils literal notranslate"><span class="pre">result_eq</span></code> de <code class="docutils literal notranslate"><span class="pre">qp_eq</span></code> tiene 5 valores variables (<code class="docutils literal notranslate"><span class="pre">x=1.0,</span> <span class="pre">y=1.0,</span> <span class="pre">z=3.0,</span> <span class="pre">xyz_leq&#64;int_slack=0.0,</span> <span class="pre">xyz_geq&#64;int_slack=2.0</span></code>) mientras que el resultado <code class="docutils literal notranslate"><span class="pre">result_orig</span></code> del <code class="docutils literal notranslate"><span class="pre">qp</span></code> original tiene tres valores (<code class="docutils literal notranslate"><span class="pre">x=1.0,</span> <span class="pre">y=1.0,</span> <span class="pre">z=3.0</span></code>). Podemos llamar al método <code class="docutils literal notranslate"><span class="pre">InequalityToEquality.interpret</span></code> pasando una lista o una matriz al método que tiene valores de <code class="docutils literal notranslate"><span class="pre">qp_eq.variables</span></code> de la siguiente manera. <code class="docutils literal notranslate"><span class="pre">result_eq.x</span></code> tiene la lista de valores que toma cada variable en la solución en correspondencia con su posición en la lista de variables <code class="docutils literal notranslate"><span class="pre">qp_eq.variables</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;interpreting values of result_eq:&quot;</span><span class="p">,</span> <span class="n">ineq2eq</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">result_eq</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;values of result_orig:&quot;</span><span class="p">,</span> <span class="n">result_orig</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+interpreting values of result_eq: [1. 1. 3.]
+values of result_orig: [1. 1. 3.]
+</pre></div></div>
+</div>
+<p>Notamos que <span class="math notranslate nohighlight">\([1., 1., 3.]\)</span> son los valores tomados en la solución del problema convertido para las variables comunes entre los problemas convertidos y originales (variables: <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span>). El método de interpretación muestra que los mismos valores son la solución del problema original. Esto se debe a que la función objetivo para los problemas originales y convertidos es exactamente la misma. Las variables de holgura (slack) solo garantizan la igualdad en las restricciones del problema convertido, donde las restricciones también son exactamente iguales entre los problemas original y convertido, excepto que el problema original tiene restricciones de desigualdad.</p>
+</section>
+<section id="IntegerToBinary">
+<h2>IntegerToBinary<a class="headerlink" href="#IntegerToBinary" title="Enlace permanente a este encabezado">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">IntegerToBinary</span></code> convierte variables enteras en variables binarias y coeficientes para eliminar las variables enteras del <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>. Para convertir, se usa la codificación de coeficiente acotado propuesta en <a class="reference external" href="https://arxiv.org/abs/1706.01945">arxiv:1706.01945</a> (Eq. (5)). Para obtener más detalles sobre el método de codificación, consulta el documento dado.</p>
+<p>Usamos el resultado de <code class="docutils literal notranslate"><span class="pre">InequalityToEquality</span></code> como punto de partida. Las variables <span class="math notranslate nohighlight">\(x\)</span> e <span class="math notranslate nohighlight">\(y\)</span> son variables binarias, mientras que la variable <span class="math notranslate nohighlight">\(z\)</span> y las variables de holgura <span class="math notranslate nohighlight">\(xyz\_leq\text{&#64;}int\_slack\)</span> y <span class="math notranslate nohighlight">\(xyz\_geq\text{&#64;}int\_slack\)</span> son variables enteras. Imprimimos el problema nuevamente como referencia.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">qp_eq</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name:
+
+Maximize
+  3*x + 2*y + z
+
+Subject to
+  Linear constraints (2)
+    x + xyz_leq@int_slack + y + z == 5  &#39;xyz_leq&#39;
+    x - xyz_geq@int_slack + y + z == 3  &#39;xyz_geq&#39;
+
+  Integer variables (3)
+    0 &lt;= z &lt;= 7
+    0 &lt;= xyz_leq@int_slack &lt;= 5
+    0 &lt;= xyz_geq@int_slack &lt;= 6
+
+  Binary variables (2)
+    x y
+
+</pre></div></div>
+</div>
+<p>Llama al método <code class="docutils literal notranslate"><span class="pre">convert</span></code> de <code class="docutils literal notranslate"><span class="pre">IntegerToBinary</span></code> para convertirlo.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.converters</span> <span class="kn">import</span> <span class="n">IntegerToBinary</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">int2bin</span> <span class="o">=</span> <span class="n">IntegerToBinary</span><span class="p">()</span>
+<span class="n">qp_eq_bin</span> <span class="o">=</span> <span class="n">int2bin</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qp_eq</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp_eq_bin</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name:
+
+Maximize
+  3*x + 2*y + z@0 + 2*z@1 + 4*z@2
+
+Subject to
+  Linear constraints (2)
+    x + xyz_leq@int_slack@0 + 2*xyz_leq@int_slack@1 + 2*xyz_leq@int_slack@2 + y
+    + z@0 + 2*z@1 + 4*z@2 == 5  &#39;xyz_leq&#39;
+    x - xyz_geq@int_slack@0 - 2*xyz_geq@int_slack@1 - 3*xyz_geq@int_slack@2 + y
+    + z@0 + 2*z@1 + 4*z@2 == 3  &#39;xyz_geq&#39;
+
+  Binary variables (11)
+    x y z@0 z@1 z@2 xyz_leq@int_slack@0 xyz_leq@int_slack@1 xyz_leq@int_slack@2
+    xyz_geq@int_slack@0 xyz_geq@int_slack@1 xyz_geq@int_slack@2
+
+</pre></div></div>
+</div>
+<p>Después de la conversión, la variable entera <span class="math notranslate nohighlight">\(z\)</span> se reemplaza con tres variables binarias <span class="math notranslate nohighlight">\(z\text{&#64;}0\)</span>, <span class="math notranslate nohighlight">\(z\text{&#64;}1\)</span> y <span class="math notranslate nohighlight">\(z\text{&#64;}2\)</span> con los coeficientes 1, 2 y 4, respectivamente, como los anteriores. Las variables de holgura <span class="math notranslate nohighlight">\(xyz\_leq\text{&#64;}int\_slack\)</span> y <span class="math notranslate nohighlight">\(xyz\_geq\text{&#64;}int\_slack\)</span> que fueron introducidas por <code class="docutils literal notranslate"><span class="pre">InequalityToEquality</span></code> también se reemplazan por tres variables binarias con los coeficientes 1, 2, 2 y 1, 2, 3, respectivamente.</p>
+<p>Nota: En esencia, los coeficientes significan que la suma de estas variables binarias con coeficientes puede ser la suma de un subconjunto de <span class="math notranslate nohighlight">\(\{1, 2, 4\}\)</span>, <span class="math notranslate nohighlight">\(\{1, 2, 2\}\)</span>, y <span class="math notranslate nohighlight">\(\{1, 2, 3\}\)</span> para representar los valores aceptables <span class="math notranslate nohighlight">\(\{0, \ldots, 7\}\)</span>, <span class="math notranslate nohighlight">\(\{0, \ldots, 5\}\)</span>, y <span class="math notranslate nohighlight">\(\{0, \ldots, 6\}\)</span>, que respeta correctamente el límite inferior y el límite superior de las variables enteras originales.</p>
+<p><code class="docutils literal notranslate"><span class="pre">IntegerToBinary</span></code> también provee el método <code class="docutils literal notranslate"><span class="pre">interpret</span></code> que es la funcionalidad para traducir un resultado binario dado de nuevo a la representación original. Veamos cómo funciona el método <code class="docutils literal notranslate"><span class="pre">interpret</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_eq</span> <span class="o">=</span> <span class="n">cplex_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp_eq</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_eq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fval=8.0, x=1.0, y=1.0, z=3.0, xyz_leq@int_slack=0.0, xyz_geq@int_slack=2.0, status=SUCCESS
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_eq_bin</span> <span class="o">=</span> <span class="n">cplex_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp_eq_bin</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_eq_bin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fval=8.0, x=1.0, y=1.0, z@0=1.0, z@1=1.0, z@2=0.0, xyz_leq@int_slack@0=0.0, xyz_leq@int_slack@1=0.0, xyz_leq@int_slack@2=0.0, xyz_geq@int_slack@0=0.0, xyz_geq@int_slack@1=1.0, xyz_geq@int_slack@2=0.0, status=SUCCESS
+</pre></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">result_eq_bin</span></code> tiene más variables binarias debido a la conversión mediante <code class="docutils literal notranslate"><span class="pre">IntegerToBinary.convert</span></code>. <code class="docutils literal notranslate"><span class="pre">IntegerToBinary.interpret</span></code> los traduce nuevamente a valores enteros agregando valores de variables binarias asociadas con las variables enteras originales de <code class="docutils literal notranslate"><span class="pre">qp_eq</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;interpreting values of result_eq_bin:&quot;</span><span class="p">,</span> <span class="n">int2bin</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">result_eq_bin</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;values of result_eq:&quot;</span><span class="p">,</span> <span class="n">result_eq</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+interpreting values of result_eq_bin: [1. 1. 3. 0. 2.]
+values of result_eq: [1. 1. 3. 0. 2.]
+</pre></div></div>
+</div>
+</section>
+<section id="LineEqualityToPenalty">
+<h2>LineEqualityToPenalty<a class="headerlink" href="#LineEqualityToPenalty" title="Enlace permanente a este encabezado">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LineeEqualityToPenalty</span></code> convierte las restricciones de igualdad lineal en términos de penalización cuadráticos adicionales de la función objetivo para mapear el <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> a una forma sin restricciones. Una entrada al convertidor tiene que ser un <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> con sólo restricciones lineales de igualdad. Estas restricciones de igualdad, por ejemplo, <span class="math notranslate nohighlight">\(\sum_i a_i x_i = b\)</span> donde <span class="math notranslate nohighlight">\(a_i\)</span> y <span class="math notranslate nohighlight">\(b\)</span> son números y <span class="math notranslate nohighlight">\(x_i\)</span> es una variable, se agregará a la función objetivo en la forma de <span class="math notranslate nohighlight">\(M(b - \sum_i a_i x_i)^2\)</span> donde <span class="math notranslate nohighlight">\(M\)</span> es un número grande como factor de penalización. Por defecto, <span class="math notranslate nohighlight">\(M= 1e5\)</span>. El signo del término depende de si el tipo de problema es de maximización o minimización.</p>
+<p>Utilizamos la salida de <code class="docutils literal notranslate"><span class="pre">IntegerToBinary</span></code> como punto de partida, donde todas las variables son variables binarias y todas las restricciones de desigualdad se han mapeado con restricciones de igualdad. Volvemos a imprimir el problema como referencia.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">qp_eq_bin</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name:
+
+Maximize
+  3*x + 2*y + z@0 + 2*z@1 + 4*z@2
+
+Subject to
+  Linear constraints (2)
+    x + xyz_leq@int_slack@0 + 2*xyz_leq@int_slack@1 + 2*xyz_leq@int_slack@2 + y
+    + z@0 + 2*z@1 + 4*z@2 == 5  &#39;xyz_leq&#39;
+    x - xyz_geq@int_slack@0 - 2*xyz_geq@int_slack@1 - 3*xyz_geq@int_slack@2 + y
+    + z@0 + 2*z@1 + 4*z@2 == 3  &#39;xyz_geq&#39;
+
+  Binary variables (11)
+    x y z@0 z@1 z@2 xyz_leq@int_slack@0 xyz_leq@int_slack@1 xyz_leq@int_slack@2
+    xyz_geq@int_slack@0 xyz_geq@int_slack@1 xyz_geq@int_slack@2
+
+</pre></div></div>
+</div>
+<p>Llama al método <code class="docutils literal notranslate"><span class="pre">convert</span></code> de <code class="docutils literal notranslate"><span class="pre">LinearEqualityToPenalty</span></code> para convertirlo.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.converters</span> <span class="kn">import</span> <span class="n">LinearEqualityToPenalty</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lineq2penalty</span> <span class="o">=</span> <span class="n">LinearEqualityToPenalty</span><span class="p">()</span>
+<span class="n">qubo</span> <span class="o">=</span> <span class="n">lineq2penalty</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qp_eq_bin</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qubo</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name:
+
+Maximize
+  -26*x^2 + 26*x*xyz_geq@int_slack@0 + 52*x*xyz_geq@int_slack@1
+  + 78*x*xyz_geq@int_slack@2 - 26*x*xyz_leq@int_slack@0
+  - 52*x*xyz_leq@int_slack@1 - 52*x*xyz_leq@int_slack@2 - 52*x*y - 52*x*z@0
+  - 104*x*z@1 - 208*x*z@2 - 13*xyz_geq@int_slack@0^2
+  - 52*xyz_geq@int_slack@0*xyz_geq@int_slack@1
+  - 78*xyz_geq@int_slack@0*xyz_geq@int_slack@2 - 52*xyz_geq@int_slack@1^2
+  - 156*xyz_geq@int_slack@1*xyz_geq@int_slack@2 - 117*xyz_geq@int_slack@2^2
+  - 13*xyz_leq@int_slack@0^2 - 52*xyz_leq@int_slack@0*xyz_leq@int_slack@1
+  - 52*xyz_leq@int_slack@0*xyz_leq@int_slack@2 - 52*xyz_leq@int_slack@1^2
+  - 104*xyz_leq@int_slack@1*xyz_leq@int_slack@2 - 52*xyz_leq@int_slack@2^2
+  + 26*y*xyz_geq@int_slack@0 + 52*y*xyz_geq@int_slack@1
+  + 78*y*xyz_geq@int_slack@2 - 26*y*xyz_leq@int_slack@0
+  - 52*y*xyz_leq@int_slack@1 - 52*y*xyz_leq@int_slack@2 - 26*y^2 - 52*y*z@0
+  - 104*y*z@1 - 208*y*z@2 + 26*z@0*xyz_geq@int_slack@0
+  + 52*z@0*xyz_geq@int_slack@1 + 78*z@0*xyz_geq@int_slack@2
+  - 26*z@0*xyz_leq@int_slack@0 - 52*z@0*xyz_leq@int_slack@1
+  - 52*z@0*xyz_leq@int_slack@2 - 26*z@0^2 - 104*z@0*z@1 - 208*z@0*z@2
+  + 52*z@1*xyz_geq@int_slack@0 + 104*z@1*xyz_geq@int_slack@1
+  + 156*z@1*xyz_geq@int_slack@2 - 52*z@1*xyz_leq@int_slack@0
+  - 104*z@1*xyz_leq@int_slack@1 - 104*z@1*xyz_leq@int_slack@2 - 104*z@1^2
+  - 416*z@1*z@2 + 104*z@2*xyz_geq@int_slack@0 + 208*z@2*xyz_geq@int_slack@1
+  + 312*z@2*xyz_geq@int_slack@2 - 104*z@2*xyz_leq@int_slack@0
+  - 208*z@2*xyz_leq@int_slack@1 - 208*z@2*xyz_leq@int_slack@2 - 416*z@2^2
+  + 211*x - 78*xyz_geq@int_slack@0 - 156*xyz_geq@int_slack@1
+  - 234*xyz_geq@int_slack@2 + 130*xyz_leq@int_slack@0 + 260*xyz_leq@int_slack@1
+  + 260*xyz_leq@int_slack@2 + 210*y + 209*z@0 + 418*z@1 + 836*z@2 - 442
+
+Subject to
+  No constraints
+
+  Binary variables (11)
+    x y z@0 z@1 z@2 xyz_leq@int_slack@0 xyz_leq@int_slack@1 xyz_leq@int_slack@2
+    xyz_geq@int_slack@0 xyz_geq@int_slack@1 xyz_geq@int_slack@2
+
+</pre></div></div>
+</div>
+<p>Después de la conversión, las restricciones de igualdad se añaden a la función objetivo como términos adicionales con el factor de penalización predeterminado provisto por Qiskit Optimization. El problema resultante es ahora un QUBO y es compatible con muchos algoritmos de optimización cuántica como VQE, QAOA y otros.</p>
+<p>Esto da el mismo resultado que antes.</p>
+<p>Como hicimos con los otros convertidores, veamos cómo funciona el método <code class="docutils literal notranslate"><span class="pre">interpret</span></code> en este caso.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_eq_bin</span> <span class="o">=</span> <span class="n">cplex_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp_eq_bin</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_eq_bin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fval=8.0, x=1.0, y=1.0, z@0=1.0, z@1=1.0, z@2=0.0, xyz_leq@int_slack@0=0.0, xyz_leq@int_slack@1=0.0, xyz_leq@int_slack@2=0.0, xyz_geq@int_slack@0=0.0, xyz_geq@int_slack@1=1.0, xyz_geq@int_slack@2=0.0, status=SUCCESS
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_qubo</span> <span class="o">=</span> <span class="n">cplex_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qubo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_qubo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fval=8.0, x=1.0, y=1.0, z@0=1.0, z@1=1.0, z@2=0.0, xyz_leq@int_slack@0=0.0, xyz_leq@int_slack@1=0.0, xyz_leq@int_slack@2=0.0, xyz_geq@int_slack@0=0.0, xyz_geq@int_slack@1=1.0, xyz_geq@int_slack@2=0.0, status=SUCCESS
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;interpreting values of result_eq_bin:&quot;</span><span class="p">,</span> <span class="n">lineq2penalty</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">result_qubo</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;values of result_eq_bin:&quot;</span><span class="p">,</span> <span class="n">result_eq_bin</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+interpreting values of result_eq_bin: [1. 1. 1. 1. 0. 0. 0. 0. 0. 1. 0.]
+values of result_eq_bin: [1. 1. 1. 1. 0. 0. 0. 0. 0. 1. 0.]
+</pre></div></div>
+</div>
+<p>Podemos ver que el resultado del método <code class="docutils literal notranslate"><span class="pre">interpret</span></code> implica que tanto el problema original como el convertido tienen exactamente la misma solución. Esto es de esperarse porque el problema convertido tiene exactamente las mismas variables que el problema original, el objetivo se ha modificado de tal manera que ya no tenemos las restricciones en el problema convertido.</p>
+<p>Finalmente, veamos cómo interpretamos el resultado de QUBO hasta la solución del problema original <code class="docutils literal notranslate"><span class="pre">qp</span></code>. El siguiente código muestra que los valores interpretados son equivalentes al resultado del problema original <code class="docutils literal notranslate"><span class="pre">qp</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;result_orig.x&quot;</span><span class="p">,</span> <span class="n">result_orig</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">result_qubo</span><span class="o">.</span><span class="n">x</span>
+<span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="p">[</span><span class="n">lineq2penalty</span><span class="p">,</span> <span class="n">int2bin</span><span class="p">,</span> <span class="n">ineq2eq</span><span class="p">]:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;interpreting result_qubo.x&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+result_orig.x [1. 1. 3.]
+interpreting result_qubo.x [1. 1. 3.]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="k">qiskit_version_table</span>
+<span class="o">%</span><span class="k">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.44.1</td></tr><tr><td><code>qiskit-terra</code></td><td>0.45.0.dev0+dcec79e</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.6.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.13</td></tr><tr><td>Python compiler</td><td>Clang 14.0.3 (clang-1403.0.22.14.1)</td></tr><tr><td>Python build</td><td>main, Aug 24 2023 22:36:46</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>10</td></tr><tr><td>Memory (Gb)</td><td>64.0</td></tr><tr><td colspan='2'>Thu Sep 07 12:33:31 2023 JST</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2023.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="03_minimum_eigen_optimizer.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Optimizador Propio Mínimo</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="01_quadratic_program.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Programas Cuadráticos</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Conversores para Programas Cuadráticos</a><ul>
+<li><a class="reference internal" href="#InequalityToEquality">InequalityToEquality</a></li>
+<li><a class="reference internal" href="#IntegerToBinary">IntegerToBinary</a></li>
+<li><a class="reference internal" href="#LineEqualityToPenalty">LineEqualityToPenalty</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1422e3d7"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

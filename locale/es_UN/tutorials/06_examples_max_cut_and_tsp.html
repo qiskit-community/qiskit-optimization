@@ -1,0 +1,1382 @@
+<!doctype html>
+<html class="no-js" lang="es-UN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Índice" href="../genindex.html" /><link rel="search" title="Búsqueda" href="../search.html" /><link rel="next" title="Rutas de Vehículos" href="07_examples_vehicle_routing.html" /><link rel="prev" title="Optimizador ADMM" href="05_admm_optimizer.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Max-Cut y Problema del Vendedor Viajero - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Búsqueda">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Guía de Migración de Qiskit Optimization v0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Guía de Migración de Qiskit Optimization v0.6</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_quadratic_program.html">Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_converters_for_quadratic_programs.html">Conversores para Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">Optimizador Propio Mínimo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_grover_optimizer.html">Optimizador de Grover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">Optimizador ADMM</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Max-Cut y Problema del Vendedor Viajero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_examples_vehicle_routing.html">Rutas de Vehículos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">Mejora de la Optimización Cuántica Variacional mediante CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">Clases de Aplicación para Problemas de Optimización</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">Optimización cuántica de arranque en caliente (warm-starting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Uso de Modelos y Solucionadores de Optimización Clásicos con Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_quantum_random_access_optimizer.html">Optimización Cuántica de Acceso Aleatorio</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Antecedentes sobre la Optimización Cuántica de Acceso Aleatorio (Quantum Random Access Optimization): <em>Relajaciones cuánticas, códigos cuánticos de acceso aleatorio, esquemas de redondeo</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Spanish</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/06_examples_max_cut_and_tsp.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/06_examples_max_cut_and_tsp.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/06_examples_max_cut_and_tsp.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/06_examples_max_cut_and_tsp.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Esta página fue generada a partir de <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/06_examples_max_cut_and_tsp.ipynb">docs/tutorials/06_examples_max_cut_and_tsp.ipynb</a>.</p>
+</div>
+<section id="Max-Cut-y-Problema-del-Vendedor-Viajero">
+<h1>Max-Cut y Problema del Vendedor Viajero<a class="headerlink" href="#Max-Cut-y-Problema-del-Vendedor-Viajero" title="Enlace permanente a este encabezado">#</a></h1>
+<section id="Introducción">
+<h2>Introducción<a class="headerlink" href="#Introducción" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Muchos problemas en campos cuantitativos como las finanzas y la ingeniería son problemas de optimización. Los problemas de optimización se encuentran en el centro de la compleja toma de decisiones y la definición de estrategias.</p>
+<p>Optimización (u optimización combinatoria) significa buscar una solución óptima en un conjunto finito o contablemente infinito de soluciones potenciales. La optimalidad se define con respecto a alguna función de criterio, que debe minimizarse o maximizarse. Esto normalmente se llama función de costo o función objetivo.</p>
+<p><strong>Problemas típicos de optimización</strong></p>
+<p>Minimización: costo, distancia, longitud de un recorrido, peso, tiempo de procesamiento, material, consumo de energía, número de objetos</p>
+<p>Maximización: beneficio, valor, producción, retorno, rendimiento, utilidad, eficiencia, capacidad, número de objetos</p>
+<p>Consideramos aquí problemas de máximo corte (max-cut) de interés práctico en muchos campos, y mostramos cómo se pueden mapear manualmente en computadoras cuánticas y cómo el módulo de optimización de Qiskit lo soporta.</p>
+<section id="Max-Cut-Ponderado">
+<h3>Max-Cut Ponderado<a class="headerlink" href="#Max-Cut-Ponderado" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Max-Cut (máximo corte) es un problema NP completo, con aplicaciones en agrupamiento (clustering), ciencia de redes y física estadística. Para comprender cómo se asignan las aplicaciones prácticas a instancias determinadas de Max-Cut, considera un sistema de muchas personas que pueden interactuar e influir entre sí. Los individuos se pueden representar mediante vértices de un grafo y sus interacciones se pueden ver como conexiones por pares entre vértices del grafo, o aristas. Con esta representación en mente, es fácil modelar los problemas típicos de mercadotecnia. Por ejemplo, supón que se asume que los individuos influirán en las decisiones de compra de los demás, y se da conocimiento sobre que tan fuerte se influirán entre sí. La influencia se puede modelar mediante los pesos asignados en cada arista del grafo. Entonces, es posible predecir el resultado de una estrategia de mercadotecnia en la que los productos se ofrecen de forma gratuita a algunos individuos, y luego preguntar cuál es el subconjunto óptimo de individuos que deberían obtener los productos gratuitos, para maximizar los ingresos.</p>
+<p>La definición formal de este problema es la siguiente:</p>
+<p>Considera un grafo <em>G = (V, E)</em> no dirigido de <span class="math notranslate nohighlight">\(n\)</span> nodos, donde <em>|V| = n</em>, con pesos de arista <span class="math notranslate nohighlight">\(w_{ij}&gt;0\)</span>, <span class="math notranslate nohighlight">\(w_{ij}=w_{ji}\)</span>, para <span class="math notranslate nohighlight">\((i, j)\in E\)</span>. Un corte se define como una partición del conjunto V original en dos subconjuntos. La función de costo a optimizar es en este caso la suma de los pesos de las aristas que conectan los puntos en los dos subconjuntos diferentes, <em>cruzando</em> el corte. Al asignar <span class="math notranslate nohighlight">\(x_i=0\)</span> o <span class="math notranslate nohighlight">\(x_i=1\)</span> a cada nodo <span class="math notranslate nohighlight">\(i\)</span>, se intenta maximizar la función de beneficio global (aquí y en las siguientes sumas los índices corren sobre 0,1,…n-1)</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\tilde{C}(\textbf{x}) = \sum_{i,j} w_{ij} x_i (1-x_j).\]</div>
+</div>
+<p>En nuestro modelo de mercadotecnia simple, <span class="math notranslate nohighlight">\(w_{ij}\)</span> representa la probabilidad de que la persona <span class="math notranslate nohighlight">\(j\)</span> compre un producto después de que la persona <span class="math notranslate nohighlight">\(i\)</span> obtenga uno gratis. Ten en cuenta que los pesos <span class="math notranslate nohighlight">\(w_{ij}\)</span> pueden, en principio, ser mayores que <span class="math notranslate nohighlight">\(1\)</span> (o incluso negativos), correspondiente al caso en el que el individuo <span class="math notranslate nohighlight">\(j\)</span> comprará más de un producto. Maximizar la probabilidad de compra total corresponde a maximizar los ingresos futuros totales. En el caso de que la probabilidad de ganancia sea mayor que el costo de las muestras gratuitas iniciales, la estrategia es conveniente. Una extensión de este modelo hace que los propios nodos tengan pesos, lo que puede considerarse, en nuestro modelo de mercadotecnia, como la probabilidad de que una persona a la que se le haya otorgado una muestra gratuita del producto lo vuelva a comprar en el futuro. Con esta información adicional en nuestro modelo, la función objetivo para maximizar se convierte en</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{x}) = \sum_{i,j} w_{ij} x_i (1-x_j)+\sum_i w_i x_i.\]</div>
+</div>
+<p>Para encontrar una solución a este problema en una computadora cuántica, primero es necesario mapearlo a un Hamiltoniano de Ising. Esto se puede hacer con la asignación <span class="math notranslate nohighlight">\(x_i\rightarrow (1-Z_i)/2\)</span>, donde <span class="math notranslate nohighlight">\(Z_i\)</span> es el operador Z de Pauli que tiene valores propios <span class="math notranslate nohighlight">\(\pm 1\)</span>. Haciendo esto encontramos que</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{Z}) = \sum_{i,j} \frac{w_{ij}}{4} (1-Z_i)(1+Z_j) + \sum_i \frac{w_i}{2} (1-Z_i) = -\frac{1}{2}\left( \sum_{i&lt;j} w_{ij} Z_i Z_j +\sum_i w_i Z_i\right)+\mathrm{const},\]</div>
+</div>
+<p>donde <span class="math notranslate nohighlight">\(\mathrm{const} = \sum_{i&lt;j}w_{ij}/2+\sum_i w_i/2\)</span>. En otros términos, el problema de Max-Cut ponderado es equivalente a minimizar el Hamiltoniano de Ising</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[H = \sum_i w_i Z_i + \sum_{i&lt;j} w_{ij} Z_iZ_j.\]</div>
+</div>
+<p>El módulo de optimización de Qiskit puede generar el Hamiltoniano de Ising para la primera función de ganancias <span class="math notranslate nohighlight">\(\tilde{C}\)</span>. En este sentido, la función <span class="math notranslate nohighlight">\(\tilde{C}\)</span> se puede modelar como un <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>, que proporciona el método <code class="docutils literal notranslate"><span class="pre">to_ising()</span></code>.</p>
+</section>
+<section id="Computación-Cuántica-Universal-Aproximada-para-Problemas-de-Optimización">
+<h3>Computación Cuántica Universal Aproximada para Problemas de Optimización<a class="headerlink" href="#Computación-Cuántica-Universal-Aproximada-para-Problemas-de-Optimización" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Ha habido un interés considerable en los últimos tiempos sobre el uso de computadoras cuánticas para encontrar una solución a los problemas de optimización combinatoria. Es importante decir que, dada la naturaleza clásica de los problemas combinatorios, no se garantiza una aceleración exponencial en el uso de computadoras cuánticas en comparación con los mejores algoritmos clásicos. Sin embargo, debido a la naturaleza y la importancia de los problemas objetivo, vale la pena investigar enfoques heurísticos en una computadora cuántica que de hecho podrían acelerar algunos ejemplos de problemas. Aquí demostramos un enfoque que se basa en el <em>Algoritmo Cuántico de Optimización Aproximada</em> (Quantum Approximate Optimization Algorithm, QAOA) de Farhi, Goldstone, y Gutmann (2014). Enmarcamos el algoritmo en el contexto de <em>computación cuántica aproximada</em>, dada su naturaleza heurística.</p>
+<p>El algoritmo funciona de la siguiente manera:</p>
+<ol class="arabic">
+<li><p>Elegir <span class="math notranslate nohighlight">\(w_i\)</span> y <span class="math notranslate nohighlight">\(w_{ij}\)</span> en el problema de Ising objetivo. En principio, se permiten potencias de Z aún mayores.</p></li>
+<li><p>Elegir la profundidad del circuito cuántico <span class="math notranslate nohighlight">\(m\)</span>. Se debe tener en cuenta que la profundidad se puede modificar de forma adaptativa.</p></li>
+<li><p>Elegir un conjunto de controles <span class="math notranslate nohighlight">\(\theta\)</span> y hacer una función de prueba <span class="math notranslate nohighlight">\(|\psi(\boldsymbol\theta)\rangle\)</span>, construida utilizando un circuito cuántico hecho de compuertas C-Phase y rotaciones Y de un solo qubit, parametrizada por los componentes de <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span>.</p></li>
+<li><p>Evaluar</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\boldsymbol\theta) = \langle\psi(\boldsymbol\theta)~|H|~\psi(\boldsymbol\theta)\rangle = \sum_i w_i \langle\psi(\boldsymbol\theta)~|Z_i|~\psi(\boldsymbol\theta)\rangle+ \sum_{i&lt;j} w_{ij} \langle\psi(\boldsymbol\theta)~|Z_iZ_j|~\psi(\boldsymbol\theta)\rangle\]</div>
+</div>
+<p>muestreando el resultado del circuito en la base Z y sumando los valores esperados de los términos Ising individuales. En general, se deben estimar diferentes puntos de control alrededor de <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span>, dependiendo del optimizador clásico elegido.</p>
+</li>
+<li><p>Utilizar un optimizador clásico para elegir un nuevo conjunto de controles.</p></li>
+<li><p>Continuar hasta que <span class="math notranslate nohighlight">\(C(\boldsymbol\theta)\)</span> alcance un mínimo, lo suficientemente cercano a la solución <span class="math notranslate nohighlight">\(\boldsymbol\theta^*\)</span>.</p></li>
+<li><p>Utilizar la última <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span> para generar un conjunto final de muestras de la distribución <span class="math notranslate nohighlight">\(|\langle z_i~|\psi(\boldsymbol\theta)\rangle|^2\;\forall i\)</span> para obtener la respuesta.</p></li>
+</ol>
+<p>Creemos que la dificultad de encontrar buenos algoritmos heurísticos se reducirá a la elección de una función de onda de prueba adecuada. Por ejemplo, se podría considerar una función de prueba cuyo entrelazamiento se alinee mejor con el problema objetivo, o simplemente hacer que la cantidad de entrelazamiento sea una variable. En este tutorial, consideraremos una función de prueba simple de la forma</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[|\psi(\theta)\rangle  = [U_\mathrm{simple}(\boldsymbol\theta) U_\mathrm{entrelazador}]^m |+\rangle\]</div>
+</div>
+<p>donde <span class="math notranslate nohighlight">\(U_\mathrm{entrelazador}\)</span> es una colección de compuertas C-Phase (compuertas completamente entrelazadas), y <span class="math notranslate nohighlight">\(U_\mathrm{simple}(\theta) = \prod_{i=1}^n Y(\theta_{i})\)</span>, donde <span class="math notranslate nohighlight">\(n\)</span> es el número de qubits y <span class="math notranslate nohighlight">\(m\)</span> es la profundidad del circuito cuántico. La motivación para esta elección es que para estos problemas clásicos, esta elección nos permite buscar en el espacio de estados cuánticos que solo tienen coeficientes reales, aprovechando el entrelazamiento para converger potencialmente más rápido a la solución.</p>
+<p>Una ventaja de utilizar este método de muestreo en comparación con los enfoques adiabáticos es que el Hamiltoniano de Ising objetivo no tiene que implementarse directamente en el hardware, lo que permite que este algoritmo no se limite a la conectividad del dispositivo. Además, los términos de orden superior en la función de costo, como <span class="math notranslate nohighlight">\(Z_iZ_jZ_k\)</span>, también se pueden muestrear de manera eficiente, mientras que en los enfoques adiabáticos o de annealing (recocido), generalmente no es práctico tratarlos.</p>
+<p>Referencias:</p>
+<ul class="simple">
+<li><p> A. Lucas, Frontiers in Physics 2, 5 (2014)</p></li>
+<li><p> E. Farhi, J. Goldstone, S. Gutmann, e-print arXiv 1411.4028 (2014)</p></li>
+<li><p> D. Wecker, M. B. Hastings, M. Troyer, Phys. Rev. A 94, 022309 (2016)</p></li>
+<li><p> E. Farhi, J. Goldstone, S. Gutmann, H. Neven, e-print arXiv 1703.06199 (2017)</p></li>
+</ul>
+</section>
+<section id="Clases-de-aplicación">
+<h3>Clases de aplicación<a class="headerlink" href="#Clases-de-aplicación" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Usamos las clases de aplicación para el problema de máximo corte y el problema del vendedor viajero en esta página. También hay disponibles clases de aplicación para otros problemas de optimización. Consulta <a class="reference internal" href="09_application_classes.html"><span class="doc">Clases de Aplicación para Problemas de Optimización</span></a> para más detalles.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># useful additional packages</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="kn">from</span> <span class="nn">qiskit.tools.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.applications</span> <span class="kn">import</span> <span class="n">Maxcut</span><span class="p">,</span> <span class="n">Tsp</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">SamplingVQE</span><span class="p">,</span> <span class="n">NumPyMinimumEigensolver</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Problema-de-Máximo-Corte-(Max-Cut)">
+<h2>Problema de Máximo Corte (Max-Cut)<a class="headerlink" href="#Problema-de-Máximo-Corte-(Max-Cut)" title="Enlace permanente a este encabezado">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generating a graph of 4 nodes</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of nodes in graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">elist</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]</span>
+<span class="c1"># tuple is (i,j,weight) where (i,j) is the edge</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="n">elist</span><span class="p">)</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">default_axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">default_axes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">)</span>
+    <span class="n">edge_labels</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">)</span>
+
+
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_5_0.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_5_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computing the weight matrix from the random graph</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0. 1. 1. 1.]
+ [1. 0. 1. 0.]
+ [1. 1. 0. 1.]
+ [1. 0. 1. 0.]]
+</pre></div></div>
+</div>
+<section id="Enfoque-de-fuerza-bruta">
+<h3>Enfoque de fuerza bruta<a class="headerlink" href="#Enfoque-de-fuerza-bruta" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Prueba todas las <span class="math notranslate nohighlight">\(2^n\)</span> combinaciones posibles. Para <span class="math notranslate nohighlight">\(n = 4\)</span>, como en este ejemplo, uno trata solo con 16 combinaciones, pero para n = 1000, uno tiene 1.071509e+30 combinaciones, lo cual no es práctico de manejar usando un enfoque de fuerza bruta.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">best_cost_brute</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">b</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">n</span><span class="p">)))]</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">cost</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">best_cost_brute</span> <span class="o">&lt;</span> <span class="n">cost</span><span class="p">:</span>
+        <span class="n">best_cost_brute</span> <span class="o">=</span> <span class="n">cost</span>
+        <span class="n">xbest_brute</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;case = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; cost = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cost</span><span class="p">))</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">xbest_brute</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best solution = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">xbest_brute</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; cost = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_cost_brute</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+case = [0, 0, 0, 0] cost = 0.0
+case = [1, 0, 0, 0] cost = 3.0
+case = [0, 1, 0, 0] cost = 2.0
+case = [1, 1, 0, 0] cost = 3.0
+case = [0, 0, 1, 0] cost = 3.0
+case = [1, 0, 1, 0] cost = 4.0
+case = [0, 1, 1, 0] cost = 3.0
+case = [1, 1, 1, 0] cost = 2.0
+case = [0, 0, 0, 1] cost = 2.0
+case = [1, 0, 0, 1] cost = 3.0
+case = [0, 1, 0, 1] cost = 4.0
+case = [1, 1, 0, 1] cost = 3.0
+case = [0, 0, 1, 1] cost = 3.0
+case = [1, 0, 1, 1] cost = 2.0
+case = [0, 1, 1, 1] cost = 3.0
+case = [1, 1, 1, 1] cost = 0.0
+
+Best solution = [1, 0, 1, 0] cost = 4.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_8_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_8_1.png" />
+</div>
+</div>
+</section>
+<section id="Mapear-del-problema-de-Ising">
+<h3>Mapear del problema de Ising<a class="headerlink" href="#Mapear-del-problema-de-Ising" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Qiskit Optimization proporciona funcionalidad para generar el <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> a partir de la especificación del problema, así como para crear el correspondiente Hamiltoniano de Ising.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_cut</span> <span class="o">=</span> <span class="n">Maxcut</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="n">qp</span> <span class="o">=</span> <span class="n">max_cut</span><span class="o">.</span><span class="n">to_quadratic_program</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: Max-cut
+
+Maximize
+  -2*x_0*x_1 - 2*x_0*x_2 - 2*x_0*x_3 - 2*x_1*x_2 - 2*x_2*x_3 + 3*x_0 + 2*x_1
+  + 3*x_2 + 2*x_3
+
+Subject to
+  No constraints
+
+  Binary variables (4)
+    x_0 x_1 x_2 x_3
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qubitOp</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">to_ising</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset:&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ising Hamiltonian:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Offset: -2.5
+Ising Hamiltonian:
+SparsePauliOp([&#39;IIZZ&#39;, &#39;IZIZ&#39;, &#39;IZZI&#39;, &#39;ZIIZ&#39;, &#39;ZZII&#39;],
+              coeffs=[0.5+0.j, 0.5+0.j, 0.5+0.j, 0.5+0.j, 0.5+0.j])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># solving Quadratic Program using exact classical eigensolver</span>
+<span class="n">exact</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">NumPyMinimumEigensolver</span><span class="p">())</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">exact</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 4.0
+variable values: x_0=1.0, x_1=0.0, x_2=1.0, x_3=0.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<p>Dado que el problema se convirtió en un problema de minimización, la solución de <span class="math notranslate nohighlight">\(-4\)</span> corresponde al óptimo.</p>
+</section>
+<section id="Verificar-que-el-Hamiltoniano-completo-proporcione-el-costo-correcto">
+<h3>Verificar que el Hamiltoniano completo proporcione el costo correcto<a class="headerlink" href="#Verificar-que-el-Hamiltoniano-completo-proporcione-el-costo-correcto" title="Enlace permanente a este encabezado">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making the Hamiltonian in its full form and getting the lowest eigenvalue and eigenvector</span>
+<span class="n">ee</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">max_cut</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max-cut objective:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -1.5
+max-cut objective: -4.0
+solution: [1. 0. 1. 0.]
+solution objective: 4.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_16_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_16_1.png" />
+</div>
+</div>
+</section>
+<section id="Ejecutar-en-una-computadora-cuántica">
+<h3>Ejecutar en una computadora cuántica<a class="headerlink" href="#Ejecutar-en-una-computadora-cuántica" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Ejecutamos la rutina de optimización usando un ciclo de retroalimentación con una computadora cuántica que usa funciones de prueba construidas con rotaciones Y de un solo qubit, <span class="math notranslate nohighlight">\(U_\mathrm{simple}(\theta) = \prod_{i=1}^n Y(\theta_{i})\)</span>, y los pasos de entrelazamiento <span class="math notranslate nohighlight">\(U_\mathrm{entrelazador}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">10598</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct SamplingVQE</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ry</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">qubitOp</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="s2">&quot;cz&quot;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ry</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+
+<span class="c1"># run SamplingVQE</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="c1"># print results</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">max_cut</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">optimizer_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max-cut objective:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># plot results</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -1.4996861455587311
+time: 8.708028078079224
+max-cut objective: -3.999686145558731
+solution: [0 1 0 1]
+solution objective: 4.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_19_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_19_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create minimum eigen optimizer based on SamplingVQE</span>
+<span class="n">vqe_optimizer</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">vqe</span><span class="p">)</span>
+
+<span class="c1"># solve quadratic program</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 4.0
+variable values: x_0=1.0, x_1=0.0, x_2=1.0, x_3=0.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_20_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_20_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Problema-del-Vendedor-Viajero">
+<h2>Problema del Vendedor Viajero<a class="headerlink" href="#Problema-del-Vendedor-Viajero" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Además de ser notoriamente un problema NP completo que ha llamado la atención de científicos computacionales y matemáticos durante más de dos siglos, el Problema del Vendedor Viajero (Traveling Salesman Problem, TSP) tiene importantes repercusiones en las finanzas y la mercadotecnia, como su nombre lo indica. Coloquialmente hablando, el vendedor viajero es una persona que va de ciudad en ciudad para vender mercancía. El objetivo en este caso es encontrar el camino más corto que le permita al vendedor visitar todas las ciudades y regresar a su ciudad natal, es decir, la ciudad donde comenzó a viajar. Al hacer esto, el vendedor puede maximizar las ventas potenciales en la menor cantidad de tiempo.</p>
+<p>El problema deriva su importancia de su «dureza» y equivalencia ubicua con otros problemas de optimización combinatoria relevantes que surgen en la práctica.</p>
+<p>La formulación matemática con algunos análisis tempranos fue propuesta por W.R. Hamilton a principios del siglo XIX. Matemáticamente, el problema es, como en el caso de Max-Cut, mejor resumido en términos de grafos. El TSP en los nodos de un grafo busca el <em>ciclo Hamiltoniano</em> más corto que se puede tomar a través de cada uno de los nodos. Un ciclo de Hamilton es un camino cerrado que usa cada vértice de un grafo una vez. Se desconoce la solución general y no se espera que exista un algoritmo que la encuentre de manera eficiente (por ejemplo, en tiempo polinomial).</p>
+<p>Encuentra el ciclo Hamiltoniano más corto en un grafo <span class="math notranslate nohighlight">\(G=(V,E)\)</span> con <span class="math notranslate nohighlight">\(n=|V|\)</span> nodos y distancias, <span class="math notranslate nohighlight">\(w_{ij}\)</span> (distancia desde el vértice <span class="math notranslate nohighlight">\(i\)</span> al vértice <span class="math notranslate nohighlight">\(j\)</span>). Un ciclo Hamiltoniano se describe mediante <span class="math notranslate nohighlight">\(N^2\)</span> variables <span class="math notranslate nohighlight">\(x_{i,p}\)</span>, donde <span class="math notranslate nohighlight">\(i\)</span> representa el nodo y <span class="math notranslate nohighlight">\(p\)</span> representa su orden en una perspectiva de ciclo. La variable de decisión toma el valor 1 si la solución ocurre en el nodo <span class="math notranslate nohighlight">\(i\)</span> en el orden de tiempo <span class="math notranslate nohighlight">\(p\)</span>. Requerimos que cada nodo solo pueda aparecer una vez en el ciclo, y por cada vez un nodo tiene que ocurrir. Esto equivale a las dos restricciones (aquí y a continuación, siempre que no se especifique, los sumandos se ejecutan sobre 0,1,…N-1)</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{i} x_{i,p} = 1 ~~\forall p\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{p} x_{i,p} = 1 ~~\forall i.\]</div>
+</div>
+<p>Para los nodos en nuestro ordenamiento prospectivo, si <span class="math notranslate nohighlight">\(x_{i,p}\)</span> y <span class="math notranslate nohighlight">\(x_{j,p+1}\)</span> son ambos 1, entonces debería haber una penalización de energía si <span class="math notranslate nohighlight">\((i,j) \notin E\)</span> (no conectado en el grafo). La forma de esta penalización es</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{i,j\notin E}\sum_{p} x_{i,p}x_{j,p+1}&gt;0,\]</div>
+</div>
+<p>donde se asume la condición de frontera de los ciclos Hamiltonianos <span class="math notranslate nohighlight">\((p=N)\equiv (p=0)\)</span>. Sin embargo, aquí se supondrá un grafo completamente conectado y no incluirá este término. La distancia que se debe minimizar es</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{x})=\sum_{i,j}w_{ij}\sum_{p} x_{i,p}x_{j,p+1}.\]</div>
+</div>
+<p>Poniendo todo esto junto en una única función objetivo para minimizar, obtenemos lo siguiente:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{x})=\sum_{i,j}w_{ij}\sum_{p} x_{i,p}x_{j,p+1}+ A\sum_p\left(1- \sum_i x_{i,p}\right)^2+A\sum_i\left(1- \sum_p x_{i,p}\right)^2,\]</div>
+</div>
+<p>donde <span class="math notranslate nohighlight">\(A\)</span> es un parámetro libre. Es necesario asegurarse de que <span class="math notranslate nohighlight">\(A\)</span> sea lo suficientemente grande como para que se respeten estas restricciones. Una forma de hacer esto es elegir <span class="math notranslate nohighlight">\(A\)</span> tal que <span class="math notranslate nohighlight">\(A &gt; \mathrm{max}(w_{ij})\)</span>.</p>
+<p>Una vez más, es fácil mapear el problema de esta forma a una computadora cuántica, y la solución se encontrará minimizando un Hamiltoniano de Ising.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generating a graph of 3 nodes</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">num_qubits</span> <span class="o">=</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">tsp</span> <span class="o">=</span> <span class="n">Tsp</span><span class="o">.</span><span class="n">create_random_instance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_numpy_array</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;distance</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">)</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+distance
+ [[ 0. 48. 91.]
+ [48.  0. 63.]
+ [91. 63.  0.]]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_22_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_22_1.png" />
+</div>
+</div>
+<section id="id2">
+<h3>Enfoque de fuerza bruta<a class="headerlink" href="#id2" title="Enlace permanente a este encabezado">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">permutations</span>
+
+
+<span class="k">def</span> <span class="nf">brute_force_tsp</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)))</span>
+    <span class="n">last_best_distance</span> <span class="o">=</span> <span class="mf">1e10</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pre_j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">pre_j</span><span class="p">]</span>
+            <span class="n">pre_j</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="n">pre_j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">last_best_distance</span><span class="p">:</span>
+            <span class="n">best_order</span> <span class="o">=</span> <span class="n">order</span>
+            <span class="n">last_best_distance</span> <span class="o">=</span> <span class="n">distance</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;order = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; Distance = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">last_best_distance</span><span class="p">,</span> <span class="n">best_order</span>
+
+
+<span class="n">best_distance</span><span class="p">,</span> <span class="n">best_order</span> <span class="o">=</span> <span class="n">brute_force_tsp</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Best order from brute force = &quot;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_order</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s2">&quot; with total distance = &quot;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_distance</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_tsp_solution</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">G2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="n">G2</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span>
+        <span class="n">G2</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">weight</span><span class="o">=</span><span class="n">G</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">order</span><span class="p">[</span><span class="n">j</span><span class="p">]][</span><span class="s2">&quot;weight&quot;</span><span class="p">])</span>
+    <span class="n">default_axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+        <span class="n">G2</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">default_axes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span>
+    <span class="p">)</span>
+    <span class="n">edge_labels</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">)</span>
+
+
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">best_order</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+order = (0, 1, 2) Distance = 202.0
+Best order from brute force = (0, 1, 2) with total distance = 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_24_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_24_1.png" />
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>Mapear del problema de Ising<a class="headerlink" href="#id3" title="Enlace permanente a este encabezado">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qp</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">to_quadratic_program</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: TSP
+
+Minimize
+  48*x_0_0*x_1_1 + 48*x_0_0*x_1_2 + 91*x_0_0*x_2_1 + 91*x_0_0*x_2_2
+  + 48*x_0_1*x_1_0 + 48*x_0_1*x_1_2 + 91*x_0_1*x_2_0 + 91*x_0_1*x_2_2
+  + 48*x_0_2*x_1_0 + 48*x_0_2*x_1_1 + 91*x_0_2*x_2_0 + 91*x_0_2*x_2_1
+  + 63*x_1_0*x_2_1 + 63*x_1_0*x_2_2 + 63*x_1_1*x_2_0 + 63*x_1_1*x_2_2
+  + 63*x_1_2*x_2_0 + 63*x_1_2*x_2_1
+
+Subject to
+  Linear constraints (6)
+    x_0_0 + x_0_1 + x_0_2 == 1  &#39;c0&#39;
+    x_1_0 + x_1_1 + x_1_2 == 1  &#39;c1&#39;
+    x_2_0 + x_2_1 + x_2_2 == 1  &#39;c2&#39;
+    x_0_0 + x_1_0 + x_2_0 == 1  &#39;c3&#39;
+    x_0_1 + x_1_1 + x_2_1 == 1  &#39;c4&#39;
+    x_0_2 + x_1_2 + x_2_2 == 1  &#39;c5&#39;
+
+  Binary variables (9)
+    x_0_0 x_0_1 x_0_2 x_1_0 x_1_1 x_1_2 x_2_0 x_2_1 x_2_2
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.converters</span> <span class="kn">import</span> <span class="n">QuadraticProgramToQubo</span>
+
+<span class="n">qp2qubo</span> <span class="o">=</span> <span class="n">QuadraticProgramToQubo</span><span class="p">()</span>
+<span class="n">qubo</span> <span class="o">=</span> <span class="n">qp2qubo</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="n">qubitOp</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">qubo</span><span class="o">.</span><span class="n">to_ising</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset:&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ising Hamiltonian:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Offset: 7581.0
+Ising Hamiltonian:
+SparsePauliOp([&#39;IIIIIIIIZ&#39;, &#39;IIIIIIIZI&#39;, &#39;IIIIIIZII&#39;, &#39;IIIIIZIII&#39;, &#39;IIIIZIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIZIIIIII&#39;, &#39;IZIIIIIII&#39;, &#39;ZIIIIIIII&#39;, &#39;IIIIIIIZZ&#39;, &#39;IIIIIIZIZ&#39;, &#39;IIIIIIZZI&#39;, &#39;IIIIIZIIZ&#39;, &#39;IIIIIZIZI&#39;, &#39;IIIIIZZII&#39;, &#39;IIIIZIIIZ&#39;, &#39;IIIIZIIZI&#39;, &#39;IIIIZIZII&#39;, &#39;IIIIZZIII&#39;, &#39;IIIZIIIIZ&#39;, &#39;IIIZIIIZI&#39;, &#39;IIIZIIZII&#39;, &#39;IIIZIZIII&#39;, &#39;IIIZZIIII&#39;, &#39;IIZIIIIIZ&#39;, &#39;IIZIIIIZI&#39;, &#39;IIZIIIZII&#39;, &#39;IIZIIZIII&#39;, &#39;IIZIZIIII&#39;, &#39;IIZZIIIII&#39;, &#39;IZIIIIIIZ&#39;, &#39;IZIIIIIZI&#39;, &#39;IZIIIIZII&#39;, &#39;IZIIIZIII&#39;, &#39;IZIIZIIII&#39;, &#39;IZIZIIIII&#39;, &#39;IZZIIIIII&#39;, &#39;ZIIIIIIIZ&#39;, &#39;ZIIIIIIZI&#39;, &#39;ZIIIIIZII&#39;, &#39;ZIIIIZIII&#39;, &#39;ZIIIZIIII&#39;, &#39;ZIIZIIIII&#39;, &#39;ZIZIIIIII&#39;, &#39;ZZIIIIIII&#39;],
+              coeffs=[-1282.5 +0.j, -1282.5 +0.j, -1282.5 +0.j, -1268.5 +0.j, -1268.5 +0.j,
+ -1268.5 +0.j, -1290.  +0.j, -1290.  +0.j, -1290.  +0.j,   606.5 +0.j,
+   606.5 +0.j,   606.5 +0.j,   606.5 +0.j,    12.  +0.j,    12.  +0.j,
+    12.  +0.j,   606.5 +0.j,    12.  +0.j,   606.5 +0.j,    12.  +0.j,
+    12.  +0.j,   606.5 +0.j,   606.5 +0.j,   606.5 +0.j,   606.5 +0.j,
+    22.75+0.j,    22.75+0.j,   606.5 +0.j,    15.75+0.j,    15.75+0.j,
+    22.75+0.j,   606.5 +0.j,    22.75+0.j,    15.75+0.j,   606.5 +0.j,
+    15.75+0.j,   606.5 +0.j,    22.75+0.j,    22.75+0.j,   606.5 +0.j,
+    15.75+0.j,    15.75+0.j,   606.5 +0.j,   606.5 +0.j,   606.5 +0.j])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">exact</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qubo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 202.0
+variable values: x_0_0=1.0, x_0_1=0.0, x_0_2=0.0, x_1_0=0.0, x_1_1=1.0, x_1_2=0.0, x_2_0=0.0, x_2_1=0.0, x_2_2=1.0
+status: SUCCESS
+</pre></div></div>
+</div>
+</section>
+<section id="id4">
+<h3>Verificar que el Hamiltoniano completo proporcione el costo correcto<a class="headerlink" href="#id4" title="Enlace permanente a este encabezado">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making the Hamiltonian in its full form and getting the lowest eigenvalue and eigenvector</span>
+<span class="n">ee</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tsp objective:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;feasible:&quot;</span><span class="p">,</span> <span class="n">qubo</span><span class="o">.</span><span class="n">is_feasible</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">tsp</span><span class="o">.</span><span class="n">tsp_value</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">))</span>
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -7379.0
+tsp objective: 202.0
+feasible: True
+solution: [0, 1, 2]
+solution objective: 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_30_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_30_1.png" />
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>Ejecutar en una computadora cuántica<a class="headerlink" href="#id5" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Ejecutamos la rutina de optimización usando un ciclo de retroalimentación con una computadora cuántica que usa funciones de prueba construidas con rotaciones Y de un solo qubit, <span class="math notranslate nohighlight">\(U_\mathrm{simple}(\theta) = \prod_{i=1}^n Y(\theta_{i})\)</span>, y los pasos de entrelazamiento <span class="math notranslate nohighlight">\(U_\mathrm{entrelazador}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">10598</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ry</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">qubitOp</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="s2">&quot;cz&quot;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ry</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">optimizer_time</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;feasible:&quot;</span><span class="p">,</span> <span class="n">qubo</span><span class="o">.</span><span class="n">is_feasible</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">tsp</span><span class="o">.</span><span class="n">tsp_value</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">))</span>
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -7326.024699521861
+time: 28.526036977767944
+feasible: True
+solution: [1, 2, 0]
+solution objective: 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_33_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_33_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">10598</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create minimum eigen optimizer based on SamplingVQE</span>
+<span class="n">vqe_optimizer</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">vqe</span><span class="p">)</span>
+
+<span class="c1"># solve quadratic program</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">tsp</span><span class="o">.</span><span class="n">tsp_value</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">))</span>
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 202.0
+variable values: x_0_0=0.0, x_0_1=0.0, x_0_2=1.0, x_1_0=1.0, x_1_1=0.0, x_1_2=0.0, x_2_0=0.0, x_2_1=1.0, x_2_2=0.0
+status: SUCCESS
+solution: [1, 2, 0]
+solution objective: 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_35_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_35_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="n">qiskit_version_table</span>
+<span class="o">%</span><span class="n">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.25.0.dev0+1d844ec</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.7.0</td></tr><tr><td><code>qiskit-optimization</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.10.11</td></tr><tr><td>Python compiler</td><td>Clang 14.0.0 (clang-1400.0.29.202)</td></tr><tr><td>Python build</td><td>main, Apr  7 2023 07:31:31</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>4</td></tr><tr><td>Memory (Gb)</td><td>16.0</td></tr><tr><td colspan='2'>Thu May 18 16:57:58 2023 JST</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2023.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="07_examples_vehicle_routing.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Rutas de Vehículos</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="05_admm_optimizer.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Optimizador ADMM</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Max-Cut y Problema del Vendedor Viajero</a><ul>
+<li><a class="reference internal" href="#Introducción">Introducción</a><ul>
+<li><a class="reference internal" href="#Max-Cut-Ponderado">Max-Cut Ponderado</a></li>
+<li><a class="reference internal" href="#Computación-Cuántica-Universal-Aproximada-para-Problemas-de-Optimización">Computación Cuántica Universal Aproximada para Problemas de Optimización</a></li>
+<li><a class="reference internal" href="#Clases-de-aplicación">Clases de aplicación</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Problema-de-Máximo-Corte-(Max-Cut)">Problema de Máximo Corte (Max-Cut)</a><ul>
+<li><a class="reference internal" href="#Enfoque-de-fuerza-bruta">Enfoque de fuerza bruta</a></li>
+<li><a class="reference internal" href="#Mapear-del-problema-de-Ising">Mapear del problema de Ising</a></li>
+<li><a class="reference internal" href="#Verificar-que-el-Hamiltoniano-completo-proporcione-el-costo-correcto">Verificar que el Hamiltoniano completo proporcione el costo correcto</a></li>
+<li><a class="reference internal" href="#Ejecutar-en-una-computadora-cuántica">Ejecutar en una computadora cuántica</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Problema-del-Vendedor-Viajero">Problema del Vendedor Viajero</a><ul>
+<li><a class="reference internal" href="#id2">Enfoque de fuerza bruta</a></li>
+<li><a class="reference internal" href="#id3">Mapear del problema de Ising</a></li>
+<li><a class="reference internal" href="#id4">Verificar que el Hamiltoniano completo proporcione el costo correcto</a></li>
+<li><a class="reference internal" href="#id5">Ejecutar en una computadora cuántica</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1422e3d7"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

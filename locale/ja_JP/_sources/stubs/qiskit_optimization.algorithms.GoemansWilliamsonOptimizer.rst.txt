@@ -1,0 +1,30 @@
+﻿
+
+GoemansWilliamsonOptimizer
+=========================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: GoemansWilliamsonOptimizer
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: GoemansWilliamsonOptimizer.get_compatibility_msg
+   .. automethod:: GoemansWilliamsonOptimizer.is_compatible
+   .. automethod:: GoemansWilliamsonOptimizer.max_cut_value
+   .. automethod:: GoemansWilliamsonOptimizer.solve
+
+   
+   

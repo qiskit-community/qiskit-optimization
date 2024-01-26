@@ -1,0 +1,45 @@
+﻿
+
+QuantumRandomAccessEncoding
+===============================================================
+
+.. currentmodule:: qiskit_optimization.algorithms.qrao
+
+.. autoclass:: QuantumRandomAccessEncoding
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QuantumRandomAccessEncoding.compression_ratio
+   .. autoattribute:: QuantumRandomAccessEncoding.frozen
+   .. autoattribute:: QuantumRandomAccessEncoding.max_vars_per_qubit
+   .. autoattribute:: QuantumRandomAccessEncoding.minimum_recovery_probability
+   .. autoattribute:: QuantumRandomAccessEncoding.num_qubits
+   .. autoattribute:: QuantumRandomAccessEncoding.num_vars
+   .. autoattribute:: QuantumRandomAccessEncoding.offset
+   .. autoattribute:: QuantumRandomAccessEncoding.problem
+   .. autoattribute:: QuantumRandomAccessEncoding.q2vars
+   .. autoattribute:: QuantumRandomAccessEncoding.qubit_op
+   .. autoattribute:: QuantumRandomAccessEncoding.var2op
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QuantumRandomAccessEncoding.encode
+   .. automethod:: QuantumRandomAccessEncoding.freeze
+   .. automethod:: QuantumRandomAccessEncoding.state_preparation_circuit
+
+   
+   

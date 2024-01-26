@@ -1,0 +1,37 @@
+﻿
+
+SKModel
+========================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: SKModel
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: SKModel.graph
+   .. autoattribute:: SKModel.num_sites
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: SKModel.disorder
+   .. automethod:: SKModel.interpret
+   .. automethod:: SKModel.sample_most_likely
+   .. automethod:: SKModel.to_quadratic_program
+
+   
+   

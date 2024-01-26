@@ -1,0 +1,852 @@
+<!doctype html>
+<html class="no-js" lang="ja-JP">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../../../genindex.html" /><link rel="search" title="検索" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>qiskit_optimization.algorithms.warm_start_qaoa_optimizer - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../../../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../../../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="検索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">はじめに</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../migration/index.html">移行ガイド</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of 移行ガイド</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 移行ガイド</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 移行ガイド</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorials/index.html">チュートリアル</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of チュートリアル</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/01_quadratic_program.html">二次計画法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/02_converters_for_quadratic_programs.html">二次計画法のコンバーター</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/03_minimum_eigen_optimizer.html">最小固有値オプティマイザー (Minimum Eigen Optimizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/04_grover_optimizer.html">グローバーオプティマイザー</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/05_admm_optimizer.html">ADMM オプティマイザー</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/06_examples_max_cut_and_tsp.html">最大カット問題とセールスマン巡回問題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/07_examples_vehicle_routing.html">配車ルーティング</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/08_cvar_optimization.html">CVaRを使用した変分量子最適化の改善</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/09_application_classes.html">最適化問題のアプリケーション・クラス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/10_warm_start_qaoa.html">ウォーム・スタート・量子最適化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/11_using_classical_optimization_solvers_and_models.html">Qiskit Optimization での古典的最適化ソルバーとモデルの使用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/12_quantum_random_access_optimizer.html">量子ランダムアクセス最適化 (Quantum Random Access Optimization)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.html">API リファレンス</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API リファレンス</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../explanations/index.html">説明</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of 説明</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../explanations/qrao.html">量子ランダムアクセス最適化 (QRAO) の背景： <em>量子緩和、量子ランダムアクセス符号、丸めスキーム</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">リリースノート</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Japanese</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/_modules/qiskit_optimization/algorithms/warm_start_qaoa_optimizer.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/_modules/qiskit_optimization/algorithms/warm_start_qaoa_optimizer.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/_modules/qiskit_optimization/algorithms/warm_start_qaoa_optimizer.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/_modules/qiskit_optimization/algorithms/warm_start_qaoa_optimizer.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>qiskit_optimization.algorithms.warm_start_qaoa_optimizer のソースコード</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of a Qiskit project.</span>
+<span class="c1">#</span>
+<span class="c1"># (C) Copyright IBM 2021, 2023.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
+<span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
+<span class="c1"># of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Any modifications or derivative works of this code must retain this</span>
+<span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
+<span class="c1"># that they have been altered from the originals.</span>
+
+<span class="sd">&quot;&quot;&quot;Implementation of the warm start QAOA optimizer.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">QAOA</span>
+
+<span class="kn">from</span> <span class="nn">..converters.quadratic_program_converter</span> <span class="kn">import</span> <span class="n">QuadraticProgramConverter</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">QiskitOptimizationError</span>
+<span class="kn">from</span> <span class="nn">..problems.quadratic_program</span> <span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span> <span class="nn">..problems.variable</span> <span class="kn">import</span> <span class="n">VarType</span>
+<span class="kn">from</span> <span class="nn">.minimum_eigen_optimizer</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizationResult</span><span class="p">,</span> <span class="n">MinimumEigenOptimizer</span>
+<span class="kn">from</span> <span class="nn">.optimization_algorithm</span> <span class="kn">import</span> <span class="n">OptimizationAlgorithm</span><span class="p">,</span> <span class="n">OptimizationResultStatus</span><span class="p">,</span> <span class="n">SolutionSample</span>
+
+
+<div class="viewcode-block" id="BaseAggregator"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.BaseAggregator.html#qiskit_optimization.algorithms.BaseAggregator">[ドキュメント]</a><span class="k">class</span> <span class="nc">BaseAggregator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base abstract class for aggregates results&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseAggregator.aggregate"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.BaseAggregator.html#qiskit_optimization.algorithms.BaseAggregator.aggregate">[ドキュメント]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">aggregate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MinimumEigenOptimizationResult</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SolutionSample</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Aggregates the results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results: List of result objects that need to be combined.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             Aggregated samples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="MeanAggregator"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.MeanAggregator.html#qiskit_optimization.algorithms.MeanAggregator">[ドキュメント]</a><span class="k">class</span> <span class="nc">MeanAggregator</span><span class="p">(</span><span class="n">BaseAggregator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aggregates the results by averaging the probability of each sample.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MeanAggregator.aggregate"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.MeanAggregator.html#qiskit_optimization.algorithms.MeanAggregator.aggregate">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">aggregate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MinimumEigenOptimizationResult</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SolutionSample</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            results: List of result objects that need to be combined.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             Aggregated samples by averaging them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Use a dict for fast solution look-up</span>
+        <span class="c1"># Key: sample code, value: tuple of fval, probability</span>
+        <span class="n">dict_samples</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">def</span> <span class="nf">_to_string</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_from_string</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="p">])</span>
+
+        <span class="c1"># Sum up all the probabilities in the results</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+                <span class="c1"># state, fval, prob = sample[0], sample[1], sample[2]</span>
+                <span class="n">state</span><span class="p">,</span> <span class="n">fval</span><span class="p">,</span> <span class="n">prob</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">_to_string</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">x</span><span class="p">),</span>
+                    <span class="n">sample</span><span class="o">.</span><span class="n">fval</span><span class="p">,</span>
+                    <span class="n">sample</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">dict_samples</span><span class="p">:</span>
+                    <span class="n">dict_samples</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fval</span><span class="p">,</span> <span class="n">dict_samples</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">prob</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dict_samples</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fval</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+
+        <span class="c1"># Divide by the number of results to normalize</span>
+        <span class="n">aggregated_samples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num_results</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">val_prob</span> <span class="ow">in</span> <span class="n">dict_samples</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># sample = (state, dict_samples[state][0], dict_samples[state][1] / num_results)</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">SolutionSample</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">_from_string</span><span class="p">(</span><span class="n">state</span><span class="p">),</span>
+                <span class="n">fval</span><span class="o">=</span><span class="n">val_prob</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">probability</span><span class="o">=</span><span class="n">val_prob</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">num_results</span><span class="p">,</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">OptimizationResultStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">aggregated_samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">aggregated_samples</span></div></div>
+
+
+<div class="viewcode-block" id="WarmStartQAOAFactory"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory">[ドキュメント]</a><span class="k">class</span> <span class="nc">WarmStartQAOAFactory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A factory that produces quantum circuits for the QAOA implementation. The methods of this</span>
+<span class="sd">    factory can be overridden to modify behavior of QAOA. This implementation generates quantum</span>
+<span class="sd">    circuits for initial state and mixer to warm start QAOA.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            epsilon: the regularization parameter that changes the initial variables according to</span>
+<span class="sd">                xi = epsilon if xi &lt; epsilon</span>
+<span class="sd">                xi = 1-epsilon if xi &gt; epsilon.</span>
+<span class="sd">                The regularization parameter epsilon should be between 0 and 0.5. When it</span>
+<span class="sd">                is 0.5 then warm start corresponds to standard QAOA.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            QiskitOptimizationError: if ``epsilon`` is not in the range [0, 0.5].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">epsilon</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">epsilon</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Epsilon for warm-start QAOA needs to be between 0 and 0.5, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;actual value: </span><span class="si">{</span><span class="n">epsilon</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+
+<div class="viewcode-block" id="WarmStartQAOAFactory.create_initial_variables"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory.create_initial_variables">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">create_initial_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates initial variable values to warm start QAOA.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            solution: a solution obtained for the relaxed problem.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of initial variables constructed from a relaxed solution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">initial_variables</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">solution</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">variable</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">:</span>
+                <span class="n">initial_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">variable</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">:</span>
+                <span class="n">initial_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">initial_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">initial_variables</span></div>
+
+<div class="viewcode-block" id="WarmStartQAOAFactory.create_initial_state"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory.create_initial_state">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">create_initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an initial state quantum circuit to warm start QAOA.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            initial_variables: Already created initial variables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A quantum circuit that represents initial state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">initial_variables</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">relaxed_value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">initial_variables</span><span class="p">):</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">relaxed_value</span><span class="p">))</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">circuit</span></div>
+
+<div class="viewcode-block" id="WarmStartQAOAFactory.create_mixer"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory.create_mixer">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">create_mixer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an evolved mixer circuit as Ry(theta)Rz(-2beta)Ry(-theta).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            initial_variables: Already created initial variables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A quantum circuit to be used as a mixer in QAOA.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">initial_variables</span><span class="p">))</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;beta&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">relaxed_value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">initial_variables</span><span class="p">):</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">relaxed_value</span><span class="p">))</span>
+
+            <span class="n">circuit</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="o">-</span><span class="n">theta</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">rz</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">beta</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">circuit</span></div></div>
+
+
+<div class="viewcode-block" id="WarmStartQAOAOptimizer"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer">[ドキュメント]</a><span class="k">class</span> <span class="nc">WarmStartQAOAOptimizer</span><span class="p">(</span><span class="n">MinimumEigenOptimizer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A meta-algorithm that uses a pre-solver to solve a relaxed version of the problem.</span>
+<span class="sd">    Users must implement their own pre solvers by inheriting from the base class.</span>
+
+<span class="sd">    References:</span>
+
+<span class="sd">        [1]: Daniel J. Egger et al., Warm-starting quantum optimization.</span>
+<span class="sd">            `arXiv:2009.10095 &lt;https://arxiv.org/abs/2009.10095&gt;`_</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pre_solver</span><span class="p">:</span> <span class="n">OptimizationAlgorithm</span><span class="p">,</span>
+        <span class="n">relax_for_pre_solver</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">qaoa</span><span class="p">:</span> <span class="n">QAOA</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">num_initial_solutions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">warm_start_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WarmStartQAOAFactory</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">aggregator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseAggregator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">penalty</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">converters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">QuadraticProgramConverter</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuadraticProgramConverter</span><span class="p">]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the optimizer. For correct initialization either</span>
+<span class="sd">            ``epsilon`` or ``circuit_factory`` must be passed. If only ``epsilon`` is specified</span>
+<span class="sd">            (either an explicit value or the default one), then an instance of</span>
+<span class="sd">            :class:`~qiskit.optimization.algorithms.WarmStartQAOACircuitFactory` is created.</span>
+<span class="sd">            If ``circuit_factory`` is specified then this instance is used in the implementation</span>
+<span class="sd">            and ``epsilon`` value is ignored.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pre_solver: An instance of an optimizer to solve the relaxed version of the problem.</span>
+<span class="sd">            relax_for_pre_solver: True if the problem must be relaxed to the continuous case</span>
+<span class="sd">                before passing it to the pre-solver.</span>
+<span class="sd">            qaoa: A QAOA instance to be used in the computations.</span>
+<span class="sd">            epsilon: the regularization parameter that changes the initial variables according to</span>
+<span class="sd">                xi = epsilon if xi &lt; epsilon</span>
+<span class="sd">                xi = 1-epsilon if xi &gt; epsilon.</span>
+<span class="sd">                The regularization parameter epsilon should be between 0 and 0.5. When it</span>
+<span class="sd">                is 0.5 then warm start corresponds to standard QAOA. If ``circuit_factory`` is</span>
+<span class="sd">                specified then this parameter is ignored. Default value is 0.25.</span>
+<span class="sd">            num_initial_solutions: An optional number of relaxed (continuous) solutions to use.</span>
+<span class="sd">                Default value is 1.</span>
+<span class="sd">            warm_start_factory: An optional instance of the factory to warm start QAOA.</span>
+<span class="sd">                This factory is used to create circuits for initial state and mixer.</span>
+<span class="sd">                If ``None`` is specified then a default one,</span>
+<span class="sd">                an instance of :class:`~qiskit.optimization.algorithms.WarmStartQAOACircuitFactory`</span>
+<span class="sd">                is created using the value of the ``epsilon`` parameter.</span>
+<span class="sd">            aggregator: Class that aggregates different results. This is used if the pre-solver</span>
+<span class="sd">                returns several initial states.</span>
+<span class="sd">            penalty: The penalty factor to be used, or ``None`` for applying a default logic.</span>
+<span class="sd">            converters: The converters to use for converting a problem into a different form.</span>
+<span class="sd">                By default, when None is specified, an internally created instance of</span>
+<span class="sd">                :class:`~qiskit.optimization.converters.QuadraticProgramToQubo` will be used.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            QiskitOptimizationError: if ``epsilon`` is not in the range [0, 0.5].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">epsilon</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">epsilon</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Epsilon for warm-start QAOA needs to be between 0 and 0.5, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;actual value: </span><span class="si">{</span><span class="n">epsilon</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pre_solver</span> <span class="o">=</span> <span class="n">pre_solver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relax_for_pre_solver</span> <span class="o">=</span> <span class="n">relax_for_pre_solver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qaoa</span> <span class="o">=</span> <span class="n">qaoa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_initial_solutions</span> <span class="o">=</span> <span class="n">num_initial_solutions</span>
+
+        <span class="k">if</span> <span class="n">warm_start_factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warm_start_factory</span> <span class="o">=</span> <span class="n">WarmStartQAOAFactory</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warm_start_factory</span> <span class="o">=</span> <span class="n">warm_start_factory</span>
+
+        <span class="k">if</span> <span class="n">num_initial_solutions</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">aggregator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">aggregator</span> <span class="o">=</span> <span class="n">MeanAggregator</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator</span> <span class="o">=</span> <span class="n">aggregator</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">qaoa</span><span class="p">,</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">converters</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WarmStartQAOAOptimizer.solve"><a class="viewcode-back" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer.solve">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">:</span> <span class="n">QuadraticProgram</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MinimumEigenOptimizationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tries to solves the given problem using the optimizer.</span>
+
+<span class="sd">        The pre-solver is run to warm-start the solver. Next, the optimizer is run</span>
+<span class="sd">        to try to solve the optimization problem.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            problem: The problem to be solved.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The result of the optimizer applied to the problem.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            QiskitOptimizationError: If problem not compatible or the presolver can&#39;t solve</span>
+<span class="sd">                a problem.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_compatibility_msg</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incompatible problem: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># convert problem to minimization QUBO or another form if converters are specified</span>
+        <span class="n">converted_problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_converters</span><span class="p">)</span>
+
+        <span class="c1"># if the pre-solver can&#39;t solve the problem then it should be relaxed.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relax_for_pre_solver</span><span class="p">:</span>
+            <span class="n">pre_solver_problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relax_problem</span><span class="p">(</span><span class="n">converted_problem</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pre_solver_problem</span> <span class="o">=</span> <span class="n">converted_problem</span>
+
+        <span class="n">opt_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pre_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pre_solver_problem</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">opt_result</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">OptimizationResultStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitOptimizationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Presolver returned status </span><span class="si">{</span><span class="n">opt_result</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="sa">f</span><span class="s2">&quot;the problem can&#39;t be solved&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># we pick only a certain number of the pre-solved solutions.</span>
+        <span class="n">num_pre_solutions</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_initial_solutions</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">opt_result</span><span class="o">.</span><span class="n">samples</span><span class="p">))</span>
+        <span class="n">pre_solutions</span> <span class="o">=</span> <span class="n">opt_result</span><span class="o">.</span><span class="n">samples</span><span class="p">[:</span><span class="n">num_pre_solutions</span><span class="p">]</span>
+
+        <span class="c1"># construct operator and offset</span>
+        <span class="n">operator</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">converted_problem</span><span class="o">.</span><span class="n">to_ising</span><span class="p">()</span>
+
+        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MinimumEigenOptimizationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pre_solution</span> <span class="ow">in</span> <span class="n">pre_solutions</span><span class="p">:</span>
+            <span class="c1"># Set the solver using the result of the pre-solver.</span>
+            <span class="n">initial_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warm_start_factory</span><span class="o">.</span><span class="n">create_initial_variables</span><span class="p">(</span><span class="n">pre_solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qaoa</span><span class="o">.</span><span class="n">initial_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warm_start_factory</span><span class="o">.</span><span class="n">create_initial_state</span><span class="p">(</span>
+                <span class="n">initial_variables</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qaoa</span><span class="o">.</span><span class="n">mixer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warm_start_factory</span><span class="o">.</span><span class="n">create_mixer</span><span class="p">(</span><span class="n">initial_variables</span><span class="p">)</span>
+
+            <span class="c1"># approximate ground state of operator using min eigen solver.</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_solve_internal</span><span class="p">(</span><span class="n">operator</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">converted_problem</span><span class="p">,</span> <span class="n">problem</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># there&#39;s no need to call _interpret, it is already done by MinimumEigenOptimizer</span>
+            <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+            <span class="n">samples</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">sample</span><span class="p">:</span> <span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">sample</span><span class="o">.</span><span class="n">fval</span><span class="p">)</span>
+
+            <span class="c1"># translate result back to the original variables</span>
+            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+                <span class="n">MinimumEigenOptimizationResult</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_interpret</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span>
+                    <span class="n">converters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_converters</span><span class="p">,</span>
+                    <span class="n">result_class</span><span class="o">=</span><span class="n">MinimumEigenOptimizationResult</span><span class="p">,</span>
+                    <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_relax_problem</span><span class="p">(</span><span class="n">problem</span><span class="p">:</span> <span class="n">QuadraticProgram</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuadraticProgram</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change all variables to continuous.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            problem: Problem to relax.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A copy of the original problem where all variables are continuous.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">relaxed_problem</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">relaxed_problem</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">variable</span><span class="o">.</span><span class="n">vartype</span> <span class="o">=</span> <span class="n">VarType</span><span class="o">.</span><span class="n">CONTINUOUS</span>
+
+        <span class="k">return</span> <span class="n">relaxed_problem</span></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=7aa87f9f"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

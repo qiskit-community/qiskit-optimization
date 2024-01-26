@@ -1,0 +1,45 @@
+﻿
+
+SlsqpOptimizationResult
+======================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: SlsqpOptimizationResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: SlsqpOptimizationResult.fval
+   .. autoattribute:: SlsqpOptimizationResult.fx
+   .. autoattribute:: SlsqpOptimizationResult.imode
+   .. autoattribute:: SlsqpOptimizationResult.its
+   .. autoattribute:: SlsqpOptimizationResult.raw_results
+   .. autoattribute:: SlsqpOptimizationResult.samples
+   .. autoattribute:: SlsqpOptimizationResult.smode
+   .. autoattribute:: SlsqpOptimizationResult.status
+   .. autoattribute:: SlsqpOptimizationResult.variable_names
+   .. autoattribute:: SlsqpOptimizationResult.variables
+   .. autoattribute:: SlsqpOptimizationResult.variables_dict
+   .. autoattribute:: SlsqpOptimizationResult.x
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: SlsqpOptimizationResult.get_correlations
+   .. automethod:: SlsqpOptimizationResult.prettyprint
+
+   
+   

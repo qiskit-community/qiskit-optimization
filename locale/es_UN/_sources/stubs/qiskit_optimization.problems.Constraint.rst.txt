@@ -1,0 +1,36 @@
+﻿
+
+Constraint
+=======================================
+
+.. currentmodule:: qiskit_optimization.problems
+
+.. autoclass:: Constraint
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: Constraint.name
+   .. autoattribute:: Constraint.quadratic_program
+   .. autoattribute:: Constraint.rhs
+   .. autoattribute:: Constraint.sense
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: Constraint.evaluate
+
+   
+   

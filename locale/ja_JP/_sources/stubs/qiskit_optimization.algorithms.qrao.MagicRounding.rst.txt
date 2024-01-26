@@ -1,0 +1,34 @@
+﻿
+
+MagicRounding
+=================================================
+
+.. currentmodule:: qiskit_optimization.algorithms.qrao
+
+.. autoclass:: MagicRounding
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: MagicRounding.basis_sampling
+   .. autoattribute:: MagicRounding.sampler
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: MagicRounding.round
+
+   
+   

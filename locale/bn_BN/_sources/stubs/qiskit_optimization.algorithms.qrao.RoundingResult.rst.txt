@@ -1,0 +1,36 @@
+﻿
+
+RoundingResult
+==================================================
+
+.. currentmodule:: qiskit_optimization.algorithms.qrao
+
+.. autoclass:: RoundingResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: RoundingResult.bases
+   .. autoattribute:: RoundingResult.basis_counts
+   .. autoattribute:: RoundingResult.basis_shots
+   .. autoattribute:: RoundingResult.expectation_values
+   .. autoattribute:: RoundingResult.samples
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+
+   
+   

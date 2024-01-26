@@ -1,0 +1,29 @@
+﻿
+
+SetPacking
+===========================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: SetPacking
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: SetPacking.interpret
+   .. automethod:: SetPacking.sample_most_likely
+   .. automethod:: SetPacking.to_quadratic_program
+
+   
+   

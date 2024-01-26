@@ -1,0 +1,28 @@
+﻿
+
+IntegerToBinary
+==============================================
+
+.. currentmodule:: qiskit_optimization.converters
+
+.. autoclass:: IntegerToBinary
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: IntegerToBinary.convert
+   .. automethod:: IntegerToBinary.interpret
+
+   
+   

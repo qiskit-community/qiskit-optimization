@@ -1,0 +1,8 @@
+﻿
+
+from_docplex_mp
+===============================================
+
+.. currentmodule:: qiskit_optimization.translators
+
+.. autofunction:: from_docplex_mp

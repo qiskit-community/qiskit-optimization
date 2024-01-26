@@ -1,0 +1,45 @@
+﻿
+
+QuantumRandomAccessOptimizationResult
+=========================================================================
+
+.. currentmodule:: qiskit_optimization.algorithms.qrao
+
+.. autoclass:: QuantumRandomAccessOptimizationResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.encoding
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.fval
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.raw_results
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.relaxed_fval
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.relaxed_result
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.rounding_result
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.samples
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.status
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.variable_names
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.variables
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.variables_dict
+   .. autoattribute:: QuantumRandomAccessOptimizationResult.x
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QuantumRandomAccessOptimizationResult.get_correlations
+   .. automethod:: QuantumRandomAccessOptimizationResult.prettyprint
+
+   
+   

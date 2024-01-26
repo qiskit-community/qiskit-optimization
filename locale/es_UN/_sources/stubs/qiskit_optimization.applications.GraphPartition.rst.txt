@@ -1,0 +1,36 @@
+﻿
+
+GraphPartition
+===============================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: GraphPartition
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: GraphPartition.graph
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: GraphPartition.draw
+   .. automethod:: GraphPartition.interpret
+   .. automethod:: GraphPartition.sample_most_likely
+   .. automethod:: GraphPartition.to_quadratic_program
+
+   
+   

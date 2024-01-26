@@ -1,0 +1,47 @@
+﻿
+
+GroverOptimizationResult
+=======================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: GroverOptimizationResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: GroverOptimizationResult.fval
+   .. autoattribute:: GroverOptimizationResult.intermediate_fval
+   .. autoattribute:: GroverOptimizationResult.n_input_qubits
+   .. autoattribute:: GroverOptimizationResult.n_output_qubits
+   .. autoattribute:: GroverOptimizationResult.operation_counts
+   .. autoattribute:: GroverOptimizationResult.raw_results
+   .. autoattribute:: GroverOptimizationResult.raw_samples
+   .. autoattribute:: GroverOptimizationResult.samples
+   .. autoattribute:: GroverOptimizationResult.status
+   .. autoattribute:: GroverOptimizationResult.threshold
+   .. autoattribute:: GroverOptimizationResult.variable_names
+   .. autoattribute:: GroverOptimizationResult.variables
+   .. autoattribute:: GroverOptimizationResult.variables_dict
+   .. autoattribute:: GroverOptimizationResult.x
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: GroverOptimizationResult.get_correlations
+   .. automethod:: GroverOptimizationResult.prettyprint
+
+   
+   
