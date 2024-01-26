@@ -1,0 +1,1386 @@
+<!doctype html>
+<html class="no-js" lang="bn-BN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="ইনডেক্স" href="../genindex.html" /><link rel="search" title="অনুসন্ধান" href="../search.html" /><link rel="next" title="বাহন(ভেহিকেল) রাউটিং" href="07_examples_vehicle_routing.html" /><link rel="prev" title="এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)" href="05_admm_optimizer.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>সর্বোচ্চ লাভ এবং ট্রাভেলিং সেলসম্যান সমস্যা - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="অনুসন্ধান">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">শুরুর নির্দেশনা</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">পাঠসমূহ</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of পাঠসমূহ</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_quadratic_program.html">দ্বিঘাত (কোয়াড্র্যাটিক) প্রোগ্রামস</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_converters_for_quadratic_programs.html">দ্বিঘাত (কোয়াড্রাটিক) প্রোগ্রামগুলির জন্য পরিবর্তক (কনভার্টার)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">ন্যূনতম আইজেন অপটিমাইজার</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_grover_optimizer.html">গ্রোভার অপ্টিমাইজার</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">সর্বোচ্চ লাভ এবং ট্রাভেলিং সেলসম্যান সমস্যা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_examples_vehicle_routing.html">বাহন(ভেহিকেল) রাউটিং</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">CVaR দিয়ে পরিবর্তনশীল (ভ্যারিয়েশনাল) কোয়ান্টাম অপটিমাইজেশন উন্নতি করা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">অপ্টিমাইজেশন সমস্যার জন্য অ্যাপ্লিকেশন ক্লাস</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">কোয়ান্টাম অনুকূলকরণের (অপটিমাইজেশন) প্রস্তুতিপর্ব</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Qiskit অপ্টিমাইজেশনের সাথে ক্লাসিক্যাল অপ্টিমাইজেশন সলভার এবং মডেল ব্যবহার করা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_quantum_random_access_optimizer.html">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">এপিআই (এপ্লিকেশন প্রোগ্রামিং ইন্টারফেস) এর তথ্যসূত্র</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of এপিআই (এপ্লিকেশন প্রোগ্রামিং ইন্টারফেস) এর তথ্যসূত্র</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">অব্যাহতি পত্র</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Bengali</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/06_examples_max_cut_and_tsp.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/06_examples_max_cut_and_tsp.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/06_examples_max_cut_and_tsp.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/06_examples_max_cut_and_tsp.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">নোট</p>
+<p>এই পৃষ্ঠাটি <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/06_examples_max_cut_and_tsp.ipynb">docs/tutorials/06_examples_max_cut_and_tsp.ipynb</a> থেকে বানানো হয়েছে।</p>
+</div>
+<section id="সর্বোচ্চ-লাভ-এবং-ট্রাভেলিং-সেলসম্যান-সমস্যা">
+<h1>সর্বোচ্চ লাভ এবং ট্রাভেলিং সেলসম্যান সমস্যা<a class="headerlink" href="#সর্বোচ্চ-লাভ-এবং-ট্রাভেলিং-সেলসম্যান-সমস্যা" title="Permalink to this heading">#</a></h1>
+<section id="ভূমিকা">
+<h2>ভূমিকা<a class="headerlink" href="#ভূমিকা" title="Permalink to this heading">#</a></h2>
+<p>পরিমাণ ক্ষেত্রের অনেকগুলি সমস্যা যেমন ব্যবস্থাপনাবিদ্যা এবং ইঞ্জিনিয়ারিং হল অনুকূলায়ন (অপ্টিমাইজেশন) সমস্যাসমূহ। অনুকূলায়ন (অপ্টিমাইজেশন) সমস্যাগুলি জটিল সিদ্ধান্ত গ্রহণ এবং কৌশলগুলির সংজ্ঞার মূল ভিত্তিতে থাকে।</p>
+<p>অপ্টিমাইজেশন (বা সমাবেশীয় অনুকূলায়ন (অপ্টিমাইজেশন)) এর অর্থ সীমাবদ্ধ বা সম্ভাব্য সমাধানের অসীম সেটগুলিতে একটি অনুকূল সমাধান অনুসন্ধান করা। অনুকূলতাটি কিছু মানদণ্ডের ফাংশনের প্রতি সম্মানের সাথে সংজ্ঞায়িত করা হয়, যা ছোট বা সর্বাধিক করতে হবে। একে সাধারণত কস্ট ফাংশন বা নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) বলা হয়।</p>
+<p><strong>সাধারণ অনুকূলায়ন (অপ্টিমাইজেশন) সমস্যাসমূহ</strong></p>
+<p>হ্রাসকরণ: ব্যয়, দূরত্ব, একটি ট্র্যাভারসাল দৈর্ঘ্য, ওজন, প্রক্রিয়াকরণের সময়, উপাদান, শক্তি খরচ, বস্তুর (অবজেক্ট) সংখ্যা</p>
+<p>সর্বাধিকীকরণ: লাভ, মান, আউটপুট, রিটার্ন, ফলন, উপযোগ, দক্ষতা, ক্ষমতা, বস্তুর (অবজেক্ট) সংখ্যা</p>
+<p>We consider here max-cut problems of practical interest in many fields, and show how they can be mapped on quantum computers manually and how Qiskit optimization module supports this.</p>
+<section id="Weighted-Max-Cut">
+<h3>Weighted Max-Cut<a class="headerlink" href="#Weighted-Max-Cut" title="Permalink to this heading">#</a></h3>
+<p>Max-Cut is an NP-complete problem, with applications in clustering, network science, and statistical physics. To grasp how practical applications are mapped into given Max-Cut instances, consider a system of many people that can interact and influence each other. Individuals can be represented by vertices of a graph, and their interactions seen as pairwise connections between vertices of the graph, or edges. With this representation in mind, it is easy to model typical marketing problems. For
+example, suppose that it is assumed that individuals will influence each other’s buying decisions, and knowledge is given about how strong they will influence each other. The influence can be modeled by weights assigned on each edge of the graph. It is possible then to predict the outcome of a marketing strategy in which products are offered for free to some individuals, and then ask which is the optimal subset of individuals that should get the free products, in order to maximize revenues.</p>
+<p>এই সমস্যার আনুষ্ঠানিক সংজ্ঞাটি হল:</p>
+<p>Consider an <span class="math notranslate nohighlight">\(n\)</span>-node undirected graph <em>G = (V, E)</em> where <em>|V| = n</em> with edge weights <span class="math notranslate nohighlight">\(w_{ij}&gt;0\)</span>, <span class="math notranslate nohighlight">\(w_{ij}=w_{ji}\)</span>, for <span class="math notranslate nohighlight">\((i, j)\in E\)</span>. A cut is defined as a partition of the original set V into two subsets. The cost function to be optimized is in this case the sum of weights of edges connecting points in the two different subsets, <em>crossing</em> the cut. By assigning <span class="math notranslate nohighlight">\(x_i=0\)</span> or <span class="math notranslate nohighlight">\(x_i=1\)</span> to each node <span class="math notranslate nohighlight">\(i\)</span>, one tries to maximize the global profit function (here
+and in the following summations run over indices 0,1,…n-1)</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\tilde{C}(\textbf{x}) = \sum_{i,j} w_{ij} x_i (1-x_j) ।\]</div>
+</div>
+<p>আমাদের সাধারণ বিপণন মডেলটিতে, <span class="math notranslate nohighlight">\(w_{ij}\)</span> এই সম্ভাব্যতা উপস্থাপন করে যে <span class="math notranslate nohighlight">\(j\)</span> ব্যক্তি <span class="math notranslate nohighlight">\(i\)</span> ফ্রি পাওয়ার পরে কোনও পণ্য কিনবে। নোট করুন যে ওজন <span class="math notranslate nohighlight">\(w_{ij}\)</span> নীতিগতভাবে <span class="math notranslate nohighlight">\(1\)</span> (বা এমনকি নেতিবাচক) এর চেয়েও বেশি হতে পারে, সেই ক্ষেত্রে যেখানে পৃথক <span class="math notranslate nohighlight">\(j\)</span> একাধিক পণ্য কেনে। মোট কেনার সম্ভাব্যতা সর্বাধিকীকরণ মোট ভবিষ্যতের আয়কে সর্বাধিক করার সাথে মিলে যায়। এই মডেলটির একটি বর্ধনের সাথে নোডগুলি ওজন বহন করে, যা আমাদের বিপণনের মডেল হিসাবে বিবেচনা করা যেতে পারে, সম্ভাবনা হিসাবে পণ্যটির একটি নিখরচায় নমুনা দেওয়া কোনও ব্যক্তি ভবিষ্যতে আবার কিনবে। আমাদের মডেলটিতে এই অতিরিক্ত তথ্য সহ, সর্বাধিকীকরণের অব্জেক্টিভ ফাংশনটি হয়ে ওঠে।</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{x}) = \sum_{i,j} w_{ij} x_i (1-x_j)+\sum_i w_i x_i ।\]</div>
+</div>
+<p>কোয়ান্টাম কম্পিউটারে এই সমস্যার সমাধানের জন্য, প্রথমে একটি আইসিং হ্যামিলটনিয়ানকে এটির ম্যাপিং করা উচিত। এটি অ্যাসাইনমেন্ট <span class="math notranslate nohighlight">\(x_i\rightarrow (1-Z_i)/2\)</span> সহ করা যেতে পারে, যেখানে <span class="math notranslate nohighlight">\(Z_i\)</span> i হ’ল পাওলি Z অপারেটর যার আইগেনভ্যালু <span class="math notranslate nohighlight">\(\pm 1\)</span>। এটি করে আমরা এটি খুঁজে পাই</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{Z}) = \sum_{i,j} \frac{w_{ij}}{4} (1-Z_i)(1+Z_j) + \sum_i \frac{w_i}{2} (1-Z_i) = -\frac{1}{2}\left( \sum_{i&lt;j} w_{ij} Z_i Z_j +\sum_i w_i Z_i\right)+\mathrm{const},\]</div>
+</div>
+<p>যেখানে :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>mathrm{const} = sum_{i&lt;j}w_{ij}/2+sum_i w_i/2। অন্য কথায়, ওয়েটেড সর্বোচ্চ লাভ সমস্যাটি আইসিং হ্যামিলটনিয়ানকে হ্রাস করার সমতুল্য</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[H = \sum_i w_i Z_i + \sum_{i&lt;j} w_{ij} Z_iZ_j.\]</div>
+</div>
+<p>Qiskit optimization module can generate the Ising Hamiltonian for the first profit function <span class="math notranslate nohighlight">\(\tilde{C}\)</span>. To this extent, function <span class="math notranslate nohighlight">\(\tilde{C}\)</span> can be modeled as a <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>, which provides the <code class="docutils literal notranslate"><span class="pre">to_ising()</span></code> method.</p>
+</section>
+<section id="অপ্টিমাইজেশন-সমস্যার-জন্য-আনুমানিক-ইউনিভার্সাল-কোয়ান্টাম-কম্পিউটিং">
+<h3>অপ্টিমাইজেশন সমস্যার জন্য আনুমানিক ইউনিভার্সাল কোয়ান্টাম কম্পিউটিং<a class="headerlink" href="#অপ্টিমাইজেশন-সমস্যার-জন্য-আনুমানিক-ইউনিভার্সাল-কোয়ান্টাম-কম্পিউটিং" title="Permalink to this heading">#</a></h3>
+<p>সমাবেশীয় অনুকূলায়ন (অপ্টিমাইজেশন) সমস্যাসমূহর সমাধানের জন্য কোয়ান্টাম কম্পিউটার ব্যবহার সম্পর্কে সাম্প্রতিক সময়ে যথেষ্ট পরিমাণে আগ্রহ তৈরি হয়েছে। বলা বাহুল্য যে, সমাবেশ সমস্যাগুলির প্রথাগত (ক্লাসিক্যাল) প্রকৃতির পরিপ্রেক্ষিতে, সর্বোত্তম প্রথাগত (ক্লাসিক্যাল) অ্যালগরিদমের তুলনায় কোয়ান্টাম কম্পিউটার ব্যবহারে সূচকীয় গতির গ্যারান্টি নেই। যাইহোক, লক্ষ্য (টার্গেট) সমস্যার প্রকৃতি এবং গুরুত্বের কারণে, এটি কোয়ান্টাম কম্পিউটারে হিউরিস্টিক পন্থাগুলি তদন্তের জন্য মূল্যবান যা প্রকৃতপক্ষে কিছু সমস্যাগুলির উদাহরণগুলিকে গতিতে পারে। এখানে আমরা এমন একটি পদ্ধতির প্রদর্শন করি যা ফারহি, গোল্ডস্টোন এবং গুটম্যান (২০১৪) দ্বারা <em>কোয়ান্টাম আনুমানিক অপ্টিমাইজেশন অ্যালগরিদম</em> (কিউ.এ.ও.এ.) এর উপর ভিত্তি করে। আমরা আলগরিদমকে <em>আনুমানিক কোয়ান্টাম কম্পিউটিং</em> এর প্রাসঙ্গিক আকারে এর ফ্রেমযুক্ত প্রকৃতির উপর ভিত্তি করে ফ্রেম করি।</p>
+<p>অ্যালগরিদম টি নিম্নলিখিত উপায়ে কাজ করে :</p>
+<ol class="arabic">
+<li><p>টার্গেট আইসিং সমস্যা: <span class="math notranslate nohighlight">\(w_i\)</span> এবং <span class="math notranslate nohighlight">\(w_{ij}\)</span> চয়ন করুন। নীতিগতভাবে, Z-র উচ্চতর ক্ষমতাগুলিও অনুমোদিত।</p></li>
+<li><p>কোয়ান্টাম সার্কিট :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>m -র গভীরতা চয়ন করুন। টীকা: গভীরতাটি অভিযোজিতভাবে সংশোধন করা যেতে পারে।.</p></li>
+<li><p>কনট্রোল <span class="math notranslate nohighlight">\(\theta\)</span> এর একটি সেট চয়ন করুন এবং সি-ফেজ ( C-Phase ) গেটস এবং একক কিউবিট ওয়াই (Y) রোটেশনগুলির তৈরি কোয়ান্টাম সার্কিট ব্যবহার করে তৈরি করে ট্রায়াল ফাংশন <span class="math notranslate nohighlight">\(|\psi(\boldsymbol\theta)\rangle\)</span> করুন, যা <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span> এর উপাদানগুলি দ্বারা প্যারামিটারাইজড |</p></li>
+<li><p>মূল্যায়ন</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\boldsymbol\theta) = \langle\psi(\boldsymbol\theta)~|H|~\psi(\boldsymbol\theta)\rangle = \sum_i w_i \langle\psi(\boldsymbol\theta)~|Z_i|~\psi(\boldsymbol\theta)\rangle+ \sum_{i&lt;j} w_{ij} \langle\psi(\boldsymbol\theta)~|Z_iZ_j|~\psi(\boldsymbol\theta)\rangle\]</div>
+</div>
+<p>জেড-বেসিস সার্কিটের ফলাফল নমুনা করে এবং পৃথক আইসিং পদগুলির প্রত্যাশা মানগুলি একসাথে যুক্ত করে। সাধারণভাবে, নির্বাচিত প্রথাগত (ক্লাসিক্যাল) অনুকূলায়ক এর উপর নির্ভর করে, :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>boldsymboltheta এর চারপাশের বিভিন্ন নিয়ন্ত্রণ পয়েন্টগুলি অনুমান করতে হবে।</p>
+</li>
+<li><p>নতুন সেট নিয়ন্ত্রণ চয়ন করতে একটি প্রথাগত (ক্লাসিক্যাল) অনুকূলায়ক বা অপ্টিমাইজার ব্যবহার করুন।.</p></li>
+<li><p>যতক্ষণ না <span class="math notranslate nohighlight">\(C(\boldsymbol\theta)\)</span> ন্যূনতমে পৌঁছে যায়, যা কিনা <span class="math notranslate nohighlight">\(\boldsymbol\theta^*\)</span> সমাধানের জন্য খুব কাছাকাছি, ততক্ষন চালিয়ে যান।</p></li>
+<li><p>শেষ <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span> ব্যবহার করুন <span class="math notranslate nohighlight">\(\Big|\langle z_i\big|\psi(\boldsymbol\theta)\rangle\Big|^2\;\forall i\)</span> বণ্টন থেকে অন্তিম নমুনা (স্যাম্পল) সমূহ উৎপন্ন করে উত্তর পাওয়ার জন্যে।</p></li>
+</ol>
+<p>এটি আমাদের বিশ্বাস যে ভাল হিউরিস্টিক অ্যালগরিদমগুলি খুঁজে পেতে অসুবিধাটি একটি উপযুক্ত ট্রায়াল ওয়েভ ফাংশন পছন্দে একীভূত হবে। উদাহরণস্বরূপ, কেউ একটি ট্রায়াল ফাংশন বিবেচনা করতে পারে যার এনট্যাঙ্গেলমেন্ট, লক্ষ্য সমস্যাটির সাথে সর্বোত্তমভাবে প্রান্তিক হয় বা কেবল এনট্যাঙ্গেলমেন্ট হওয়ার পরিমাণকে পরিবর্তনশীল করে তোলে। এই টিউটোরিয়ালে, আমরা ফর্মটির একটি সাধারণ ট্রায়াল ফাংশন বিবেচনা করব</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[|\psi(\theta)\rangle  = [U_\mathrm{single}(\boldsymbol\theta) U_\mathrm{entangler}]^m |+\rangle\]</div>
+</div>
+<p>যেখানে <span class="math notranslate nohighlight">\(U_\mathrm{entangler}\)</span> হল সি-ফেজ গেটস (সম্পূর্ণরূপে এনট্যাঙ্গেল বা পরিসাংখ্যিক যোগাযোগ বা বিজড়িত দরজা) এবং <span class="math notranslate nohighlight">\(U_\mathrm{single}(\theta) = \prod_{i=1}^n Y(\theta_{i})\)</span>, যেখানে <span class="math notranslate nohighlight">\(n\)</span> কিউবিট সংখ্যা এবং <span class="math notranslate nohighlight">\(m\)</span> কোয়ান্টাম সার্কিটের গভীরতা। এই পছন্দটির অনুপ্রেরণা হ’ল, এই প্রথাগত (ক্লাসিক্যাল) সমস্যার জন্য এটি কোয়ান্টাম স্টেটের যে স্থানগুলিতে কেবল প্রকৃত সহগ রয়েছে তার সন্ধানের অনুমতি দেয়, তবুও সম্ভাব্যভাবে সমাধানে আরও দ্রুত রূপান্তরিত করতে এনট্যাঙ্গেলমেন্ট প্রবণতাটিকে কাজে লাগিয়ে।</p>
+<p>অ্যাডিয়াব্যাটিক পদ্ধতির তুলনায় এই স্যাম্পলিং পদ্ধতিটি ব্যবহার করার একটি সুবিধা হল টার্গেট আইসিং হ্যামিল্টনিয়ানকে সরাসরি হার্ডওয়্যারে প্রয়োগ করা উচিত নয়, এই অ্যালগরিদমটিকে ডিভাইসের সংযোগের মধ্যে সীমাবদ্ধ না। তদুপরি, ব্যয় কার্যক্রমে উচ্চতর অর্ডার শর্তাদি, যেমন :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>Z_iZ_jZ_k , এগুলিও দক্ষতার সাথে নমুনাযুক্ত করা যেতে পারে, যেখানে অ্যাডিয়াব্যাটিক বা অ্যানিলিং পদ্ধতির ক্ষেত্রে তারা সাধারণত মোকাবেলা করতে অযৌক্তিক হয়।</p>
+<p>References:</p>
+<ul class="simple">
+<li><p> A. Lucas, Frontiers in Physics 2, 5 (2014)</p></li>
+<li><p> E. Farhi, J. Goldstone, S. Gutmann, e-print arXiv 1411.4028 (2014)</p></li>
+<li><p> D. Wecker, M. B. Hastings, M. Troyer, Phys. Rev. A 94, 022309 (2016)</p></li>
+<li><p> E. Farhi, J. Goldstone, S. Gutmann, H. Neven, e-print arXiv 1703.06199 (2017)</p></li>
+</ul>
+</section>
+<section id="অ্যাপ্লিকেশন-ক্লাস">
+<h3>অ্যাপ্লিকেশন ক্লাস<a class="headerlink" href="#অ্যাপ্লিকেশন-ক্লাস" title="Permalink to this heading">#</a></h3>
+<p>আমরা সর্বোচ্চ লাভ সমস্যা ও ভ্রাম্যমান বিক্রেতার সমস্যার জন্য অ্যাপ্লিকেশন ক্লাস ব্যবহার করতে পারি। অন্যান্য অনুকূলায়ন (অপ্টিমাইজেশন) সমস্যাসমূহর জন্য আরো অ্যাপ্লিকেশন ক্লাস আছে। বিস্তারিত জানতে <a class="reference internal" href="09_application_classes.html"><span class="doc">Application Classes for Optimization Problems</span></a> দেখ।</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># useful additional packages</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="kn">from</span> <span class="nn">qiskit.tools.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.applications</span> <span class="kn">import</span> <span class="n">Maxcut</span><span class="p">,</span> <span class="n">Tsp</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">SamplingVQE</span><span class="p">,</span> <span class="n">NumPyMinimumEigensolver</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="সর্বোচ্চ-লাভ-সমস্যা-(Max-Cut-problem)">
+<h2>সর্বোচ্চ লাভ সমস্যা (Max-Cut problem)<a class="headerlink" href="#সর্বোচ্চ-লাভ-সমস্যা-(Max-Cut-problem)" title="Permalink to this heading">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generating a graph of 4 nodes</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of nodes in graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">elist</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]</span>
+<span class="c1"># tuple is (i,j,weight) where (i,j) is the edge</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_weighted_edges_from</span><span class="p">(</span><span class="n">elist</span><span class="p">)</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">default_axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">default_axes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">)</span>
+    <span class="n">edge_labels</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">)</span>
+
+
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_5_0.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_5_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computing the weight matrix from the random graph</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0. 1. 1. 1.]
+ [1. 0. 1. 0.]
+ [1. 1. 0. 1.]
+ [1. 0. 1. 0.]]
+</pre></div></div>
+</div>
+<section id="ব্রুট-ফোর্স-পদ্ধতি">
+<h3>ব্রুট ফোর্স পদ্ধতি<a class="headerlink" href="#ব্রুট-ফোর্স-পদ্ধতি" title="Permalink to this heading">#</a></h3>
+<p>সমস্ত সম্ভাব্য <span class="math notranslate nohighlight">\(2^n সমন্বয় চেষ্টা করুন। যেমন :math:`n = 4\)</span>, উদাহরণস্বরূপ, একজন কেবলমাত্র 16 টি সংমিশ্রণের সাথে ডিল করে তবে n = 1000 এর জন্য একটিতে 1.071509e + 30 সংমিশ্রণ রয়েছে, যা ব্রুট ফোর্স পদ্ধতির ব্যবহার করে মোকাবেলা করা অযৌক্তিক।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">best_cost_brute</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">b</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">n</span><span class="p">)))]</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">cost</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">best_cost_brute</span> <span class="o">&lt;</span> <span class="n">cost</span><span class="p">:</span>
+        <span class="n">best_cost_brute</span> <span class="o">=</span> <span class="n">cost</span>
+        <span class="n">xbest_brute</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;case = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; cost = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cost</span><span class="p">))</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">xbest_brute</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best solution = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">xbest_brute</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; cost = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_cost_brute</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+case = [0, 0, 0, 0] cost = 0.0
+case = [1, 0, 0, 0] cost = 3.0
+case = [0, 1, 0, 0] cost = 2.0
+case = [1, 1, 0, 0] cost = 3.0
+case = [0, 0, 1, 0] cost = 3.0
+case = [1, 0, 1, 0] cost = 4.0
+case = [0, 1, 1, 0] cost = 3.0
+case = [1, 1, 1, 0] cost = 2.0
+case = [0, 0, 0, 1] cost = 2.0
+case = [1, 0, 0, 1] cost = 3.0
+case = [0, 1, 0, 1] cost = 4.0
+case = [1, 1, 0, 1] cost = 3.0
+case = [0, 0, 1, 1] cost = 3.0
+case = [1, 0, 1, 1] cost = 2.0
+case = [0, 1, 1, 1] cost = 3.0
+case = [1, 1, 1, 1] cost = 0.0
+
+Best solution = [1, 0, 1, 0] cost = 4.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_8_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_8_1.png" />
+</div>
+</div>
+</section>
+<section id="আইসিং-সমস্যার-ম্যাপিং-(চিত্রায়ন)">
+<h3>আইসিং সমস্যার ম্যাপিং (চিত্রায়ন)<a class="headerlink" href="#আইসিং-সমস্যার-ম্যাপিং-(চিত্রায়ন)" title="Permalink to this heading">#</a></h3>
+<p>Qiskit optimization provides functionality to generate <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> from the problem specification as well as create the corresponding Ising Hamiltonian.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_cut</span> <span class="o">=</span> <span class="n">Maxcut</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="n">qp</span> <span class="o">=</span> <span class="n">max_cut</span><span class="o">.</span><span class="n">to_quadratic_program</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: Max-cut
+
+Maximize
+  -2*x_0*x_1 - 2*x_0*x_2 - 2*x_0*x_3 - 2*x_1*x_2 - 2*x_2*x_3 + 3*x_0 + 2*x_1
+  + 3*x_2 + 2*x_3
+
+Subject to
+  No constraints
+
+  Binary variables (4)
+    x_0 x_1 x_2 x_3
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qubitOp</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">to_ising</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset:&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ising Hamiltonian:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Offset: -2.5
+Ising Hamiltonian:
+SparsePauliOp([&#39;IIZZ&#39;, &#39;IZIZ&#39;, &#39;IZZI&#39;, &#39;ZIIZ&#39;, &#39;ZZII&#39;],
+              coeffs=[0.5+0.j, 0.5+0.j, 0.5+0.j, 0.5+0.j, 0.5+0.j])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># solving Quadratic Program using exact classical eigensolver</span>
+<span class="n">exact</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">NumPyMinimumEigensolver</span><span class="p">())</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">exact</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 4.0
+variable values: x_0=1.0, x_1=0.0, x_2=1.0, x_3=0.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<p>যেহেতু সমস্যাটি একটি মিনিমাইজেশন সমস্যার জন্য ফেলে দেওয়া হয়েছিল, তাই <span class="math notranslate nohighlight">\(-4\)</span> সমাধানটি সর্বোত্তমের সাথে মিলে যায়।.</p>
+</section>
+<section id="সম্পূর্ণ-হ্যামিল্টোনিয়ান-সঠিক-ব্যয়-দেয়-তা-পরীক্ষা-করা-হচ্ছে">
+<h3>সম্পূর্ণ হ্যামিল্টোনিয়ান সঠিক ব্যয় দেয় তা পরীক্ষা করা হচ্ছে<a class="headerlink" href="#সম্পূর্ণ-হ্যামিল্টোনিয়ান-সঠিক-ব্যয়-দেয়-তা-পরীক্ষা-করা-হচ্ছে" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making the Hamiltonian in its full form and getting the lowest eigenvalue and eigenvector</span>
+<span class="n">ee</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">max_cut</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max-cut objective:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -1.5
+max-cut objective: -4.0
+solution: [1. 0. 1. 0.]
+solution objective: 4.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_16_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_16_1.png" />
+</div>
+</div>
+</section>
+<section id="কোয়ান্টাম-কম্পিউটারে-চালানো">
+<h3>কোয়ান্টাম কম্পিউটারে চালানো<a class="headerlink" href="#কোয়ান্টাম-কম্পিউটারে-চালানো" title="Permalink to this heading">#</a></h3>
+<p>আমরা কোয়ান্টাম কম্পিউটারের সাথে ফিডব্যাক লুপ ব্যবহার করে অপ্টিমাইজেশন রুটিন চালাই যা Y একক-কিউবিট ঘূর্ণন, <span class="math notranslate nohighlight">\(U_\mathrm{single}(\theta) = \prod_{i=1}^n Y(\theta_{i})\)</span>, এবং এন্ট্যাঙ্গলারের ধাপগুলি <span class="math notranslate nohighlight">\(U_\mathrm{entangler}\)</span> এর সাহায্যে নির্মিত ট্রায়াল ফাংশন ব্যবহার করে।</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">10598</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct SamplingVQE</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ry</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">qubitOp</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="s2">&quot;cz&quot;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ry</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+
+<span class="c1"># run SamplingVQE</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="c1"># print results</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">max_cut</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">optimizer_time</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max-cut objective:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># plot results</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -1.4996861455587311
+time: 8.708028078079224
+max-cut objective: -3.999686145558731
+solution: [0 1 0 1]
+solution objective: 4.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_19_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_19_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create minimum eigen optimizer based on SamplingVQE</span>
+<span class="n">vqe_optimizer</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">vqe</span><span class="p">)</span>
+
+<span class="c1"># solve quadratic program</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;c&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 4.0
+variable values: x_0=1.0, x_1=0.0, x_2=1.0, x_3=0.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_20_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_20_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="ট্রাভেলিং-সেলসম্যান-সমস্যা">
+<h2>ট্রাভেলিং সেলসম্যান সমস্যা<a class="headerlink" href="#ট্রাভেলিং-সেলসম্যান-সমস্যা" title="Permalink to this heading">#</a></h2>
+<p>In addition to being a notorious NP-complete problem that has drawn the attention of computer scientists and mathematicians for over two centuries, the Traveling Salesman Problem (TSP) has important bearings on finance and marketing, as its name suggests. Colloquially speaking, the traveling salesman is a person that goes from city to city to sell merchandise. The objective in this case is to find the shortest path that would enable the salesman to visit all the cities and return to its
+hometown, i.e. the city where he started traveling. By doing this, the salesman gets to maximize potential sales in the least amount of time.</p>
+<p>The problem derives its importance from its &quot;hardness&quot; and ubiquitous equivalence to other relevant combinatorial optimization problems that arise in practice.</p>
+<p>কিছু প্রাথমিক বিশ্লেষণের সাথে গাণিতিক সূত্রটি ডাব্লু.আর. হ্যামিল্টন ১৯ শতকের গোড়ার দিকে প্রস্তাব করেছিলেন। গাণিতিকভাবে সমস্যাটি হ’ল ম্যাক্স-কাটের গ্রাফের ক্ষেত্রে সবচেয়ে ভাল বিমূর্ত। কোনও গ্রাফের নোডের টিএসপি সর্বনিম্ন * হ্যামিলটোনিয়ান চক্র * যা প্রতিটি নোডের মধ্য দিয়ে নেওয়া যায় তা জিজ্ঞাসা করে। একটি হ্যামিল্টোনিয়ান চক্র এমন একটি বদ্ধ পথ যা একবারে গ্রাফের প্রতিটি প্রান্তকে একবার ব্যবহার করে। সাধারণ সমাধানটি অজানা এবং একটি অ্যালগরিদম (উদাঃ, বহু-কালীন সময়ে) এর উপস্থিতি প্রত্যাশিত নয় যা কার্যকরভাবে এটি খুঁজে পায় ।</p>
+<p>Find the shortest Hamiltonian cycle in a graph <span class="math notranslate nohighlight">\(G=(V,E)\)</span> with <span class="math notranslate nohighlight">\(n=|V|\)</span> nodes and distances, <span class="math notranslate nohighlight">\(w_{ij}\)</span> (distance from vertex <span class="math notranslate nohighlight">\(i\)</span> to vertex <span class="math notranslate nohighlight">\(j\)</span>). A Hamiltonian cycle is described by <span class="math notranslate nohighlight">\(N^2\)</span> variables <span class="math notranslate nohighlight">\(x_{i,p}\)</span>, where <span class="math notranslate nohighlight">\(i\)</span> represents the node and <span class="math notranslate nohighlight">\(p\)</span> represents its order in a prospective cycle. The decision variable takes the value 1 if the solution occurs at node <span class="math notranslate nohighlight">\(i\)</span> at time order <span class="math notranslate nohighlight">\(p\)</span>. We require that every node can only appear once in
+the cycle, and for each time a node has to occur. This amounts to the two constraints (here and in the following, whenever not specified, the summands run over 0,1,…N-1)</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{i} x_{i,p} = 1 ~~\forall p\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{p} x_{i,p} = 1 ~~\forall i।\]</div>
+</div>
+<p>আমাদের সম্ভাব্য ক্রমান্বয়ে নোডের জন্য, <span class="math notranslate nohighlight">\(x_{i,p}\)</span> এবং <span class="math notranslate nohighlight">\(x_{j,p+1}\)</span>  উভয়ই যদি  ১ হয় তবে সেখানে শক্তির জরিমানা থাকতে হবে যদি: <span class="math notranslate nohighlight">\((i,j) \notin E\)</span> (গ্রাফের সাথে সংযুক্ত নয়)। এই জরিমানার ফর্মটি হ’ল</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{i,j\notin E}\sum_{p} x_{i,p}x_{j,p+1}&gt;0,\]</div>
+</div>
+<p>যেখানে এটি হ্যামিল্টোনিয়ান চক্র <span class="math notranslate nohighlight">\((p=N)\equiv (p=0)\)</span> সীমানা শর্ত হিসাবে ধরে নেওয়া হয়। তবে, এখানে এটি সম্পূর্ণ সংযুক্ত গ্রাফ হিসাবে ধরে নেওয়া হবে এবং এই পদটি অন্তর্ভুক্ত করা হবে না। যে দূরত্বটি হ্রাস করা দরকার তা হ’ল</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{x})=\sum_{i,j}w_{ij}\sum_{p} x_{i,p}x_{j,p+1}।\]</div>
+</div>
+<p>এগুলি হ্রাস করতে একটি একক নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) একসাথে রাখলে আমরা নিম্নলিখিতটি পাই:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C(\textbf{x})=\sum_{i,j}w_{ij}\sum_{p} x_{i,p}x_{j,p+1}+ A\sum_p\left(1- \sum_i x_{i,p}\right)^2+A\sum_i\left(1- \sum_p x_{i,p}\right)^2,\]</div>
+</div>
+<p>যেখানে <span class="math notranslate nohighlight">\(A\)</span> একটি নিখরচায় প্যারামিটার। একজনকে নিশ্চিত করতে হবে যে <span class="math notranslate nohighlight">\(A\)</span> যথেষ্ট বড় যাতে এই প্রতিবন্ধকতাগুলি সম্মানিত হয়। এটি করার একটি উপায় হ’ল <span class="math notranslate nohighlight">\(A`কে এমন চয়ন করা যাতে :math:`A &gt; \mathrm{max}(w_{ij})\)</span> ।</p>
+<p>আবারও, এই আকারে সমস্যাটি একটি কোয়ান্টাম কম্পিউটারে ম্যাপ করা সহজ, এবং একটি আইসিং হ্যামিলটনিয়ানকে হ্রাস করে সমাধানটি পাওয়া যাবে।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generating a graph of 3 nodes</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">num_qubits</span> <span class="o">=</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">tsp</span> <span class="o">=</span> <span class="n">Tsp</span><span class="o">.</span><span class="n">create_random_instance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_numpy_array</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;distance</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">)</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
+<span class="n">draw_graph</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+distance
+ [[ 0. 48. 91.]
+ [48.  0. 63.]
+ [91. 63.  0.]]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_22_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_22_1.png" />
+</div>
+</div>
+<section id="id2">
+<h3>ব্রুট ফোর্স পদ্ধতি<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">permutations</span>
+
+
+<span class="k">def</span> <span class="nf">brute_force_tsp</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">permutations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)))</span>
+    <span class="n">last_best_distance</span> <span class="o">=</span> <span class="mf">1e10</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pre_j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">pre_j</span><span class="p">]</span>
+            <span class="n">pre_j</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="n">pre_j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">last_best_distance</span><span class="p">:</span>
+            <span class="n">best_order</span> <span class="o">=</span> <span class="n">order</span>
+            <span class="n">last_best_distance</span> <span class="o">=</span> <span class="n">distance</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;order = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; Distance = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">last_best_distance</span><span class="p">,</span> <span class="n">best_order</span>
+
+
+<span class="n">best_distance</span><span class="p">,</span> <span class="n">best_order</span> <span class="o">=</span> <span class="n">brute_force_tsp</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Best order from brute force = &quot;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_order</span><span class="p">)</span>
+    <span class="o">+</span> <span class="s2">&quot; with total distance = &quot;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_distance</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_tsp_solution</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">G2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="n">G2</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span>
+        <span class="n">G2</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">weight</span><span class="o">=</span><span class="n">G</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">order</span><span class="p">[</span><span class="n">j</span><span class="p">]][</span><span class="s2">&quot;weight&quot;</span><span class="p">])</span>
+    <span class="n">default_axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span>
+        <span class="n">G2</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">default_axes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span>
+    <span class="p">)</span>
+    <span class="n">edge_labels</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">G2</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">)</span>
+
+
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">best_order</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+order = (0, 1, 2) Distance = 202.0
+Best order from brute force = (0, 1, 2) with total distance = 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_24_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_24_1.png" />
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>আইসিং সমস্যার ম্যাপিং (চিত্রায়ন)<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qp</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">to_quadratic_program</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: TSP
+
+Minimize
+  48*x_0_0*x_1_1 + 48*x_0_0*x_1_2 + 91*x_0_0*x_2_1 + 91*x_0_0*x_2_2
+  + 48*x_0_1*x_1_0 + 48*x_0_1*x_1_2 + 91*x_0_1*x_2_0 + 91*x_0_1*x_2_2
+  + 48*x_0_2*x_1_0 + 48*x_0_2*x_1_1 + 91*x_0_2*x_2_0 + 91*x_0_2*x_2_1
+  + 63*x_1_0*x_2_1 + 63*x_1_0*x_2_2 + 63*x_1_1*x_2_0 + 63*x_1_1*x_2_2
+  + 63*x_1_2*x_2_0 + 63*x_1_2*x_2_1
+
+Subject to
+  Linear constraints (6)
+    x_0_0 + x_0_1 + x_0_2 == 1  &#39;c0&#39;
+    x_1_0 + x_1_1 + x_1_2 == 1  &#39;c1&#39;
+    x_2_0 + x_2_1 + x_2_2 == 1  &#39;c2&#39;
+    x_0_0 + x_1_0 + x_2_0 == 1  &#39;c3&#39;
+    x_0_1 + x_1_1 + x_2_1 == 1  &#39;c4&#39;
+    x_0_2 + x_1_2 + x_2_2 == 1  &#39;c5&#39;
+
+  Binary variables (9)
+    x_0_0 x_0_1 x_0_2 x_1_0 x_1_1 x_1_2 x_2_0 x_2_1 x_2_2
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.converters</span> <span class="kn">import</span> <span class="n">QuadraticProgramToQubo</span>
+
+<span class="n">qp2qubo</span> <span class="o">=</span> <span class="n">QuadraticProgramToQubo</span><span class="p">()</span>
+<span class="n">qubo</span> <span class="o">=</span> <span class="n">qp2qubo</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="n">qubitOp</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">qubo</span><span class="o">.</span><span class="n">to_ising</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Offset:&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ising Hamiltonian:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Offset: 7581.0
+Ising Hamiltonian:
+SparsePauliOp([&#39;IIIIIIIIZ&#39;, &#39;IIIIIIIZI&#39;, &#39;IIIIIIZII&#39;, &#39;IIIIIZIII&#39;, &#39;IIIIZIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIZIIIIII&#39;, &#39;IZIIIIIII&#39;, &#39;ZIIIIIIII&#39;, &#39;IIIIIIIZZ&#39;, &#39;IIIIIIZIZ&#39;, &#39;IIIIIIZZI&#39;, &#39;IIIIIZIIZ&#39;, &#39;IIIIIZIZI&#39;, &#39;IIIIIZZII&#39;, &#39;IIIIZIIIZ&#39;, &#39;IIIIZIIZI&#39;, &#39;IIIIZIZII&#39;, &#39;IIIIZZIII&#39;, &#39;IIIZIIIIZ&#39;, &#39;IIIZIIIZI&#39;, &#39;IIIZIIZII&#39;, &#39;IIIZIZIII&#39;, &#39;IIIZZIIII&#39;, &#39;IIZIIIIIZ&#39;, &#39;IIZIIIIZI&#39;, &#39;IIZIIIZII&#39;, &#39;IIZIIZIII&#39;, &#39;IIZIZIIII&#39;, &#39;IIZZIIIII&#39;, &#39;IZIIIIIIZ&#39;, &#39;IZIIIIIZI&#39;, &#39;IZIIIIZII&#39;, &#39;IZIIIZIII&#39;, &#39;IZIIZIIII&#39;, &#39;IZIZIIIII&#39;, &#39;IZZIIIIII&#39;, &#39;ZIIIIIIIZ&#39;, &#39;ZIIIIIIZI&#39;, &#39;ZIIIIIZII&#39;, &#39;ZIIIIZIII&#39;, &#39;ZIIIZIIII&#39;, &#39;ZIIZIIIII&#39;, &#39;ZIZIIIIII&#39;, &#39;ZZIIIIIII&#39;],
+              coeffs=[-1282.5 +0.j, -1282.5 +0.j, -1282.5 +0.j, -1268.5 +0.j, -1268.5 +0.j,
+ -1268.5 +0.j, -1290.  +0.j, -1290.  +0.j, -1290.  +0.j,   606.5 +0.j,
+   606.5 +0.j,   606.5 +0.j,   606.5 +0.j,    12.  +0.j,    12.  +0.j,
+    12.  +0.j,   606.5 +0.j,    12.  +0.j,   606.5 +0.j,    12.  +0.j,
+    12.  +0.j,   606.5 +0.j,   606.5 +0.j,   606.5 +0.j,   606.5 +0.j,
+    22.75+0.j,    22.75+0.j,   606.5 +0.j,    15.75+0.j,    15.75+0.j,
+    22.75+0.j,   606.5 +0.j,    22.75+0.j,    15.75+0.j,   606.5 +0.j,
+    15.75+0.j,   606.5 +0.j,    22.75+0.j,    22.75+0.j,   606.5 +0.j,
+    15.75+0.j,    15.75+0.j,   606.5 +0.j,   606.5 +0.j,   606.5 +0.j])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">exact</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qubo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 202.0
+variable values: x_0_0=1.0, x_0_1=0.0, x_0_2=0.0, x_1_0=0.0, x_1_1=1.0, x_1_2=0.0, x_2_0=0.0, x_2_1=0.0, x_2_2=1.0
+status: SUCCESS
+</pre></div></div>
+</div>
+</section>
+<section id="id4">
+<h3>সম্পূর্ণ হ্যামিল্টোনিয়ান সঠিক ব্যয় দেয় তা পরীক্ষা করা হচ্ছে<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Making the Hamiltonian in its full form and getting the lowest eigenvalue and eigenvector</span>
+<span class="n">ee</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tsp objective:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;feasible:&quot;</span><span class="p">,</span> <span class="n">qubo</span><span class="o">.</span><span class="n">is_feasible</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">tsp</span><span class="o">.</span><span class="n">tsp_value</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">))</span>
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -7379.0
+tsp objective: 202.0
+feasible: True
+solution: [0, 1, 2]
+solution objective: 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_30_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_30_1.png" />
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>কোয়ান্টাম কম্পিউটারে চালানো<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<p>আমরা কোয়ান্টাম কম্পিউটারের সাথে ফিডব্যাক লুপ ব্যবহার করে অপ্টিমাইজেশন রুটিন চালাই যা Y একক-কিউবিট ঘূর্ণন, <span class="math notranslate nohighlight">\(U_\mathrm{single}(\theta) = \prod_{i=1}^n Y(\theta_{i})\)</span>, এবং এন্ট্যাঙ্গলারের ধাপগুলি <span class="math notranslate nohighlight">\(U_\mathrm{entangler}\)</span> এর সাহায্যে নির্মিত ট্রায়াল ফাংশন ব্যবহার করে।</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">10598</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">ry</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">qubitOp</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="s2">&quot;cz&quot;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ry</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">qubitOp</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energy:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">optimizer_time</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">sample_most_likely</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;feasible:&quot;</span><span class="p">,</span> <span class="n">qubo</span><span class="o">.</span><span class="n">is_feasible</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">tsp</span><span class="o">.</span><span class="n">tsp_value</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">))</span>
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+energy: -7326.024699521861
+time: 28.526036977767944
+feasible: True
+solution: [1, 2, 0]
+solution objective: 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_33_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_33_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">10598</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create minimum eigen optimizer based on SamplingVQE</span>
+<span class="n">vqe_optimizer</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">vqe</span><span class="p">)</span>
+
+<span class="c1"># solve quadratic program</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">tsp</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution:&quot;</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;solution objective:&quot;</span><span class="p">,</span> <span class="n">tsp</span><span class="o">.</span><span class="n">tsp_value</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">))</span>
+<span class="n">draw_tsp_solution</span><span class="p">(</span><span class="n">tsp</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: 202.0
+variable values: x_0_0=0.0, x_0_1=0.0, x_0_2=1.0, x_1_0=1.0, x_1_1=0.0, x_1_2=0.0, x_2_0=0.0, x_2_1=1.0, x_2_2=0.0
+status: SUCCESS
+solution: [1, 2, 0]
+solution objective: 202.0
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_examples_max_cut_and_tsp_35_1.png" src="../_images/tutorials_06_examples_max_cut_and_tsp_35_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="n">qiskit_version_table</span>
+<span class="o">%</span><span class="n">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.25.0.dev0+1d844ec</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.7.0</td></tr><tr><td><code>qiskit-optimization</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.10.11</td></tr><tr><td>Python compiler</td><td>Clang 14.0.0 (clang-1400.0.29.202)</td></tr><tr><td>Python build</td><td>main, Apr  7 2023 07:31:31</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>4</td></tr><tr><td>Memory (Gb)</td><td>16.0</td></tr><tr><td colspan='2'>Thu May 18 16:57:58 2023 JST</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2023.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="07_examples_vehicle_routing.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">বাহন(ভেহিকেল) রাউটিং</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="05_admm_optimizer.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">সর্বোচ্চ লাভ এবং ট্রাভেলিং সেলসম্যান সমস্যা</a><ul>
+<li><a class="reference internal" href="#ভূমিকা">ভূমিকা</a><ul>
+<li><a class="reference internal" href="#Weighted-Max-Cut">Weighted Max-Cut</a></li>
+<li><a class="reference internal" href="#অপ্টিমাইজেশন-সমস্যার-জন্য-আনুমানিক-ইউনিভার্সাল-কোয়ান্টাম-কম্পিউটিং">অপ্টিমাইজেশন সমস্যার জন্য আনুমানিক ইউনিভার্সাল কোয়ান্টাম কম্পিউটিং</a></li>
+<li><a class="reference internal" href="#অ্যাপ্লিকেশন-ক্লাস">অ্যাপ্লিকেশন ক্লাস</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#সর্বোচ্চ-লাভ-সমস্যা-(Max-Cut-problem)">সর্বোচ্চ লাভ সমস্যা (Max-Cut problem)</a><ul>
+<li><a class="reference internal" href="#ব্রুট-ফোর্স-পদ্ধতি">ব্রুট ফোর্স পদ্ধতি</a></li>
+<li><a class="reference internal" href="#আইসিং-সমস্যার-ম্যাপিং-(চিত্রায়ন)">আইসিং সমস্যার ম্যাপিং (চিত্রায়ন)</a></li>
+<li><a class="reference internal" href="#সম্পূর্ণ-হ্যামিল্টোনিয়ান-সঠিক-ব্যয়-দেয়-তা-পরীক্ষা-করা-হচ্ছে">সম্পূর্ণ হ্যামিল্টোনিয়ান সঠিক ব্যয় দেয় তা পরীক্ষা করা হচ্ছে</a></li>
+<li><a class="reference internal" href="#কোয়ান্টাম-কম্পিউটারে-চালানো">কোয়ান্টাম কম্পিউটারে চালানো</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ট্রাভেলিং-সেলসম্যান-সমস্যা">ট্রাভেলিং সেলসম্যান সমস্যা</a><ul>
+<li><a class="reference internal" href="#id2">ব্রুট ফোর্স পদ্ধতি</a></li>
+<li><a class="reference internal" href="#id3">আইসিং সমস্যার ম্যাপিং (চিত্রায়ন)</a></li>
+<li><a class="reference internal" href="#id4">সম্পূর্ণ হ্যামিল্টোনিয়ান সঠিক ব্যয় দেয় তা পরীক্ষা করা হচ্ছে</a></li>
+<li><a class="reference internal" href="#id5">কোয়ান্টাম কম্পিউটারে চালানো</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=66e7639d"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

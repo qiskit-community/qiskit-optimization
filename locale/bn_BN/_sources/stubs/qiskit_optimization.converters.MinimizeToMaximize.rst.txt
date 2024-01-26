@@ -1,0 +1,28 @@
+﻿
+
+MinimizeToMaximize
+=================================================
+
+.. currentmodule:: qiskit_optimization.converters
+
+.. autoclass:: MinimizeToMaximize
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: MinimizeToMaximize.convert
+   .. automethod:: MinimizeToMaximize.interpret
+
+   
+   

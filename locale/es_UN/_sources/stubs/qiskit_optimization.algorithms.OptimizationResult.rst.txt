@@ -1,0 +1,41 @@
+﻿
+
+OptimizationResult
+=================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: OptimizationResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: OptimizationResult.fval
+   .. autoattribute:: OptimizationResult.raw_results
+   .. autoattribute:: OptimizationResult.samples
+   .. autoattribute:: OptimizationResult.status
+   .. autoattribute:: OptimizationResult.variable_names
+   .. autoattribute:: OptimizationResult.variables
+   .. autoattribute:: OptimizationResult.variables_dict
+   .. autoattribute:: OptimizationResult.x
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: OptimizationResult.get_correlations
+   .. automethod:: OptimizationResult.prettyprint
+
+   
+   

@@ -1,0 +1,8 @@
+﻿
+
+QiskitOptimizationError
+===========================================
+
+.. currentmodule:: qiskit_optimization
+
+.. autoexception:: QiskitOptimizationError

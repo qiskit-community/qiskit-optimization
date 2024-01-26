@@ -1,0 +1,37 @@
+﻿
+
+Clique
+=======================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: Clique
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: Clique.graph
+   .. autoattribute:: Clique.size
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: Clique.draw
+   .. automethod:: Clique.interpret
+   .. automethod:: Clique.sample_most_likely
+   .. automethod:: Clique.to_quadratic_program
+
+   
+   

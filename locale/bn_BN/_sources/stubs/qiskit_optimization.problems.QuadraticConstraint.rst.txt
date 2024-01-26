@@ -1,0 +1,38 @@
+﻿
+
+QuadraticConstraint
+================================================
+
+.. currentmodule:: qiskit_optimization.problems
+
+.. autoclass:: QuadraticConstraint
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QuadraticConstraint.linear
+   .. autoattribute:: QuadraticConstraint.name
+   .. autoattribute:: QuadraticConstraint.quadratic
+   .. autoattribute:: QuadraticConstraint.quadratic_program
+   .. autoattribute:: QuadraticConstraint.rhs
+   .. autoattribute:: QuadraticConstraint.sense
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QuadraticConstraint.evaluate
+
+   
+   

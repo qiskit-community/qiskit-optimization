@@ -1,0 +1,1820 @@
+<!doctype html>
+<html class="no-js" lang="es-UN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Índice" href="#" /><link rel="search" title="Búsqueda" href="search.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 --><title>Índice - Qiskit Optimization 0.6.0</title>
+<link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Búsqueda">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Descripción general</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Primeros Pasos</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="migration/index.html">Guía de Migración</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Guía de Migración</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="migration/01_migration_guide_to_v0.5.html">Guía de Migración de Qiskit Optimization v0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration/02_migration_guide_to_v0.6.html">Guía de Migración de Qiskit Optimization v0.6</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutoriales</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutoriales</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/01_quadratic_program.html">Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/02_converters_for_quadratic_programs.html">Conversores para Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/03_minimum_eigen_optimizer.html">Optimizador Propio Mínimo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04_grover_optimizer.html">Optimizador de Grover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/05_admm_optimizer.html">Optimizador ADMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/06_examples_max_cut_and_tsp.html">Max-Cut y Problema del Vendedor Viajero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/07_examples_vehicle_routing.html">Rutas de Vehículos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/08_cvar_optimization.html">Mejora de la Optimización Cuántica Variacional mediante CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/09_application_classes.html">Clases de Aplicación para Problemas de Optimización</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/10_warm_start_qaoa.html">Optimización cuántica de arranque en caliente (warm-starting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/11_using_classical_optimization_solvers_and_models.html">Uso de Modelos y Solucionadores de Optimización Clásicos con Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/12_quantum_random_access_optimizer.html">Optimización Cuántica de Acceso Aleatorio</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.html">Referencia de la API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Referencia de la API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="explanations/index.html">Explicaciones</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explicaciones</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="explanations/qrao.html">Antecedentes sobre la Optimización Cuántica de Acceso Aleatorio (Quantum Random Access Optimization): <em>Relajaciones cuánticas, códigos cuánticos de acceso aleatorio, esquemas de redondeo</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Notas de la Versión</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Spanish</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/genindex.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/genindex.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/genindex.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/genindex.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          
+<section class="genindex-section">
+  <h1 id="index">Índice</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#X"><strong>X</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError.add_note">add_note() (método de QiskitOptimizationError)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult">ADMMOptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizer.html#qiskit_optimization.algorithms.ADMMOptimizer">ADMMOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMParameters.html#qiskit_optimization.algorithms.ADMMParameters">ADMMParameters (clase en qiskit_optimization.algorithms)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMState.html#qiskit_optimization.algorithms.ADMMState">ADMMState (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.BaseAggregator.html#qiskit_optimization.algorithms.BaseAggregator.aggregate">aggregate() (método de BaseAggregator)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.MeanAggregator.html#qiskit_optimization.algorithms.MeanAggregator.aggregate">(método de MeanAggregator)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.IntermediateResult.html#qiskit_optimization.algorithms.IntermediateResult.ALL_ITERATIONS">ALL_ITERATIONS (atributo de IntermediateResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable.as_tuple">as_tuple() (método de Variable)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.BaseAggregator.html#qiskit_optimization.algorithms.BaseAggregator">BaseAggregator (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html#qiskit_optimization.algorithms.qrao.RoundingResult.bases">bases (atributo de RoundingResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html#qiskit_optimization.algorithms.qrao.RoundingResult.basis_counts">basis_counts (atributo de RoundingResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html#qiskit_optimization.algorithms.qrao.MagicRounding.basis_sampling">basis_sampling (atributo de MagicRounding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html#qiskit_optimization.algorithms.qrao.RoundingResult.basis_shots">basis_shots (atributo de RoundingResult)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.binary_var">binary_var() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.binary_var_dict">binary_var_dict() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.binary_var_list">binary_var_list() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.BinPacking.html#qiskit_optimization.applications.BinPacking">BinPacking (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.bounds">bounds (atributo de LinearExpression)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.bounds">(atributo de QuadraticExpression)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html#qiskit_optimization.algorithms.qrao.RoundingContext.circuit">circuit (atributo de RoundingContext)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.clear">clear() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer.clip">clip (atributo de CobylaOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer.clip">(atributo de MultiStartOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer.clip">(atributo de SlsqpOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique">Clique (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer">CobylaOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.coefficients">coefficients (atributo de LinearExpression)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.coefficients">(atributo de QuadraticExpression)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.compression_ratio">compression_ratio (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.constant">constant (atributo de QuadraticObjective)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Constraint.html#qiskit_optimization.problems.Constraint">Constraint (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.continuous_var">continuous_var() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.continuous_var_dict">continuous_var_dict() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.continuous_var_list">continuous_var_list() (método de QuadraticProgram)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.converters.InequalityToEquality.html#qiskit_optimization.converters.InequalityToEquality.convert">convert() (método de InequalityToEquality)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.converters.IntegerToBinary.html#qiskit_optimization.converters.IntegerToBinary.convert">(método de IntegerToBinary)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html#qiskit_optimization.converters.LinearEqualityToPenalty.convert">(método de LinearEqualityToPenalty)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html#qiskit_optimization.converters.LinearInequalityToPenalty.convert">(método de LinearInequalityToPenalty)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.MaximizeToMinimize.html#qiskit_optimization.converters.MaximizeToMinimize.convert">(método de MaximizeToMinimize)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.MinimizeToMaximize.html#qiskit_optimization.converters.MinimizeToMaximize.convert">(método de MinimizeToMaximize)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramConverter.html#qiskit_optimization.converters.QuadraticProgramConverter.convert">(método de QuadraticProgramConverter)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html#qiskit_optimization.converters.QuadraticProgramToQubo.convert">(método de QuadraticProgramToQubo)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer.cplex_parameters">cplex_parameters (atributo de CplexOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer">CplexOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory.create_initial_state">create_initial_state() (método de WarmStartQAOAFactory)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory.create_initial_variables">create_initial_variables() (método de WarmStartQAOAFactory)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory.create_mixer">create_mixer() (método de WarmStartQAOAFactory)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.create_random_instance">create_random_instance() (método estático de Tsp)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.create_random_instance">(método estático de VehicleRouting)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.depot">depot (atributo de VehicleRouting)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel.disorder">disorder() (método de SKModel)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer.disp">disp (atributo de CplexOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html#qiskit_optimization.algorithms.GurobiOptimizer.disp">(atributo de GurobiOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html#qiskit_optimization.algorithms.ScipyMilpOptimizer.disp">(atributo de ScipyMilpOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique.draw">draw() (método de Clique)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html#qiskit_optimization.applications.GraphOptimizationApplication.draw">(método de GraphOptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphPartition.html#qiskit_optimization.applications.GraphPartition.draw">(método de GraphPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.draw">(método de Maxcut)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.StableSet.html#qiskit_optimization.applications.StableSet.draw">(método de StableSet)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.draw">(método de Tsp)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.draw">(método de VehicleRouting)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VertexCover.html#qiskit_optimization.applications.VertexCover.draw">(método de VertexCover)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.encode">encode() (método de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.encoding">encoding (atributo de QuantumRandomAccessOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html#qiskit_optimization.algorithms.qrao.RoundingContext.encoding">(atributo de RoundingContext)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html#qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier">EncodingCommutationVerifier (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Constraint.html#qiskit_optimization.problems.Constraint.evaluate">evaluate() (método de Constraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint.evaluate">(método de LinearConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.evaluate">(método de LinearExpression)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.evaluate">(método de QuadraticConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.evaluate">(método de QuadraticExpression)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.evaluate">(método de QuadraticObjective)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.evaluate_gradient">evaluate_gradient() (método de LinearExpression)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.evaluate_gradient">(método de QuadraticExpression)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.evaluate_gradient">(método de QuadraticObjective)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.ExactCover.html#qiskit_optimization.applications.ExactCover">ExactCover (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html#qiskit_optimization.algorithms.qrao.RoundingContext.expectation_values">expectation_values (atributo de RoundingContext)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html#qiskit_optimization.algorithms.qrao.RoundingResult.expectation_values">(atributo de RoundingResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.export_as_lp_string">export_as_lp_string() (método de QuadraticProgram)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html#qiskit_optimization.algorithms.OptimizationResultStatus.FAILURE">FAILURE (atributo de OptimizationResultStatus)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.freeze">freeze() (método de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.translators.from_docplex_mp.html#qiskit_optimization.translators.from_docplex_mp">from_docplex_mp() (en el módulo qiskit_optimization.translators)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.translators.from_gurobipy.html#qiskit_optimization.translators.from_gurobipy">from_gurobipy() (en el módulo qiskit_optimization.translators)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.translators.from_ising.html#qiskit_optimization.translators.from_ising">from_ising() (en el módulo qiskit_optimization.translators)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.from_ising">(método de QuadraticProgram)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.frozen">frozen (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.fval">fval (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.fval">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.fval">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.fval">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.fval">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.fval">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.fval">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.fval">(atributo de SlsqpOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SolutionSample.html#qiskit_optimization.algorithms.SolutionSample.fval">(atributo de SolutionSample)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.fx">fx (atributo de SlsqpOptimizationResult)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizer.html#qiskit_optimization.algorithms.ADMMOptimizer.get_compatibility_msg">get_compatibility_msg() (método de ADMMOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer.get_compatibility_msg">(método de CobylaOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer.get_compatibility_msg">(método de CplexOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.get_compatibility_msg">(método de GoemansWilliamsonOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizer.html#qiskit_optimization.algorithms.GroverOptimizer.get_compatibility_msg">(método de GroverOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html#qiskit_optimization.algorithms.GurobiOptimizer.get_compatibility_msg">(método de GurobiOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer.get_compatibility_msg">(método de MinimumEigenOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer.get_compatibility_msg">(método de MultiStartOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html#qiskit_optimization.algorithms.OptimizationAlgorithm.get_compatibility_msg">(método de OptimizationAlgorithm)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.get_compatibility_msg">(método de QuantumRandomAccessOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.get_compatibility_msg">(método de RecursiveMinimumEigenOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html#qiskit_optimization.algorithms.ScipyMilpOptimizer.get_compatibility_msg">(método de ScipyMilpOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer.get_compatibility_msg">(método de SlsqpOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer.get_compatibility_msg">(método de WarmStartQAOAOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html#qiskit_optimization.converters.QuadraticProgramToQubo.get_compatibility_msg">(método estático de QuadraticProgramToQubo)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.get_correlations">get_correlations() (método de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.get_correlations">(método de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.get_correlations">(método de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.get_correlations">(método de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.get_correlations">(método de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.get_correlations">(método de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.get_correlations">(método de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.get_correlations">(método de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_feasibility_info">get_feasibility_info() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.BinPacking.html#qiskit_optimization.applications.BinPacking.get_figure">get_figure() (método de BinPacking)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.get_gset_result">get_gset_result() (método estático de Maxcut)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_linear_constraint">get_linear_constraint() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_num_binary_vars">get_num_binary_vars() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_num_continuous_vars">get_num_continuous_vars() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_num_integer_vars">get_num_integer_vars() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_num_linear_constraints">get_num_linear_constraints() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_num_quadratic_constraints">get_num_quadratic_constraints() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_num_vars">get_num_vars() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_quadratic_constraint">get_quadratic_constraint() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.get_variable">get_variable() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult">GoemansWilliamsonOptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizer">GoemansWilliamsonOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique.graph">graph (atributo de Clique)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html#qiskit_optimization.applications.GraphOptimizationApplication.graph">(atributo de GraphOptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphPartition.html#qiskit_optimization.applications.GraphPartition.graph">(atributo de GraphPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.graph">(atributo de Maxcut)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel.graph">(atributo de SKModel)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.StableSet.html#qiskit_optimization.applications.StableSet.graph">(atributo de StableSet)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.graph">(atributo de Tsp)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.graph">(atributo de VehicleRouting)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VertexCover.html#qiskit_optimization.applications.VertexCover.graph">(atributo de VertexCover)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html#qiskit_optimization.applications.GraphOptimizationApplication">GraphOptimizationApplication (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.GraphPartition.html#qiskit_optimization.applications.GraphPartition">GraphPartition (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult">GroverOptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizer.html#qiskit_optimization.algorithms.GroverOptimizer">GroverOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html#qiskit_optimization.algorithms.GurobiOptimizer">GurobiOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.history">history (atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.imode">imode (atributo de SlsqpOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.InequalityToEquality.html#qiskit_optimization.converters.InequalityToEquality">InequalityToEquality (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html#qiskit_optimization.algorithms.OptimizationResultStatus.INFEASIBLE">INFEASIBLE (atributo de OptimizationResultStatus)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.infinity.INFINITY.html#qiskit_optimization.infinity.INFINITY">INFINITY (en el módulo qiskit_optimization.infinity)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.integer_var">integer_var() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.integer_var_dict">integer_var_dict() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.integer_var_list">integer_var_list() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.IntegerToBinary.html#qiskit_optimization.converters.IntegerToBinary">IntegerToBinary (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.intermediate_fval">intermediate_fval (atributo de GroverOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.IntermediateResult.html#qiskit_optimization.algorithms.IntermediateResult">IntermediateResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.BinPacking.html#qiskit_optimization.applications.BinPacking.interpret">interpret() (método de BinPacking)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique.interpret">(método de Clique)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.ExactCover.html#qiskit_optimization.applications.ExactCover.interpret">(método de ExactCover)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html#qiskit_optimization.applications.GraphOptimizationApplication.interpret">(método de GraphOptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphPartition.html#qiskit_optimization.applications.GraphPartition.interpret">(método de GraphPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.InequalityToEquality.html#qiskit_optimization.converters.InequalityToEquality.interpret">(método de InequalityToEquality)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.IntegerToBinary.html#qiskit_optimization.converters.IntegerToBinary.interpret">(método de IntegerToBinary)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Knapsack.html#qiskit_optimization.applications.Knapsack.interpret">(método de Knapsack)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html#qiskit_optimization.converters.LinearEqualityToPenalty.interpret">(método de LinearEqualityToPenalty)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html#qiskit_optimization.converters.LinearInequalityToPenalty.interpret">(método de LinearInequalityToPenalty)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.interpret">(método de Maxcut)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.MaximizeToMinimize.html#qiskit_optimization.converters.MaximizeToMinimize.interpret">(método de MaximizeToMinimize)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.MinimizeToMaximize.html#qiskit_optimization.converters.MinimizeToMaximize.interpret">(método de MinimizeToMaximize)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.NumberPartition.html#qiskit_optimization.applications.NumberPartition.interpret">(método de NumberPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.OptimizationApplication.html#qiskit_optimization.applications.OptimizationApplication.interpret">(método de OptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramConverter.html#qiskit_optimization.converters.QuadraticProgramConverter.interpret">(método de QuadraticProgramConverter)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html#qiskit_optimization.converters.QuadraticProgramToQubo.interpret">(método de QuadraticProgramToQubo)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SetPacking.html#qiskit_optimization.applications.SetPacking.interpret">(método de SetPacking)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel.interpret">(método de SKModel)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.StableSet.html#qiskit_optimization.applications.StableSet.interpret">(método de StableSet)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.interpret">(método de Tsp)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.interpret">(método de VehicleRouting)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VertexCover.html#qiskit_optimization.applications.VertexCover.interpret">(método de VertexCover)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizer.html#qiskit_optimization.algorithms.ADMMOptimizer.is_compatible">is_compatible() (método de ADMMOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer.is_compatible">(método de CobylaOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer.is_compatible">(método de CplexOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.is_compatible">(método de GoemansWilliamsonOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizer.html#qiskit_optimization.algorithms.GroverOptimizer.is_compatible">(método de GroverOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html#qiskit_optimization.algorithms.GurobiOptimizer.is_compatible">(método de GurobiOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer.is_compatible">(método de MinimumEigenOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer.is_compatible">(método de MultiStartOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html#qiskit_optimization.algorithms.OptimizationAlgorithm.is_compatible">(método de OptimizationAlgorithm)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html#qiskit_optimization.converters.QuadraticProgramToQubo.is_compatible">(método de QuadraticProgramToQubo)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.is_compatible">(método de QuantumRandomAccessOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.is_compatible">(método de RecursiveMinimumEigenOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html#qiskit_optimization.algorithms.ScipyMilpOptimizer.is_compatible">(método de ScipyMilpOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer.is_compatible">(método de SlsqpOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer.is_compatible">(método de WarmStartQAOAOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer.is_cplex_installed">is_cplex_installed() (método estático de CplexOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.is_feasible">is_feasible() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html#qiskit_optimization.algorithms.GurobiOptimizer.is_gurobi_installed">is_gurobi_installed() (método estático de GurobiOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.its">its (atributo de SlsqpOptimizationResult)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.applications.Knapsack.html#qiskit_optimization.applications.Knapsack">Knapsack (clase en qiskit_optimization.applications)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.IntermediateResult.html#qiskit_optimization.algorithms.IntermediateResult.LAST_ITERATION">LAST_ITERATION (atributo de IntermediateResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint.linear">linear (atributo de LinearConstraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.linear">(atributo de QuadraticConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.linear">(atributo de QuadraticObjective)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.linear_constraint">linear_constraint() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.linear_constraints">linear_constraints (atributo de QuadraticProgram)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.linear_constraints_index">linear_constraints_index (atributo de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint">LinearConstraint (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html#qiskit_optimization.converters.LinearEqualityToPenalty">LinearEqualityToPenalty (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression">LinearExpression (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html#qiskit_optimization.converters.LinearInequalityToPenalty">LinearInequalityToPenalty (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable.lowerbound">lowerbound (atributo de Variable)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html#qiskit_optimization.algorithms.qrao.MagicRounding">MagicRounding (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.max_cut_value">max_cut_value() (método estático de GoemansWilliamsonOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.max_vars_per_qubit">max_vars_per_qubit (atributo de QuantumRandomAccessEncoding)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.max_vars_per_qubit">(atributo de QuantumRandomAccessOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.Knapsack.html#qiskit_optimization.applications.Knapsack.max_weight">max_weight (atributo de Knapsack)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut">Maxcut (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.maximize">maximize() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.MaximizeToMinimize.html#qiskit_optimization.converters.MaximizeToMinimize">MaximizeToMinimize (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.MeanAggregator.html#qiskit_optimization.algorithms.MeanAggregator">MeanAggregator (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer.min_eigen_solver">min_eigen_solver (atributo de MinimumEigenOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.min_eigen_solver">(atributo de QuantumRandomAccessOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer.min_eigen_solver">(atributo de WarmStartQAOAOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.min_eigen_solver_result">min_eigen_solver_result (atributo de MinimumEigenOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.minimize">minimize() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.MinimizeToMaximize.html#qiskit_optimization.converters.MinimizeToMaximize">MinimizeToMaximize (clase en qiskit_optimization.converters)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.minimum_recovery_probability">minimum_recovery_probability (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult">MinimumEigenOptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer">MinimumEigenOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.InequalityToEquality.html#qiskit_optimization.converters.InequalityToEquality.mode">mode (atributo de InequalityToEquality)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.html#module-qiskit_optimization">qiskit_optimization</a>
+</li>
+          <li><a href="apidocs/qiskit_optimization.algorithms.html#module-qiskit_optimization.algorithms">qiskit_optimization.algorithms</a>
+</li>
+          <li><a href="apidocs/qiskit_optimization.algorithms.qrao.html#module-qiskit_optimization.algorithms.qrao">qiskit_optimization.algorithms.qrao</a>
+</li>
+          <li><a href="apidocs/qiskit_optimization.applications.html#module-qiskit_optimization.applications">qiskit_optimization.applications</a>
+</li>
+          <li><a href="apidocs/qiskit_optimization.converters.html#module-qiskit_optimization.converters">qiskit_optimization.converters</a>
+</li>
+          <li><a href="apidocs/qiskit_optimization.problems.html#module-qiskit_optimization.problems">qiskit_optimization.problems</a>
+</li>
+          <li><a href="apidocs/qiskit_optimization.translators.html#module-qiskit_optimization.translators">qiskit_optimization.translators</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer.multi_start_solve">multi_start_solve() (método de CobylaOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer.multi_start_solve">(método de MultiStartOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer.multi_start_solve">(método de SlsqpOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer">MultiStartOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.n_input_qubits">n_input_qubits (atributo de GroverOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.n_output_qubits">n_output_qubits (atributo de GroverOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Constraint.html#qiskit_optimization.problems.Constraint.name">name (atributo de Constraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint.name">(atributo de LinearConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.name">(atributo de QuadraticConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.name">(atributo de QuadraticProgram)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable.name">(atributo de Variable)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.IntermediateResult.html#qiskit_optimization.algorithms.IntermediateResult.NO_ITERATIONS">NO_ITERATIONS (atributo de IntermediateResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.num_qubits">num_qubits (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel.num_sites">num_sites (atributo de SKModel)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.num_vars">num_vars (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.num_vehicles">num_vehicles (atributo de VehicleRouting)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.NumberPartition.html#qiskit_optimization.applications.NumberPartition">NumberPartition (clase en qiskit_optimization.applications)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.objective">objective (atributo de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.offset">offset (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.operation_counts">operation_counts (atributo de GroverOptimizationResult)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html#qiskit_optimization.algorithms.OptimizationAlgorithm">OptimizationAlgorithm (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.OptimizationApplication.html#qiskit_optimization.applications.OptimizationApplication">OptimizationApplication (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult">OptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html#qiskit_optimization.algorithms.OptimizationResultStatus">OptimizationResultStatus (clase en qiskit_optimization.algorithms)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizer.html#qiskit_optimization.algorithms.ADMMOptimizer.parameters">parameters (atributo de ADMMOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.parse_gset_format">parse_gset_format() (método estático de Maxcut)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.parse_tsplib_format">parse_tsplib_format() (método estático de Tsp)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html#qiskit_optimization.converters.LinearEqualityToPenalty.penalty">penalty (atributo de LinearEqualityToPenalty)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html#qiskit_optimization.converters.LinearInequalityToPenalty.penalty">(atributo de LinearInequalityToPenalty)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html#qiskit_optimization.converters.QuadraticProgramToQubo.penalty">(atributo de QuadraticProgramToQubo)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.prettyprint">prettyprint() (método de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.prettyprint">(método de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.prettyprint">(método de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.prettyprint">(método de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.prettyprint">(método de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.prettyprint">(método de QuadraticProgram)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.prettyprint">(método de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.prettyprint">(método de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.prettyprint">(método de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.SolutionSample.html#qiskit_optimization.algorithms.SolutionSample.probability">probability (atributo de SolutionSample)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.problem">problem (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.process_result">process_result() (método de QuantumRandomAccessOptimizer)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.q2vars">q2vars (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li>
+    qiskit_optimization
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.html#module-qiskit_optimization">module</a>
+</li>
+        </ul></li>
+        <li>
+    qiskit_optimization.algorithms
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.algorithms.html#module-qiskit_optimization.algorithms">module</a>
+</li>
+        </ul></li>
+        <li>
+    qiskit_optimization.algorithms.qrao
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.algorithms.qrao.html#module-qiskit_optimization.algorithms.qrao">module</a>
+</li>
+        </ul></li>
+        <li>
+    qiskit_optimization.applications
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.applications.html#module-qiskit_optimization.applications">module</a>
+</li>
+        </ul></li>
+        <li>
+    qiskit_optimization.converters
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.converters.html#module-qiskit_optimization.converters">module</a>
+</li>
+        </ul></li>
+        <li>
+    qiskit_optimization.problems
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.problems.html#module-qiskit_optimization.problems">module</a>
+</li>
+        </ul></li>
+        <li>
+    qiskit_optimization.translators
+
+        <ul>
+          <li><a href="apidocs/qiskit_optimization.translators.html#module-qiskit_optimization.translators">module</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError">QiskitOptimizationError</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.quadratic">quadratic (atributo de QuadraticConstraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.quadratic">(atributo de QuadraticObjective)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.quadratic_constraint">quadratic_constraint() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.quadratic_constraints">quadratic_constraints (atributo de QuadraticProgram)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.quadratic_constraints_index">quadratic_constraints_index (atributo de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Constraint.html#qiskit_optimization.problems.Constraint.quadratic_program">quadratic_program (atributo de Constraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint.quadratic_program">(atributo de LinearConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.quadratic_program">(atributo de LinearExpression)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.quadratic_program">(atributo de QuadraticConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.quadratic_program">(atributo de QuadraticExpression)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.quadratic_program">(atributo de QuadraticObjective)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticProgramElement.html#qiskit_optimization.problems.QuadraticProgramElement.quadratic_program">(atributo de QuadraticProgramElement)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable.quadratic_program">(atributo de Variable)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint">QuadraticConstraint (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression">QuadraticExpression (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective">QuadraticObjective (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram">QuadraticProgram (clase en qiskit_optimization)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramConverter.html#qiskit_optimization.converters.QuadraticProgramConverter">QuadraticProgramConverter (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.QuadraticProgramElement.html#qiskit_optimization.problems.QuadraticProgramElement">QuadraticProgramElement (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html#qiskit_optimization.converters.QuadraticProgramToQubo">QuadraticProgramToQubo (clase en qiskit_optimization.converters)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding">QuantumRandomAccessEncoding (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult">QuantumRandomAccessOptimizationResult (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer">QuantumRandomAccessOptimizer (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.qubit_op">qubit_op (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.raw_results">raw_results (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.raw_results">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.raw_results">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.raw_results">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.raw_results">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.raw_results">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.raw_results">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.raw_results">(atributo de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.raw_samples">raw_samples (atributo de GroverOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.raw_samples">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.read_from_lp_file">read_from_lp_file() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult">RecursiveMinimumEigenOptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer">RecursiveMinimumEigenOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.relaxed_fval">relaxed_fval (atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.relaxed_result">relaxed_result (atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.remove_linear_constraint">remove_linear_constraint() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.remove_quadratic_constraint">remove_quadratic_constraint() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.replacements">replacements (atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Constraint.html#qiskit_optimization.problems.Constraint.rhs">rhs (atributo de Constraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint.rhs">(atributo de LinearConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.rhs">(atributo de QuadraticConstraint)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html#qiskit_optimization.algorithms.qrao.MagicRounding.round">round() (método de MagicRounding)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html#qiskit_optimization.algorithms.qrao.RoundingScheme.round">(método de RoundingScheme)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html#qiskit_optimization.algorithms.qrao.SemideterministicRounding.round">(método de SemideterministicRounding)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.rounding_result">rounding_result (atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.rounding_scheme">rounding_scheme (atributo de QuantumRandomAccessOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html#qiskit_optimization.algorithms.qrao.RoundingContext">RoundingContext (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html#qiskit_optimization.algorithms.qrao.RoundingResult">RoundingResult (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html#qiskit_optimization.algorithms.qrao.RoundingScheme">RoundingScheme (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.applications.BinPacking.html#qiskit_optimization.applications.BinPacking.sample_most_likely">sample_most_likely() (método estático de BinPacking)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique.sample_most_likely">(método estático de Clique)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.ExactCover.html#qiskit_optimization.applications.ExactCover.sample_most_likely">(método estático de ExactCover)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html#qiskit_optimization.applications.GraphOptimizationApplication.sample_most_likely">(método estático de GraphOptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphPartition.html#qiskit_optimization.applications.GraphPartition.sample_most_likely">(método estático de GraphPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Knapsack.html#qiskit_optimization.applications.Knapsack.sample_most_likely">(método estático de Knapsack)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.sample_most_likely">(método estático de Maxcut)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.NumberPartition.html#qiskit_optimization.applications.NumberPartition.sample_most_likely">(método estático de NumberPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.OptimizationApplication.html#qiskit_optimization.applications.OptimizationApplication.sample_most_likely">(método estático de OptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SetPacking.html#qiskit_optimization.applications.SetPacking.sample_most_likely">(método estático de SetPacking)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel.sample_most_likely">(método estático de SKModel)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.StableSet.html#qiskit_optimization.applications.StableSet.sample_most_likely">(método estático de StableSet)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.sample_most_likely">(método estático de Tsp)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.sample_most_likely">(método estático de VehicleRouting)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VertexCover.html#qiskit_optimization.applications.VertexCover.sample_most_likely">(método estático de VertexCover)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html#qiskit_optimization.algorithms.qrao.MagicRounding.sampler">sampler (atributo de MagicRounding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.samples">samples (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.samples">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.samples">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.samples">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.samples">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.samples">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.samples">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html#qiskit_optimization.algorithms.qrao.RoundingResult.samples">(atributo de RoundingResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.samples">(atributo de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html#qiskit_optimization.algorithms.ScipyMilpOptimizer">ScipyMilpOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.sdp_solution">sdp_solution (atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html#qiskit_optimization.algorithms.qrao.SemideterministicRounding">SemideterministicRounding (clase en qiskit_optimization.algorithms.qrao)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Constraint.html#qiskit_optimization.problems.Constraint.sense">sense (atributo de Constraint)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint.sense">(atributo de LinearConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint.sense">(atributo de QuadraticConstraint)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticObjective.html#qiskit_optimization.problems.QuadraticObjective.sense">(atributo de QuadraticObjective)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.SetPacking.html#qiskit_optimization.applications.SetPacking">SetPacking (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique.size">size (atributo de Clique)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel">SKModel (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult">SlsqpOptimizationResult (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer">SlsqpOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.smode">smode (atributo de SlsqpOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.SolutionSample.html#qiskit_optimization.algorithms.SolutionSample">SolutionSample (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizer.html#qiskit_optimization.algorithms.ADMMOptimizer.solve">solve() (método de ADMMOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer.solve">(método de CobylaOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.CplexOptimizer.html#qiskit_optimization.algorithms.CplexOptimizer.solve">(método de CplexOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.solve">(método de GoemansWilliamsonOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizer.html#qiskit_optimization.algorithms.GroverOptimizer.solve">(método de GroverOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GurobiOptimizer.html#qiskit_optimization.algorithms.GurobiOptimizer.solve">(método de GurobiOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer.solve">(método de MinimumEigenOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer.solve">(método de MultiStartOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html#qiskit_optimization.algorithms.OptimizationAlgorithm.solve">(método de OptimizationAlgorithm)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.solve">(método de QuantumRandomAccessOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.solve">(método de RecursiveMinimumEigenOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html#qiskit_optimization.algorithms.ScipyMilpOptimizer.solve">(método de ScipyMilpOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer.solve">(método de SlsqpOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer.solve">(método de WarmStartQAOAOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.solve_relaxed">solve_relaxed() (método de QuantumRandomAccessOptimizer)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.StableSet.html#qiskit_optimization.applications.StableSet">StableSet (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.state">state (atributo de ADMMOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.state_preparation_circuit">state_preparation_circuit() (método de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.status">status (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.status">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.status">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.status">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.status">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.status">(atributo de QuadraticProgram)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.status">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.status">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.status">(atributo de SlsqpOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SolutionSample.html#qiskit_optimization.algorithms.SolutionSample.status">(atributo de SolutionSample)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.substitute_variables">substitute_variables() (método de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html#qiskit_optimization.algorithms.OptimizationResultStatus.SUCCESS">SUCCESS (atributo de OptimizationResultStatus)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.threshold">threshold (atributo de GroverOptimizationResult)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.to_array">to_array() (método de LinearExpression)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.to_array">(método de QuadraticExpression)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.problems.LinearExpression.html#qiskit_optimization.problems.LinearExpression.to_dict">to_dict() (método de LinearExpression)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.problems.QuadraticExpression.html#qiskit_optimization.problems.QuadraticExpression.to_dict">(método de QuadraticExpression)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.translators.to_docplex_mp.html#qiskit_optimization.translators.to_docplex_mp">to_docplex_mp() (en el módulo qiskit_optimization.translators)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.translators.to_gurobipy.html#qiskit_optimization.translators.to_gurobipy">to_gurobipy() (en el módulo qiskit_optimization.translators)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.translators.to_ising.html#qiskit_optimization.translators.to_ising">to_ising() (en el módulo qiskit_optimization.translators)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.to_ising">(método de QuadraticProgram)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.BinPacking.html#qiskit_optimization.applications.BinPacking.to_quadratic_program">to_quadratic_program() (método de BinPacking)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.applications.Clique.html#qiskit_optimization.applications.Clique.to_quadratic_program">(método de Clique)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.ExactCover.html#qiskit_optimization.applications.ExactCover.to_quadratic_program">(método de ExactCover)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphOptimizationApplication.html#qiskit_optimization.applications.GraphOptimizationApplication.to_quadratic_program">(método de GraphOptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.GraphPartition.html#qiskit_optimization.applications.GraphPartition.to_quadratic_program">(método de GraphPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Knapsack.html#qiskit_optimization.applications.Knapsack.to_quadratic_program">(método de Knapsack)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Maxcut.html#qiskit_optimization.applications.Maxcut.to_quadratic_program">(método de Maxcut)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.NumberPartition.html#qiskit_optimization.applications.NumberPartition.to_quadratic_program">(método de NumberPartition)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.OptimizationApplication.html#qiskit_optimization.applications.OptimizationApplication.to_quadratic_program">(método de OptimizationApplication)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SetPacking.html#qiskit_optimization.applications.SetPacking.to_quadratic_program">(método de SetPacking)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.SKModel.html#qiskit_optimization.applications.SKModel.to_quadratic_program">(método de SKModel)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.StableSet.html#qiskit_optimization.applications.StableSet.to_quadratic_program">(método de StableSet)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.to_quadratic_program">(método de Tsp)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting.to_quadratic_program">(método de VehicleRouting)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.applications.VertexCover.html#qiskit_optimization.applications.VertexCover.to_quadratic_program">(método de VertexCover)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.CobylaOptimizer.html#qiskit_optimization.algorithms.CobylaOptimizer.trials">trials (atributo de CobylaOptimizer)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html#qiskit_optimization.algorithms.MultiStartOptimizer.trials">(atributo de MultiStartOptimizer)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html#qiskit_optimization.algorithms.SlsqpOptimizer.trials">(atributo de SlsqpOptimizer)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp">Tsp (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.Tsp.html#qiskit_optimization.applications.Tsp.tsp_value">tsp_value() (método estático de Tsp)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable.upperbound">upperbound (atributo de Variable)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.var2op">var2op (atributo de QuantumRandomAccessEncoding)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable">Variable (clase en qiskit_optimization.problems)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.variable_names">variable_names (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.variable_names">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.variable_names">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.variable_names">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.variable_names">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.variable_names">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.variable_names">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.variable_names">(atributo de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.variables">variables (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.variables">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.variables">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.variables">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.variables">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.variables">(atributo de QuadraticProgram)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.variables">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.variables">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.variables">(atributo de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.variables_dict">variables_dict (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.variables_dict">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.variables_dict">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.variables_dict">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.variables_dict">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.variables_dict">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.variables_dict">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.variables_dict">(atributo de SlsqpOptimizationResult)</a>
+</li>
+        </ul></li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.variables_index">variables_index (atributo de QuadraticProgram)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable.vartype">vartype (atributo de Variable)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.VehicleRouting.html#qiskit_optimization.applications.VehicleRouting">VehicleRouting (clase en qiskit_optimization.applications)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.applications.VertexCover.html#qiskit_optimization.applications.VertexCover">VertexCover (clase en qiskit_optimization.applications)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html#qiskit_optimization.algorithms.WarmStartQAOAFactory">WarmStartQAOAFactory (clase en qiskit_optimization.algorithms)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer">WarmStartQAOAOptimizer (clase en qiskit_optimization.algorithms)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError.with_traceback">with_traceback() (método de QiskitOptimizationError)</a>
+</li>
+        <li><a href="stubs/qiskit_optimization.QuadraticProgram.html#qiskit_optimization.QuadraticProgram.write_to_lp_file">write_to_lp_file() (método de QuadraticProgram)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="X" class="genindex-section">
+  <h2>X</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html#qiskit_optimization.algorithms.ADMMOptimizationResult.x">x (atributo de ADMMOptimizationResult)</a>
+
+        <ul>
+          <li><a href="stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html#qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.x">(atributo de GoemansWilliamsonOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html#qiskit_optimization.algorithms.GroverOptimizationResult.x">(atributo de GroverOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.MinimumEigenOptimizationResult.x">(atributo de MinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.OptimizationResult.html#qiskit_optimization.algorithms.OptimizationResult.x">(atributo de OptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html#qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.x">(atributo de QuantumRandomAccessOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html#qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.x">(atributo de RecursiveMinimumEigenOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html#qiskit_optimization.algorithms.SlsqpOptimizationResult.x">(atributo de SlsqpOptimizationResult)</a>
+</li>
+          <li><a href="stubs/qiskit_optimization.algorithms.SolutionSample.html#qiskit_optimization.algorithms.SolutionSample.x">(atributo de SolutionSample)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1422e3d7"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

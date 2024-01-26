@@ -1,0 +1,38 @@
+﻿
+
+Maxcut
+=======================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: Maxcut
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: Maxcut.graph
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: Maxcut.draw
+   .. automethod:: Maxcut.get_gset_result
+   .. automethod:: Maxcut.interpret
+   .. automethod:: Maxcut.parse_gset_format
+   .. automethod:: Maxcut.sample_most_likely
+   .. automethod:: Maxcut.to_quadratic_program
+
+   
+   

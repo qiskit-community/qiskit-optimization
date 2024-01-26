@@ -1,0 +1,29 @@
+﻿
+
+OptimizationAlgorithm
+====================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: OptimizationAlgorithm
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: OptimizationAlgorithm.get_compatibility_msg
+   .. automethod:: OptimizationAlgorithm.is_compatible
+   .. automethod:: OptimizationAlgorithm.solve
+
+   
+   

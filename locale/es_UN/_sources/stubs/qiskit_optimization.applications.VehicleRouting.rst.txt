@@ -1,0 +1,39 @@
+﻿
+
+VehicleRouting
+===============================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: VehicleRouting
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: VehicleRouting.depot
+   .. autoattribute:: VehicleRouting.graph
+   .. autoattribute:: VehicleRouting.num_vehicles
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: VehicleRouting.create_random_instance
+   .. automethod:: VehicleRouting.draw
+   .. automethod:: VehicleRouting.interpret
+   .. automethod:: VehicleRouting.sample_most_likely
+   .. automethod:: VehicleRouting.to_quadratic_program
+
+   
+   

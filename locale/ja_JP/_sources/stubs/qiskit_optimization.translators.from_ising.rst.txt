@@ -1,0 +1,8 @@
+﻿
+
+from_ising
+==========================================
+
+.. currentmodule:: qiskit_optimization.translators
+
+.. autofunction:: from_ising

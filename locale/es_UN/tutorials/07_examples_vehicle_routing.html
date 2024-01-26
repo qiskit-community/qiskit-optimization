@@ -1,0 +1,1224 @@
+<!doctype html>
+<html class="no-js" lang="es-UN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Índice" href="../genindex.html" /><link rel="search" title="Búsqueda" href="../search.html" /><link rel="next" title="Mejora de la Optimización Cuántica Variacional mediante CVaR" href="08_cvar_optimization.html" /><link rel="prev" title="Max-Cut y Problema del Vendedor Viajero" href="06_examples_max_cut_and_tsp.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Rutas de Vehículos - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Búsqueda">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Descripción general</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Primeros Pasos</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Guía de Migración</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Guía de Migración</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Guía de Migración de Qiskit Optimization v0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Guía de Migración de Qiskit Optimization v0.6</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutoriales</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutoriales</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_quadratic_program.html">Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_converters_for_quadratic_programs.html">Conversores para Programas Cuadráticos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">Optimizador Propio Mínimo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_grover_optimizer.html">Optimizador de Grover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">Optimizador ADMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_examples_max_cut_and_tsp.html">Max-Cut y Problema del Vendedor Viajero</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Rutas de Vehículos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">Mejora de la Optimización Cuántica Variacional mediante CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">Clases de Aplicación para Problemas de Optimización</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">Optimización cuántica de arranque en caliente (warm-starting)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Uso de Modelos y Solucionadores de Optimización Clásicos con Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_quantum_random_access_optimizer.html">Optimización Cuántica de Acceso Aleatorio</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">Referencia de la API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Referencia de la API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explicaciones</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explicaciones</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Antecedentes sobre la Optimización Cuántica de Acceso Aleatorio (Quantum Random Access Optimization): <em>Relajaciones cuánticas, códigos cuánticos de acceso aleatorio, esquemas de redondeo</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Notas de la Versión</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Spanish</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/07_examples_vehicle_routing.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/07_examples_vehicle_routing.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/07_examples_vehicle_routing.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/07_examples_vehicle_routing.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Esta página fue generada a partir de <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/07_examples_vehicle_routing.ipynb">docs/tutorials/07_examples_vehicle_routing.ipynb</a>.</p>
+</div>
+<section id="Rutas-de-Vehículos">
+<h1>Rutas de Vehículos<a class="headerlink" href="#Rutas-de-Vehículos" title="Enlace permanente a este encabezado">#</a></h1>
+<section id="Introducción">
+<h2>Introducción<a class="headerlink" href="#Introducción" title="Enlace permanente a este encabezado">#</a></h2>
+<p>La logística es una industria importante, y algunas estimaciones la valoran en USD 8.183 billones a nivel mundial en 2015. La mayoría de los proveedores de servicios operan varios vehículos (por ejemplo, camiones y portacontenedores), varios depósitos, donde los vehículos pasan la noche y sirven una serie de ubicaciones de clientes con cada vehículo durante cada día. Hay muchos problemas de optimización y control que consideran estos parámetros. Computacionalmente, el desafío clave es cómo diseñar rutas desde los depósitos a una serie de ubicaciones de clientes y de regreso al depósito, a fin de minimizar las millas recorridas por los vehículos, el tiempo empleado o funciones objetivo similares. En este cuaderno formalizamos una versión idealizada del problema y mostramos su solución utilizando el enfoque de optimización aproximada cuántica de Farhi, Goldstone, y Gutmann (2014).</p>
+<p>El flujo de trabajo en general que demostramos comprende:</p>
+<ol class="arabic simple">
+<li><p>establecer las ubicaciones de los clientes. Normalmente, estos estarían disponibles antes del día de las entregas desde una base de datos. En nuestro caso de uso, los generamos aleatoriamente.</p></li>
+<li><p>calcular las distancias por pares, tiempos de viaje o similares. En nuestro caso, consideramos la distancia euclidiana, «a vuelo de pájaro», que es quizás la más simple posible.</p></li>
+<li><p>calcular las rutas en sí. Este paso se ejecuta dos veces, de hecho. Primero, obtenemos un valor de referencia por una ejecución de un solucionador clásico (IBM CPLEX) en la computadora clásica. Segundo, ejecutamos un algoritmo híbrido alternativo parcialmente en la computadora cuántica.</p></li>
+<li><p>visualización de los resultados. En nuestro caso esto, de nuevo, es una simple gráfica.</p></li>
+</ol>
+<p>A continuación, explicamos primero el modelo, antes de proceder con la instalación de los requerimientos previos y la carga de datos.</p>
+</section>
+<section id="El-Modelo">
+<h2>El Modelo<a class="headerlink" href="#El-Modelo" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Matemáticamente hablando, el problema de enrutamiento de vehículos (vehicle routing problem, VRP) es un problema combinatorio, en el que se buscan las mejores rutas desde un depósito a varios clientes y de regreso al depósito, dado un número de vehículos disponibles. Hay varias formulaciones posibles, que extienden una serie de formulaciones del problema del vendedor viajero [Applegate et al, 2006]. Aquí, presentamos una formulación conocida como MTZ [Miller, Tucker, Zemlin, 1960].</p>
+<p>Sea <span class="math notranslate nohighlight">\(n\)</span> el número de clientes (indexado como <span class="math notranslate nohighlight">\(1,\dots,n\)</span>) y <span class="math notranslate nohighlight">\(K\)</span> el número de vehículos disponibles. Sea <span class="math notranslate nohighlight">\(x_{ij} = \{0,1\}\)</span> la variable de decisión binaria que, si es <span class="math notranslate nohighlight">\(1\)</span>, activa el segmento desde el nodo <span class="math notranslate nohighlight">\(i\)</span> al nodo <span class="math notranslate nohighlight">\(j\)</span>. El índice de nodo va desde <span class="math notranslate nohighlight">\(0\)</span> a <span class="math notranslate nohighlight">\(n\)</span>, donde <span class="math notranslate nohighlight">\(0\)</span> es (por convención) el depósito. Hay el doble de variables de decisión distintas que de aristas. Por ejemplo, en un grafo completamente conectado, hay <span class="math notranslate nohighlight">\(n(n+1)\)</span> variables de decisión binarias.</p>
+<p>Si dos nodos <span class="math notranslate nohighlight">\(i\)</span> y <span class="math notranslate nohighlight">\(j\)</span> tienen un enlace desde <span class="math notranslate nohighlight">\(i\)</span> a <span class="math notranslate nohighlight">\(j\)</span>, escribimos <span class="math notranslate nohighlight">\(i \sim j\)</span>. También denotamos con <span class="math notranslate nohighlight">\(\delta(i)^+\)</span> el conjunto de nodos a los que <span class="math notranslate nohighlight">\(i\)</span> tiene un enlace, es decir, <span class="math notranslate nohighlight">\(j \in \delta(i)^+\)</span> si y solo si <span class="math notranslate nohighlight">\(i \sim j\)</span>. De manera similar, denotamos con <span class="math notranslate nohighlight">\(\delta(i)^-\)</span> el conjunto de nodos que están conectados a <span class="math notranslate nohighlight">\(i\)</span>, en el sentido de que <span class="math notranslate nohighlight">\(j \in \delta(i)^-\)</span> si y solo si <span class="math notranslate nohighlight">\(j \sim i\)</span>.</p>
+<p>Además, consideramos variables continuas, para todos los nodos <span class="math notranslate nohighlight">\(i = 1,\dots, n\)</span>, denotadas <span class="math notranslate nohighlight">\(u_i\)</span>. Estas variables son necesarias en la formulación MTZ del problema para eliminar sub-recorridos entre clientes.</p>
+<p>El VRP puede formularse como:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[(VRP) \quad  f = \min_{\{x_{ij}\}_{i\sim j}\in \{0,1\}, \{u_i\}_{i=1,\dots,n}\in \mathbb{R}} \quad \sum_{i \sim j} w_{ij} x_{ij}\]</div>
+</div>
+<p>sujeto a la restricción de visita de nodos:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{j \in \delta(i)^+} x_{ij} = 1, \,\sum_{j \in \delta(i)^-} x_{ji} = 1,\, \forall i \in \{1,\dots,n\},\]</div>
+</div>
+<p>las restricciones de las visitas al depósito:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum_{i \in \delta(0)^+} x_{0i} = K, \, \sum_{j \in \delta(0)^+} x_{j0} = K,\]</div>
+</div>
+<p>y las restricciones de eliminación del sub-recorrido:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u_i - u_j + Q x_{ij} \leq Q-q_j, \, \forall i \sim j, \,i ,j \neq 0, \quad q_i \leq u_i \leq Q,\, \forall i, i \neq 0.\]</div>
+</div>
+<p>En particular,</p>
+<ul class="simple">
+<li><p>La función de costo es lineal en las funciones de costo y pondera los diferentes arcos basados en un peso positivo <span class="math notranslate nohighlight">\(w_{ij}&gt;0\)</span> (típicamente la distancia entre el nodo <span class="math notranslate nohighlight">\(i\)</span> y el nodo <span class="math notranslate nohighlight">\(j\)</span>);</p></li>
+<li><p>El primer conjunto de restricciones impone que desde y hacia cada cliente, solo se permite un enlace;</p></li>
+<li><p>El segundo conjunto de restricciones impone que desde y hacia el depósito, se permiten exactamente <span class="math notranslate nohighlight">\(K\)</span> enlaces;</p></li>
+<li><p>El tercer conjunto de restricciones impone las restricciones de eliminación del sub-recorrido y son cotas en <span class="math notranslate nohighlight">\(u_i\)</span>, con <span class="math notranslate nohighlight">\(Q&gt;q_j&gt;0\)</span>, y <span class="math notranslate nohighlight">\(Q,q_i \in \mathbb{R}\)</span>.</p></li>
+</ul>
+</section>
+<section id="Solución-clásica">
+<h2>Solución clásica<a class="headerlink" href="#Solución-clásica" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Podemos resolver el VRP de forma clásica, por ejemplo, utilizando CPLEX. CPLEX usa un método de bifurcación, unión y corte para encontrar una solución aproximada del VRP, que, en esta formulación, es un programa lineal de enteros mixtos (MILP). En aras de la notación, empaquetamos las variables de decisión en un vector como</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[{\bf z} = [x_{01},x_{02},\ldots,x_{10}, x_{12},\ldots,x_{n(n-1)}]^T,\]</div>
+</div>
+<p>donde <span class="math notranslate nohighlight">\({\bf z} \in \{0,1\}^N\)</span>, con <span class="math notranslate nohighlight">\(N = n (n+1)\)</span>. Entonces, la dimensión del problema se escala cuadráticamente con el número de nodos. Denotemos la solución óptima con <span class="math notranslate nohighlight">\({\bf z}^*\)</span>, y el costo óptimo asociado <span class="math notranslate nohighlight">\(f^*\)</span>.</p>
+</section>
+<section id="Solución-cuántica">
+<h2>Solución cuántica<a class="headerlink" href="#Solución-cuántica" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Aquí, demostramos un enfoque que combina los pasos de la computación clásica y cuántica, siguiendo el enfoque de optimización cuántica aproximada de Farhi, Goldstone y Gutmann (2014). En particular, utilizamos el solucionador propio cuántico variacional (variational quantum eigensolver, VQE). Destacamos que dado el uso de profundidad limitada de los circuitos cuánticos empleados (formas variacionales), es difícil discutir la aceleración del algoritmo, ya que la solución obtenida es de naturaleza heurística. Al mismo tiempo, debido a la naturaleza e importancia de los problemas de destino, vale la pena investigar enfoques heurísticos, que pueden ser útiles para algunas clases de problemas.</p>
+<p>El algoritmo puede resumirse de la siguiente manera:</p>
+<ul class="simple">
+<li><p>Pasos de preparación:</p>
+<ul>
+<li><p>Transformar el problema combinatorio en un problema de optimización de polinomios binarios con restricciones de igualdad solamente;</p></li>
+<li><p>Mapear el problema resultante en un Hamiltoniano Ising (<span class="math notranslate nohighlight">\(H\)</span>) para las variables <span class="math notranslate nohighlight">\({\bf z}\)</span> y la base <span class="math notranslate nohighlight">\(Z\)</span>, mediante métodos de penalización si es necesario;</p></li>
+<li><p>Elegir la profundidad del circuito cuántico <span class="math notranslate nohighlight">\(m\)</span>. Se debe tener en cuenta que la profundidad se puede modificar de forma adaptativa.</p></li>
+<li><p>Elegir un conjunto de controles <span class="math notranslate nohighlight">\(\theta\)</span> y crear una función de prueba <span class="math notranslate nohighlight">\(\big|\psi(\boldsymbol\theta)\rangle\)</span>, construida usando un circuito cuántico hecho de compuertas C-Phase y rotaciones Y de un solo qubit, parametrizada por los componentes de <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span>.</p></li>
+</ul>
+</li>
+<li><p>Pasos del algoritmo:</p>
+<ul>
+<li><p>Evaluar <span class="math notranslate nohighlight">\(C(\boldsymbol\theta) = \langle\psi(\boldsymbol\theta)\big|H\big|\psi(\boldsymbol\theta)\rangle\)</span> muestreando el resultado del circuito en la base Z y sumando los valores esperados de los términos Ising individuales. En general, se deben estimar diferentes puntos de control alrededor de <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span>, dependiendo del optimizador clásico elegido.</p></li>
+<li><p>Utilizar un optimizador clásico para elegir un nuevo conjunto de controles.</p></li>
+<li><p>Continuar hasta que <span class="math notranslate nohighlight">\(C(\boldsymbol\theta)\)</span> alcance un mínimo, lo suficientemente cercano a la solución <span class="math notranslate nohighlight">\(\boldsymbol\theta^*\)</span>.</p></li>
+<li><p>Utilizar la última <span class="math notranslate nohighlight">\(\boldsymbol\theta\)</span> para generar un conjunto final de muestras de la distribución <span class="math notranslate nohighlight">\(\Big|\langle z_i\big|\psi(\boldsymbol\theta)\rangle\Big|^2\;\forall i\)</span> para obtener la respuesta.</p></li>
+</ul>
+</li>
+</ul>
+<p>Hay muchos parámetros en todo momento, en particular la elección de la función de onda de prueba. A continuación, consideramos:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\big|\psi(\theta)\rangle = [U_\mathrm{simple}(\boldsymbol\theta) U_\mathrm{entrelazador}]^m \big|+\rangle\]</div>
+</div>
+<p>donde <span class="math notranslate nohighlight">\(U_\mathrm{entrelazador}\)</span> es una colección de compuertas C-Phase (compuertas totalmente entrelazadas), y <span class="math notranslate nohighlight">\(U_\mathrm{simple}(\theta) = \prod_{i=1}^N Y(\theta_{i})\)</span>, donde <span class="math notranslate nohighlight">\(N\)</span> es el número de qubits y <span class="math notranslate nohighlight">\(m\)</span> es la profundidad del circuito cuántico.</p>
+<section id="Construir-el-Hamiltoniano-de-Ising">
+<h3>Construir el Hamiltoniano de Ising<a class="headerlink" href="#Construir-el-Hamiltoniano-de-Ising" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Del <span class="math notranslate nohighlight">\(VRP\)</span> se puede construir una optimización polinomial binaria con restricciones de igualdad solo considerando los casos en los que <span class="math notranslate nohighlight">\(K=n-1\)</span>. En estos casos, las restricciones de eliminación del sub-recorrido no son necesarias y el problema está solamente en la variable <span class="math notranslate nohighlight">\({\bf z}\)</span>. En particular, podemos escribir un Lagrangiano aumentado como</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[(IH) \quad H = \sum_{i \sim j} w_{ij} x_{ij}  + A \sum_{i \in \{1,\dots,n\}} \Big(\sum_{j \in \delta(i)^+} x_{ij} - 1\Big)^2 + A \sum_{i \in \{1,\dots,n\}}\Big(\sum_{j \in \delta(i)^-} x_{ji} - 1\Big)^2 +A \Big(\sum_{i \in \delta(0)^+} x_{0i} - K\Big)^2 + A\Big(\sum_{j \in \delta(0)^+} x_{j0} - K\Big)^2\]</div>
+</div>
+<p>donde <span class="math notranslate nohighlight">\(A\)</span> es un parámetro suficientemente grande.</p>
+</section>
+<section id="Del-Hamiltoniano-a-la-formulación-QP">
+<h3>Del Hamiltoniano a la formulación QP<a class="headerlink" href="#Del-Hamiltoniano-a-la-formulación-QP" title="Enlace permanente a este encabezado">#</a></h3>
+<p>En el vector <span class="math notranslate nohighlight">\({\bf z}\)</span>, y para un grafo completo (<span class="math notranslate nohighlight">\(\delta(i)^+ = \delta(i)^- = \{0,1,\dots,i-1,i+1,\dots,n\}\)</span>), <span class="math notranslate nohighlight">\(H\)</span> se puede escribir de la siguiente manera.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\min_{{\bf z}\in \{0,1\}^{n(n+1)}} {\bf w}^T {\bf z}  + A \sum_{i \in \{1,\dots,n\}} \Big({\bf e}_i \otimes {\bf 1}_n^T {\bf z} - 1\Big)^2 + A \sum_{i \in \{1,\dots,n\}}\Big({\bf v}_i^T {\bf z} - 1\Big)^2 + A \Big(({\bf e}_0 \otimes {\bf 1}_n)^T{\bf z} - K\Big)^2 + A\Big({\bf v}_0^T{\bf z} - K\Big)^2.\]</div>
+</div>
+<p>Esto es:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\min_{\bf z\in \{0,1\}^{n(n+1)}} \bf z^T {\bf Q} \bf z + {\bf g}^T \bf z + c,\]</div>
+</div>
+<p>Donde: el primer término:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[{\bf Q} = A \sum_{i \in \{0,1,\dots,n\}}  \Big[({\bf e}_i \otimes {\bf 1}_n)({\bf e}_i \otimes {\bf 1}_n)^T + {\bf v}_i{\bf v}_i^T \Big]\]</div>
+</div>
+<p>El segundo término:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[{\bf g} = {\bf w} -2 A \sum_{i \in \{1,\dots,n\}} \Big[({\bf e}_i \otimes {\bf 1}_n) + {\bf v}_i \Big] -2 A K \Big[({\bf e}_0 \otimes {\bf 1}_n) + {\bf v}_0 \Big]\]</div>
+</div>
+<p>El tercer término:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[c = 2An +2AK^2.\]</div>
+</div>
+<p>La formulación QP del Hamiltoniano de Ising está lista para el uso de VQE. Resolveremos el QP usando la pila de optimización disponible en Qiskit Optimization.</p>
+</section>
+</section>
+<section id="Referencias">
+<h2>Referencias<a class="headerlink" href="#Referencias" title="Enlace permanente a este encabezado">#</a></h2>
+<p>[1] E. Farhi, J. Goldstone, S. Gutmann e-print arXiv 1411.4028, 2014</p>
+<p>[2] <a class="reference internal" href="06_examples_max_cut_and_tsp.html"><span class="doc">Max-Cut y Problema del Vendedor Viajero</span></a></p>
+<p>[3] C. E. Miller, E. W. Tucker, and R. A. Zemlin (1960). «Integer Programming Formulations and Travelling Salesman Problems». J. ACM. 7: 326–329. doi:10.1145/321043.321046.</p>
+<p>[4] D. L. Applegate, R. M. Bixby, V. Chvátal, and W. J. Cook (2006). The Traveling Salesman Problem. Princeton University Press, ISBN 978-0-691-12993-8.</p>
+</section>
+<section id="Inicialización">
+<h2>Inicialización<a class="headerlink" href="#Inicialización" title="Enlace permanente a este encabezado">#</a></h2>
+<p>En primer lugar, cargamos todos los paquetes que necesitamos. Se requiere CPLEX para los cálculos clásicos. Puedes instalarlo mediante <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'qiskit-optimization[cplex]'</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cplex</span>
+    <span class="kn">from</span> <span class="nn">cplex.exceptions</span> <span class="kn">import</span> <span class="n">CplexError</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Cplex not found.&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">SamplingVQE</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+</pre></div>
+</div>
+</div>
+<p>Luego inicializamos las variables</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the problem by defining the parameters</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># number of nodes + depot (n+1)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># number of vehicles</span>
+</pre></div>
+</div>
+</div>
+<p>Definimos una clase de inicialización que coloca aleatoriamente los nodos en un plano 2-D y calcula la distancia entre ellos.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the data</span>
+<span class="k">class</span> <span class="nc">Initializer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">generate_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+        <span class="c1"># np.random.seed(33)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1543</span><span class="p">)</span>
+
+        <span class="n">xc</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+        <span class="n">yc</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+
+        <span class="n">instance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+                <span class="n">instance</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">xc</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="n">xc</span><span class="p">[</span><span class="n">jj</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">yc</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="n">yc</span><span class="p">[</span><span class="n">jj</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">instance</span><span class="p">[</span><span class="n">jj</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">instance</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the problem by randomly generating the instance</span>
+<span class="n">initializer</span> <span class="o">=</span> <span class="n">Initializer</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">initializer</span><span class="o">.</span><span class="n">generate_instance</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Solución-clásica-utilizando-IBM-ILOG-CPLEX">
+<h2>Solución clásica utilizando IBM ILOG CPLEX<a class="headerlink" href="#Solución-clásica-utilizando-IBM-ILOG-CPLEX" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Para una solución clásica, utilizamos IBM ILOG CPLEX. CPLEX puede encontrar la solución exacta de este problema. Primero definimos una clase ClassicalOptimizer que codifica el problema de una manera que CPLEX pueda resolver, y luego instanciamos la clase y la resolvemos.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ClassicalOptimizer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>  <span class="c1"># number of nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>  <span class="c1"># number of vehicles</span>
+
+    <span class="k">def</span> <span class="nf">compute_allowed_combinations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">factorial</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span> <span class="o">/</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cplex_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># refactoring</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span>
+
+        <span class="n">my_obj</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">my_ub</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">my_lb</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">my_ctype</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;I&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;C&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="p">)</span>
+
+        <span class="n">my_rhs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="p">([</span><span class="n">K</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+            <span class="o">+</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))]</span>
+            <span class="o">+</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="n">my_sense</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;E&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)])</span>
+            <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;L&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))])</span>
+            <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;E&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)])</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">my_prob</span> <span class="o">=</span> <span class="n">cplex</span><span class="o">.</span><span class="n">Cplex</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populatebyrow</span><span class="p">(</span><span class="n">my_prob</span><span class="p">,</span> <span class="n">my_obj</span><span class="p">,</span> <span class="n">my_ub</span><span class="p">,</span> <span class="n">my_lb</span><span class="p">,</span> <span class="n">my_ctype</span><span class="p">,</span> <span class="n">my_sense</span><span class="p">,</span> <span class="n">my_rhs</span><span class="p">)</span>
+
+            <span class="n">my_prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="n">CplexError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">my_prob</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">my_prob</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">get_objective_value</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">populatebyrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">my_obj</span><span class="p">,</span> <span class="n">my_ub</span><span class="p">,</span> <span class="n">my_lb</span><span class="p">,</span> <span class="n">my_ctype</span><span class="p">,</span> <span class="n">my_sense</span><span class="p">,</span> <span class="n">my_rhs</span><span class="p">):</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+        <span class="n">prob</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">set_sense</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">minimize</span><span class="p">)</span>
+        <span class="n">prob</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">my_obj</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">my_lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">my_ub</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">my_ctype</span><span class="p">)</span>
+
+        <span class="n">prob</span><span class="o">.</span><span class="n">set_log_stream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">prob</span><span class="o">.</span><span class="n">set_error_stream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">prob</span><span class="o">.</span><span class="n">set_warning_stream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">prob</span><span class="o">.</span><span class="n">set_results_stream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="n">ii</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="n">ii</span><span class="p">)]</span>
+            <span class="n">coef</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">,</span> <span class="n">coef</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+            <span class="n">coef</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">,</span> <span class="n">coef</span><span class="p">])</span>
+
+        <span class="c1"># Sub-tour elimination constraints:</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">ii</span> <span class="o">!=</span> <span class="n">jj</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ii</span> <span class="o">*</span> <span class="n">jj</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+
+                    <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="p">(</span><span class="n">jj</span> <span class="o">*</span> <span class="n">n</span><span class="p">),</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ii</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">jj</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">coef</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">,</span> <span class="n">coef</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="p">[(</span><span class="n">ii</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">coef</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">col</span><span class="p">,</span> <span class="n">coef</span><span class="p">])</span>
+
+        <span class="n">prob</span><span class="o">.</span><span class="n">linear_constraints</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lin_expr</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">senses</span><span class="o">=</span><span class="n">my_sense</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">my_rhs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instantiate the classical optimizer class</span>
+<span class="n">classical_optimizer</span> <span class="o">=</span> <span class="n">ClassicalOptimizer</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
+
+<span class="c1"># Print number of feasible solutions</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of feasible solutions = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">classical_optimizer</span><span class="o">.</span><span class="n">compute_allowed_combinations</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Number of feasible solutions = 3.0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solve the problem in a classical fashion via CPLEX</span>
+<span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">z</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">classical_cost</span> <span class="o">=</span> <span class="n">classical_optimizer</span><span class="o">.</span><span class="n">cplex_solution</span><span class="p">()</span>
+    <span class="c1"># Put the solution in the z variable</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">ii</span> <span class="o">//</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">ii</span> <span class="o">%</span> <span class="n">n</span><span class="p">]</span>
+    <span class="c1"># Print the solution</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CPLEX may be missing.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.0, 1.0, 1.0, 0.0, 1.0, 0.0]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the solution</span>
+<span class="k">def</span> <span class="nf">visualize_solution</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">title_str</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xc</span><span class="p">)):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">xc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">yc</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">yc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;r*&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ix</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">//</span> <span class="n">n</span>
+            <span class="n">iy</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">%</span> <span class="n">n</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span>
+                <span class="n">xc</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span>
+                <span class="n">yc</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span>
+                <span class="n">xc</span><span class="p">[</span><span class="n">iy</span><span class="p">]</span> <span class="o">-</span> <span class="n">xc</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span>
+                <span class="n">yc</span><span class="p">[</span><span class="n">iy</span><span class="p">]</span> <span class="o">-</span> <span class="n">yc</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span>
+                <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">head_width</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span> <span class="o">+</span> <span class="s2">&quot; cost = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">C</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">visualize_solution</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">classical_cost</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="s2">&quot;Classical&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_07_examples_vehicle_routing_12_0.png" src="../_images/tutorials_07_examples_vehicle_routing_12_0.png" />
+</div>
+</div>
+<p>Si tienes CPLEX, la solución muestra el depósito con una estrella y las rutas seleccionadas para los vehículos con flechas.</p>
+</section>
+<section id="Solución-cuántica-desde-cero">
+<h2>Solución cuántica desde cero<a class="headerlink" href="#Solución-cuántica-desde-cero" title="Enlace permanente a este encabezado">#</a></h2>
+<p>Para la solución cuántica, utilizamos Qiskit.</p>
+<p>Primero, derivamos la solución desde cero, usando una clase QuantumOptimizer que codifica el enfoque cuántico para resolver el problema y luego lo instanciamos y lo resolvemos. Definimos los siguientes métodos dentro de la clase:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">binary_representation</span></code> : codifica el problema <span class="math notranslate nohighlight">\((M)\)</span> en términos QP (que es básicamente álgebra lineal);</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">construct_problem</span></code> : construye un problema de optimización QUBO como una instancia de <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">solve_problem</span></code>: resuelve el problema <span class="math notranslate nohighlight">\((M)\)</span> construido en el paso anterior a través del <code class="docutils literal notranslate"><span class="pre">MinimunEigenOptimizer</span></code> usando <code class="docutils literal notranslate"><span class="pre">SamplingVQE</span></code> con parámetros predeterminados;</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization</span> <span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+
+
+<span class="k">class</span> <span class="nc">QuantumOptimizer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>
+
+    <span class="k">def</span> <span class="nf">binary_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_sol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>  <span class="c1"># A parameter of cost function</span>
+
+        <span class="c1"># Determine the weights w</span>
+        <span class="n">instance_vec</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">w_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">instance_vec</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">instance_vec</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w_list</span><span class="p">)):</span>
+            <span class="n">w</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_list</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+
+        <span class="c1"># Some variables I will use</span>
+        <span class="n">Id_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">Im_n_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">Iv_n_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">Iv_n_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Iv_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">neg_Iv_n_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="n">Iv_n_1</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+
+                <span class="k">if</span> <span class="n">jj</span> <span class="o">//</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">ii</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="n">ii</span>
+
+                <span class="k">if</span> <span class="n">jj</span> <span class="o">//</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ii</span> <span class="ow">and</span> <span class="n">jj</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">count</span><span class="p">:</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">vn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Q defines the interactions between variables</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">Id_n</span><span class="p">,</span> <span class="n">Im_n_1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+        <span class="c1"># g defines the contribution from the individual variables</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">w</span>
+            <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">Iv_n_1</span><span class="p">,</span> <span class="n">Iv_n</span><span class="p">)</span> <span class="o">+</span> <span class="n">vn</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">neg_Iv_n_1</span><span class="p">,</span> <span class="n">Iv_n</span><span class="p">)</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># c is the constant offset</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">x_sol</span><span class="p">)</span>
+            <span class="c1"># Evaluates the cost distance from a binary representation of a path</span>
+            <span class="n">fun</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="o">+</span> <span class="n">c</span>
+            <span class="p">)</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">x_sol</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">Q</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">construct_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuadraticProgram</span><span class="p">:</span>
+        <span class="n">qp</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">qp</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span> <span class="o">=</span> <span class="n">Q</span>
+        <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">g</span>
+        <span class="n">qp</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="k">return</span> <span class="n">qp</span>
+
+    <span class="k">def</span> <span class="nf">solve_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qp</span><span class="p">):</span>
+        <span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">10598</span>
+        <span class="n">vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">SPSA</span><span class="p">(),</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">RealAmplitudes</span><span class="p">())</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">min_eigen_solver</span><span class="o">=</span><span class="n">vqe</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+        <span class="c1"># compute cost of the obtained result</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_representation</span><span class="p">(</span><span class="n">x_sol</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">level</span>
+</pre></div>
+</div>
+</div>
+<section id="Paso-1">
+<h3>Paso 1<a class="headerlink" href="#Paso-1" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Crear una instancia de la clase del optimizador cuántico con parámetros:</p>
+<ul class="simple">
+<li><p>la instancia;</p></li>
+<li><p>el número de nodos y vehículos <code class="docutils literal notranslate"><span class="pre">n</span></code> y <code class="docutils literal notranslate"><span class="pre">K</span></code>;</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instantiate the quantum optimizer class with parameters:</span>
+<span class="n">quantum_optimizer</span> <span class="o">=</span> <span class="n">QuantumOptimizer</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Paso-2">
+<h3>Paso 2<a class="headerlink" href="#Paso-2" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Codificar el problema como una formulación binaria (IH-QP).</p>
+<p>Comprobación: asegurarse que la formulación binaria del optimizador cuántico es correcta (es decir, que da el mismo costo dada la misma solución).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if the binary representation is correct</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">binary_cost</span> <span class="o">=</span> <span class="n">quantum_optimizer</span><span class="o">.</span><span class="n">binary_representation</span><span class="p">(</span><span class="n">x_sol</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Binary cost:&quot;</span><span class="p">,</span> <span class="n">binary_cost</span><span class="p">,</span> <span class="s2">&quot;classical cost:&quot;</span><span class="p">,</span> <span class="n">classical_cost</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">binary_cost</span> <span class="o">-</span> <span class="n">classical_cost</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Binary formulation is correct&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in the binary formulation&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not verify the correctness, due to CPLEX solution being unavailable.&quot;</span><span class="p">)</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">binary_cost</span> <span class="o">=</span> <span class="n">quantum_optimizer</span><span class="o">.</span><span class="n">binary_representation</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Binary cost:&quot;</span><span class="p">,</span> <span class="n">binary_cost</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">NameError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Please run the cells above first.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Binary cost: 132.11148115684045 classical cost: 132.1114811568365
+Binary formulation is correct
+</pre></div></div>
+</div>
+</section>
+<section id="Paso-3">
+<h3>Paso 3<a class="headerlink" href="#Paso-3" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Codificar el problema como una instancia de <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qp</span> <span class="o">=</span> <span class="n">quantum_optimizer</span><span class="o">.</span><span class="n">construct_problem</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Paso-4">
+<h3>Paso 4<a class="headerlink" href="#Paso-4" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Resolver el problema a través de <code class="docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code> de la pila de optimización. Nótese bien que dependiendo del número de qubits, la simulación de vector de estado puede tardar un poco; por ejemplo, con 12 qubits, se necesitan más de 12 horas. El registro (log) es útil para ver qué está haciendo el programa.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">quantum_solution</span><span class="p">,</span> <span class="n">quantum_cost</span> <span class="o">=</span> <span class="n">quantum_optimizer</span><span class="o">.</span><span class="n">solve_problem</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">quantum_solution</span><span class="p">,</span> <span class="n">quantum_cost</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1. 1. 1. 0. 1. 0.] 132.11148115684045
+</pre></div></div>
+</div>
+</section>
+<section id="Paso-5">
+<h3>Paso 5<a class="headerlink" href="#Paso-5" title="Enlace permanente a este encabezado">#</a></h3>
+<p>Visualizar la solución</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Put the solution in a way that is compatible with the classical variables</span>
+<span class="n">x_quantum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">kk</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ii</span> <span class="o">//</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">ii</span> <span class="o">%</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">x_quantum</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantum_solution</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span>
+        <span class="n">kk</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+<span class="c1"># visualize the solution</span>
+<span class="n">visualize_solution</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">x_quantum</span><span class="p">,</span> <span class="n">quantum_cost</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="s2">&quot;Quantum&quot;</span><span class="p">)</span>
+
+<span class="c1"># and visualize the classical for comparison</span>
+<span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">visualize_solution</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">classical_cost</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="s2">&quot;Classical&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_07_examples_vehicle_routing_25_0.png" src="../_images/tutorials_07_examples_vehicle_routing_25_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_07_examples_vehicle_routing_25_1.png" src="../_images/tutorials_07_examples_vehicle_routing_25_1.png" />
+</div>
+</div>
+<p>Las gráficas presentan el depósito con una estrella y las rutas seleccionadas para los vehículos con flechas. Ten en cuenta que en este caso particular, podemos encontrar la solución óptima de la formulación QP, que coincide con la solución óptima del ILP.</p>
+<p>Ten en cuenta que VQE es una heurística que trabaja en la formulación QP del Hamiltoniano de Ising. Para elecciones adecuadas de A, los óptimos locales de la formulación de QP serán soluciones factibles para el ILP. Mientras que para algunos casos pequeños, como el anterior, podemos encontrar soluciones óptimas de la formulación QP que coincidan con los óptimos del ILP, encontrar soluciones óptimas del ILP es más difícil que encontrar los óptimos locales de la formulación QP, en general, que a su vez es más difícil que encontrar soluciones viables del ILP. Incluso dentro del VQE, se pueden proporcionar garantías más sólidas, para formas variacionales específicas (funciones de onda de prueba).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="k">qiskit_version_table</span>
+<span class="o">%</span><span class="k">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.0</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.1</td></tr><tr><td><code>qiskit-optimization</code></td><td>0.5.0</td></tr><tr><td><code>qiskit-machine-learning</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.15</td></tr><tr><td>Python compiler</td><td>Clang 14.0.0 (clang-1400.0.29.102)</td></tr><tr><td>Python build</td><td>main, Oct 11 2022 22:27:25</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>4</td></tr><tr><td>Memory (Gb)</td><td>16.0</td></tr><tr><td colspan='2'>Tue Dec 06 21:53:30 2022 JST</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2022.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="08_cvar_optimization.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Mejora de la Optimización Cuántica Variacional mediante CVaR</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="06_examples_max_cut_and_tsp.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Max-Cut y Problema del Vendedor Viajero</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Rutas de Vehículos</a><ul>
+<li><a class="reference internal" href="#Introducción">Introducción</a></li>
+<li><a class="reference internal" href="#El-Modelo">El Modelo</a></li>
+<li><a class="reference internal" href="#Solución-clásica">Solución clásica</a></li>
+<li><a class="reference internal" href="#Solución-cuántica">Solución cuántica</a><ul>
+<li><a class="reference internal" href="#Construir-el-Hamiltoniano-de-Ising">Construir el Hamiltoniano de Ising</a></li>
+<li><a class="reference internal" href="#Del-Hamiltoniano-a-la-formulación-QP">Del Hamiltoniano a la formulación QP</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Referencias">Referencias</a></li>
+<li><a class="reference internal" href="#Inicialización">Inicialización</a></li>
+<li><a class="reference internal" href="#Solución-clásica-utilizando-IBM-ILOG-CPLEX">Solución clásica utilizando IBM ILOG CPLEX</a></li>
+<li><a class="reference internal" href="#Solución-cuántica-desde-cero">Solución cuántica desde cero</a><ul>
+<li><a class="reference internal" href="#Paso-1">Paso 1</a></li>
+<li><a class="reference internal" href="#Paso-2">Paso 2</a></li>
+<li><a class="reference internal" href="#Paso-3">Paso 3</a></li>
+<li><a class="reference internal" href="#Paso-4">Paso 4</a></li>
+<li><a class="reference internal" href="#Paso-5">Paso 5</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1422e3d7"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

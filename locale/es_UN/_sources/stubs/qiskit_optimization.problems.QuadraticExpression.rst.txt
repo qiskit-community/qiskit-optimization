@@ -1,0 +1,38 @@
+﻿
+
+QuadraticExpression
+================================================
+
+.. currentmodule:: qiskit_optimization.problems
+
+.. autoclass:: QuadraticExpression
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QuadraticExpression.bounds
+   .. autoattribute:: QuadraticExpression.coefficients
+   .. autoattribute:: QuadraticExpression.quadratic_program
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QuadraticExpression.evaluate
+   .. automethod:: QuadraticExpression.evaluate_gradient
+   .. automethod:: QuadraticExpression.to_array
+   .. automethod:: QuadraticExpression.to_dict
+
+   
+   

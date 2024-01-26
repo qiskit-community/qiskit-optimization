@@ -1,0 +1,701 @@
+<!doctype html>
+<html class="no-js" lang="bn-BN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="ইনডেক্স" href="../genindex.html" /><link rel="search" title="অনুসন্ধান" href="../search.html" /><link rel="next" title="এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)" href="05_admm_optimizer.html" /><link rel="prev" title="ন্যূনতম আইজেন অপটিমাইজার" href="03_minimum_eigen_optimizer.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>গ্রোভার অপ্টিমাইজার - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="অনুসন্ধান">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">শুরুর নির্দেশনা</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">পাঠসমূহ</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of পাঠসমূহ</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_quadratic_program.html">দ্বিঘাত (কোয়াড্র্যাটিক) প্রোগ্রামস</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_converters_for_quadratic_programs.html">দ্বিঘাত (কোয়াড্রাটিক) প্রোগ্রামগুলির জন্য পরিবর্তক (কনভার্টার)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">ন্যূনতম আইজেন অপটিমাইজার</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">গ্রোভার অপ্টিমাইজার</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_examples_max_cut_and_tsp.html">সর্বোচ্চ লাভ এবং ট্রাভেলিং সেলসম্যান সমস্যা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_examples_vehicle_routing.html">বাহন(ভেহিকেল) রাউটিং</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">CVaR দিয়ে পরিবর্তনশীল (ভ্যারিয়েশনাল) কোয়ান্টাম অপটিমাইজেশন উন্নতি করা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">অপ্টিমাইজেশন সমস্যার জন্য অ্যাপ্লিকেশন ক্লাস</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">কোয়ান্টাম অনুকূলকরণের (অপটিমাইজেশন) প্রস্তুতিপর্ব</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Qiskit অপ্টিমাইজেশনের সাথে ক্লাসিক্যাল অপ্টিমাইজেশন সলভার এবং মডেল ব্যবহার করা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_quantum_random_access_optimizer.html">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">এপিআই (এপ্লিকেশন প্রোগ্রামিং ইন্টারফেস) এর তথ্যসূত্র</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of এপিআই (এপ্লিকেশন প্রোগ্রামিং ইন্টারফেস) এর তথ্যসূত্র</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">অব্যাহতি পত্র</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Bengali</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/04_grover_optimizer.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/04_grover_optimizer.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/04_grover_optimizer.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/04_grover_optimizer.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">নোট</p>
+<p>এই পৃষ্ঠাটি <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/04_grover_optimizer.ipynb">docs/tutorials/04_grover_optimizer.ipynb</a> থেকে বানানো হয়েছে।</p>
+</div>
+<section id="গ্রোভার-অপ্টিমাইজার">
+<h1>গ্রোভার অপ্টিমাইজার<a class="headerlink" href="#গ্রোভার-অপ্টিমাইজার" title="Permalink to this heading">#</a></h1>
+<section id="ভূমিকা">
+<h2>ভূমিকা<a class="headerlink" href="#ভূমিকা" title="Permalink to this heading">#</a></h2>
+<p>গ্রোভার এডাপটিভ সার্চ (GAS) কে সংমিশ্রণমূলক অপ্টিমাইজেশন সমস্যার পাশাপাশি পরিবর্তনশীল (ভ্যারিয়েশনাল) অ্যালগরিদম, যেমন Variational Quantum Eigensolver (VQE) এবং Quantum Approximate Optimization Algorithm (QAOA) এর সম্ভাব্য সমাধান হিসাবে অন্বেষণ করা হয়েছে। এই অ্যালগরিদমটি একটি অব্জেক্টিভ ফাংশন এর সর্বোত্তম মানটি সন্ধান করার জন্য পুনরুক্তি ভাবে গ্রোভার অনুসন্ধান প্রয়োগ করে, যেটা প্রান্তিক হিসাবে আগের রান থেকে সর্বাধিক পরিচিত মান ব্যবহার করে। GAS-এ ব্যবহৃত অভিযোজিত ওরাকল বর্তমান প্রান্তিকের উপরে বা নীচে (যথাক্রমে সর্বাধিক এবং সর্বনিম্ন জন্য) সমস্ত মানকে স্বীকৃতি দেয়, যতক্ষণ না কোনও সর্বোত্তম সন্ধান পাওয়া যায় ততক্ষণ প্রতিটি পুনরাবৃত্তির প্রান্তিক আপডেট হয় সন্ধানের জায়গার আকার হ্রাস করে।</p>
+<p>[1] এ বর্ণিত শর্তহীন দ্বিঘাত দ্বিমিক অনুকূলায়ন (অপ্টিমাইজেশন) সমস্যাটিকে হ্রাস করার মাধ্যমে এই নোটবুকে আমরা <code class="docutils literal notranslate"><span class="pre">GroverOptimizer</span></code> এর প্রত্যেকটি উপাদান সম্পর্কে জানব যেগুলো জি এ এস-এ বর্ণিত উপায়গুলোকে ব্যবহার করে।</p>
+<section id="তথ্যসূত্র">
+<h3>তথ্যসূত্র<a class="headerlink" href="#তথ্যসূত্র" title="Permalink to this heading">#</a></h3>
+<p>[1] <a class="reference external" href="https://arxiv.org/abs/1912.04088">A. Gilliam, S. Woerner, C. Gonciulea, Grover Adaptive Search for Constrained Polynomial Binary Optimization, arXiv preprint arXiv:1912.04088 (2019).</a></p>
+</section>
+</section>
+<section id="গ্রোভার-অ্যাডাপটিভ-সার্চ">
+<h2>গ্রোভার অ্যাডাপটিভ সার্চ<a class="headerlink" href="#গ্রোভার-অ্যাডাপটিভ-সার্চ" title="Permalink to this heading">#</a></h2>
+<p>GAS এর মূল উপাদান গ্রোভার সার্চের জন্য তিনটি উপাদান প্রয়োজন:</p>
+<ol class="arabic simple">
+<li><p>একটি মান প্রস্তুতি অপারেটর <span class="math notranslate nohighlight">\(A\)</span> সার্চ স্পেসে সমস্ত মানের জন্য একটি উপরিপাতন তৈরি করে।</p></li>
+<li><p>একটি ওরাকল অপারেটর <span class="math notranslate nohighlight">\(O\)</span> যা আগ্রহের মানগুলি স্বীকৃতি দেয় এবং তাদের বিস্তার -1 দ্বারা বহুগুণ করে।</p></li>
+<li><p>Grover ব্যাপ্তি অপারেটর <span class="math notranslate nohighlight">\(D\)</span>, যা <span class="math notranslate nohighlight">\(|0\rangle_n\)</span> বিস্তার এর মান কে -১ দ্বারা গুন করে।</p></li>
+</ol>
+<p>GAS বাস্তবায়ন নির্দিষ্ট ব্যবহারের ক্ষেত্রে প্রায় পৃথক হলেও সাধারণ কাঠামো এখনও নীচে বর্ণিত পদক্ষেপগুলি আলগাভাবে অনুসরণ করে।</p>
+<div><p><img alt="a004ce19d3c2462fb5bb36ab8f1eb66e" class="no-scaled-link" src="../_images/GAS-Algorithm.png" style="width: 400px;" /></p>
+</div><p><code class="docutils literal notranslate"><span class="pre">GroverOptimizer</span></code> <span class="math notranslate nohighlight">\(A_y`নির্মাণ করতে ``QuadraticProgramToNegativeValueOracle`\)</span> ব্যবহার করে যাতে এটা :math::<cite>n</cite>-qubit রেজিস্টার প্রস্তুত করে যাতে উপরিপাতন প্রতিনিধিত্ব করতে সব <span class="math notranslate nohighlight">\(|x\rangle_n\)</span> এবং একটি <span class="math notranslate nohighlight">\(m\)</span>-qubit রেজিস্টার (আনুমানিক) <span class="math notranslate nohighlight">\(|Q(x)-y\rangle_m\)</span> উপস্থাপন করুন।তারপরে, <span class="math notranslate nohighlight">\((Q(x) - y)\)</span> নেতিবাচক সমস্ত মানগুলি <span class="math notranslate nohighlight">\(O_y\)</span> পতাকা দ্বারা চিহ্নিত করা উচিত। নোট করুন, যে আলোচিত বাস্তবায়নে, ওরাকল অপারেটরটি আসলে <span class="math notranslate nohighlight">\(y\)</span> এর থেকে স্বতন্ত্র, তবে এটি কোনো প্রয়োজন নয়। স্পষ্টতার জন্য, যখন ওরাকলটি <span class="math notranslate nohighlight">\(y\)</span> থেকে স্বতন্ত্র থাকে, তখন আমরা ওরাকলকে <span class="math notranslate nohighlight">\(O\)</span> হিসাবে উল্লেখ করব।</p>
+<p>রীত্যনুসারে <code class="docutils literal notranslate"><span class="pre">QuadraticProgramToNegativeValueOracle</span></code> <span class="math notranslate nohighlight">\(A_y\)</span> এবং <span class="math notranslate nohighlight">\(O\)</span> গঠন করে যাতে:</p>
+<div><p><img alt="9002dc693bac4385a39281e2fdc45653" class="no-scaled-link" src="../_images/a-o-dfn.png" style="width: 400px;" /></p>
+</div><p>যেখানে <span class="math notranslate nohighlight">\(|x\rangle\)</span> হল <span class="math notranslate nohighlight">\(x\)</span> অখণ্ড সংখ্যার দ্বিমিক (বাইনারি) এনকোডিং।</p>
+<p>প্রতিটি পুনরাবৃত্তিতে যেখানে প্রান্তিক <span class="math notranslate nohighlight">\(y\)</span> আপডেট করা হয়, আমরা অভিযোজিত :math:` A_y` যেমন ফাংশন মানগুলি উপরে বা নিচে স্থানান্তরিত হয় (যথাক্রমে সর্বনিম্ন এবং সর্বাধিকের জন্য) দ্বারা <span class="math notranslate nohighlight">\(y\)</span>। উদাহরণস্বরূপ, সর্বনিম্ন সন্ধানের প্রসঙ্গে, যেমন <span class="math notranslate nohighlight">\(y\)</span> এর মান হ্রাস হয়, অনুসন্ধানের স্থানো (নেতিবাচক মান) হ্রাস পায়, যতক্ষণ না কেবল সর্বনিম্ন মান থাকে। এর একটি অবয়ববিশিষ্ট উদাহরণ পরবর্তী বিভাগে খুঁজা হবে।</p>
+</section>
+<section id="GroverOptimizer-ব্যবহার-করে-কোনো-ন্যূনতম-QUBO-সমস্যার-সন্ধান-করুন">
+<h2>GroverOptimizer ব্যবহার করে কোনো ন্যূনতম QUBO সমস্যার সন্ধান করুন<a class="headerlink" href="#GroverOptimizer-ব্যবহার-করে-কোনো-ন্যূনতম-QUBO-সমস্যার-সন্ধান-করুন" title="Permalink to this heading">#</a></h2>
+<p>নিম্নলিখিত একটি লঘুকরণ সমস্যার একটি ছোট্ট উদাহরণ আছে।</p>
+<p><span class="math">\begin{eqnarray}
+\min_{x \in \{0, 1\}^3} -2x_0x_2 - x_1x_2 - 1x_0 + 2x_1 - 3x_2.
+\end{eqnarray}</span></p>
+<p>প্রাথমিক পদক্ষেপরূপে আমরা একটি ডকপ্লেক্স মডেল তৈরি করব যেটা উপরের সমস্যাটিকে সংজ্ঞায়িত করবে, তারপর মডেলটিকে একটি <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> এ রূপান্তর করতে <code class="docutils literal notranslate"><span class="pre">from_docplex()</span></code> ফাংশনটি ব্যবহার করব, যা Qiskit অনুকূলকরণে (অপ্টিমাইজেশন) একটা QUBO এর প্রতিনিধিত্ব করতে পারে।</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">GroverOptimizer</span><span class="p">,</span> <span class="n">MinimumEigenOptimizer</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.translators</span> <span class="kn">import</span> <span class="n">from_docplex_mp</span>
+<span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;x0&quot;</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;x1&quot;</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;x2&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="o">-</span><span class="n">x0</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">*</span> <span class="n">x2</span><span class="p">)</span>
+<span class="n">qp</span> <span class="o">=</span> <span class="n">from_docplex_mp</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qp</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: docplex_model1
+
+Minimize
+  -2*x0*x2 - x1*x2 - x0 + 2*x1 - 3*x2
+
+Subject to
+  No constraints
+
+  Binary variables (3)
+    x0 x1 x2
+
+</pre></div></div>
+</div>
+<p>Next, we create a <code class="docutils literal notranslate"><span class="pre">GroverOptimizer</span></code> that uses 6 qubits to encode the value, and will terminate after there have been 10 iterations of GAS without progress (i.e. the value of <span class="math notranslate nohighlight">\(y\)</span> does not change). The <code class="docutils literal notranslate"><span class="pre">solve()</span></code> function takes the <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> we created earlier, and returns a results object that contains information about the run.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grover_optimizer</span> <span class="o">=</span> <span class="n">GroverOptimizer</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">())</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">grover_optimizer</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: -6.0
+variable values: x0=1.0, x1=0.0, x2=1.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<p>এটি সর্বোত্তম সমাধানে ফলাফল <span class="math notranslate nohighlight">\(x_0 = 1\)</span>, :math:` x_1 = 0`, :math: <cite>x_2 = 1</cite> এবং সর্বোত্তম উদ্দেশ্য মান :math:` -6` (বেশিরভাগ সময়, যেহেতু এটি রন্ডমাইজড অ্যালগরিদম)। নিম্নলিখিতটিতে, কোয়ান্টাম মানের একটি বিশেষায়িত চিত্রায়ন (কাস্টম ভিজ্যুয়ালাইজেশন) এই QUBO তে প্রয়োগ হওয়া <code class="docutils literal notranslate"><span class="pre">GroverOptimizer</span></code> এর একটি সম্ভাব্য রান দেখায়।</p>
+<div><p><img alt="22875e873fb343508ff5802877330f41" class="no-scaled-link" src="../_images/GAS-QUBO-Example.png" style="width: 800px;" /></p>
+</div><p>Each graph shows a single iteration of GAS, with the current values of <span class="math notranslate nohighlight">\(r\)</span> (= iteration counter) and <span class="math notranslate nohighlight">\(y\)</span> (= threshold/offset) shown in the title. The X-axis displays the integer equivalent of the input (e.g. '101' <span class="math notranslate nohighlight">\(\rightarrow\)</span> 5), and the Y-axis shows the possible function values. As there are 3 binary variables, there are <span class="math notranslate nohighlight">\(2^3=8\)</span> possible solutions, which are shown in each graph. The color intensity indicates the probability of measuring a certain result (with bright
+intensity being the highest), while the actual color indicates the corresponding phase (see phase color-wheel below). Note that as <span class="math notranslate nohighlight">\(y\)</span> decreases, we shift all of the values up by that amount, meaning there are fewer and fewer negative values in the distribution, until only one remains (the minimum).</p>
+<div><p><img alt="fc3fd0fa5323489a8bf7ed29f85d2eda" class="no-scaled-link" src="../_images/color-wheel-phase.png" style="width: 200px;" /></p>
+</div></section>
+<section id="পরীক্ষা-করে-দেখুন-যে-GroverOptimizer-সঠিক-মানটি-পাচ্ছে">
+<h2>পরীক্ষা করে দেখুন যে GroverOptimizer সঠিক মানটি পাচ্ছে<a class="headerlink" href="#পরীক্ষা-করে-দেখুন-যে-GroverOptimizer-সঠিক-মানটি-পাচ্ছে" title="Permalink to this heading">#</a></h2>
+<p>We can verify that the algorithm is working correctly using the <code class="docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code> in Qiskit optimization.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">exact_solver</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">NumPyMinimumEigensolver</span><span class="p">())</span>
+<span class="n">exact_result</span> <span class="o">=</span> <span class="n">exact_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">exact_result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+objective function value: -6.0
+variable values: x0=1.0, x1=0.0, x2=1.0
+status: SUCCESS
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="n">qiskit_version_table</span>
+<span class="o">%</span><span class="n">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.0</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.1</td></tr><tr><td><code>qiskit-optimization</code></td><td>0.5.0</td></tr><tr><td><code>qiskit-machine-learning</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.15</td></tr><tr><td>Python compiler</td><td>Clang 14.0.0 (clang-1400.0.29.102)</td></tr><tr><td>Python build</td><td>main, Oct 11 2022 22:27:25</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>4</td></tr><tr><td>Memory (Gb)</td><td>16.0</td></tr><tr><td colspan='2'>Tue Dec 06 21:47:01 2022 JST</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2022.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="05_admm_optimizer.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="03_minimum_eigen_optimizer.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">ন্যূনতম আইজেন অপটিমাইজার</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">গ্রোভার অপ্টিমাইজার</a><ul>
+<li><a class="reference internal" href="#ভূমিকা">ভূমিকা</a><ul>
+<li><a class="reference internal" href="#তথ্যসূত্র">তথ্যসূত্র</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#গ্রোভার-অ্যাডাপটিভ-সার্চ">গ্রোভার অ্যাডাপটিভ সার্চ</a></li>
+<li><a class="reference internal" href="#GroverOptimizer-ব্যবহার-করে-কোনো-ন্যূনতম-QUBO-সমস্যার-সন্ধান-করুন">GroverOptimizer ব্যবহার করে কোনো ন্যূনতম QUBO সমস্যার সন্ধান করুন</a></li>
+<li><a class="reference internal" href="#পরীক্ষা-করে-দেখুন-যে-GroverOptimizer-সঠিক-মানটি-পাচ্ছে">পরীক্ষা করে দেখুন যে GroverOptimizer সঠিক মানটি পাচ্ছে</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=66e7639d"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

@@ -1,0 +1,29 @@
+﻿
+
+NumberPartition
+================================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: NumberPartition
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: NumberPartition.interpret
+   .. automethod:: NumberPartition.sample_most_likely
+   .. automethod:: NumberPartition.to_quadratic_program
+
+   
+   

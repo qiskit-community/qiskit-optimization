@@ -1,0 +1,29 @@
+﻿
+
+OptimizationApplication
+========================================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: OptimizationApplication
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: OptimizationApplication.interpret
+   .. automethod:: OptimizationApplication.sample_most_likely
+   .. automethod:: OptimizationApplication.to_quadratic_program
+
+   
+   

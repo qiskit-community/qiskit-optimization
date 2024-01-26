@@ -1,0 +1,74 @@
+﻿
+
+QuadraticProgram
+====================================
+
+.. currentmodule:: qiskit_optimization
+
+.. autoclass:: QuadraticProgram
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QuadraticProgram.linear_constraints
+   .. autoattribute:: QuadraticProgram.linear_constraints_index
+   .. autoattribute:: QuadraticProgram.name
+   .. autoattribute:: QuadraticProgram.objective
+   .. autoattribute:: QuadraticProgram.quadratic_constraints
+   .. autoattribute:: QuadraticProgram.quadratic_constraints_index
+   .. autoattribute:: QuadraticProgram.status
+   .. autoattribute:: QuadraticProgram.variables
+   .. autoattribute:: QuadraticProgram.variables_index
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QuadraticProgram.binary_var
+   .. automethod:: QuadraticProgram.binary_var_dict
+   .. automethod:: QuadraticProgram.binary_var_list
+   .. automethod:: QuadraticProgram.clear
+   .. automethod:: QuadraticProgram.continuous_var
+   .. automethod:: QuadraticProgram.continuous_var_dict
+   .. automethod:: QuadraticProgram.continuous_var_list
+   .. automethod:: QuadraticProgram.export_as_lp_string
+   .. automethod:: QuadraticProgram.from_ising
+   .. automethod:: QuadraticProgram.get_feasibility_info
+   .. automethod:: QuadraticProgram.get_linear_constraint
+   .. automethod:: QuadraticProgram.get_num_binary_vars
+   .. automethod:: QuadraticProgram.get_num_continuous_vars
+   .. automethod:: QuadraticProgram.get_num_integer_vars
+   .. automethod:: QuadraticProgram.get_num_linear_constraints
+   .. automethod:: QuadraticProgram.get_num_quadratic_constraints
+   .. automethod:: QuadraticProgram.get_num_vars
+   .. automethod:: QuadraticProgram.get_quadratic_constraint
+   .. automethod:: QuadraticProgram.get_variable
+   .. automethod:: QuadraticProgram.integer_var
+   .. automethod:: QuadraticProgram.integer_var_dict
+   .. automethod:: QuadraticProgram.integer_var_list
+   .. automethod:: QuadraticProgram.is_feasible
+   .. automethod:: QuadraticProgram.linear_constraint
+   .. automethod:: QuadraticProgram.maximize
+   .. automethod:: QuadraticProgram.minimize
+   .. automethod:: QuadraticProgram.prettyprint
+   .. automethod:: QuadraticProgram.quadratic_constraint
+   .. automethod:: QuadraticProgram.read_from_lp_file
+   .. automethod:: QuadraticProgram.remove_linear_constraint
+   .. automethod:: QuadraticProgram.remove_quadratic_constraint
+   .. automethod:: QuadraticProgram.substitute_variables
+   .. automethod:: QuadraticProgram.to_ising
+   .. automethod:: QuadraticProgram.write_to_lp_file
+
+   
+   

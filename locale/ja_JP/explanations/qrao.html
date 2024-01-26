@@ -1,0 +1,744 @@
+<!doctype html>
+<html class="no-js" lang="ja-JP">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="検索" href="../search.html" /><link rel="next" title="Release Notes" href="../release_notes.html" /><link rel="prev" title="Qiskit Optimization の説明" href="index.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>量子ランダムアクセス最適化 (QRAO) の背景： 量子緩和、量子ランダムアクセス符号、丸めスキーム - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="検索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">はじめに</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">移行ガイド</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of 移行ガイド</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 移行ガイド</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 移行ガイド</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">チュートリアル</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of チュートリアル</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_quadratic_program.html">二次計画法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/02_converters_for_quadratic_programs.html">二次計画法のコンバーター</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/03_minimum_eigen_optimizer.html">最小固有値オプティマイザー (Minimum Eigen Optimizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_grover_optimizer.html">グローバーオプティマイザー</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/05_admm_optimizer.html">ADMM オプティマイザー</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/06_examples_max_cut_and_tsp.html">最大カット問題とセールスマン巡回問題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/07_examples_vehicle_routing.html">配車ルーティング</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/08_cvar_optimization.html">CVaRを使用した変分量子最適化の改善</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/09_application_classes.html">最適化問題のアプリケーション・クラス</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/10_warm_start_qaoa.html">ウォーム・スタート・量子最適化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/11_using_classical_optimization_solvers_and_models.html">Qiskit Optimization での古典的最適化ソルバーとモデルの使用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/12_quantum_random_access_optimizer.html">量子ランダムアクセス最適化 (Quantum Random Access Optimization)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">API リファレンス</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API リファレンス</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">説明</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of 説明</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">量子ランダムアクセス最適化 (QRAO) の背景： <em>量子緩和、量子ランダムアクセス符号、丸めスキーム</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">リリースノート</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Japanese</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/explanations/qrao.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/explanations/qrao.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/explanations/qrao.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/explanations/qrao.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <br><br><br><section id="background-on-quantum-random-access-optimization-quantum-relaxations-quantum-random-access-codes-rounding-schemes">
+<h1>量子ランダムアクセス最適化 (QRAO) の背景： <em>量子緩和、量子ランダムアクセス符号、丸めスキーム</em><a class="headerlink" href="#background-on-quantum-random-access-optimization-quantum-relaxations-quantum-random-access-codes-rounding-schemes" title="この見出しへのパーマリンク">#</a></h1>
+<p>この資料では、量子ランダムアクセス最適化の背後にある概念について、より深く考察します。</p>
+<section id="relaxations">
+<h2>緩和（リラクゼーション）<a class="headerlink" href="#relaxations" title="この見出しへのパーマリンク">#</a></h2>
+<p>バイナリ変数 <span class="math notranslate nohighlight">\(m_i \in \{-1,1\}\)</span> に対して定義されたバイナリ最適化問題を考えてみましょう。<span class="math notranslate nohighlight">\(0/1\)</span> 変数の代わりに <span class="math notranslate nohighlight">\(\pm 1\)</span> 変数を使用するという選択は重要ではありませんが、この問題を量子観測量の観点から再キャストし始めるときに、表記の点で便利です。 私たちは主に <a class="reference external" href="https://en.wikipedia.org/wiki/Quadratic_unconstrained_binary_optimization">2 次の制約なし 2 値最適化 (QUBO) 問題</a> に興味を持ちますが、このドキュメントのアイデアは 2 次以上の項を含む問題にも簡単に拡張でき、非 2 値変数または制約付き変数の問題は多くの場合 QUBO として再キャストできます。 (この変換にはある程度のオーバーヘッドが発生します)。</p>
+<p>数理最適化において、 <a class="reference external" href="https://en.wikipedia.org/wiki/Relaxation_%28approximation%29">緩和(リラクゼーション)</a> とは、ある難問を取り上げ、その問題の類似バージョンにマッピングする戦略であり、(通常は) より簡単に解くことができます。ここでの核となる考え方は、有用な緩和の場合、緩和された問題の解が元の問題についての情報を与え、より良い解を発見することを可能にするということです。緩和の例としては、離散最適化問題を連続変数で最適化するという単純なものがあります。緩和された問題の解が得られると、ソルバーは連続値の緩和された解から離散解を抽出する戦略を見つけなければなりません。緩和解を元の問題の許容解集合にマッピングするこのプロセスは、しばしば <strong>丸め(rounding)</strong> と呼ばれます。</p>
+<p>緩和と丸めの具体的な例としては、 <a class="reference external" href="https://en.wikipedia.org/wiki/Semidefinite_programming#Example_3_(Goemans%E2%80%93Williamson_max_cut_approximation_algorithm)">MaxCutのGoemans-Williamsonアルゴリズム</a> を参照してください。</p>
+<p>一般性を失うことなく、このドキュメントの残りの部分では、グラフ <span class="math notranslate nohighlight">\(G = (V,E)\)</span> 上で定義された <a class="reference external" href="https://en.wikipedia.org/wiki/Maximum_cut">MaxCut</a> 目的関数を考えます。我々の目的は、頂点 <span class="math notranslate nohighlight">\(V\)</span> を2つの集合 (<span class="math notranslate nohighlight">\(+1\)</span> and <span class="math notranslate nohighlight">\(-1\)</span>) に分割し、両方の集合を結ぶ辺の数を最大にするような分割を見つけることです。より具体的には、 <span class="math notranslate nohighlight">\(v_i \in V\)</span> に2値変数 <span class="math notranslate nohighlight">\(m_i \in \{-1, 1\}\)</span> を代入し、変数代入の <em>cut</em> を次のように定義します：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{cut}(m) = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-m_i m_j)\]</div>
+</div>
+</section>
+<section id="quantum-relaxation">
+<h2>量子緩和<a class="headerlink" href="#quantum-relaxation" title="この見出しへのパーマリンク">#</a></h2>
+<p>我々の目的は、MaxCut目的関数の緩和を定義することです。これは、目的関数の2値変数を単一量子ビット パウリ観測量の空間にマッピングし、 cut(<span class="math notranslate nohighlight">\(m\)</span>) への実行可能な入力の集合を単一量子ビット量子積状態の空間に埋め込むことによって行います。この埋め込みを <span class="math notranslate nohighlight">\(F\)</span> とします：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[F: \{-1,1\}^{M} \mapsto \mathcal{D}(\mathbb{C}^{2^n}),\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{cut}(m) \mapsto \text{Tr}\big(H\cdot F(m)\big),\]</div>
+</div>
+<p>ここで、 <span class="math notranslate nohighlight">\(M = |V|\)</span> であり、 <span class="math notranslate nohighlight">\(H\)</span> は目的関数を符号化した量子ハミルトニアンです。</p>
+<p>これが我々の問題の <a class="reference external" href="https://en.wikipedia.org/wiki/Relaxation_%28approximation%29#Properties">有効な緩和</a> であるためには、次のようでなければなりません：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{cut}(m) \geq \text{Tr}\big(H\cdot F(m)\big)\qquad \forall m \in \{-1,1\}^M.\]</div>
+</div>
+<p>これが真であることを保証するために、我々は緩和が目的関数と <strong>交換する</strong> というより強い条件を強制します。言い換えると、 cut(<span class="math notranslate nohighlight">\(m\)</span>) は単に上限を定めるのではなく、 <span class="math notranslate nohighlight">\(m \in \{-1,1\}^M\)</span> に対する緩和された目的関数と等しくなります。 この詳細は、量子緩和を明示的に定義するときにさらに重要になります。</p>
+</section>
+<section id="a-simple-quantum-relaxation">
+<h2>簡単な量子緩和<a class="headerlink" href="#a-simple-quantum-relaxation" title="この見出しへのパーマリンク">#</a></h2>
+<p>単一量子ビット量子ランダムアクセス符号（QRAC）に基づく完全な量子緩和スキームを説明する前に、まず、量子緩和と丸め込みの言語で議論された、ユーザーにとって馴染み深い <a class="reference external" href="https://github.com/Qiskit/qiskit-optimization/blob/main/docs/tutorials/06_examples_max_cut_and_tsp.ipynb">量子最適化</a> について説明することが役に立つかもしれません。</p>
+<p>埋め込みを考慮して、</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[F^{(1)}: m \in \{-1,1\}^M \mapsto \{|0\rangle,|1\rangle\}^{\otimes M},\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{cut}(m) \mapsto \text{Tr}\big(H^{(1)}F^{(1)}(m)\big),\quad  H^{(1)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-Z_i Z_j),\]</div>
+</div>
+<p>ここで、 <span class="math notranslate nohighlight">\(Z_i\)</span> は <span class="math notranslate nohighlight">\(i\)</span>’ 番目の量子ビットで定義される単一量子ビットのPauli-Z観測量と、他のすべての量子ビットの恒等項を表します。この変換が我々の問題の有効な緩和であることを納得するのは十分です。特に：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{cut}(m) = \text{Tr}\big(H^{(1)}F^{(1)}(m)\big) \quad \forall m \in \{-1,1\}^M\]</div>
+</div>
+<p>この種の埋め込みは、現在、多くの <a class="reference external" href="https://github.com/Qiskit/qiskit-optimization/blob/main/docs/tutorials/03_minimum_eigen_optimizer.ipynb">QAOAやVQEベースのアプローチ</a> を含む、多くの近未来量子最適化アルゴリズムで使用されています。私たちの問題の緩和版では <span class="math notranslate nohighlight">\(\{|0\rangle,|1\rangle\}^{\otimes M}\)</span> の形式の入力に対する目的関数 cut(<span class="math notranslate nohighlight">\(m\)</span>) を正確に再現できますが、そのような状態の連続的な重ね合わせを使って <span class="math notranslate nohighlight">\(H^{(1)}\)</span> を自由に評価することもできます。これは、連続値を用いて目的関数を最適化するような最適化問題を古典的に緩和する方法と類似しています。</p>
+<p>重要なことは、 <strong>丸められた</strong> 緩和解を元の問題の許容解の集合に戻す実用的な方法がある場合にのみ、緩和は有用であるということです。この特殊な量子緩和では、緩和された解の各量子ビットを <span class="math notranslate nohighlight">\(Z\)</span>- 基底で測定することで、丸めを行います。測定は、任意の量子状態を計算基底状態の集合に投影し、その結果、 <span class="math notranslate nohighlight">\(F^{(1)}\)</span> のイメージに投影します。</p>
+</section>
+<section id="quantum-relaxations-via-quantum-random-access-codes-qracs">
+<h2>量子ランダムアクセスコード（QRAC）による量子緩和<a class="headerlink" href="#quantum-relaxations-via-quantum-random-access-codes-qracs" title="この見出しへのパーマリンク">#</a></h2>
+<p>量子ランダムアクセスコードは、 <a class="reference external" href="http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf">1983年に Stephen Wiesner によって初めて概説され[2]</a> 、通信複雑性理論の文脈で使用されました。我々は、QRACを当初考えられていたように使うのではなく、量子緩和を定義するためにQRACを利用します。このため、RACやQRACの完全な紹介はしませんが、興味のある読者には、より詳しい情報を探すことを推奨します。</p>
+<section id="p-and-3-1-p-quantum-random-access-codes">
+<h3><span class="math notranslate nohighlight">\((1,1,1)\)</span> , <span class="math notranslate nohighlight">\((2,1,p)\)</span> , :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>(3,1,p)』 の量子ランダムアクセスコード<a class="headerlink" href="#p-and-3-1-p-quantum-random-access-codes" title="この見出しへのパーマリンク">#</a></h3>
+<p><span class="math notranslate nohighlight">\((k,1,p)\)</span>-QRAC とは、1量子ビットの状態に <span class="math notranslate nohighlight">\(k\)</span> 個の古典ビットを埋め込むスキームで、この状態のコピーが1つあれば、何らかの測定を行うことで <span class="math notranslate nohighlight">\(k\)</span> 個のビットのどれかを確率 <span class="math notranslate nohighlight">\(p\)</span> で復元することができます。前節で説明した単純な量子緩和は、自明な <span class="math notranslate nohighlight">\((1,1,1)\)</span>-QRAC の一例です。便宜上、 <span class="math notranslate nohighlight">\((2,1,0.854)\)</span> と <span class="math notranslate nohighlight">\((3,1,0.789)\)</span> のQRACをそれぞれ <span class="math notranslate nohighlight">\((2,1,p)\)</span> と <span class="math notranslate nohighlight">\((3,1,p)\)</span> と書きます。 <span class="math notranslate nohighlight">\((4, 1, p)\)</span>-QRAC <span class="math notranslate nohighlight">\((p &gt; 1/2)\)</span> は`不可能であることが証明されています。[3]&lt;<a class="reference external" href="https://iopscience.iop.org/article/10.1088/1367-2630/8/8/129">https://iopscience.iop.org/article/10.1088/1367-2630/8/8/129</a>&gt;`__</p>
+<p>上の単純な例を一般化すると、単一量子ビットの状態をパウリ観測量のエルミート基底で分解して書き出すのが役に立つでしょう。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\rho = \frac{1}{2}\left(I + aX + bY + cZ \right),\quad |a|^2 + |b|^2 + |c|^2 = 1\]</div>
+</div>
+<p><span class="math notranslate nohighlight">\((1,1,1), (2,1,p),\)</span> <span class="math notranslate nohighlight">\((3,1,p)\)</span> のQRACにそれぞれ関連する埋め込み <span class="math notranslate nohighlight">\(F^{(1)}\)</span> 、 <span class="math notranslate nohighlight">\(F^{(2)}\)</span> 、 <span class="math notranslate nohighlight">\(F^{(3)}\)</span> は次のように書くことができます：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{l|ll}
+\text{QRAC} &amp; &amp;\text{Embedding into } \rho = \vert \psi(m)\rangle\langle\psi(m)\vert \\
+\hline
+(1,1,1)&amp;F^{(1)}(m): \{-1,1\} &amp;\mapsto\ \vert\psi^{(1)}_m\rangle \langle\psi^{(1)}_m\vert = \frac{1}{2}\Big(I + {m_0}Z \Big) \\
+(2,1,p)&amp;F^{(2)}(m): \{-1,1\}^2 &amp;\mapsto\ \vert\psi^{(2)}_m\rangle \langle\psi^{(2)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{2}}\big({m_0}X+ {m_1}Z \big)\right)  \\
+(3,1,p)&amp;F^{(3)}(m): \{-1,1\}^3 &amp;\mapsto\ \vert\psi^{(3)}_m\rangle \langle\psi^{(3)}_m\vert = \frac{1}{2}\left(I + \frac{1}{\sqrt{3}}\big({m_0}X+ {m_1}Y + {m_2}Z\big)\right) \\
+\end{array}\end{split}\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{Table 1: QRAC states}\]</div>
+</div>
+<p>ビット列 <span class="math notranslate nohighlight">\(m \in \{-1,1\}^M, M &gt; k\)</span> を持つ <span class="math notranslate nohighlight">\((k,1,p)\)</span>-QRAC を使う場合、これらの埋め込みはテンソル積による合成で自然にスケールすることに注意してください。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[m \in \{-1,1\}^6,\quad F^{(3)}(m) = F^{(3)}(m_0,m_1,m_2)\otimes F^{(3)}(m_3,m_4,m_5)\]</div>
+</div>
+<p>同様に、 <span class="math notranslate nohighlight">\(k \nmid M\)</span> のとき、入力ビット列を適切な数の <span class="math notranslate nohighlight">\(+1\)</span> 値でパディングすればよいです。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[m \in \{-1,1\}^4,\quad F^{(3)}(m) = F^{(3)}(m_0,m_1,m_2)\otimes F^{(3)}(m_3,+1,+1)\]</div>
+</div>
+</section>
+<section id="recovering-encoded-bits">
+<h3>符号化されたビットの復元<a class="headerlink" href="#recovering-encoded-bits" title="この見出しへのパーマリンク">#</a></h3>
+<p>QRACの状態が与えられた場合、各ビットの対応する観測値の期待値を推定することで、符号化されたビットの値を復元することができます。QRACの密度に依存する再スケーリング係数があることに注意してください。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{l|l|l|l}
+\text{Embedding} &amp; m_0 &amp; m_1 &amp; m_2\\
+\hline
+\rho = F^{(1)}(m_0) &amp;\text{Tr}\big(\rho Z\big) &amp;  &amp; \\
+\rho = F^{(2)}(m_0,m_1) &amp;\sqrt{2}\cdot\text{Tr}\big(\rho X\big) &amp;\sqrt{2}\cdot\text{Tr}\big(\rho Z\big) &amp; \\
+\rho = F^{(3)}(m_0,m_1,m_2) &amp; \sqrt{3}\cdot\text{Tr}\big(\rho X\big) &amp; \sqrt{3}\cdot\text{Tr}\big(\rho Y\big) &amp; \sqrt{3}\cdot\text{Tr}\big(\rho Z\big)
+\end{array}\end{split}\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{Table 2: Bit recovery from QRAC states}\]</div>
+</div>
+</section>
+<section id="encoded-problem-hamiltonians">
+<h3>符号化された問題のハミルトニアン<a class="headerlink" href="#encoded-problem-hamiltonians" title="この見出しへのパーマリンク">#</a></h3>
+<p>上記で概説したツールを用いて、MaxCut問題の緩和されたバージョンを符号化するハミルトニアンを明示的に書き出すことができます。これは、各決定変数を、埋め込み <span class="math notranslate nohighlight">\(F\)</span> のもとでその変数に割り当てられているユニークな観測量に置き換えることで行います。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{l|ll}
+\text{QRAC}  &amp; \text{Problem Hamiltonian}\\
+\hline
+(1,1,1)&amp;H^{(1)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-Z_i Z_j)\\
+(2,1,p)&amp;H^{(2)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-2\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Z\}\\
+(3,1,p)&amp;H^{(3)} = \sum_{ij; e_{ij} \in E} \frac{1}{2}(1-3\cdot P_{[i]} P_{[j]}),\quad P_{[i]} \in \{X,Y,Z\}\\
+\end{array}\end{split}\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\text{Table 3: Relaxed MaxCut Hamiltonians after QRAC embedding}\]</div>
+</div>
+<p>ここで、 <span class="math notranslate nohighlight">\(P_{[i]}\)</span> は、決定変数 <span class="math notranslate nohighlight">\(i\)</span> に対応する1量子ビットのパウリ観測量を示していることに注意してください。ここでの括弧付きインデックスは、 <span class="math notranslate nohighlight">\((2,1,p)\)</span> と <span class="math notranslate nohighlight">\((3,1,p)\)</span> は、もはや量子ビットと決定変数の間に1:1の関係を持たないため、 <span class="math notranslate nohighlight">\(P_{[i]}\)</span> は必ずしも量子ビット <span class="math notranslate nohighlight">\(i\)</span> に作用しないことを明確にするためです。</p>
+</section>
+<section id="commutation-of-quantum-relaxation">
+<h3>量子緩和の交換<a class="headerlink" href="#commutation-of-quantum-relaxation" title="この見出しへのパーマリンク">#</a></h3>
+<p><span class="math notranslate nohighlight">\((2,1,p)\)</span> と <span class="math notranslate nohighlight">\((3,1,p)\)</span> のQRACでは、各量子ビットに複数の決定変数を割り当てていることに注意してください。これは、各決定変数に <em>ユニーク</em> な1量子ビットのパウリ観測変数が割り当てられ、これらのパウリ観測変数のいくつかのサブセットが同じ量子ビット上で定義されることを意味します。このことは、先に説明した可換性を保証する際に問題となる可能性があります。</p>
+<p><span class="math notranslate nohighlight">\((3,1,p)\)</span> -QRACの下では、 <span class="math notranslate nohighlight">\((1 - x_i x_j)\)</span> の形の目的関数の任意の項は、<span class="math notranslate nohighlight">\((1-3\cdot P_{[i]} P_{[j]})\)</span> の形のハミルトニアン項にマップされることに注意してください。 <span class="math notranslate nohighlight">\(P_{[i]}\)</span> と <span class="math notranslate nohighlight">\(P_{[j]}\)</span> の両方が異なる量子ビットに作用する場合、 <span class="math notranslate nohighlight">\(P_{[i]}\cdot P_{[j]} = P_{[i]}\otimes P_{[j]}\)</span> となり、ハミルトニアンのこの項は期待通りの振る舞いをします。</p>
+<p>しかし、<span class="math notranslate nohighlight">\(P_{[i]}\)</span> と <span class="math notranslate nohighlight">\(P_{[j]}\)</span> が同じ量子ビットに作用する場合、2つのパウリは直接合成されます。パウリ行列は群を形成し、自己逆行列であることを思い出してください。したがって、2つの異なるパウリの積は群の別の要素をもたらし、それは恒等式にはならないことが推測できます。</p>
+<p>実用的には、これは交換関係が崩れて、 <span class="math notranslate nohighlight">\(\text{cut}(m) \not= \text{Tr}\big(H^{(1)}F^{(3)}(m)\big)\)</span> になることを意味します。</p>
+<p>符号化と目的関数の交換性を復元するためには、問題のハミルトニアンの形に追加の制約を導入する必要があります。具体的には、入力グラフ <span class="math notranslate nohighlight">\(G\)</span> のエッジを共有する決定変数は、埋め込み <span class="math notranslate nohighlight">\(F\)</span> のもとでは同じ量子ビットに割り当てられないことを保証しなければなりません。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\forall e_{ij} \in E,\quad F^{(3)}(\dots,m_i,\dots,m_j,\dots) = F^{(3)}(\dots,m_i,\dots)\otimes F^{(3)}(\dots,m_j,\dots)\]</div>
+</div>
+<p>[1] では、同じ色を持つ頂点がエッジを共有しないようなグラフGのカラーリングを見つけ、同じ色を持つ場合にのみ同じ量子ビットに変数を割り当てることで実現しています。</p>
+</section>
+</section>
+<section id="quantum-rounding-schemes">
+<h2>量子丸めスキーム<a class="headerlink" href="#quantum-rounding-schemes" title="この見出しへのパーマリンク">#</a></h2>
+<p>緩和問題 <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> に対して得られる最終的な解は <span class="math notranslate nohighlight">\(F\)</span> マッピング の画像内にある可能性は低いため、抽出できるように <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> を <span class="math notranslate nohighlight">\(F\)</span> の画像にマッピングする戦略が必要です。 私たちの元々の問題に対する解決策です。</p>
+<p>[1] では、 <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> を <span class="math notranslate nohighlight">\(m \in \{-1,1\}^M\)</span> に丸めるために 2 つの戦略が提案されています。</p>
+<section id="semi-deterministic-rounding">
+<h3>半決定論的丸め<a class="headerlink" href="#semi-deterministic-rounding" title="この見出しへのパーマリンク">#</a></h3>
+<p>解を抽出するための自然な選択は、表 <span class="math notranslate nohighlight">\(2\)</span> の結果を使用し、各変数 <span class="math notranslate nohighlight">\(m_i\)</span> に値を割り当てるためにすべての <span class="math notranslate nohighlight">\(i\)</span> について単純に <span class="math notranslate nohighlight">\(\text{Tr}(P_{[i]}\rho_\text{relax})\)</span> を推定することです。 表 <span class="math notranslate nohighlight">\(2\)</span> で説明されている手順は、<span class="math notranslate nohighlight">\(F\)</span> の画像内の状態で使用することを目的としていましたが、現在はそれを任意の入力状態に適用しています。 実際の結果として、<span class="math notranslate nohighlight">\((1,1,1)\)</span>, <span class="math notranslate nohighlight">\((2,1,p)\)</span> や <span class="math notranslate nohighlight">\((3,1,p)\)</span> QRACに対して期待されるような、{<span class="math notranslate nohighlight">\(\pm 1\)</span>}, {<span class="math notranslate nohighlight">\(\pm \sqrt{2}\)</span>}, または {<span class="math notranslate nohighlight">\(\pm \sqrt{3}\)</span>} に近い値は測定されなくなります。</p>
+<p>期待値の符号を返すことでこれを処理し、以下のような丸めスキームを導き出します。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}m_i = \left\{\begin{array}{rl}
+      +1 &amp; \text{Tr}(P_{[i]}\rho_\text{relax}) &gt; 0 \\
+      X \sim\{-1,1\} &amp; \text{Tr}(P_{[i]}\rho_\text{relax}) = 0 \\
+      -1 &amp; \text{Tr}(P_{[i]}\rho_\text{relax}) &lt; 0
+      \end{array}\right.\end{split}\]</div>
+</div>
+<p>ここで <span class="math notranslate nohighlight">\(X\)</span> は-1か1を等確率で返す確率変数です。</p>
+<p>半決定論的丸めは、各 <span class="math notranslate nohighlight">\(\text{Tr}(P_{[i]}\rho_\text{relax})\)</span> の推定に使用されるショットの数に応じて指数関数的に減少する失敗確率で <span class="math notranslate nohighlight">\(F(m)\)</span> から <span class="math notranslate nohighlight">\(m\)</span> を忠実に復元することに注意してください。</p>
+</section>
+<section id="magic-state-rounding">
+<h3>マジック状態丸め<a class="headerlink" href="#magic-state-rounding" title="この見出しへのパーマリンク">#</a></h3>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/magic_state_rounding.svg"><img alt="../_images/magic_state_rounding.svg" src="../_images/magic_state_rounding.svg" width="100%" /></a>
+<figcaption>
+<p><span class="caption-number">図 1 </span><span class="caption-text">3つの異なる符号化、状態および測定規定、1つの量子ビットへの変数のエンコーディング。(a) 1量子ビットあたり1変数。(b) 1量子ビットあたり2変数。(c) 1量子ビットあたり3変数。 <a class="reference external" href="https://arxiv.org/pdf/2111.03167.pdf">[1]</a> から引用。</span><a class="headerlink" href="#id1" title="この画像へのパーマリンク">#</a></p>
+</figcaption>
+</figure>
+<p>マジック状態丸めでは、各 <span class="math notranslate nohighlight">\(m_i\)</span> を独立して区別しようとするのではなく、直交 QRAC 状態の特定のペア <span class="math notranslate nohighlight">\(\{ F(m), F(\bar m)\}\)</span> を完全に区別する測定基底がランダムに選択されます。ここで、 <span class="math notranslate nohighlight">\(\bar m\)</span> は、<span class="math notranslate nohighlight">\(m\)</span> のすべてのビットが反転されていることを示します。</p>
+<p><span class="math notranslate nohighlight">\(\mathcal{M}\)</span> および を、状態 <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> を入力として受け取り、ランダムに選択されたマジック基底で測定することによってビット列 <span class="math notranslate nohighlight">\(m\)</span> をサンプリングするランダム化された丸め手順とします。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mathcal{M}^{\otimes n}(\rho_\text{relax}) \rightarrow F(m)\]</div>
+</div>
+<p>まず、 <span class="math notranslate nohighlight">\((1,1,1)\)</span>-QRAC の場合、選択する基底は1つだけであり、マジック状態丸め方式は本質的に半決定論的丸め方式と等価であることに注意してください。</p>
+<p><span class="math notranslate nohighlight">\((2,1,p)\)</span> と <span class="math notranslate nohighlight">\((3,1,p)\)</span> のQRACでは、 <span class="math notranslate nohighlight">\(n\)</span> 量子ビットのQRAC状態 <span class="math notranslate nohighlight">\(F(m)\)</span> にマジック状態丸めスキームを適用すると、解 <span class="math notranslate nohighlight">\(m\)</span> を完全に抽出するために各量子ビットの正しい基底を選ぶ確率は <span class="math notranslate nohighlight">\(2^{-n}\)</span> と <span class="math notranslate nohighlight">\(4^{-n}\)</span> pになります。言い換えると、未知の状態 <span class="math notranslate nohighlight">\(F(m)\)</span> が与えられた場合、 <span class="math notranslate nohighlight">\(\mathcal{M}^{\otimes n}(F(m))\mapsto F(m)\)</span> の確率は、測定される量子ビットの数とともに指数関数的に減少します。 他の <span class="math notranslate nohighlight">\(F(m^*)\)</span> にマッピングされる可能性がはるかに高くなります。同様に、任意の状態 <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> でマジック丸めを実行する場合、すべての <span class="math notranslate nohighlight">\(n\)</span> 量子ビットに対して最適なマジック基底がランダムに選択される確率は同様に低くなります。 幸いなことに、マジック状態丸めは、特定の条件下で近似比の下限を提供します。</p>
+<p><span class="math notranslate nohighlight">\(F(m^*)\)</span> を F の画像内の最高エネルギー状態とし、 <span class="math notranslate nohighlight">\(\rho^*\)</span> を H の最大固有状態とします。</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\forall \rho_\text{relax}\quad \text{s.t.}\quad \text{Tr}\left(F(m^*)\cdot H\right) \leq \text{Tr}\left(\rho_\text{relax}\cdot H\right)\leq \text{Tr}\left(\rho^*\cdot H\right)\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\frac{\text{expected fval}}{\text{optimal fval}} = \frac{\mathbb{E}\left[\text{Tr}\left(H\cdot \mathcal{M}^{\otimes n}(\rho_\text{relax})\right)\right]}{\text{Tr}\left(H\cdot F(m^*)\right)} \geq \frac{5}{9}\]</div>
+</div>
+</section>
+</section>
+<section id="references">
+<h2>参考文献<a class="headerlink" href="#references" title="この見出しへのパーマリンク">#</a></h2>
+<p>[1] Bryce Fuller et al., “Approximate solutions of combinatorial problems via quantum
+relaxations,” (2021), <a class="reference external" href="https://arxiv.org/pdf/2111.03167.pdf">arXiv:2111.03167</a>,</p>
+<p>[2] Stephen Wiesner, “Conjugate coding,” SIGACT News, vol. 15, issue 1,
+pp. 78-88, 1983.
+<a class="reference external" href="http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf">link</a></p>
+<p>[3] Masahito Hayashi et al.,
+“(4,1)-Quantum random access coding does not exist—one qubit is not enough to recover
+one of four bits,” New Journal of Physics, vol. 8, number 8, pp. 129, 2006.
+<a class="reference external" href="https://iopscience.iop.org/article/10.1088/1367-2630/8/8/129">link</a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="../release_notes.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Release Notes</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Qiskit Optimization の説明</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">量子ランダムアクセス最適化 (QRAO) の背景： <em>量子緩和、量子ランダムアクセス符号、丸めスキーム</em></a><ul>
+<li><a class="reference internal" href="#relaxations">緩和（リラクゼーション）</a></li>
+<li><a class="reference internal" href="#quantum-relaxation">量子緩和</a></li>
+<li><a class="reference internal" href="#a-simple-quantum-relaxation">簡単な量子緩和</a></li>
+<li><a class="reference internal" href="#quantum-relaxations-via-quantum-random-access-codes-qracs">量子ランダムアクセスコード（QRAC）による量子緩和</a><ul>
+<li><a class="reference internal" href="#p-and-3-1-p-quantum-random-access-codes"><span class="math notranslate nohighlight">\((1,1,1)\)</span> , <span class="math notranslate nohighlight">\((2,1,p)\)</span> , :math:`(3,1,p)』 の量子ランダムアクセスコード</a></li>
+<li><a class="reference internal" href="#recovering-encoded-bits">符号化されたビットの復元</a></li>
+<li><a class="reference internal" href="#encoded-problem-hamiltonians">符号化された問題のハミルトニアン</a></li>
+<li><a class="reference internal" href="#commutation-of-quantum-relaxation">量子緩和の交換</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quantum-rounding-schemes">量子丸めスキーム</a><ul>
+<li><a class="reference internal" href="#semi-deterministic-rounding">半決定論的丸め</a></li>
+<li><a class="reference internal" href="#magic-state-rounding">マジック状態丸め</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">参考文献</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7aa87f9f"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

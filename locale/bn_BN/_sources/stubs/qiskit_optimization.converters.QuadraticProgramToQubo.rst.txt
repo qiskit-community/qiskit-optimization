@@ -1,0 +1,36 @@
+﻿
+
+QuadraticProgramToQubo
+=====================================================
+
+.. currentmodule:: qiskit_optimization.converters
+
+.. autoclass:: QuadraticProgramToQubo
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QuadraticProgramToQubo.penalty
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QuadraticProgramToQubo.convert
+   .. automethod:: QuadraticProgramToQubo.get_compatibility_msg
+   .. automethod:: QuadraticProgramToQubo.interpret
+   .. automethod:: QuadraticProgramToQubo.is_compatible
+
+   
+   

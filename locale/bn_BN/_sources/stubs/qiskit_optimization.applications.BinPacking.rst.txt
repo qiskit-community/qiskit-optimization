@@ -1,0 +1,30 @@
+﻿
+
+BinPacking
+===========================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: BinPacking
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: BinPacking.get_figure
+   .. automethod:: BinPacking.interpret
+   .. automethod:: BinPacking.sample_most_likely
+   .. automethod:: BinPacking.to_quadratic_program
+
+   
+   

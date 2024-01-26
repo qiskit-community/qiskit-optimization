@@ -1,0 +1,8 @@
+﻿
+
+INFINITY
+=====================================
+
+.. currentmodule:: qiskit_optimization.infinity
+
+.. autodata:: INFINITY

@@ -1,0 +1,1191 @@
+<!doctype html>
+<html class="no-js" lang="bn-BN">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="ইনডেক্স" href="../genindex.html" /><link rel="search" title="অনুসন্ধান" href="../search.html" /><link rel="next" title="দ্বিঘাত (কোয়াড্রাটিক) প্রোগ্রামগুলির জন্য পরিবর্তক (কনভার্টার)" href="02_converters_for_quadratic_programs.html" /><link rel="prev" title="অপটিমাইজেশনের পাঠসমূহ" href="index.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>দ্বিঘাত (কোয়াড্র্যাটিক) প্রোগ্রামস - Qiskit Optimization 0.6.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     This project's translations are no longer maintained. See the <a href=https://github.com/qiskit-community/qiskit-translations/tree/main#readme>announcement</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.6.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="অনুসন্ধান">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">শুরুর নির্দেশনা</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">পাঠসমূহ</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of পাঠসমূহ</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">দ্বিঘাত (কোয়াড্র্যাটিক) প্রোগ্রামস</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_converters_for_quadratic_programs.html">দ্বিঘাত (কোয়াড্রাটিক) প্রোগ্রামগুলির জন্য পরিবর্তক (কনভার্টার)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_minimum_eigen_optimizer.html">ন্যূনতম আইজেন অপটিমাইজার</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_grover_optimizer.html">গ্রোভার অপ্টিমাইজার</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_admm_optimizer.html">এ ডি এম এম অনুকূলায়ক (অপ্টিমাইজার)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_examples_max_cut_and_tsp.html">সর্বোচ্চ লাভ এবং ট্রাভেলিং সেলসম্যান সমস্যা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_examples_vehicle_routing.html">বাহন(ভেহিকেল) রাউটিং</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_cvar_optimization.html">CVaR দিয়ে পরিবর্তনশীল (ভ্যারিয়েশনাল) কোয়ান্টাম অপটিমাইজেশন উন্নতি করা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_application_classes.html">অপ্টিমাইজেশন সমস্যার জন্য অ্যাপ্লিকেশন ক্লাস</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_warm_start_qaoa.html">কোয়ান্টাম অনুকূলকরণের (অপটিমাইজেশন) প্রস্তুতিপর্ব</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_using_classical_optimization_solvers_and_models.html">Qiskit অপ্টিমাইজেশনের সাথে ক্লাসিক্যাল অপ্টিমাইজেশন সলভার এবং মডেল ব্যবহার করা</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_quantum_random_access_optimizer.html">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">এপিআই (এপ্লিকেশন প্রোগ্রামিং ইন্টারফেস) এর তথ্যসূত্র</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of এপিআই (এপ্লিকেশন প্রোগ্রামিং ইন্টারফেস) এর তথ্যসূত্র</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">অব্যাহতি পত্র</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">Bengali</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/tutorials/01_quadratic_program.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/bn_BN/tutorials/01_quadratic_program.html">Bengali</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/tutorials/01_quadratic_program.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/tutorials/01_quadratic_program.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">নোট</p>
+<p>এই পেজটি <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/01_quadratic_program.ipynb">docs/tutorials/01_quadratic_program.ipynb</a> থেকে তৈরি হয়েছে।</p>
+</div>
+<section id="দ্বিঘাত-(কোয়াড্র্যাটিক)-প্রোগ্রামস">
+<h1>দ্বিঘাত (কোয়াড্র্যাটিক) প্রোগ্রামস<a class="headerlink" href="#দ্বিঘাত-(কোয়াড্র্যাটিক)-প্রোগ্রামস" title="Permalink to this heading">#</a></h1>
+<section id="ভূমিকা">
+<h2>ভূমিকা<a class="headerlink" href="#ভূমিকা" title="Permalink to this heading">#</a></h2>
+<p>In this tutorial, we briefly introduce how to build optimization problems using Qiskit optimization module. Qiskit optimization introduces the <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> class to make a model of an optimization problem. More precisely, it deals with quadratically constrained quadratic programs given as follows:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+\text{minimize}\quad&amp; x^\top Q_0 x + c^\top x\\
+\text{subject to}\quad&amp; A x \leq b\\
+&amp; x^\top Q_i x + a_i^\top x \leq r_i, \quad 1,\dots,i,\dots,q\\
+&amp; l_i \leq x_i \leq u_i, \quad 1,\dots,i,\dots,n,
+\end{align}\end{split}\]</div>
+</div>
+<p>where the <span class="math notranslate nohighlight">\(Q_i\)</span> are <span class="math notranslate nohighlight">\(n \times n\)</span> matrices, <span class="math notranslate nohighlight">\(A\)</span> is a <span class="math notranslate nohighlight">\(m \times n\)</span> matrix , <span class="math notranslate nohighlight">\(x\)</span>, and <span class="math notranslate nohighlight">\(c\)</span> are <span class="math notranslate nohighlight">\(n\)</span>-dimensional vectors, <span class="math notranslate nohighlight">\(b\)</span> is an <span class="math notranslate nohighlight">\(m\)</span>-dimensional vector, and where <span class="math notranslate nohighlight">\(x\)</span> can be defined as binary, integer, or continuous variables. In addition to &quot;<span class="math notranslate nohighlight">\(\leq\)</span>&quot; constraints <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> also supports &quot;<span class="math notranslate nohighlight">\(\geq\)</span>&quot; and &quot;<span class="math notranslate nohighlight">\(=\)</span>&quot;.</p>
+</section>
+<section id="Loading-a-QuadraticProgram-from-an-LP-file">
+<h2>Loading a <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> from an LP file<a class="headerlink" href="#Loading-a-QuadraticProgram-from-an-LP-file" title="Permalink to this heading">#</a></h2>
+<p>সেটআপ হিসাবে, আপনাকে নিম্নলিখিত মডিউলটি আমদানি (ইম্পোর্ট) করতে হবে।</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization</span> <span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span> <span class="nn">qiskit_optimization.translators</span> <span class="kn">import</span> <span class="n">from_docplex_mp</span>
+</pre></div>
+</div>
+</div>
+<p>You start with an empty model. How to add variables and constraints to a model is explained in the section Directly constructing a QuadraticProgram.</p>
+<p>Qiskit optimization module supports the conversion from Docplex model. You can easily make a model of an optimization problem with Docplex. You can find the documentation of Docplex at <a class="reference external" href="https://ibmdecisionoptimization.github.io/docplex-doc/mp/index.html">https://ibmdecisionoptimization.github.io/docplex-doc/mp/index.html</a></p>
+<p><code class="docutils literal notranslate"><span class="pre">from_docplex</span></code> ফাংশন ব্যবহার করে <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> -এ একটা ডকপ্লেক্স মডেল লোড করা হয়।</p>
+</section>
+<section id="একটি-ডকপ্লেক্স-নকশা-(মডেল)-থেকে-একটি-Quadratic-Program-লোড-করা">
+<h2>একটি ডকপ্লেক্স নকশা (মডেল) থেকে একটি <code class="docutils literal notranslate"><span class="pre">Quadratic</span> <span class="pre">Program</span></code> লোড করা<a class="headerlink" href="#একটি-ডকপ্লেক্স-নকশা-(মডেল)-থেকে-একটি-Quadratic-Program-লোড-করা" title="Permalink to this heading">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make a Docplex model</span>
+<span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
+
+<span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s2">&quot;docplex model&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">lb</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">export_as_lp_string</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+\ This file has been generated by DOcplex
+\ ENCODING=ISO-8859-1
+\Problem name: docplex model
+
+Minimize
+ obj: x + 2 y
+Subject To
+ c1: x - y = 3
+ qc1: [ x^2 - y^2 ] &lt;= 1
+
+Bounds
+ 0 &lt;= x &lt;= 1
+ -1 &lt;= y &lt;= 5
+
+Binaries
+ x
+
+Generals
+ y
+End
+
+</pre></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> has a method <code class="docutils literal notranslate"><span class="pre">prettyprint</span></code> to generate a comprehensive string representation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># load from a Docplex model</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="n">from_docplex_mp</span><span class="p">(</span><span class="n">mdl</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mod</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;class &#39;qiskit_optimization.problems.quadratic_program.QuadraticProgram&#39;&gt;
+
+Problem name: docplex model
+
+Minimize
+  x + 2*y
+
+Subject to
+  Linear constraints (1)
+    x - y == 3  &#39;c0&#39;
+
+  Quadratic constraints (1)
+    x^2 - y^2 &lt;= 1  &#39;q0&#39;
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+</section>
+<section id="সরাসরি-একটি-QuadraticProgram-তৈরি-করা">
+<h2>সরাসরি একটি <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> তৈরি করা<a class="headerlink" href="#সরাসরি-একটি-QuadraticProgram-তৈরি-করা" title="Permalink to this heading">#</a></h2>
+<p>We then explain how to make model of an optimization problem directly using <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>. Let’s start from an empty model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># make an empty problem</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">(</span><span class="s2">&quot;my problem&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  0
+
+Subject to
+  No constraints
+
+  No variables
+
+</pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> supports three types of variables:</p>
+<ul class="simple">
+<li><p>Binary variable</p></li>
+<li><p>Integer variable</p></li>
+<li><p>Continuous variable</p></li>
+</ul>
+<p>আপনি যখন চল রাশি (ভেরিয়েবল) যুক্ত করবেন, আপনি নাম, প্রকার, নিম্ন সীমা(আবদ্ধ ) এবং উপরের সীমা ((আবদ্ধ ) নির্দিষ্ট করতে পারেন।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add variables</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">lowerbound</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">upperbound</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">continuous_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">lowerbound</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">upperbound</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  0
+
+Subject to
+  No constraints
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+<p>আপনি <code class="docutils literal notranslate"><span class="pre">QuadraticProgram.minimize</span></code> বা <code class="docutils literal notranslate"><span class="pre">QuadraticProgram.maximize</span></code>- দ্বারা নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) টি সেট করতে পারেন। আপনি তালিকা, ম্যাট্রিক্স বা অভিধানের সাথে লিনিয়ার এবং দ্বিঘাত (কোয়াড্রাটিক) পদগুলি নির্দিষ্ট করে একটি ধ্রুবক পদ পাশাপাশি লিনিয়ার এবং দ্বিঘাত (কোয়াড্রাটিক) নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) যুক্ত করতে পারেন।</p>
+<p>টীকা: এল.পি বিন্যাসে দ্বিঘাত (কোয়াড্রাটিক) অংশটি একটি গুণক <span class="math notranslate nohighlight">\(1/2\)</span> দ্বারা মাপতে হবে সুতরাং, এল.পি ফর্ম্যাট হিসাবে মুদ্রণের সময়, দ্বিঘাত (কোয়াড্রাটিক) অংশটি প্রথমে ২ দ্বারা গুণিত হয় এবং তারপরে আবার ২ দিয়ে বিভক্ত হয়।</p>
+<p>দ্বিঘাত (কোয়াড্রাটিক) প্রোগ্রামগুলির জন্য, এখানে 3 টি অংশ নির্দিষ্ট করতে হবে: একটি ধ্রুবক (অফসেট), একটি রৈখিক পদ (<span class="math notranslate nohighlight">\(c^{T}x\)</span>), এবং একটি দ্বিঘাত (কোয়াড্রাটিক) পদ (<span class="math notranslate nohighlight">\(x^{T}Qx\)</span>)।</p>
+<p>নীচের সেলটি দেখায় যে কীভাবে একটি অভিধান ব্যবহার করে কোনও নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) ঘোষণা করতে হয়। রৈখিক পদটির জন্য, অভিধানের কী-গুলি ভেরিয়েবল নামের সাথে মিলে যায় এবং সংশ্লিষ্ট মানগুলি সহগ হয়। দ্বিঘাত (কোয়াড্রাটিক) পদটির জন্য অভিধানের কী-গুলি দুটি চল রাশির (ভেরিয়েবল) সাথে গুণিত হওয়ার সাথে মিলে যায় এবং মানগুলি আবার সহগ হয়।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add objective function using dictionaries</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">constant</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">quadratic</span><span class="o">=</span><span class="p">{(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  2*x*y - z^2 + x + 3
+
+Subject to
+  No constraints
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+<p>Another way to specify the quadratic program is using arrays. For the linear term, the array corresponds to the vector <span class="math notranslate nohighlight">\(c\)</span> in the mathematical formulation. For the quadratic term, the array corresponds to the matrix <span class="math notranslate nohighlight">\(Q\)</span>. Note that the ordering of the variables (<span class="math notranslate nohighlight">\(x\)</span> in the mathematical formulation) is the order in which the variables were originally declared in the <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> object.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add objective function using lists/arrays</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">constant</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">quadratic</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  2*x*y - z^2 + x + 3
+
+Subject to
+  No constraints
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+<p>আপনি যথাক্রমে``Quadratic.objective.{constant, linear, quadratic}``, দেখে ধ্রুবক, রৈখিক পদ এবং দ্বিঘাত (কোয়াড্রাটিক) পদ ব্যবহার করতে পারেন। রৈখিক এবং দ্বিঘাত শর্তাবলী হিসাবে, আপনি একটি ডেন্স ম্যাট্রিক্স (<code class="docutils literal notranslate"><span class="pre">to_array</span></code>), একটি স্পার্স ম্যাট্রিক্স (<code class="docutils literal notranslate"><span class="pre">coefficients`),</span> <span class="pre">এবং</span> <span class="pre">একটি</span> <span class="pre">অভিধান</span> <span class="pre">(``to_dict</span></code>) পেতে পারেন। অভিধানগুলির জন্য, আপনি &quot;কী&quot; হিসাবে পরিবর্তনশীল সূচক বা নাম ব্যবহার করতে হবে তা নির্দিষ্ট করতে পারেন।
+টীকা: দ্বিঘাত (কোয়াড্রাটিক) পদগুলি সংকুচিতভাবে সংরক্ষণ করা হয়, উদাহরণস্বরূপ, <code class="docutils literal notranslate"><span class="pre">{('x',</span> <span class="pre">'y'):</span> <span class="pre">1,</span> <span class="pre">('y',</span> <span class="pre">'x'):</span> <span class="pre">2}</span></code> , <code class="docutils literal notranslate"><span class="pre">{('x',</span> <span class="pre">'y'):</span> <span class="pre">3}</span></code>. হিসাবে সঞ্চিত হয়। আপনি <code class="docutils literal notranslate"><span class="pre">to_array(symmetric=True)</span></code> বা <code class="docutils literal notranslate"><span class="pre">to_dict(symmetric=True)</span></code> কল করে দ্বিঘাত (কোয়াড্রাটিক) পদকে প্রতিসম ম্যাট্রিক্স হিসাবে পেতে পারেন। আপনি যদি <code class="docutils literal notranslate"><span class="pre">to_dict(name=True)</span></code> কল করেন তবে আপনি একটি অভিধান পেতে পারেন যার কী-গুলি চলক নামের জোড়া।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;constant:</span><span class="se">\t\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">constant</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;linear dict:</span><span class="se">\t\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;linear array:</span><span class="se">\t\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">to_array</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;linear array as sparse matrix:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">coefficients</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;quadratic dict w/ index:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;quadratic dict w/ name:</span><span class="se">\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">use_name</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;symmetric quadratic dict w/ name:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">use_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">symmetric</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;quadratic matrix:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">to_array</span><span class="p">(),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;symmetric quadratic matrix:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">to_array</span><span class="p">(</span><span class="n">symmetric</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;quadratic matrix as sparse matrix:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">coefficients</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+constant:                        3
+linear dict:                     {0: 1}
+linear array:                    [1 0 0]
+linear array as sparse matrix:
+   (0, 0)       1
+
+quadratic dict w/ index:         {(0, 1): 2, (2, 2): -1}
+quadratic dict w/ name:          {(&#39;x&#39;, &#39;y&#39;): 2, (&#39;z&#39;, &#39;z&#39;): -1}
+symmetric quadratic dict w/ name:        {(&#39;y&#39;, &#39;x&#39;): 1, (&#39;x&#39;, &#39;y&#39;): 1, (&#39;z&#39;, &#39;z&#39;): -1}
+quadratic matrix:
+ [[ 0  2  0]
+ [ 0  0  0]
+ [ 0  0 -1]]
+
+symmetric quadratic matrix:
+ [[ 0  1  0]
+ [ 1  0  0]
+ [ 0  0 -1]]
+
+quadratic matrix as sparse matrix:
+   (0, 1)       2
+  (2, 2)        -1
+</pre></div></div>
+</div>
+</section>
+<section id="রৈখিক-এবং-দ্বিঘাত-(কোয়াড্রাটিক)-সীমাবদ্ধতা-যুক্ত-করা-/-সরানো">
+<h2>রৈখিক এবং দ্বিঘাত (কোয়াড্রাটিক) সীমাবদ্ধতা যুক্ত করা / সরানো<a class="headerlink" href="#রৈখিক-এবং-দ্বিঘাত-(কোয়াড্রাটিক)-সীমাবদ্ধতা-যুক্ত-করা-/-সরানো" title="Permalink to this heading">#</a></h2>
+<p>You can add linear constraints by setting name, linear expression, sense and right-hand-side value (rhs). You can use senses 'EQ', 'LE', and 'GE' as Docplex supports.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add linear constraints</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">linear_constraint</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;lin_eq&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">linear_constraint</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;lin_leq&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">linear_constraint</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;lin_geq&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  2*x*y - z^2 + x + 3
+
+Subject to
+  Linear constraints (3)
+    x + 2*y == 3  &#39;lin_eq&#39;
+    x + 2*y &lt;= 3  &#39;lin_leq&#39;
+    x + 2*y &gt;= 3  &#39;lin_geq&#39;
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+<p>আপনি দ্বিঘাত (কোয়াড্রাটিক) সীমাবদ্ধতার পাশাপাশি নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) এবং রৈখিক (লিনিয়ার) সীমাবদ্ধতা যুক্ত করতে পারেন।.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add quadratic constraints</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">quadratic_constraint</span><span class="p">(</span>
+    <span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="n">quadratic</span><span class="o">=</span><span class="p">{(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+    <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;==&quot;</span><span class="p">,</span>
+    <span class="n">rhs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;quad_eq&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">quadratic_constraint</span><span class="p">(</span>
+    <span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="n">quadratic</span><span class="o">=</span><span class="p">{(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+    <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span>
+    <span class="n">rhs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;quad_leq&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">quadratic_constraint</span><span class="p">(</span>
+    <span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="n">quadratic</span><span class="o">=</span><span class="p">{(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+    <span class="n">sense</span><span class="o">=</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span>
+    <span class="n">rhs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;quad_geq&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  2*x*y - z^2 + x + 3
+
+Subject to
+  Linear constraints (3)
+    x + 2*y == 3  &#39;lin_eq&#39;
+    x + 2*y &lt;= 3  &#39;lin_leq&#39;
+    x + 2*y &gt;= 3  &#39;lin_geq&#39;
+
+  Quadratic constraints (3)
+    x^2 - y*z + x + y == 1  &#39;quad_eq&#39;
+    x^2 - y*z + x + y &lt;= 1  &#39;quad_leq&#39;
+    x^2 - y*z + x + y &gt;= 1  &#39;quad_geq&#39;
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+<p>আপনি নৈর্ব্যক্তিক অন্বয় (অব্জেক্টিভ ফাংশন) এর মতন করেই রৈখিক এবং দ্বিঘাত (কোয়াড্রাটিক) শর্তাদির প্রবেশাধিকার পেতে পারেন ।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lin_geq</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">get_linear_constraint</span><span class="p">(</span><span class="s2">&quot;lin_geq&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lin_geq:&quot;</span><span class="p">,</span> <span class="n">lin_geq</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">use_name</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">lin_geq</span><span class="o">.</span><span class="n">sense</span><span class="p">,</span> <span class="n">lin_geq</span><span class="o">.</span><span class="n">rhs</span><span class="p">)</span>
+<span class="n">quad_geq</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">get_quadratic_constraint</span><span class="p">(</span><span class="s2">&quot;quad_geq&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;quad_geq:&quot;</span><span class="p">,</span>
+    <span class="n">quad_geq</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">use_name</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">quad_geq</span><span class="o">.</span><span class="n">quadratic</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">use_name</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">quad_geq</span><span class="o">.</span><span class="n">sense</span><span class="p">,</span>
+    <span class="n">lin_geq</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+lin_geq: {&#39;x&#39;: 1.0, &#39;y&#39;: 2.0} ConstraintSense.GE 3
+quad_geq: {&#39;x&#39;: 1.0, &#39;y&#39;: 1.0} {(&#39;x&#39;, &#39;x&#39;): 1.0, (&#39;y&#39;, &#39;z&#39;): -1.0} ConstraintSense.GE 3
+</pre></div></div>
+</div>
+<p>আপনি রৈখিক / দ্বিঘাত (কোয়াড্রাটিক) সীমাবদ্ধতাগুলি  <code class="docutils literal notranslate"><span class="pre">remove_linear_constraint</span></code> এবং  <code class="docutils literal notranslate"><span class="pre">remove_quadratic_constraint`</span></code> দ্বারাও মুছে ফেলতে পারেন ।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove constraints</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">remove_linear_constraint</span><span class="p">(</span><span class="s2">&quot;lin_eq&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">remove_quadratic_constraint</span><span class="p">(</span><span class="s2">&quot;quad_leq&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  2*x*y - z^2 + x + 3
+
+Subject to
+  Linear constraints (2)
+    x + 2*y &lt;= 3  &#39;lin_leq&#39;
+    x + 2*y &gt;= 3  &#39;lin_geq&#39;
+
+  Quadratic constraints (2)
+    x^2 - y*z + x + y == 1  &#39;quad_eq&#39;
+    x^2 - y*z + x + y &gt;= 1  &#39;quad_geq&#39;
+
+  Integer variables (1)
+    -1 &lt;= y &lt;= 5
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 5
+
+  Binary variables (1)
+    x
+
+</pre></div></div>
+</div>
+<p>You can substitute some of variables with constants or other variables. More precisely, <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> has a method <code class="docutils literal notranslate"><span class="pre">substitute_variables(constants=...,</span> <span class="pre">variables=...)</span></code> to deal with the following two cases.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x \leftarrow c\)</span>: when <code class="docutils literal notranslate"><span class="pre">constants</span></code> have a dictionary <code class="docutils literal notranslate"><span class="pre">{x:</span> <span class="pre">c}</span></code>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x \leftarrow c y\)</span>: when <code class="docutils literal notranslate"><span class="pre">variables</span></code> have a dictionary <code class="docutils literal notranslate"><span class="pre">{x:</span> <span class="pre">(y,</span> <span class="pre">c)}</span></code>.</p></li>
+</ul>
+</section>
+<section id="চল-রাশি-প্রতিস্থাপন-করা">
+<h2>চল রাশি প্রতিস্থাপন করা<a class="headerlink" href="#চল-রাশি-প্রতিস্থাপন-করা" title="Permalink to this heading">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">substitute_variables</span><span class="p">(</span><span class="n">constants</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Problem name: my problem
+
+Minimize
+  -z^2 + 3
+
+Subject to
+  Linear constraints (2)
+    -2*z &lt;= 3  &#39;lin_leq&#39;
+    -2*z &gt;= 3  &#39;lin_geq&#39;
+
+  Quadratic constraints (2)
+    z^2 - z == 1  &#39;quad_eq&#39;
+    z^2 - z &gt;= 1  &#39;quad_geq&#39;
+
+  Continuous variables (1)
+    -1 &lt;= z &lt;= 1
+
+</pre></div></div>
+</div>
+<p>নিম্ন সীমা বা উপরের সীমাগুলির কারণে যদি ফলস্বরূপ সমস্যাটি অক্ষম হয় তবে পদ্ধতিগুলি স্ট্যাটাস  <code class="docutils literal notranslate"><span class="pre">Status.INFEASIBLE</span></code> কে ফিরিয়ে দেয়। আমরা চল রাশি  `` x`` কে  -1 এর সাথে প্রতিস্থাপন করার চেষ্টা করি, তবে -1 `` x`` (0 &lt;= `` x`` &lt;= 1) এর সীমার বাইরে। সুতরাং, এটি <code class="docutils literal notranslate"><span class="pre">Status.INFEASIBLE</span></code> ফিরিয়ে দেয়।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">substitute_variables</span><span class="p">(</span><span class="n">constants</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Infeasible substitution for variable: x
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+QuadraticProgramStatus.INFEASIBLE
+</pre></div></div>
+</div>
+<p>আপনি একাধিক বার চল রাশি প্রতিস্থাপন করতে পারবেন না। এই ক্ষেত্রে এটি ত্রুটি উত্থাপন করে।</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization</span> <span class="kn">import</span> <span class="n">QiskitOptimizationError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">sub</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">substitute_variables</span><span class="p">(</span><span class="n">constants</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)})</span>
+<span class="k">except</span> <span class="n">QiskitOptimizationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Error: &#39;Cannot substitute by variable that gets substituted itself: y &lt;- x 1&#39;
+</pre></div></div>
+</div>
+<p>Note: When you display your problem as LP format using <code class="docutils literal notranslate"><span class="pre">export_as_lp_string</span></code>, <code class="docutils literal notranslate"><span class="pre">Binaries</span></code> denotes binary variables and <code class="docutils literal notranslate"><span class="pre">Generals</span></code> denotes integer variables. If variables are not included in either <code class="docutils literal notranslate"><span class="pre">Binaries</span></code> or <code class="docutils literal notranslate"><span class="pre">Generals</span></code>, such variables are continuous ones with default lower bound = 0 and upper bound = infinity. Note that you cannot use 'e' or 'E' as the first character of names due to the <a class="reference external" href="https://www.ibm.com/docs/en/icos/22.1.0?topic=representation-variable-names-in-lp-file-format">specification of LP
+format</a>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">()</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;f&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">continuous_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+<span class="n">mod</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">export_as_lp_string</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+\ This file has been generated by DOcplex
+\ ENCODING=ISO-8859-1
+\Problem name: CPLEX
+
+Minimize
+ obj: _e + 2 f + 3 g
+Subject To
+
+Bounds
+ 0 &lt;= _e &lt;= 1
+ 0 &lt;= f &lt;= 1
+
+Binaries
+ _e f
+End
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="n">qiskit_version_table</span>
+<span class="o">%</span><span class="n">qiskit_copyright</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.21.0.dev0+dbd3961</td></tr><tr><td><code>qiskit-aer</code></td><td>0.10.4</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.19.1</td></tr><tr><td><code>qiskit-optimization</code></td><td>0.4.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.10.4</td></tr><tr><td>Python compiler</td><td>GCC 11.2.0</td></tr><tr><td>Python build</td><td>main, Apr  2 2022 09:04:19</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>4</td></tr><tr><td>Memory (Gb)</td><td>14.577545166015625</td></tr><tr><td colspan='2'>Wed May 18 16:03:27 2022 JST</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2022.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="02_converters_for_quadratic_programs.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">দ্বিঘাত (কোয়াড্রাটিক) প্রোগ্রামগুলির জন্য পরিবর্তক (কনভার্টার)</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">অপটিমাইজেশনের পাঠসমূহ</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">দ্বিঘাত (কোয়াড্র্যাটিক) প্রোগ্রামস</a><ul>
+<li><a class="reference internal" href="#ভূমিকা">ভূমিকা</a></li>
+<li><a class="reference internal" href="#Loading-a-QuadraticProgram-from-an-LP-file">Loading a <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> from an LP file</a></li>
+<li><a class="reference internal" href="#একটি-ডকপ্লেক্স-নকশা-(মডেল)-থেকে-একটি-Quadratic-Program-লোড-করা">একটি ডকপ্লেক্স নকশা (মডেল) থেকে একটি <code class="docutils literal notranslate"><span class="pre">Quadratic</span> <span class="pre">Program</span></code> লোড করা</a></li>
+<li><a class="reference internal" href="#সরাসরি-একটি-QuadraticProgram-তৈরি-করা">সরাসরি একটি <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> তৈরি করা</a></li>
+<li><a class="reference internal" href="#রৈখিক-এবং-দ্বিঘাত-(কোয়াড্রাটিক)-সীমাবদ্ধতা-যুক্ত-করা-/-সরানো">রৈখিক এবং দ্বিঘাত (কোয়াড্রাটিক) সীমাবদ্ধতা যুক্ত করা / সরানো</a></li>
+<li><a class="reference internal" href="#চল-রাশি-প্রতিস্থাপন-করা">চল রাশি প্রতিস্থাপন করা</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=66e7639d"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

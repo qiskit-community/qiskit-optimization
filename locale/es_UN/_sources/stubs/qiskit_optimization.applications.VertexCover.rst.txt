@@ -1,0 +1,36 @@
+﻿
+
+VertexCover
+============================================
+
+.. currentmodule:: qiskit_optimization.applications
+
+.. autoclass:: VertexCover
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: VertexCover.graph
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: VertexCover.draw
+   .. automethod:: VertexCover.interpret
+   .. automethod:: VertexCover.sample_most_likely
+   .. automethod:: VertexCover.to_quadratic_program
+
+   
+   

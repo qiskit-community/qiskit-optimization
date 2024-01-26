@@ -1,0 +1,42 @@
+﻿
+
+GoemansWilliamsonOptimizationResult
+==================================================================
+
+.. currentmodule:: qiskit_optimization.algorithms
+
+.. autoclass:: GoemansWilliamsonOptimizationResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.fval
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.raw_results
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.samples
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.sdp_solution
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.status
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.variable_names
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.variables
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.variables_dict
+   .. autoattribute:: GoemansWilliamsonOptimizationResult.x
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: GoemansWilliamsonOptimizationResult.get_correlations
+   .. automethod:: GoemansWilliamsonOptimizationResult.prettyprint
+
+   
+   
