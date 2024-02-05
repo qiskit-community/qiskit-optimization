@@ -95,7 +95,7 @@ Optional installs
 =================
 
 * **IBM CPLEX** may be installed using ``pip install 'qiskit-optimization[cplex]'`` to enable the reading of `LP` files and the usage of
-  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. Currently there is no python 3.9 version of CPLEX. In this case, the CPLEX install
+  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. Currently there is no Python 3.12 version of CPLEX. In this case, the CPLEX install
   command will have no effect.
 
 * **CVXPY** may be installed using the command ``pip install 'qiskit-optimization[cvx]'``.
