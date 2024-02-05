@@ -273,6 +273,38 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             self.assertEqual(str(expr), expected)
             self.assertEqual(repr(expr), f"<QuadraticExpression: {expected[:DEFAULT_TRUNCATE]}...>")
 
+    def test_coeffs_to_dok_matrix(self):
+        """test that the conversion from coefficients to a dok_matrix is correct"""
+        num_vars = 4
+        quadratic_program = QuadraticProgram()
+        for _ in range(num_vars):
+            quadratic_program.binary_var()
+
+        coefficients = {
+            (1, 1): 1,
+            (1, 2): 2,
+            (2, 1): 3,
+            (1, 3): 3,
+            (3, 1): 3,
+            (2, 2): 4,
+            (2, 3): 12,
+            (3, 3): 9,
+        }
+
+        quadratic = QuadraticExpression(quadratic_program, coefficients)
+
+        res = quadratic._coeffs_to_dok_matrix(coefficients)
+
+        expected = dok_matrix((num_vars, num_vars))
+        expected[1, 1] = 1
+        expected[1, 2] = 5
+        expected[1, 3] = 6
+        expected[2, 2] = 4
+        expected[2, 3] = 12
+        expected[3, 3] = 9
+
+        self.assertTrue(np.allclose(expected.todense(), res.todense()))
+
 
 if __name__ == "__main__":
     unittest.main()
