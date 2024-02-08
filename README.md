@@ -40,8 +40,7 @@ To do this follow the instructions in the
 ### Optional Installs
 
 * **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files and the usage of
-  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. Currently there is no Python 3.12 version of CPLEX. In this case, the CPLEX install
-  command will have no effect.
+  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. CPLEX is a separate package and its support of Python versions is independent of Qiskit Optimization, where this CPLEX command will have no effect if there is no compatible version of CPLEX available (yet).
 
 * **CVXPY** may be installed using the command `pip install 'qiskit-optimization[cvx]'`.
   CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
