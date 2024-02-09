@@ -615,9 +615,9 @@ explicit encoding steps.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The objective function value: 6.0
-x: [0 1 1 1 1 0]
-relaxed function value: 8.999999982343004
+The objective function value: 4.0
+x: [1 0 0 0 1 0]
+relaxed function value: 8.999999981905706
 
 </pre></div></div>
 </div>
@@ -642,7 +642,7 @@ relaxed function value: 8.999999982343004
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The obtained solution places a partition between nodes [0, 5] and nodes [1, 2, 3, 4].
+The obtained solution places a partition between nodes [1, 2, 3, 5] and nodes [0, 4].
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -655,7 +655,7 @@ The obtained solution places a partition between nodes [0, 5] and nodes [1, 2, 3
 </section>
 <section id="Inspect-the-results-of-subroutines">
 <h3>Inspect the results of subroutines<a class="headerlink" href="#Inspect-the-results-of-subroutines" title="Permalink to this heading">#</a></h3>
-<p>The <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.MinimumEigensolverResult.html">MinimumEigensolverResult</a> that results from performing VQE on the relaxed Hamiltonian is available:</p>
+<p>The <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.MinimumEigensolverResult.html">MinimumEigensolverResult</a> that results from performing VQE on the relaxed Hamiltonian is available:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -670,7 +670,7 @@ The obtained solution places a partition between nodes [0, 5] and nodes [1, 2, 3
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;qiskit_algorithms.minimum_eigensolvers.vqe.VQEResult at 0x7fe311b324f0&gt;
+&lt;qiskit_algorithms.minimum_eigensolvers.vqe.VQEResult at 0x7ff4ccb3c190&gt;
 </pre></div></div>
 </div>
 <p>The result of the rounding scheme is also worth considering. In this example, we used the <code class="docutils literal notranslate"><span class="pre">SemideterministricRounding</span></code>. It’s important to note that with semi-deterministic rounding, a single sample is generated as the result, making it the optimal solution candidate.</p>
@@ -689,7 +689,7 @@ The obtained solution places a partition between nodes [0, 5] and nodes [1, 2, 3
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[SolutionSample(x=array([0, 1, 1, 1, 1, 0]), fval=6.0, probability=1.0, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)]
+[SolutionSample(x=array([1, 0, 0, 0, 1, 0]), fval=4.0, probability=1.0, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)]
 </pre></div></div>
 </div>
 </section>
@@ -737,9 +737,9 @@ status: SUCCESS
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-QRAO Approximate Optimal Function Value: 6.0
+QRAO Approximate Optimal Function Value: 4.0
 Exact Optimal Function Value: 9.0
-Approximation Ratio: 0.67
+Approximation Ratio: 0.44
 </pre></div></div>
 </div>
 </section>
@@ -801,7 +801,7 @@ value, increasing the number of shots enhances the convergence to the true value
 <div class="highlight"><pre>
 The objective function value: 9.0
 x: [1 0 1 0 0 1]
-relaxed function value: 8.999995758642516
+relaxed function value: 8.99999793369987
 
 </pre></div></div>
 </div>
@@ -825,16 +825,16 @@ relaxed function value: 8.999995758642516
 <div class="highlight"><pre>
 The number of distinct samples is 56.
 Top 10 samples with the largest fval:
-SolutionSample(x=array([1, 0, 1, 0, 0, 1]), fval=9.0, probability=0.0096, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([0, 1, 0, 1, 1, 0]), fval=9.0, probability=0.011199999999999998, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([0, 0, 0, 1, 1, 0]), fval=6.0, probability=0.0196, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([1, 1, 1, 0, 0, 1]), fval=6.0, probability=0.0206, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([0, 1, 1, 1, 1, 0]), fval=6.0, probability=0.0203, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([1, 0, 0, 0, 0, 1]), fval=6.0, probability=0.0214, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 0, 1, 0, 0, 1]), fval=9.0, probability=0.0094, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 0, 1, 1, 0]), fval=9.0, probability=0.0111, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 0, 0, 1, 1, 0]), fval=6.0, probability=0.0198, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 1, 1, 0, 0, 1]), fval=6.0, probability=0.0209, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 1, 1, 1, 0]), fval=6.0, probability=0.0204, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 0, 0, 0, 0, 1]), fval=6.0, probability=0.0213, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
 SolutionSample(x=array([1, 0, 1, 0, 0, 0]), fval=6.0, probability=0.0197, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([0, 1, 0, 1, 1, 1]), fval=6.0, probability=0.020699999999999996, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([1, 0, 1, 0, 1, 1]), fval=6.0, probability=0.0228, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([0, 1, 0, 1, 0, 0]), fval=6.0, probability=0.024000000000000004, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 0, 1, 1, 1]), fval=6.0, probability=0.0208, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1, 0, 1, 0, 1, 1]), fval=6.0, probability=0.0207, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0, 1, 0, 1, 0, 0]), fval=6.0, probability=0.0217, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
 </pre></div></div>
 </div>
 </section>
@@ -879,10 +879,10 @@ SolutionSample(x=array([0, 1, 0, 1, 0, 0]), fval=6.0, probability=0.024000000000
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-aux_operators_evaluated: [(0.010834485173358988, {&#39;variance&#39;: 0.9999999911928379, &#39;shots&#39;: 1000}), (0.026075694416300015, {&#39;variance&#39;: 0.9999999911926416, &#39;shots&#39;: 1000}), (0.01044933784106082, {&#39;variance&#39;: 0.9999999999999999, &#39;shots&#39;: 1000}), (-0.04120945001189341, {&#39;variance&#39;: 0.9999999999999999, &#39;shots&#39;: 1000}), (0.028659359200668803, {&#39;variance&#39;: 0.9999999991301689, &#39;shots&#39;: 1000}), (0.0140861071530678, {&#39;variance&#39;: 0.9999999991299727, &#39;shots&#39;: 1000})]
-combine: &lt;bound method AlgorithmResult.combine of &lt;qiskit_algorithms.minimum_eigensolvers.vqe.VQEResult object at 0x7fe311bc8a00&gt;&gt;
-cost_function_evals: 125
-eigenvalue: -4.4999963592563175
+aux_operators_evaluated: [(0.010926743078980372, {&#39;variance&#39;: 0.9999999999974761, &#39;shots&#39;: 1000}), (0.02598343694328881, {&#39;variance&#39;: 0.999999999997472, &#39;shots&#39;: 1000}), (0.01044933784106082, {&#39;variance&#39;: 0.9999999999999999, &#39;shots&#39;: 1000}), (-0.04120945001189341, {&#39;variance&#39;: 0.9999999999999999, &#39;shots&#39;: 1000}), (0.02855644212815068, {&#39;variance&#39;: 0.9999999946088998, &#39;shots&#39;: 1000}), (0.014189027484473498, {&#39;variance&#39;: 0.9999999946088955, &#39;shots&#39;: 1000})]
+combine: &lt;bound method AlgorithmResult.combine of &lt;qiskit_algorithms.minimum_eigensolvers.vqe.VQEResult object at 0x7ff4a1f3ebe0&gt;&gt;
+cost_function_evals: 116
+eigenvalue: -4.499996924994738
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -895,19 +895,19 @@ q_0: ┤0                                                         ├
      │  RealAmplitudes(θ[0],θ[1],θ[2],θ[3],θ[4],θ[5],θ[6],θ[7]) │
 q_1: ┤1                                                         ├
      └──────────────────────────────────────────────────────────┘
-optimal_parameters: {ParameterVectorElement(θ[0]): 0.8435923652525493, ParameterVectorElement(θ[1]): 3.3250925009847143, ParameterVectorElement(θ[2]): 0.831780475663921, ParameterVectorElement(θ[3]): -2.983319002738171, ParameterVectorElement(θ[4]): 2.062462319072777, ParameterVectorElement(θ[5]): -0.4724970429168071, ParameterVectorElement(θ[6]): 0.1865524872503596, ParameterVectorElement(θ[7]): 4.227286108126292}
-optimal_point: [ 0.84359237  3.3250925   0.83178048 -2.983319    2.06246232 -0.47249704
-  0.18655249  4.22728611]
-optimal_value: -4.4999963592563175
+optimal_parameters: {ParameterVectorElement(θ[0]): 2.0471560643273947, ParameterVectorElement(θ[1]): 1.4129824997448401, ParameterVectorElement(θ[2]): -0.7765382357072699, ParameterVectorElement(θ[3]): 1.9443520433144783, ParameterVectorElement(θ[4]): 2.5720037072214055, ParameterVectorElement(θ[5]): -4.069849316982238, ParameterVectorElement(θ[6]): -1.9345584128886406, ParameterVectorElement(θ[7]): 0.1995660862499935}
+optimal_point: [ 2.04715606  1.4129825  -0.77653824  1.94435204  2.57200371 -4.06984932
+ -1.93455841  0.19956609]
+optimal_value: -4.499996924994738
 optimizer_evals: None
-optimizer_result: {   &#39;fun&#39;: -4.4999963592563175,
+optimizer_result: {   &#39;fun&#39;: -4.499996924994738,
     &#39;jac&#39;: None,
-    &#39;nfev&#39;: 125,
+    &#39;nfev&#39;: 116,
     &#39;nit&#39;: None,
     &#39;njev&#39;: None,
-    &#39;x&#39;: array([ 0.84359237,  3.3250925 ,  0.83178048, -2.983319  ,  2.06246232,
-       -0.47249704,  0.18655249,  4.22728611])}
-optimizer_time: 0.3538167476654053
+    &#39;x&#39;: array([ 2.04715606,  1.4129825 , -0.77653824,  1.94435204,  2.57200371,
+       -4.06984932, -1.93455841,  0.19956609])}
+optimizer_time: 0.3176090717315674
 </pre></div></div>
 </div>
 </section>
@@ -942,7 +942,7 @@ optimizer_time: 0.3538167476654053
 <div class="highlight"><pre>
 The objective function value: 3.0
 x: [0 0 0 1 0 0]
-relaxed function value: -8.999996359256318
+relaxed function value: -8.999996924994738
 The number of distinct samples is 1.
 </pre></div></div>
 </div>
@@ -972,7 +972,7 @@ The number of distinct samples is 1.
 <div class="highlight"><pre>
 The objective function value: 9.0
 x: [1 0 1 0 0 1]
-relaxed function value: -8.999996359256318
+relaxed function value: -8.999996924994738
 The number of distinct samples is 56.
 </pre></div></div>
 </div>
@@ -1018,6 +1018,13 @@ Subject to
 
   Binary variables (6)
     x_0 x_1 x_2 x_3 x_4 x_5
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
 
 </pre></div></div>
 </div>
@@ -1025,7 +1032,7 @@ Subject to
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_12_quantum_random_access_optimizer_35_1.png" src="../_images/tutorials_12_quantum_random_access_optimizer_35_1.png" />
+<img alt="../_images/tutorials_12_quantum_random_access_optimizer_35_2.png" src="../_images/tutorials_12_quantum_random_access_optimizer_35_2.png" />
 </div>
 </div>
 <p>As before, we <code class="docutils literal notranslate"><span class="pre">encode()</span></code> the problem using the QuantumRandomAccessEncoding class:</p>
@@ -1092,8 +1099,17 @@ Variables encoded on each qubit:  [[0, 2, 5], [1, 3, 4]]
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_20758/1492642725.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
+  import qiskit.tools.jupyter
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.2</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.6.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Wed Jan 24 21:05:51 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.6.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Fri Feb 09 16:54:34 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -1110,7 +1126,7 @@ Variables encoded on each qubit:  [[0, 2, 5], [1, 3, 4]]
 </div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"6fc4d5efd2c9473091403f7f9f460ef9": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "e5e1a0d69f3c40aeac94ff229d6ba7c8": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "d4387b1184f74822b7b34b5f034197dd": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_6fc4d5efd2c9473091403f7f9f460ef9", "placeholder": "\u200b", "style": "IPY_MODEL_e5e1a0d69f3c40aeac94ff229d6ba7c8", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
+{"state": {"534c07035b4447c6a6cef590a68fd765": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "1023e565698e4ca4942a008255d9e76c": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "7543f23d85494b4ca095bc91aee0fc6b": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_534c07035b4447c6a6cef590a68fd765", "placeholder": "\u200b", "style": "IPY_MODEL_1023e565698e4ca4942a008255d9e76c", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 </section>

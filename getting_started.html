@@ -506,8 +506,7 @@ project don’t require a reinstall to be applied, you can do this with:</p>
 <span id="id1"></span><h2>Optional installs<a class="headerlink" href="#optional-installs" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>IBM CPLEX</strong> may be installed using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'qiskit-optimization[cplex]'</span></code> to enable the reading of <cite>LP</cite> files and the usage of
-the <cite>CplexOptimizer</cite>, wrapper for <code class="docutils literal notranslate"><span class="pre">cplex.Cplex</span></code>. Currently there is no python 3.9 version of CPLEX. In this case, the CPLEX install
-command will have no effect.</p></li>
+the <cite>CplexOptimizer</cite>, wrapper for <code class="docutils literal notranslate"><span class="pre">cplex.Cplex</span></code>. CPLEX is a separate package and its support of Python versions is independent of Qiskit Optimization, where this CPLEX command will have no effect if there is no compatible version of CPLEX available (yet).</p></li>
 <li><p><strong>CVXPY</strong> may be installed using the command <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'qiskit-optimization[cvx]'</span></code>.
 CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer <cite>GoemansWilliamsonOptimizer</cite>.</p></li>
 <li><p><strong>Matplotlib</strong> may be installed using the command <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'qiskit-optimization[matplotlib]'</span></code>.
