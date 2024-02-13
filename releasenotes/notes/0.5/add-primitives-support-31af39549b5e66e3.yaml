@@ -1,7 +1,7 @@
 ---
 prelude: >
     Qiskit Optimization 0.5 supports the new algorithms introduced in Qiskit Terra 0.22
-    which in turn rely on the `Qiskit Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`_.
+    which in turn rely on the `Qiskit Primitives <https://docs.quantum.ibm.com/api/qiskit/primitives>`_.
     Qiskit Optimization 0.5 still supports the former algorithms based on :class:`qiskit.utils.QuantumInstance`,
     but they will be deprecated and then removed, along with the support here, in future releases.
 
