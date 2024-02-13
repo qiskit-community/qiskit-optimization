@@ -121,11 +121,11 @@ jobs:
           - os: macos-latest
             python-version: 3.8
           - os: macos-latest
-            python-version: '3.10'
+            python-version: 3.11
           - os: windows-latest
             python-version: 3.8
           - os: windows-latest
-            python-version: '3.10'
+            python-version: 3.11
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -329,22 +329,22 @@ jobs:
           path: /tmp/m38
       - uses: actions/download-artifact@v4
         with:
-          name: macos-latest-3.10
-          path: /tmp/m310
+          name: macos-latest-3.11
+          path: /tmp/m311
       - uses: actions/download-artifact@v4
         with:
           name: windows-latest-3.8
           path: /tmp/w38
       - uses: actions/download-artifact@v4
         with:
-          name: windows-latest-3.10
-          path: /tmp/w310
+          name: windows-latest-3.11
+          path: /tmp/w311
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m310/opt.dep /tmp/w38/opt.dep /tmp/w310/opt.dep || true
+          sort -f -u /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/m38/opt.dep /tmp/m311/opt.dep /tmp/w38/opt.dep /tmp/w311/opt.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/o38/opt.dat
