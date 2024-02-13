@@ -16,7 +16,7 @@ Qiskit Optimization v0.6 supports only the new algorithms of Qiskit Algorithms.
 It is not the intention to provide detailed explanations of the
 new Qiskit Algorithms in this migration guide. We suggest that you read the
 `corresponding
-resources <https://qiskit.org/ecosystem/algorithms/index.html>`__
+resources <https://qiskit-community.github.io/qiskit-algorithms/index.html>`__
 of the Qiskit Algorithms documentation instead.
 
 We can basically use the existing codes by replacing ``qiskit.algorithms``

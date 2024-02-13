@@ -13,7 +13,7 @@ A uniform interface as well as automatic conversion between different problem re
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm QAOA, to Grover Adaptive Search using the
 GroverOptimizer, leveraging fundamental algorithms provided by
-[Qiskit Algorithms](https://qiskit.org/ecosystem/algorithms/). Furthermore, the modular design
+[Qiskit Algorithms](https://qiskit-community.github.io/qiskit-algorithms/). Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
 validation, and benchmarking.
@@ -32,7 +32,7 @@ pip install qiskit-optimization
 If you want to work on the very latest work-in-progress versions, either to try features ahead of
 their official release or if you want to contribute to Optimization, then you can install from source.
 To do this follow the instructions in the
- [documentation](https://qiskit.org/ecosystem/optimization/getting_started.html#installation).
+ [documentation](https://qiskit-community.github.io/qiskit-optimization/getting_started.html#installation).
 
 
 ----------------------------------------------------------------------------------------------------
@@ -40,8 +40,7 @@ To do this follow the instructions in the
 ### Optional Installs
 
 * **IBM CPLEX** may be installed using `pip install 'qiskit-optimization[cplex]'` to enable the reading of `LP` files and the usage of
-  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. Currently there is no python 3.9 version of CPLEX. In this case, the CPLEX install
-  command will have no effect.
+  the `CplexOptimizer`, wrapper for ``cplex.Cplex``. CPLEX is a separate package and its support of Python versions is independent of Qiskit Optimization, where this CPLEX command will have no effect if there is no compatible version of CPLEX available (yet).
 
 * **CVXPY** may be installed using the command `pip install 'qiskit-optimization[cvx]'`.
   CVXPY being installed will enable the usage of the Goemans-Williamson algorithm as an optimizer `GoemansWilliamsonOptimizer`.
@@ -108,7 +107,7 @@ print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4
 ### Further examples
 
 Learning path notebooks may be found in the
-[optimization tutorials](https://qiskit.org/ecosystem/optimization/tutorials/index.html) section
+[optimization tutorials](https://qiskit-community.github.io/qiskit-optimization/tutorials/index.html) section
 of the documentation and are a great place to start.
 
 ----------------------------------------------------------------------------------------------------
