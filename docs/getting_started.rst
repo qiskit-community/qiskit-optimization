@@ -7,9 +7,9 @@ Getting started
 Installation
 ============
 
-Qiskit Optimization depends Qiskit. which has its own
-`Qiskit Getting Started <https://qiskit.org/documentation/getting_started.html>`__ detailing the
-installation options and its supported environments/platforms. You should refer to
+Qiskit Optimization depends on Qiskit, which has its own
+`installation instructions <https://docs.quantum.ibm.com/start/install>`__ detailing the
+installation options for Qiskit and its supported environments/platforms. You should refer to
 that first. Then the information here can be followed which focuses on the additional installation
 specific to Qiskit Optimization.
 
@@ -21,13 +21,9 @@ See :ref:`optional_installs` for more information.
 
     .. tab-item:: Start locally
 
-        The simplest way to get started is to first follow the `getting started 'Start locally' guide for
-        Qiskit <https://qiskit.org/documentation/getting_started.html>`__
+        The simplest way to get started is to follow the `Qiskit installation instructions <https://docs.quantum.ibm.com/start/install>`__
 
-        In your virtual environment where you installed Qiskit simply add ``optimization`` to the
-        extra list in a similar manner to how the extra ``visualization`` support is installed for
-        Qiskit, i.e:
-        In your virtual environment, where you installed Qiskit, install Qiskit Optimization as follows:
+        In your virtual environment where you installed Qiskit, also install ``qiskit-optimization``:
 
         .. code:: sh
 
@@ -48,7 +44,7 @@ See :ref:`optional_installs` for more information.
 
        Since Qiskit Optimization depends on Qiskit, and its latest changes may require new or changed
        features of Qiskit, you should first follow Qiskit's `"Install from source"` instructions
-       here `Qiskit Getting Started <https://qiskit.org/documentation/getting_started.html>`__
+       `here <https://docs.quantum.ibm.com/start/install-qiskit-source>`__
 
        .. raw:: html
 
