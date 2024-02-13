@@ -9,7 +9,7 @@ Overview
 
 Qiskit Terra v0.22 introduces new algorithm implementations that
 leverage `Qiskit
-Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__
+Primitives <https://docs.quantum.ibm.com/api/qiskit/primitives>`__
 (Estimator and Sampler). The former algorithm implementations that
 leverage opflow will be deprecated in the future release.
 
@@ -19,7 +19,7 @@ of Qiskit Terra v0.22 until the former algorithms are deprecated.
 It is not the intention to provide detailed explanations of the
 primitives in this migration guide. We suggest that you read the
 `corresponding
-resources <https://qiskit.org/documentation/apidoc/primitives.html>`__
+resources <https://docs.quantum.ibm.com/api/qiskit/primitives>`__
 of the Qiskit Terra documentation instead.
 
 We use ``qiskit.primitives.Sampler`` in this guide as an example of
