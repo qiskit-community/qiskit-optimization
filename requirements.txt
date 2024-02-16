@@ -1,4 +1,4 @@
-qiskit>=0.44
+qiskit>=0.44,<1
 qiskit-algorithms>=0.2.0
 scipy>=1.9.0
 numpy>=1.17
