@@ -81,7 +81,7 @@ runs:
             source "$CONDA/etc/profile.d/conda.sh"
             conda activate scsenv
           fi
-          pip install -U qiskit
+          pip install -U 'qiskit<1'
         fi
       shell: bash
     - name: Install stable Aer
