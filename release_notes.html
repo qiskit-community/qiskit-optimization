@@ -547,8 +547,8 @@ The feature to accept an Opflow operator is removed.</p></li>
 </ul>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer" title="qiskit_optimization.algorithms.MinimumEigenOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code></a> class takes the primitives-based algorithms
-(<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.SamplingMinimumEigensolver.html#qiskit_algorithms.SamplingMinimumEigensolver" title="(in Qiskit Algorithms v0.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit_algorithms.SamplingMinimumEigensolver</span></code></a> and
-<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.NumPyMinimumEigensolver.html#qiskit_algorithms.NumPyMinimumEigensolver" title="(in Qiskit Algorithms v0.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit_algorithms.NumPyMinimumEigensolver</span></code></a>)
+(<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.SamplingMinimumEigensolver.html#qiskit_algorithms.SamplingMinimumEigensolver" title="(in Qiskit Algorithms v0.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit_algorithms.SamplingMinimumEigensolver</span></code></a> and
+<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.NumPyMinimumEigensolver.html#qiskit_algorithms.NumPyMinimumEigensolver" title="(in Qiskit Algorithms v0.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit_algorithms.NumPyMinimumEigensolver</span></code></a>)
 of <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/">Qiskit Algorithms</a>
 as <code class="docutils literal notranslate"><span class="pre">min_eigen_solver</span></code> argument.
 The supports of the former algorithms based on <code class="docutils literal notranslate"><span class="pre">qiskit.algorithms</span></code> and <code class="docutils literal notranslate"><span class="pre">QuantumInstance</span></code>
@@ -585,31 +585,31 @@ The issue may have caused errors when interpreting solutions.</p></li>
 <span id="id3"></span><h2>0.5.0<a class="headerlink" href="#release-notes-0-5-0" title="Permalink to this heading">#</a></h2>
 <section id="release-notes-0-5-0-prelude">
 <span id="id4"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-5-0-prelude" title="Permalink to this heading">#</a></h3>
-<p>Qiskit Optimization 0.5 supports the new algorithms introduced in Qiskit Terra 0.22 which in turn rely on the <a class="reference external" href="https://qiskit.org/documentation/apidoc/primitives.html">Qiskit Primitives</a>. Qiskit Optimization 0.5 still supports the former algorithms based on <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.utils.QuantumInstance" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.utils.QuantumInstance</span></code></a>, but they will be deprecated and then removed, along with the support here, in future releases.</p>
+<p>Qiskit Optimization 0.5 supports the new algorithms introduced in Qiskit Terra 0.22 which in turn rely on the <a class="reference external" href="https://qiskit.org/documentation/apidoc/primitives.html">Qiskit Primitives</a>. Qiskit Optimization 0.5 still supports the former algorithms based on <code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.utils.QuantumInstance</span></code>, but they will be deprecated and then removed, along with the support here, in future releases.</p>
 </section>
 <section id="release-notes-0-5-0-new-features">
 <span id="id5"></span><h3>New Features<a class="headerlink" href="#release-notes-0-5-0-new-features" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer" title="qiskit_optimization.algorithms.MinimumEigenOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code></a> class takes the primitives-based algorithms
-(<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver</span></code></a> and
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver</span></code></a>)
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.SamplingMinimumEigensolver</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver</span></code>)
 as <code class="docutils literal notranslate"><span class="pre">min_eigen_solver</span></code> argument.
-The former algorithm <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.MinimumEigensolver" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.MinimumEigensolver</span></code></a>
+The former algorithm <code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.MinimumEigensolver</span></code>
 is pending deprecation and will be deprecated and subsequently removed in future releases.
-Note that <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.minimum_eigensolvers.SamplingVQE" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.SamplingVQE</span></code></a> supersedes
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.VQE" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.VQE</span></code></a> for <a class="reference internal" href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer" title="qiskit_optimization.algorithms.MinimumEigenOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code></a>.
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver</span></code></a> also supersedes
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.NumPyMinimumEigensolver" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.NumPyMinimumEigensolver</span></code></a>.</p></li>
+Note that <code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.SamplingVQE</span></code> supersedes
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.VQE</span></code> for <a class="reference internal" href="stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html#qiskit_optimization.algorithms.MinimumEigenOptimizer" title="qiskit_optimization.algorithms.MinimumEigenOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimumEigenOptimizer</span></code></a>.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver</span></code> also supersedes
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.NumPyMinimumEigensolver</span></code>.</p></li>
 </ul>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html#qiskit_optimization.algorithms.WarmStartQAOAOptimizer" title="qiskit_optimization.algorithms.WarmStartQAOAOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">WarmStartQAOAOptimizer</span></code></a> class takes the primitives-based QAOA
-(<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.minimum_eigensolvers.QAOA" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.QAOA</span></code></a>) as <code class="docutils literal notranslate"><span class="pre">qaoa</span></code> argument.
-The former algorithm <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.QAOA" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.QAOA</span></code></a>
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.minimum_eigensolvers.QAOA</span></code>) as <code class="docutils literal notranslate"><span class="pre">qaoa</span></code> argument.
+The former algorithm <code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.algorithms.QAOA</span></code>
 is pending deprecation and will be deprecated and subsequently removed in future releases.</p></li>
 </ul>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="stubs/qiskit_optimization.algorithms.GroverOptimizer.html#qiskit_optimization.algorithms.GroverOptimizer" title="qiskit_optimization.algorithms.GroverOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroverOptimizer</span></code></a> class has a new keyword argument, <code class="docutils literal notranslate"><span class="pre">sampler</span></code> which is
-used to run the algorithm using an instance of the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.BaseSampler" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.primitives.BaseSampler</span></code></a>
+used to run the algorithm using an instance of the <code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.primitives.BaseSampler</span></code>
 interface to calculate the results. This new argument supersedes the
 the <code class="docutils literal notranslate"><span class="pre">quantum_instance</span></code> argument and accordingly, <code class="docutils literal notranslate"><span class="pre">quantum_instance</span></code>
 is pending deprecation and will be deprecated and subsequently removed in
@@ -1001,7 +1001,7 @@ and converts it into a constraint of <code class="xref py py-class docutils lite
 into a constraint of Docplex without any error.</p></li>
 </ul>
 <ul class="simple">
-<li><p>Allow Qiskit’s <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.optimizers.Optimizer" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></a> classes as input for
+<li><p>Allow Qiskit’s <code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code> classes as input for
 the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">VQEProgram</span></code> and 
 <code class="xref py py-class docutils literal notranslate"><span class="pre">QAOAProgram</span></code> instead of only
 dictionaries.</p></li>
