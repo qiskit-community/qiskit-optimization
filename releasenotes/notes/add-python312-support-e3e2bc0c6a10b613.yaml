@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Added support for using Qiskit Optimization with Python 3.12.
+
