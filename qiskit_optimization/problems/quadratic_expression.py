@@ -14,10 +14,10 @@
 
 from typing import List, Union, Dict, Tuple, Any
 
+import sys
 import numpy as np
 from numpy import ndarray
 from scipy.sparse import spmatrix, dok_matrix, tril, triu
-import sys
 
 from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
@@ -107,7 +107,8 @@ class QuadraticExpression(QuadraticProgramElement):
             coefficients = dok_matrix(coefficients)
         elif isinstance(coefficients, dict):
 
-            # Check if the python version is at least 3.9. See pull request #594 for more details on this check. 
+            # Check if the python version is at least 3.9.
+            # See pull request #594 for more details why we do this check.
             new_update_rule = sys.version_info >= (3,9)
 
             n = self.quadratic_program.get_num_vars()
