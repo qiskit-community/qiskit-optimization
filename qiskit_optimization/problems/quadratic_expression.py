@@ -109,7 +109,7 @@ class QuadraticExpression(QuadraticProgramElement):
 
             # Check if the python version is at least 3.9.
             # See pull request #594 for more details why we do this check.
-            new_update_rule = sys.version_info >= (3,9)
+            new_update_rule = sys.version_info >= (3, 9)
 
             n = self.quadratic_program.get_num_vars()
             coeffs = dok_matrix((n, n))
