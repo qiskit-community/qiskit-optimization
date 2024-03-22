@@ -3,7 +3,7 @@ features:
   - |
     Support for reading and writing `mps` and `lp` files has moved to functions
     :func:`translators.file_io.read_from_mps_file` and :func:`translators.file_io.read_from_lp_file`,
-    returning `QuadraticProgram` instances. In addition, both functions accept gzipped files as
+    returning `QuadraticProgram` instances. In addition, both functions accept gzip'ed files as
     `lp.gz` and `mps.gz`. In the same unit, :func:`translators.file_io.write_to_mps_file` and
     :func:`translators.file_io.write_to_lp_file` have been added to write `QuadraticPrograms` to
     `mps` and `lp` files.

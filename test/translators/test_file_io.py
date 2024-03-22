@@ -141,6 +141,25 @@ class TestFileIOTranslator(QiskitOptimizationTestCase):
         return q_p
 
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
+    def test_qp_read_from_lp_file(self):
+        """test read lp file"""
+        q_p = QuadraticProgram()
+
+        try:
+            with self.assertRaises(IOError):
+                q_p.read_from_lp_file("")
+            with self.assertRaises(IOError):
+                q_p.read_from_lp_file("no_file.txt")
+            with self.assertRaises(IOError):
+                q_p.read_from_lp_file("no_file.lp")
+            lp_file = self.get_resource_path("test_quadratic_program.lp", "problems/resources")
+            q_p.read_from_lp_file(lp_file)
+
+            self.helper_test_read_problem_file(q_p)
+        except RuntimeError as ex:
+            self.fail(str(ex))
+
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_read_from_lp_file(self):
         """test read lp file"""
         try:
@@ -177,13 +196,14 @@ class TestFileIOTranslator(QiskitOptimizationTestCase):
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_read_from_lp_gz_file(self):
         """test read compressed lp file"""
+        q_p = QuadraticProgram()
         try:
             with self.assertRaises(IOError):
-                read_from_mps_file("")
+                read_from_lp_file("")
             with self.assertRaises(IOError):
-                read_from_mps_file("no_file.txt")
+                read_from_lp_file("no_file.txt")
             with self.assertRaises(IOError):
-                read_from_mps_file("no_file.lp.gz")
+                read_from_lp_file("no_file.lp.gz")
             mps_file = self.get_resource_path("test_quadratic_program.lp.gz", "problems/resources")
             q_p = read_from_lp_file(mps_file)
 
@@ -207,6 +227,38 @@ class TestFileIOTranslator(QiskitOptimizationTestCase):
             self.helper_test_read_problem_file(q_p)
         except RuntimeError as ex:
             self.fail(str(ex))
+
+    def test_qp_write_to_lp_file(self):
+        """test write problem to lp file"""
+        q_p = self.helper_test_write_problem_file()
+
+        reference_file_name = self.get_resource_path(
+            "test_quadratic_program.lp", "problems/resources"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_output_path = path.join(tmp, "temp.lp")
+            q_p.write_to_lp_file(temp_output_path)
+            with open(reference_file_name, encoding="utf8") as reference, open(
+                temp_output_path, encoding="utf8"
+            ) as temp_output_file:
+                lines1 = temp_output_file.readlines()
+                lines2 = reference.readlines()
+                self.assertListEqual(lines1, lines2)
+
+        with tempfile.TemporaryDirectory() as temp_problem_dir:
+            q_p.write_to_lp_file(temp_problem_dir)
+            with open(path.join(temp_problem_dir, "my_problem.lp"), encoding="utf8") as file1, open(
+                reference_file_name, encoding="utf8"
+            ) as file2:
+                lines1 = file1.readlines()
+                lines2 = file2.readlines()
+                self.assertListEqual(lines1, lines2)
+
+        with self.assertRaises(OSError):
+            q_p.write_to_lp_file("/cannot/write/this/file.lp")
+
+        with self.assertRaises(DOcplexException):
+            q_p.write_to_lp_file("")
 
     def test_write_to_lp_file(self):
         """test write problem to lp file"""
