@@ -740,12 +740,15 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
         """test read lp file"""
         try:
             q_p = QuadraticProgram()
-            with self.assertRaises(FileNotFoundError):
+            with self.assertRaises(IOError):
                 q_p.read_from_lp_file("")
-            with self.assertRaises(FileNotFoundError):
+            with self.assertRaises(IOError):
                 q_p.read_from_lp_file("no_file.txt")
+            with self.assertRaises(IOError):
+                q_p.read_from_lp_file("no_file.lp")
             lp_file = self.get_resource_path("test_quadratic_program.lp", "problems/resources")
             q_p.read_from_lp_file(lp_file)
+
             self.assertEqual(q_p.name, "my problem")
             self.assertEqual(q_p.get_num_vars(), 3)
             self.assertEqual(q_p.get_num_binary_vars(), 1)
@@ -791,36 +794,36 @@ class TestQuadraticProgram(QiskitOptimizationTestCase):
             self.assertEqual(cst[2].sense, Constraint.Sense.GE)
             self.assertEqual(cst[2].rhs, 1)
 
-            cst = q_p.quadratic_constraints
-            self.assertEqual(cst[0].name, "quad_eq")
-            self.assertDictEqual(cst[0].linear.to_dict(use_name=True), {"x": 1, "y": 1})
+            qst = q_p.quadratic_constraints
+            self.assertEqual(qst[0].name, "quad_eq")
+            self.assertDictEqual(qst[0].linear.to_dict(use_name=True), {"x": 1, "y": 1})
             self.assertDictEqual(
-                cst[0].quadratic.to_dict(use_name=True),
+                qst[0].quadratic.to_dict(use_name=True),
                 {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
             )
-            self.assertEqual(cst[0].sense, Constraint.Sense.EQ)
-            self.assertEqual(cst[0].rhs, 1)
-            self.assertEqual(cst[1].name, "quad_leq")
-            self.assertDictEqual(cst[1].linear.to_dict(use_name=True), {"x": 1, "y": 1})
+            self.assertEqual(qst[0].sense, Constraint.Sense.EQ)
+            self.assertEqual(qst[0].rhs, 1)
+            self.assertEqual(qst[1].name, "quad_leq")
+            self.assertDictEqual(qst[1].linear.to_dict(use_name=True), {"x": 1, "y": 1})
             self.assertDictEqual(
-                cst[1].quadratic.to_dict(use_name=True),
+                qst[1].quadratic.to_dict(use_name=True),
                 {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
             )
-            self.assertEqual(cst[1].sense, Constraint.Sense.LE)
-            self.assertEqual(cst[1].rhs, 1)
-            self.assertEqual(cst[2].name, "quad_geq")
-            self.assertDictEqual(cst[2].linear.to_dict(use_name=True), {"x": 1, "y": 1})
+            self.assertEqual(qst[1].sense, Constraint.Sense.LE)
+            self.assertEqual(qst[1].rhs, 1)
+            self.assertEqual(qst[2].name, "quad_geq")
+            self.assertDictEqual(qst[2].linear.to_dict(use_name=True), {"x": 1, "y": 1})
             self.assertDictEqual(
-                cst[2].quadratic.to_dict(use_name=True),
+                qst[2].quadratic.to_dict(use_name=True),
                 {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
             )
-            self.assertEqual(cst[2].sense, Constraint.Sense.GE)
-            self.assertEqual(cst[2].rhs, 1)
+            self.assertEqual(qst[2].sense, Constraint.Sense.GE)
+            self.assertEqual(qst[2].rhs, 1)
         except RuntimeError as ex:
             self.fail(str(ex))
 
     def test_write_to_lp_file(self):
-        """test write problem"""
+        """test write problem to lp file"""
         q_p = QuadraticProgram("my problem")
         q_p.binary_var("x")
         q_p.integer_var(-1, 5, "y")
