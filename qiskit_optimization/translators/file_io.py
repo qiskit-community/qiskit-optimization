@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023
+# (C) Copyright IBM 2024
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -43,7 +43,7 @@ def export_as_lp_string(q_p: QuadraticProgram) -> str:
 
 @_optionals.HAS_CPLEX.require_in_call
 def export_as_mps_string(q_p: QuadraticProgram) -> str:
-    """Returns the quadratic program as a string of LP format.
+    """Returns the quadratic program as a string of MPS format.
 
     Args:
         q_p: The quadratic program to be exported.
@@ -114,7 +114,7 @@ def _read_from_file(
 
 @_optionals.HAS_CPLEX.require_in_call
 def read_from_lp_file(filename: str) -> QuadraticProgram:
-    """Loads the quadratic program from a LP file (may be gzip'ed).
+    """Loads the quadratic program from a LP file ('.lp' or compressed '.lp.gz').
 
     Args:
         filename: The filename of the file to be loaded.
@@ -145,7 +145,7 @@ def read_from_lp_file(filename: str) -> QuadraticProgram:
 
 @_optionals.HAS_CPLEX.require_in_call
 def read_from_mps_file(filename: str) -> QuadraticProgram:
-    """Loads the quadratic program from a MPS file (may be gzip'ed).
+    """Loads the quadratic program from a MPS file ('.mps' or compressed '.mps.gz').
 
     Args:
         filename: The filename of the file to be loaded.

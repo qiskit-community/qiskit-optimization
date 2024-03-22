@@ -915,7 +915,7 @@ class QuadraticProgram:
         additional_msg=(
             "Please use export_as_lp_string from qiskit_optimization.translators.file_io instead."
         ),
-        since="0.6.0",
+        since="0.6.1",
         pending=True,
     )
     def export_as_lp_string(self) -> str:
@@ -935,7 +935,7 @@ class QuadraticProgram:
         additional_msg=(
             "Please use read_from_lp_file from qiskit_optimization.translators.file_io instead."
         ),
-        since="0.6.0",
+        since="0.6.1",
         pending=True,
     )
     def read_from_lp_file(self, filename: str) -> None:
@@ -960,7 +960,7 @@ class QuadraticProgram:
         additional_msg=(
             "Please use write_to_lp_file from qiskit_optimization.translators.file_io instead."
         ),
-        since="0.6.0",
+        since="0.6.1",
         pending=True,
     )
     def write_to_lp_file(self, filename: str) -> None:
