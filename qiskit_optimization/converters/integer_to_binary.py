@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -77,7 +77,7 @@ class IntegerToBinary(QuadraticProgramConverter):
                 if x.vartype == Variable.Type.INTEGER:
                     new_vars = self._convert_var(x.name, x.lowerbound, x.upperbound)
                     self._conv[x] = new_vars
-                    for (var_name, _) in new_vars:
+                    for var_name, _ in new_vars:
                         self._dst.binary_var(var_name)
                 else:
                     if x.vartype == Variable.Type.CONTINUOUS:
@@ -164,7 +164,11 @@ class IntegerToBinary(QuadraticProgramConverter):
         linear, linear_constant = self._convert_linear_coefficients_dict(
             self._src.objective.linear.to_dict(use_name=True)
         )
-        quadratic, q_linear, q_constant, = self._convert_quadratic_coefficients_dict(
+        (
+            quadratic,
+            q_linear,
+            q_constant,
+        ) = self._convert_quadratic_coefficients_dict(
             self._src.objective.quadratic.to_dict(use_name=True)
         )
 
