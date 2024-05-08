@@ -77,7 +77,9 @@ setuptools.setup(
         "cplex": ["cplex; python_version < '3.12' and platform_machine != 'arm64'"],
         "cvx": ["cvxpy"],
         "matplotlib": ["matplotlib"],
-        "gurobi": ["gurobipy"],
+        "gurobi": [
+            "gurobipy; platform_machine != 'arm64' or python_version >= '3.9' and platform_machine == 'arm64'"
+        ],
     },
     project_urls={
         "Bug Tracker": "https://github.com/qiskit-community/qiskit-optimization/issues",
