@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -446,9 +446,11 @@ class MagicRounding(RoundingScheme):
                     [int(bit) for bit in soln]
                 ),
                 probability=count / self._shots,
-                status=OptimizationResultStatus.SUCCESS
-                if rounding_context.encoding.problem.is_feasible([int(bit) for bit in soln])
-                else OptimizationResultStatus.INFEASIBLE,
+                status=(
+                    OptimizationResultStatus.SUCCESS
+                    if rounding_context.encoding.problem.is_feasible([int(bit) for bit in soln])
+                    else OptimizationResultStatus.INFEASIBLE
+                ),
             )
             for soln, count in soln_counts.items()
         ]
