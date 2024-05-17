@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -165,6 +165,8 @@ class GroverOptimizer(OptimizationAlgorithm):
         # Variables for result object.
         operation_count = {}
         iteration = 0
+        samples = None
+        raw_samples = None
 
         # Variables for stopping if we've hit the rotation max.
         rotations = 0

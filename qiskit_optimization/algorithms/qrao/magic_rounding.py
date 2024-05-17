@@ -130,7 +130,7 @@ class MagicRounding(RoundingScheme):
                 qc = circuit.compose(_z_to_31p_qrac_basis_circuit(basis).inverse(), inplace=False)
             elif vars_per_qubit == 2:
                 qc = circuit.compose(_z_to_21p_qrac_basis_circuit(basis).inverse(), inplace=False)
-            elif vars_per_qubit == 1:
+            else:
                 qc = circuit.copy()
             qc.measure_all()
             circuits.append(qc)

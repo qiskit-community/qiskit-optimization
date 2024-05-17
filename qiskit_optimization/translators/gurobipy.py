@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -29,6 +29,20 @@ else:
     class Model:  # type: ignore
         """Empty Model class
         Replacement if gurobipy.Model is not present.
+        """
+
+        pass
+
+    class LinExpr:  # type: ignore
+        """Empty LinExpr class
+        Replacement if gurobipy.LinExpr is not present.
+        """
+
+        pass
+
+    class QuadExpr:  # type: ignore
+        """Empty QuadExpr class
+        Replacement if gurobipy.QuadExpr is not present.
         """
 
         pass
