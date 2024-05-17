@@ -109,6 +109,7 @@ leq
 lhs
 lin
 linearconstraint
+linexpr
 lowerbound
 lp
 lucas
@@ -174,6 +175,7 @@ qn
 qp
 qrac
 qrao
+quadexpr
 quadratically
 quadraticconstraint
 quadraticobjective
