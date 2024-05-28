@@ -12,6 +12,7 @@
 
 """Tests for MagicRounding"""
 import unittest
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt
@@ -28,7 +29,6 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingResult,
 )
 from qiskit_optimization.problems import QuadraticProgram
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 
 @ddt

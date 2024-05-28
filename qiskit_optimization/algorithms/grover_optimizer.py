@@ -20,6 +20,7 @@ from typing import Dict, List, Optional, Union, cast
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import QuadraticForm
+from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
 from qiskit_algorithms import AmplificationProblem
 from qiskit_algorithms.amplitude_amplifiers.grover import Grover
@@ -50,6 +51,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         ] = None,
         penalty: Optional[float] = None,
         sampler: Optional[Union[BaseSamplerV1, BaseSamplerV2]] = None,
+        passmanager: Optional[BasePassManager] = None,
     ) -> None:
         """
         Args:
@@ -62,6 +64,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             penalty: The penalty factor used in the default
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` converter
             sampler: A Sampler to use for sampling the results of the circuits.
+            passmanager: A pass manager to use to transpile the circuits
 
         Raises:
             ValueError: If both a quantum instance and sampler are set.
@@ -73,6 +76,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._circuit_results = {}  # type: dict
         self._converters = self._prepare_converters(converters, penalty)
         self._sampler = sampler
+        self._passmanager = passmanager
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with this optimizer.
@@ -294,6 +298,10 @@ class GroverOptimizer(OptimizationAlgorithm):
 
     def _get_prob_dist(self, qc: QuantumCircuit) -> Dict[str, float]:
         """Gets probabilities from a given backend."""
+        # Transppile the circuit
+        if self._passmanager:
+            qc = self._passmanager.run(qc)
+
         # Execute job and filter results.
         job = self._sampler.run([qc])
 
@@ -307,7 +315,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             prob_dist = result.quasi_dists[0].binary_probabilities(qc.num_qubits)
         else:
             # SamplerV2
-            counts = result[0].join_data().get_counts()
+            counts = getattr(result[0].data, qc.cregs[0].name).get_counts()
             shots = sum(counts.values())
             prob_dist = {k: v / shots for k, v in counts.items()}
 
