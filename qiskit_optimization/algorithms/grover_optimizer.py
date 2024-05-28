@@ -20,7 +20,7 @@ from typing import Dict, List, Optional, Union, cast
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import QuadraticForm
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
 from qiskit_algorithms import AmplificationProblem
 from qiskit_algorithms.amplitude_amplifiers.grover import Grover
 from qiskit_algorithms.utils import algorithm_globals
@@ -49,7 +49,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
         ] = None,
         penalty: Optional[float] = None,
-        sampler: Optional[BaseSampler] = None,
+        sampler: Optional[Union[BaseSamplerV1, BaseSamplerV2]] = None,
     ) -> None:
         """
         Args:
@@ -301,12 +301,17 @@ class GroverOptimizer(OptimizationAlgorithm):
             result = job.result()
         except Exception as exc:
             raise QiskitOptimizationError("Sampler job failed.") from exc
-        quasi_dist = result.quasi_dists[0]
-        raw_prob_dist = {
-            k: v
-            for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items()
-            if v >= self._MIN_PROBABILITY
-        }
+
+        if isinstance(result, SamplerResult):
+            # SamplerV1
+            prob_dist = result.quasi_dists[0].binary_probabilities(qc.num_qubits)
+        else:
+            # SamplerV2
+            counts = result[0].join_data().get_counts()
+            shots = sum(counts.values())
+            prob_dist = {k: v / shots for k, v in counts.items()}
+
+        raw_prob_dist = {k: v for k, v in prob_dist.items() if v >= self._MIN_PROBABILITY}
         prob_dist = {k[::-1]: v for k, v in raw_prob_dist.items()}
         self._circuit_results = {i: v**0.5 for i, v in raw_prob_dist.items()}
         return prob_dist
