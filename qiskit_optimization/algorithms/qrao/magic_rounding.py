@@ -17,7 +17,7 @@ from collections import defaultdict
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
 from qiskit.quantum_info import SparsePauliOp
 from qiskit_algorithms.exceptions import AlgorithmError
 
@@ -58,7 +58,7 @@ class MagicRounding(RoundingScheme):
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV1 | BaseSamplerV2,
         basis_sampling: str = "uniform",
         seed: int | None = None,
     ):
@@ -89,13 +89,22 @@ class MagicRounding(RoundingScheme):
         self._sampler = sampler
         self._rng = np.random.default_rng(seed)
         self._basis_sampling = basis_sampling
-        if self._sampler.options.get("shots") is None:
-            raise ValueError("Magic rounding requires a sampler configured with a number of shots.")
-        self._shots = sampler.options.shots
+        if isinstance(self._sampler, BaseSamplerV1):
+            if self._sampler.options.get("shots") is None:
+                raise ValueError(
+                    "Magic rounding requires a sampler configured with a number of shots."
+                )
+            self._shots = sampler.options.shots
+        else:  # BaseSamplerV2
+            if self._sampler.default_shots is None:
+                raise ValueError(
+                    "Magic rounding requires a sampler configured with a number of shots."
+                )
+            self._shots = self._sampler.default_shots
         super().__init__()
 
     @property
-    def sampler(self) -> BaseSampler:
+    def sampler(self) -> BaseSamplerV1 | BaseSamplerV2:
         """Returns the Sampler used to sample the magic bases."""
         return self._sampler
 
@@ -189,7 +198,16 @@ class MagicRounding(RoundingScheme):
                 raise AlgorithmError(
                     "The primitive job to evaluate the magic state failed."
                 ) from exc
-            counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
+
+            if isinstance(result, SamplerResult):
+                counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
+            else:
+                counts_list = [res.join_data().get_counts() for res in result]
+                counts_list = [
+                    {k: v / sum(counts.values()) for k, v in counts.items()}
+                    for counts in counts_list
+                ]
+
             if len(counts_list) != len(indices):
                 raise QiskitOptimizationError(
                     "Internal error: The number of circuits and the results from the primitive job "

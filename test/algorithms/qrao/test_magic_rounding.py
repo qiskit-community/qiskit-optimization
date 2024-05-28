@@ -12,11 +12,11 @@
 
 """Tests for MagicRounding"""
 import unittest
-from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
+from ddt import data, ddt
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import Sampler
+from qiskit.primitives import Sampler, StatevectorSampler
 from qiskit_algorithms import NumPyMinimumEigensolver
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
@@ -28,8 +28,10 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingResult,
 )
 from qiskit_optimization.problems import QuadraticProgram
+from test.optimization_test_case import QiskitOptimizationTestCase
 
 
+@ddt
 class TestMagicRounding(QiskitOptimizationTestCase):
     """MagicRounding tests."""
 
@@ -41,10 +43,15 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         self.problem.binary_var("y")
         self.problem.binary_var("z")
         self.problem.minimize(linear={"x": 1, "y": 2, "z": 3})
+        self._sampler = {
+            "v1": Sampler(options={"shots": 10000, "seed": 42}),
+            "v2": StatevectorSampler(default_shots=10000, seed=42),
+        }
 
-    def test_magic_rounding_constructor(self):
+    @data("v1", "v2")
+    def test_magic_rounding_constructor(self, version):
         """Test constructor"""
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         # test default
         magic_rounding = MagicRounding(sampler)
         self.assertEqual(magic_rounding.sampler, sampler)
@@ -61,9 +68,10 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         with self.assertRaises(ValueError):
             MagicRounding(sampler, basis_sampling="invalid")
 
-    def test_magic_rounding_round_uniform_1_1_qrac(self):
+    @data("v1", "v2")
+    def test_magic_rounding_round_uniform_1_1_qrac(self, version):
         """Test round method with uniform basis sampling for max_vars_per_qubit=1"""
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=1)
         encoding.encode(self.problem)
         np_solver = NumPyMinimumEigensolver()
@@ -91,9 +99,10 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             [1, 1, 1],
         )
 
-    def test_magic_rounding_round_weighted_1_1_qrac(self):
+    @data("v1", "v2")
+    def test_magic_rounding_round_weighted_1_1_qrac(self, version):
         """Test round method with uniform basis sampling for max_vars_per_qubit=1"""
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=1)
         encoding.encode(self.problem)
         np_solver = NumPyMinimumEigensolver()
@@ -121,9 +130,10 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             [1, 1, 1],
         )
 
-    def test_magic_rounding_round_uniform_2_1_qrac(self):
+    @data("v1", "v2")
+    def test_magic_rounding_round_uniform_2_1_qrac(self, version):
         """Test round method with uniform basis sampling for max_vars_per_qubit=2"""
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=2)
         encoding.encode(self.problem)
         np_solver = NumPyMinimumEigensolver()
@@ -142,7 +152,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
             for key, value in basis_counts.items():
-                self.assertAlmostEqual(value, expected_basis_counts[i][key], delta=50)
+                self.assertAlmostEqual(value, expected_basis_counts[i][key], delta=70)
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
@@ -163,9 +173,10 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             [0.44721359549995743, 0.8944271909999162, 1],
         )
 
-    def test_magic_rounding_round_weighted_2_1_qrac(self):
+    @data("v1", "v2")
+    def test_magic_rounding_round_weighted_2_1_qrac(self, version):
         """Test round method with weighted basis sampling for max_vars_per_qubit=2"""
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=2)
         encoding.encode(self.problem)
         np_solver = NumPyMinimumEigensolver()
@@ -182,7 +193,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         ]
         for i, basis_counts in enumerate(rounding_result.basis_counts):
             for key, value in basis_counts.items():
-                self.assertAlmostEqual(value, expected_basis_counts[i][key], delta=50)
+                self.assertAlmostEqual(value, expected_basis_counts[i][key], delta=70)
         samples = rounding_result.samples
         samples.sort(key=lambda sample: np.array2string(sample.x))
         expected_samples = [
@@ -203,9 +214,10 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             [0.44721359549995743, 0.8944271909999162, 1],
         )
 
-    def test_magic_rounding_round_uniform_3_1_qrac(self):
+    @data("v1", "v2")
+    def test_magic_rounding_round_uniform_3_1_qrac(self, version):
         """Test round method with uniform basis sampling for max_vars_per_qubit=3"""
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
         encoding.encode(self.problem)
         np_solver = NumPyMinimumEigensolver()
@@ -245,14 +257,15 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
         )
 
-    def test_magic_rounding_round_weighted_3_1_qrac(self):
+    @data("v1", "v2")
+    def test_magic_rounding_round_weighted_3_1_qrac(self, version):
         """Test round method with weighted basis sampling for max_vars_per_qubit=3"""
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
         encoding.encode(self.problem)
         np_solver = NumPyMinimumEigensolver()
         qrao = QuantumRandomAccessOptimizer(min_eigen_solver=np_solver)
         _, rounding_context = qrao.solve_relaxed(encoding=encoding)
-        sampler = Sampler(options={"shots": 10000, "seed": 42})
+        sampler = self._sampler[version]
         magic_rounding = MagicRounding(sampler, basis_sampling="weighted", seed=42)
         rounding_result = magic_rounding.round(rounding_context)
         self.assertIsInstance(rounding_result, RoundingResult)
