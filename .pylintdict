@@ -6,6 +6,7 @@ aer's
 al
 annealers
 ansatz
+ansatzes
 apidocs
 applegate
 args
@@ -16,6 +17,7 @@ backend
 backends
 barkoutsos
 benchmarking
+bfgs
 bitstring
 bitstrings
 bixby
@@ -65,12 +67,14 @@ farhi
 fmin
 formatter
 func
+functools
 fred
 fval
 fx
 gambella
 geq
 getter
+getters
 glover
 goemans
 goldstone
@@ -81,6 +85,7 @@ gurobi
 gurobioptimizer
 gurobipy
 gutmann
+hadfield
 hamilton
 hamiltonian
 hamiltonians
@@ -99,6 +104,7 @@ iprint
 ising
 iter
 iteratively
+jac
 july
 karimi
 kirkpatrick
@@ -115,6 +121,7 @@ lp
 lucas
 macos
 makefile
+marecek
 masahito
 matplotlib
 maxcut
@@ -149,6 +156,7 @@ optimizationresultstatus
 optimizers
 panchenko
 param
+parameterizations
 params
 parikh
 passmanager
@@ -207,6 +215,7 @@ simonetto
 slsqp
 smode
 smoothen
+spedalieri
 spsa
 src
 statevector
@@ -249,6 +258,7 @@ wecker
 whitespace
 wiesner
 williamson
+woerner
 xs
 ys
 zemlin
