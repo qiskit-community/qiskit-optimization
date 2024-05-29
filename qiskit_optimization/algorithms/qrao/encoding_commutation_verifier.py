@@ -35,7 +35,7 @@ class EncodingCommutationVerifier:
         Args:
             encoding: The encoding to verify.
             estimator: The estimator to use for the verification.
-            passmanager: The pass manager to tranpile the circuits
+            passmanager: The pass manager to transpile the circuits
         """
         self._encoding = encoding
         self._estimator = estimator

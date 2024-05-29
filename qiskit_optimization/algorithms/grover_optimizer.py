@@ -298,7 +298,7 @@ class GroverOptimizer(OptimizationAlgorithm):
 
     def _get_prob_dist(self, qc: QuantumCircuit) -> Dict[str, float]:
         """Gets probabilities from a given backend."""
-        # Transppile the circuit
+        # Transpile the circuit
         if self._passmanager:
             qc = self._passmanager.run(qc)
 
