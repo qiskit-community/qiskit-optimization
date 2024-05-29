@@ -20,7 +20,8 @@ from typing import Dict, List, Optional, Union, cast
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import QuadraticForm
-from qiskit.primitives import BaseSampler
+from qiskit.passmanager import BasePassManager
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
 from qiskit_algorithms import AmplificationProblem
 from qiskit_algorithms.amplitude_amplifiers.grover import Grover
 from qiskit_algorithms.utils import algorithm_globals
@@ -49,7 +50,8 @@ class GroverOptimizer(OptimizationAlgorithm):
             Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
         ] = None,
         penalty: Optional[float] = None,
-        sampler: Optional[BaseSampler] = None,
+        sampler: Optional[Union[BaseSamplerV1, BaseSamplerV2]] = None,
+        passmanager: Optional[BasePassManager] = None,
     ) -> None:
         """
         Args:
@@ -62,6 +64,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             penalty: The penalty factor used in the default
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` converter
             sampler: A Sampler to use for sampling the results of the circuits.
+            passmanager: A pass manager to use to transpile the circuits
 
         Raises:
             ValueError: If both a quantum instance and sampler are set.
@@ -73,6 +76,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._circuit_results = {}  # type: dict
         self._converters = self._prepare_converters(converters, penalty)
         self._sampler = sampler
+        self._passmanager = passmanager
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with this optimizer.
@@ -294,6 +298,10 @@ class GroverOptimizer(OptimizationAlgorithm):
 
     def _get_prob_dist(self, qc: QuantumCircuit) -> Dict[str, float]:
         """Gets probabilities from a given backend."""
+        # Transpile the circuit
+        if self._passmanager:
+            qc = self._passmanager.run(qc)
+
         # Execute job and filter results.
         job = self._sampler.run([qc])
 
@@ -301,12 +309,17 @@ class GroverOptimizer(OptimizationAlgorithm):
             result = job.result()
         except Exception as exc:
             raise QiskitOptimizationError("Sampler job failed.") from exc
-        quasi_dist = result.quasi_dists[0]
-        raw_prob_dist = {
-            k: v
-            for k, v in quasi_dist.binary_probabilities(qc.num_qubits).items()
-            if v >= self._MIN_PROBABILITY
-        }
+
+        if isinstance(result, SamplerResult):
+            # SamplerV1
+            prob_dist = result.quasi_dists[0].binary_probabilities(qc.num_qubits)
+        else:
+            # SamplerV2
+            counts = getattr(result[0].data, qc.cregs[0].name).get_counts()
+            shots = sum(counts.values())
+            prob_dist = {k: v / shots for k, v in counts.items()}
+
+        raw_prob_dist = {k: v for k, v in prob_dist.items() if v >= self._MIN_PROBABILITY}
         prob_dist = {k[::-1]: v for k, v in raw_prob_dist.items()}
         self._circuit_results = {i: v**0.5 for i, v in raw_prob_dist.items()}
         return prob_dist
