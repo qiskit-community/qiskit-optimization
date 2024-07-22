@@ -69,7 +69,7 @@ are that it cannot proceed to completion.
    :toctree: ../stubs/
    :nosignatures:
 
-    ~qiskit_optimization.infinity.INFINITY
+    ~infinity.INFINITY
 
 Submodules
 ==========
