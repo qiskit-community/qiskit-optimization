@@ -232,7 +232,8 @@ class MagicRounding(RoundingScheme):
         """
         output_bits = []
         # iterate in order over decision variables
-        for q, op in var2op.values():
+        for var in sorted(var2op.keys()):
+            q, op = var2op[var]
             # get the decoding outcome index for the variable
             # corresponding to this Pauli op.
             op_index = self._OP_INDICES[vars_per_qubit][str(op.paulis[0])]
