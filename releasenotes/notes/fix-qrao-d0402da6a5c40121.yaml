@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fixed incorrect iteration order ``var2op.values()``
+    in :class:`~qiskit_optimization.algorithms.qrao.MagicRounding`.
