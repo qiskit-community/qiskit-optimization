@@ -70,7 +70,7 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         """Test QuantumRandomAccessOptimizer with VQE."""
         vqe = VQE(
             ansatz=self.ansatz,
-            optimizer=COBYLA(),
+            optimizer=COBYLA(tol=1e-6),
             estimator=Estimator(),
         )
         qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
@@ -78,9 +78,9 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertIsInstance(relaxed_results, VQEResult)
         self.assertAlmostEqual(relaxed_results.eigenvalue, -2.73861, delta=1e-4)
         self.assertEqual(len(relaxed_results.aux_operators_evaluated), 3)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[0][0], 0.31632, delta=1e-4)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[1][0], 0, delta=1e-4)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[2][0], 0.94865, delta=1e-4)
+        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[0][0].item(), 0.31632, delta=1e-4)
+        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[1][0].item(), 0, delta=1e-4)
+        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[2][0].item(), 0.94865, delta=1e-4)
         self.assertIsInstance(rounding_context, RoundingContext)
         self.assertEqual(rounding_context.circuit.num_qubits, self.ansatz.num_qubits)
         self.assertEqual(rounding_context.encoding, self.encoding)
