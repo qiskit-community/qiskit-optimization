@@ -74,7 +74,10 @@ jobs:
           pip install pyenchant
           echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
-      - run:  pip check
+      - name: Run pip check
+        run: |
+          pip install "pip<24.2"
+          pip check
         if: ${{ !cancelled() }}
         shell: bash
       - name: Copyright Check
