@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -78,9 +78,13 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertIsInstance(relaxed_results, VQEResult)
         self.assertAlmostEqual(relaxed_results.eigenvalue, -2.73861, delta=1e-4)
         self.assertEqual(len(relaxed_results.aux_operators_evaluated), 3)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[0][0].item(), 0.31632, delta=1e-4)
+        self.assertAlmostEqual(
+            relaxed_results.aux_operators_evaluated[0][0].item(), 0.31632, delta=1e-4
+        )
         self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[1][0].item(), 0, delta=1e-4)
-        self.assertAlmostEqual(relaxed_results.aux_operators_evaluated[2][0].item(), 0.94865, delta=1e-4)
+        self.assertAlmostEqual(
+            relaxed_results.aux_operators_evaluated[2][0].item(), 0.94865, delta=1e-4
+        )
         self.assertIsInstance(rounding_context, RoundingContext)
         self.assertEqual(rounding_context.circuit.num_qubits, self.ansatz.num_qubits)
         self.assertEqual(rounding_context.encoding, self.encoding)
