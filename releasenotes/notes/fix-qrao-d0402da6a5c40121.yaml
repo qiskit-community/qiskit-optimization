@@ -1,5 +1,4 @@
 ---
 fixes:
   - |
-    Fixed incorrect iteration order ``var2op.values()``
-    in :class:`~qiskit_optimization.algorithms.qrao.MagicRounding`.
+    Fixed a bug of :meth:`.MagicRounding.round` that may return a wrong decision variable order.
