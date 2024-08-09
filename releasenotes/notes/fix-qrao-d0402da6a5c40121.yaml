@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fixed a bug of :meth:`.MagicRounding.round` that may return a wrong decision variable order.
