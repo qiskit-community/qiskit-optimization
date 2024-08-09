@@ -14,6 +14,7 @@
 import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
+import networkx as nx
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import Sampler
@@ -27,6 +28,7 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingContext,
     RoundingResult,
 )
+from qiskit_optimization.applications import Maxcut
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -41,6 +43,15 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         self.problem.binary_var("y")
         self.problem.binary_var("z")
         self.problem.minimize(linear={"x": 1, "y": 2, "z": 3})
+
+        # trivial maxcut problem (solution: {1}, {0, 2} with cut val 2)
+        graph = nx.Graph()
+        graph.add_nodes_from([0, 1, 2])
+        graph.add_edges_from([(0, 1), (1, 2)])
+        maxcut = Maxcut(graph)
+        self.maxcut_problem = maxcut.to_quadratic_program()
+        self.maxcut_optimal_value = 2.0
+        self.maxcut_optimal_solution = [0, 1, 0]
 
     def test_magic_rounding_constructor(self):
         """Test constructor"""
@@ -286,6 +297,19 @@ class TestMagicRounding(QiskitOptimizationTestCase):
             rounding_result.expectation_values,
             [0.2672612419124245, 0.5345224838248487, 0.8017837257372733],
         )
+
+    def test_mapping_magic_rounding_result(self):
+        """Test the mapping of magic rounding result bits to variables"""
+        encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=1)
+        encoding.encode(self.maxcut_problem)
+        circuit = encoding.state_preparation_circuit(self.maxcut_optimal_solution)
+        rounding_context = RoundingContext(encoding=encoding, expectation_values=0, circuit=circuit)
+        sampler = Sampler(options={"shots": 1})
+        magic_rounding = MagicRounding(sampler=sampler)
+        rounding_result = magic_rounding.round(rounding_context)
+        solution = rounding_result.samples[0]
+        self.assertEqual(solution.fval, self.maxcut_optimal_value)
+        np.testing.assert_allclose(solution.x, self.maxcut_optimal_solution)
 
     def test_magic_rounding_exceptions(self):
         """Test exceptions in the MagicRounding class"""
