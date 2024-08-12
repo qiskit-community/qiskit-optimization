@@ -37,6 +37,7 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import read_from_lp_file
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
@@ -58,7 +59,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         # load optimization problem
         problem = QuadraticProgram()
         lp_file = self.get_resource_path(filename, "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem = read_from_lp_file(lp_file)
 
         # solve problem with cplex
         cplex = CplexOptimizer()
@@ -78,7 +79,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         # load optimization problem
         problem = QuadraticProgram()
         lp_file = self.get_resource_path(filename, "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem = read_from_lp_file(lp_file)
 
         # get minimum eigen solver
         min_eigen_solver = NumPyMinimumEigensolver()
@@ -144,7 +145,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         # load optimization problem
         problem = QuadraticProgram()
         lp_file = self.get_resource_path("op_ip1.lp", "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem = read_from_lp_file(lp_file)
 
         # solve problem with cplex
         cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
