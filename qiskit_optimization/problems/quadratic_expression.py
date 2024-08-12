@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,6 +14,7 @@
 
 from typing import List, Union, Dict, Tuple, Any
 
+import sys
 import numpy as np
 from numpy import ndarray
 from scipy.sparse import spmatrix, dok_matrix, tril, triu
@@ -105,6 +106,11 @@ class QuadraticExpression(QuadraticProgramElement):
         if isinstance(coefficients, (list, ndarray, spmatrix)):
             coefficients = dok_matrix(coefficients)
         elif isinstance(coefficients, dict):
+
+            # Check if the python version is at least 3.9.
+            # See pull request #594 for more details why we do this check.
+            new_update_rule = sys.version_info >= (3, 9)
+
             n = self.quadratic_program.get_num_vars()
             coeffs = dok_matrix((n, n))
             for (i, j), value in coefficients.items():
@@ -112,8 +118,19 @@ class QuadraticExpression(QuadraticProgramElement):
                     i = self.quadratic_program.variables_index[i]
                 if isinstance(j, str):
                     j = self.quadratic_program.variables_index[j]
-                coeffs[i, j] = value
-            coefficients = coeffs
+
+                if new_update_rule:
+                    if i > j:
+                        coeffs[j, i] += value
+                    else:
+                        coeffs[i, j] += value
+                else:
+                    coeffs[i, j] = value
+
+            if new_update_rule:
+                return coeffs
+            else:
+                coefficients = coeffs
         else:
             raise QiskitOptimizationError(f"Unsupported format for coefficients: {coefficients}")
         return self._triangle_matrix(coefficients)
