@@ -13,5 +13,6 @@
 """ Optimization test packages """
 
 from .optimization_test_case import QiskitOptimizationTestCase
+from .algorithms_test_case import QiskitAlgorithmsTestCase
 
-__all__ = ["QiskitOptimizationTestCase"]
+__all__ = ["QiskitOptimizationTestCase", "QiskitAlgorithmsTestCase"]
