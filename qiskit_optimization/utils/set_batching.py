@@ -12,7 +12,7 @@
 
 """Set default batch sizes for the optimizers."""
 
-from qiskit_optimization.algorithms_backend.optimizers import Optimizer, SPSA
+from qiskit_optimization.optimizers import Optimizer, SPSA
 
 
 def _set_default_batchsize(optimizer: Optimizer) -> bool:
