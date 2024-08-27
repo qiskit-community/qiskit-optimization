@@ -85,9 +85,9 @@ Submodules
 
 """
 
-from .exceptions import QiskitOptimizationError
+from .exceptions import QiskitOptimizationError, AlgorithmError
 from .infinity import INFINITY  # must be at the top of the file
 from .problems.quadratic_program import QuadraticProgram
 from .version import __version__
 
-__all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError", "INFINITY"]
+__all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError", "AlgorithmError", "INFINITY"]

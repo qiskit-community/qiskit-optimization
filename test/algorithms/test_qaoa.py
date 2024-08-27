@@ -27,8 +27,8 @@ from qiskit.primitives import Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.result import QuasiDistribution
 
-from qiskit_optimization.compat import QAOA  # <-- we should move qaoa to algorithms
-from qiskit_optimization.algorithms_backend.optimizers import COBYLA, NELDER_MEAD
+from qiskit_optimization.minimum_eigensolvers import QAOA
+from qiskit_optimization.optimizers import COBYLA, NELDER_MEAD
 from qiskit_optimization.utils import algorithm_globals
 
 W1 = np.array([[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]])
