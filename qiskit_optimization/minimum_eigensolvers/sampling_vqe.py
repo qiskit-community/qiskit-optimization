@@ -216,7 +216,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         if callable(self.optimizer):
             optimizer_result = self.optimizer(
-                fun=evaluate_energy,
+                fun=evaluate_energy,  # type: ignore[arg-type]
                 x0=initial_point,
                 jac=None,
                 bounds=bounds,
@@ -227,7 +227,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             was_updated = _set_default_batchsize(self.optimizer)
 
             optimizer_result = self.optimizer.minimize(
-                fun=evaluate_energy,
+                fun=evaluate_energy,  # type: ignore[arg-type]
                 x0=initial_point,
                 bounds=bounds,
             )
@@ -260,7 +260,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
                 _DiagonalEstimator(sampler=self.sampler),
                 ansatz,
                 aux_operators,
-                optimizer_result.x,
+                optimizer_result.x,  # type: ignore[arg-type]
             )
         else:
             aux_operators_evaluated = None
@@ -268,7 +268,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         return self._build_sampling_vqe_result(
             self.ansatz.copy(),
             optimizer_result,
-            aux_operators_evaluated,
+            aux_operators_evaluated,  # type: ignore[arg-type]
             best_measurement,
             final_state,
             optimizer_time,
@@ -355,11 +355,13 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         result = SamplingVQEResult()
         result.eigenvalue = optimizer_result.fun
         result.cost_function_evals = optimizer_result.nfev
-        result.optimal_point = optimizer_result.x
-        result.optimal_parameters = dict(zip(self.ansatz.parameters, optimizer_result.x))
+        result.optimal_point = optimizer_result.x  # type: ignore[assignment]
+        result.optimal_parameters = dict(
+            zip(self.ansatz.parameters, optimizer_result.x)  # type: ignore[arg-type]
+        )
         result.optimal_value = optimizer_result.fun
         result.optimizer_time = optimizer_time
-        result.aux_operators_evaluated = aux_operators_evaluated
+        result.aux_operators_evaluated = aux_operators_evaluated  # type: ignore[assignment]
         result.optimizer_result = optimizer_result
         result.best_measurement = best_measurement["best"]
         result.eigenstate = final_state
