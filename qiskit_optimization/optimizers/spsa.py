@@ -44,7 +44,7 @@ class SPSA(Optimizer):
     As an optimization method, it is appropriately suited to large-scale population models,
     adaptive modeling, and simulation optimization.
 
-    .. seealso::
+    .. see also::
 
         Many examples are presented at the `SPSA Web site <http://www.jhuapl.edu/SPSA>`__.
 
