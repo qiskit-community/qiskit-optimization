@@ -50,7 +50,6 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
         settings = {"maxiter": 100, "blocking": True, "allowed_increase": 0}
 
-
         expected_nfev = settings["maxiter"] * 3 + 1
 
         spsa = SPSA(**settings)
