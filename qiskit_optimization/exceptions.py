@@ -25,22 +25,3 @@ class AlgorithmError(QiskitError):
     """For Algorithm specific errors."""
 
     pass
-
-
-class QiskitAlgorithmsWarning(UserWarning):
-    """Base class for warnings raised by Qiskit Algorithms."""
-
-    def __init__(self, *message):
-        """Set the error message."""
-        super().__init__(" ".join(message))
-        self.message = " ".join(message)
-
-    def __str__(self):
-        """Return the message."""
-        return repr(self.message)
-
-
-class QiskitAlgorithmsOptimizersWarning(QiskitAlgorithmsWarning):
-    """For Algorithm specific warnings."""
-
-    pass
