@@ -20,8 +20,6 @@ from ddt import ddt, data, unpack
 import numpy as np
 from scipy.optimize import rosen, rosen_der
 
-from qiskit.exceptions import MissingOptionalLibraryError
-
 from qiskit_optimization.optimizers import (
     COBYLA,
     NELDER_MEAD,
