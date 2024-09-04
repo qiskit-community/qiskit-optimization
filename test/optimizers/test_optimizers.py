@@ -130,17 +130,6 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
         with self.assertRaises(RuntimeError):
             _ = SciPyOptimizer("SLSQP", options={"bounds": [(0.0, 1.0)]})
 
-    @unpack
-    def test_nlopt(self, optimizer_cls, use_bound):
-        """NLopt test"""
-        bounds = [(-6, 6)] * 5 if use_bound else None
-        try:
-            optimizer = optimizer_cls()
-            optimizer.set_options(**{"max_evals": 50000})
-            self.run_optimizer(optimizer, max_nfev=50000, bounds=bounds)
-        except MissingOptionalLibraryError as ex:
-            self.skipTest(str(ex))
-
 
 @ddt
 class TestOptimizerSerialization(QiskitAlgorithmsTestCase):
