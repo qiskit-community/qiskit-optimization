@@ -343,7 +343,9 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         return evaluate_energy
 
-    def _build_sampling_vqe_result(  # pylint: disable=too-many-positional-arguments
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def _build_sampling_vqe_result(  # pylint: disable=all
         self,
         ansatz: QuantumCircuit,
         optimizer_result: OptimizerResult,

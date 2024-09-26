@@ -38,7 +38,9 @@ class QuadraticObjective(QuadraticProgramElement):
 
     Sense = ObjSense
 
-    def __init__(  # pylint: disable=too-many-positional-arguments
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         quadratic_program: Any,
         constant: float = 0.0,

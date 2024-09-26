@@ -41,7 +41,9 @@ logger = logging.getLogger(__name__)
 class GroverOptimizer(OptimizationAlgorithm):
     """Uses Grover Adaptive Search (GAS) to find the minimum of a QUBO function."""
 
-    def __init__(  # pylint: disable=too-many-positional-arguments
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         num_value_qubits: int,
         num_iterations: int = 3,
@@ -325,7 +327,9 @@ class GroverOptimizer(OptimizationAlgorithm):
 class GroverOptimizationResult(OptimizationResult):
     """A result object for Grover Optimization methods."""
 
-    def __init__(  # pylint: disable=too-many-positional-arguments
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         x: Union[List[float], np.ndarray],
         fval: float,

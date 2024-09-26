@@ -42,7 +42,9 @@ logger = logging.getLogger(__name__)
 class ADMMParameters:
     """Defines a set of parameters for ADMM optimizer."""
 
-    def __init__(  # pylint: disable=too-many-positional-arguments
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         rho_initial: float = 10000,
         factor_c: float = 100000,
@@ -175,7 +177,9 @@ class ADMMState:
 class ADMMOptimizationResult(OptimizationResult):
     """ADMMOptimization Result."""
 
-    def __init__(  # pylint: disable=too-many-positional-arguments
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         x: np.ndarray,
         fval: float,
