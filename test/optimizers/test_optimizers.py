@@ -26,6 +26,7 @@ from qiskit_optimization.optimizers import (
     Optimizer,
     SPSA,
     SciPyOptimizer,
+    OptimizerSupportLevel,
 )
 from qiskit_optimization.utils import algorithm_globals
 
@@ -37,6 +38,9 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 52
+        self.optimizer = SPSA()
+        self.optimizer_2 = SPSA()
+        self.optimizer_2.set_options(tolerance=1e-6, maxiter=100, method="SPSA")
 
     def run_optimizer(
         self,
@@ -127,6 +131,146 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             _ = SciPyOptimizer("SLSQP", bounds=[(0.0, 1.0)])
         with self.assertRaises(RuntimeError):
             _ = SciPyOptimizer("SLSQP", options={"bounds": [(0.0, 1.0)]})
+
+    def test_gradient_num_diff(self):
+        """Test the gradient_num_diff function."""
+
+        # Define a simple quadratic function and its gradient
+        def func(x):
+            return (x[0] - 2) ** 2 + (x[1] - 3) ** 2  # f(x, y) = (x-2)^2 + (y-3)^2
+
+        def expected_gradient(x):
+            return np.array([2 * (x[0] - 2), 2 * (x[1] - 3)])  # df/dx = 2(x-2), df/dy = 2(y-3)
+
+        # Set the point around which we compute the gradient
+        x_center = np.array([1.0, 1.0])
+        epsilon = 1e-5  # Small perturbation for numerical differentiation
+
+        # Compute the numerical gradient using the optimizer method
+        numerical_gradient = self.optimizer.gradient_num_diff(x_center, func, epsilon)
+
+        # Compute the expected gradient
+        expected_grad = expected_gradient(x_center)
+
+        # Assert that the computed gradient is close to the expected gradient
+        np.testing.assert_allclose(numerical_gradient, expected_grad, rtol=1e-5, atol=1e-8)
+
+    def test_set_options(self):
+        """Test the set_options method."""
+
+        # Define some options to set
+        options = {"max_iter": 100, "tolerance": 1e-6, "verbose": True}
+
+        # Set options using the set_options method
+        self.optimizer.set_options(**options)
+
+        # Assert that the options dictionary is updated correctly
+        for key, value in options.items():
+            self.assertIn(key, self.optimizer._options)
+            self.assertEqual(self.optimizer._options[key], value)
+
+        # Test updating an existing option
+        self.optimizer.set_options(max_iter=200)
+        self.assertEqual(self.optimizer._options["max_iter"], 200)
+
+    def test_wrap_function(self):
+        """Test the wrap_function method."""
+
+        # Define a simple function to test
+        def simple_function(x, y):
+            return x + y
+
+        # Wrap the function, injecting the argument (5,)
+        wrapped_function = self.optimizer.wrap_function(simple_function, (5,))
+
+        # Call the wrapped function with a single argument
+        result = wrapped_function(10)  # Should compute 10 + 5
+
+        # Assert that the result is as expected
+        self.assertEqual(result, 15)
+
+    def test_wrap_function_with_multiple_args(self):
+        """Test wrap_function with multiple injected args."""
+
+        # Define a simple function to test
+        def multiply_function(a, b, c):
+            return a * b * c
+
+        # Wrap the function, injecting the arguments (2, 3)
+        wrapped_function = self.optimizer.wrap_function(multiply_function, (2, 3))
+
+        # Call the wrapped function with a single argument
+        result = wrapped_function(4)  # Should compute 4 * 2 * 3
+
+        # Assert that the result is as expected
+        self.assertEqual(result, 24)
+
+    def test_setting(self):
+        """Test the setting property."""
+
+        actual_output = self.optimizer.setting
+
+        # Check if key parts are present in the settings output
+        self.assertIn("Optimizer: SPSA", actual_output)
+        self.assertIn("max_evals_grouped: None", actual_output)
+
+        # Optional: check for specific support levels if required
+        self.assertIn("gradient_support_level", actual_output)
+        self.assertIn("bounds_support_level", actual_output)
+        self.assertIn("initial_point_support_level", actual_output)
+
+    def test_gradient_support_level(self):
+        """Test for gradient support level property"""
+        self.assertEqual(self.optimizer.gradient_support_level, OptimizerSupportLevel.ignored)
+
+    def test_is_gradient_ignored(self):
+        """Test for is_gradient_ignored property"""
+        self.assertTrue(self.optimizer.is_gradient_ignored)
+
+    def test_is_gradient_supported(self):
+        """Test for is_gradient_supported property"""
+        self.assertTrue(self.optimizer.is_gradient_supported)
+
+    def test_is_gradient_required(self):
+        """Test for is_gradient_required property"""
+        self.assertFalse(self.optimizer.is_gradient_required)
+
+    def test_bounds_support_level(self):
+        """Test for bounds support level property"""
+        self.assertNotEqual(self.optimizer.bounds_support_level, OptimizerSupportLevel.supported)
+
+    def test_is_bounds_ignored(self):
+        """Test for is_bounds_ignored property"""
+        self.assertTrue(self.optimizer.is_bounds_ignored)
+
+    def test_is_bounds_supported(self):
+        """Test for is_bounds_supported property"""
+        self.assertTrue(self.optimizer.is_bounds_supported)
+
+    def test_is_bounds_required(self):
+        """Test for is_bounds_required property"""
+        self.assertFalse(self.optimizer.is_bounds_required)
+
+    def test_initial_point_support_level(self):
+        """Test for initial point support level property"""
+        self.assertEqual(self.optimizer.initial_point_support_level, OptimizerSupportLevel.required)
+
+    def test_is_initial_point_ignored(self):
+        """Test for is_initial_point_ignored property"""
+        self.assertFalse(self.optimizer.is_initial_point_ignored)
+
+    def test_is_initial_point_supported(self):
+        """Test for is_initial_point_supported property"""
+        self.assertTrue(self.optimizer.is_initial_point_supported)
+
+    def test_is_initial_point_required(self):
+        """Test for is_initial_point_required property"""
+        self.assertTrue(self.optimizer.is_initial_point_required)
+
+    def test_set_max_evals_grouped(self):
+        """Test for set_max_evals_grouped method"""
+        self.optimizer.set_max_evals_grouped(10)
+        self.assertEqual(self.optimizer._max_evals_grouped, 10)
 
 
 @ddt
