@@ -32,13 +32,14 @@ class TestAlgorithmResultMethods(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         """Setting up initial test objects"""
+        super().setUp()
         self.result1 = TestAlgorithmResult({"value1": 10, "value2": 20})
         self.result2 = TestAlgorithmResult({"value1": 100, "value2": 200})
         self.result3 = TestAlgorithmResult({"value3": 300})
 
     def test_str_method(self):
         """Test the __str__ method"""
-        expected_str = "{'data': {'value1': 100, 'value2': 200}, 'name': 'Test Result'}"
+        expected_str = "{'data': {'value1': 10, 'value2': 20}, 'name': 'Test Result'}"
         self.assertEqual(
             self.result1.__str__(), expected_str  # pylint: disable=unnecessary-dunder-call
         )
