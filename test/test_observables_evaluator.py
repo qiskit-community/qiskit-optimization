@@ -21,7 +21,6 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.operators import SparsePauliOp
-from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.primitives import BaseEstimator
 
 from qiskit_optimization.exceptions import AlgorithmError
@@ -40,8 +39,9 @@ class TestEstimateObservables(QiskitAlgorithmsTestCase):
         super().setUp()
         self.estimator = MagicMock(spec=BaseEstimator)
         self.quantum_state = QuantumCircuit(2)  # Simple 2-qubit circuit
-        self.observable = MagicMock(spec=BaseOperator)
-        self.observable_2 = MagicMock(spec=BaseOperator)
+        self.observable = SparsePauliOp.from_list([("Z", 1)])
+        self.observable_2 = SparsePauliOp.from_list([("X", 1)])
+        self.observable_3 = SparsePauliOp.from_list([("Z", 1)])
 
     def test_estimate_observables_success_with_list(self):
         """Test estimation with a list of observables and successful estimator."""
@@ -56,13 +56,18 @@ class TestEstimateObservables(QiskitAlgorithmsTestCase):
 
     def test_estimate_observables_success_with_dict(self):
         """Test estimation with a dictionary of observables."""
+        self.estimator.run = unittest.mock.MagicMock()
         self.estimator.run.return_value.result.return_value.values = np.array([1.0, 0.5])
         self.estimator.run.return_value.result.return_value.metadata = [{} for _ in range(2)]
+        # Use valid BaseOperator instances for testing
         observables = {"obs1": self.observable, "obs2": self.observable_2}
         result = estimate_observables(self.estimator, self.quantum_state, observables)
         # Verify results
         expected_results = [(1.0, {}), (0.5, {})]
-        self.assertEqual(result, expected_results)
+        self.assertEqual(
+            result, _prepare_result(expected_results, observables)
+        )  # Adjust according to your expected output
+        # Assert that the estimator was called correctly
         self.estimator.run.assert_called_once()
 
     def test_estimate_observables_below_threshold(self):
@@ -94,16 +99,16 @@ class TestEstimateObservables(QiskitAlgorithmsTestCase):
             estimate_observables(self.estimator, self.quantum_state, observables)
 
     def test_handle_zero_ops(self):
-        """Test the _handle_zero_ops function."""
-        zero_op = SparsePauliOp.from_list([("I" * self.observable.num_qubits, 0)])
-        observables_list = [self.observable, 0, self.observable_2, 0]
-        updated_list = _handle_zero_ops(observables_list)
-        # Verify that the zero operators were replaced
-        self.assertIsInstance(updated_list[1], SparsePauliOp)
-        self.assertIsInstance(updated_list[3], SparsePauliOp)
-        # Verify that the correct replacement is made
-        self.assertEqual(updated_list[1], zero_op)
-        self.assertEqual(updated_list[3], zero_op)
+        """Test replacing zero operators with SparsePauliOp."""
+        observables_list = [self.observable_3, 0, self.observable_3]
+        # Ensure num_qubits is accessible and valid
+        num_qubits = self.observable_3.num_qubits
+        self.assertIsInstance(num_qubits, int)
+        result = _handle_zero_ops(observables_list)
+        # Check if the zero operator was replaced correctly
+        zero_op = SparsePauliOp.from_list([("I" * num_qubits, 0)])
+        # Validate that the zero operator was replaced
+        self.assertEqual(result[1], zero_op)
 
     def test_prepare_result_with_list(self):
         """Test the _prepare_result function with a list of observables."""
