@@ -28,7 +28,7 @@ class TestAlgorithmResult(AlgorithmResult):
 
 
 class TestAlgorithmResultMethods(QiskitAlgorithmsTestCase):
-    """AlgorithmResult tests."""
+    """AlgorithmResult tests"""
 
     def setUp(self):
         """Setting up initial test objects"""
