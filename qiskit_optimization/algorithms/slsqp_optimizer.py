@@ -30,7 +30,7 @@ class SlsqpOptimizationResult(OptimizationResult):
     SLSQP optimization result, defines additional properties that may be returned by the optimizer.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Union[List[float], np.ndarray],
         fval: float,
@@ -104,7 +104,7 @@ class SlsqpOptimizer(MultiStartOptimizer):
     """
 
     # pylint: disable=redefined-builtin
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         iter: int = 100,
         acc: float = 1.0e-6,

@@ -41,7 +41,7 @@ class NELDER_MEAD(SciPyOptimizer):  # pylint: disable=invalid-name
     _OPTIONS = ["maxiter", "maxfev", "disp", "xatol", "adaptive"]
 
     # pylint: disable=unused-argument
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         maxiter: int | None = None,
         maxfev: int = 1000,

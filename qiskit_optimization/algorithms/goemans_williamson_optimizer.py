@@ -39,7 +39,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
     values of just one solution. Explore ``samples`` for all possible solutions.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Optional[Union[List[float], np.ndarray]],
         fval: float,

@@ -343,7 +343,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         return evaluate_energy
 
-    def _build_sampling_vqe_result(
+    def _build_sampling_vqe_result(  # pylint: disable=too-many-positional-arguments
         self,
         ansatz: QuantumCircuit,
         optimizer_result: OptimizerResult,

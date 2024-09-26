@@ -36,6 +36,8 @@ TERMINATIONCHECKER = Callable[[int, np.ndarray, float, SupportsFloat, bool], boo
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=too-many-positional-arguments
+
 
 class SPSA(Optimizer):
     """Simultaneous Perturbation Stochastic Approximation (SPSA) optimizer.

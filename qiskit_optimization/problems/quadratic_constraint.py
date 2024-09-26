@@ -28,7 +28,7 @@ class QuadraticConstraint(Constraint):
     # Note: added, duplicating in effect that in Constraint, to avoid issues with Sphinx
     Sense = ConstraintSense
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         quadratic_program: Any,
         name: str,

@@ -38,7 +38,7 @@ class QuadraticObjective(QuadraticProgramElement):
 
     Sense = ObjSense
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         quadratic_program: Any,
         constant: float = 0.0,

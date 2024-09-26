@@ -39,7 +39,7 @@ MinimumEigensolverResult = Union[SamplingMinimumEigensolverResult, NumPyMinimumE
 class MinimumEigenOptimizationResult(OptimizationResult):
     """Minimum Eigen Optimizer Result."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Optional[Union[List[float], np.ndarray]],
         fval: Optional[float],

@@ -33,7 +33,7 @@ class Variable(QuadraticProgramElement):
 
     Type = VarType
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         quadratic_program: Any,
         name: str,

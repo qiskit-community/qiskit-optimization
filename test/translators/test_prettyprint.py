@@ -112,11 +112,11 @@ class TestPrettyprint(QiskitOptimizationTestCase):
             q_p.linear_constraint({"x": 1, "y": 2}, "<=", 1, "lin_leq")
             q_p.linear_constraint({"x": 1, "y": 2}, ">=", 1, "lin_geq")
             q_p.quadratic_constraint(
-                {"x": 1, "y": 1},
-                {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
-                "==",
-                1,
-                "quad_eq",
+                linear={"x": 1, "y": 1},
+                quadratic={("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+                sense="==",
+                rhs=1,
+                name="quad_eq",
             )
             q_p.quadratic_constraint(
                 {"x": 1, "y": 1},
