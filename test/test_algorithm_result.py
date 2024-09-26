@@ -12,6 +12,8 @@
 
 """Test AlgorithmResult"""
 
+import unittest
+
 from test import QiskitAlgorithmsTestCase
 
 from qiskit_optimization.algorithm_result import AlgorithmResult
@@ -63,3 +65,7 @@ class TestAlgorithmResultMethods(QiskitAlgorithmsTestCase):
         original_data = self.result1.data.copy()
         self.result1.combine(self.result1)
         self.assertEqual(self.result1.data, original_data)
+
+
+if __name__ == "__main__":
+    unittest.main()
