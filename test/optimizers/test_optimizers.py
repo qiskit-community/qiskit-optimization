@@ -137,10 +137,10 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
 
         # Define a simple quadratic function and its gradient
         def func(x):
-            return (x[0] - 2) ** 2 + (x[1] - 3) ** 2  # f(x, y) = (x-2)^2 + (y-3)^2
+            return (x[0] - 2) ** 2 + (x[1] - 3) ** 2
 
         def expected_gradient(x):
-            return np.array([2 * (x[0] - 2), 2 * (x[1] - 3)])  # df/dx = 2(x-2), df/dy = 2(y-3)
+            return np.array([2 * (x[0] - 2), 2 * (x[1] - 3)])
 
         # Set the point around which we compute the gradient
         x_center = np.array([1.0, 1.0])
