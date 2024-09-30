@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -117,7 +117,9 @@ def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
     return buf
 
 
-def expr2str(
+# Delete all pylint checks because (too-many-positional-arguments) is unknown
+# option value in some platforms in github CI
+def expr2str(  # pylint: disable=all
     constant: float = 0.0,
     linear: Optional[LinearExpression] = None,
     quadratic: Optional[QuadraticExpression] = None,

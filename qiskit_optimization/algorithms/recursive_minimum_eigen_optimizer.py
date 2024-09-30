@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -52,7 +52,9 @@ class IntermediateResult(Enum):
 class RecursiveMinimumEigenOptimizationResult(OptimizationResult):
     """Recursive Eigen Optimizer Result."""
 
-    def __init__(
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         x: Union[List[float], np.ndarray],
         fval: float,
@@ -137,7 +139,9 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
         from Symmetry Protection. `arXiv:1910.08980 <http://arxiv.org/abs/1910.08980>`_
     """
 
-    def __init__(
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         optimizer: OptimizationAlgorithm,
         min_num_vars: int = 1,

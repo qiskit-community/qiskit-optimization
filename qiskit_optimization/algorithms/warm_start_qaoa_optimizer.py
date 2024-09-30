@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -198,7 +198,9 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
 
     """
 
-    def __init__(
+    # Delete all pylint checks because (too-many-positional-arguments) is unknown
+    # option value in some platforms in github CI
+    def __init__(  # pylint: disable=all
         self,
         pre_solver: OptimizationAlgorithm,
         relax_for_pre_solver: bool,
