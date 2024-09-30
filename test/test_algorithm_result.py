@@ -40,9 +40,7 @@ class TestAlgorithmResultMethods(QiskitAlgorithmsTestCase):
     def test_str_method(self):
         """Test the __str__ method"""
         expected_str = "{'data': {'value1': 10, 'value2': 20}, 'name': 'Test Result'}"
-        self.assertEqual(
-            str(self.result1), expected_str
-        )
+        self.assertEqual(str(self.result1), expected_str)
 
     def test_combine_with_another_result(self):
         """Test the combine method with another result"""
