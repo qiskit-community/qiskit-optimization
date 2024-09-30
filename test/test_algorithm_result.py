@@ -41,7 +41,7 @@ class TestAlgorithmResultMethods(QiskitAlgorithmsTestCase):
         """Test the __str__ method"""
         expected_str = "{'data': {'value1': 10, 'value2': 20}, 'name': 'Test Result'}"
         self.assertEqual(
-            self.result1.__str__(), expected_str  # pylint: disable=unnecessary-dunder-call
+            str(self.result1), expected_str
         )
 
     def test_combine_with_another_result(self):
