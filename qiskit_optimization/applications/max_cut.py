@@ -117,7 +117,7 @@ class Maxcut(GraphOptimizationApplication):
                     s__, t__, _ = v
                     s__ -= 1  # adjust 1-index
                     t__ -= 1  # ditto
-                    w[s__, t__] = t__
+                    w[s__, t__] = _
                     count += 1
             assert m == count
         w += w.T
