@@ -61,7 +61,6 @@ setuptools.setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
@@ -72,7 +71,7 @@ setuptools.setup(
     packages=setuptools.find_packages(include=["qiskit_optimization", "qiskit_optimization.*"]),
     install_requires=REQUIREMENTS,
     include_package_data=True,
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     extras_require={
         "cplex": ["cplex; python_version < '3.12' and platform_machine != 'arm64'"],
         "cvx": ["cvxpy"],

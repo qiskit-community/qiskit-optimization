@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -131,7 +131,9 @@ class OptimizationResult:
                     f"variables: size {len(variables)} {[v.name for v in variables]}"
                 )
             self._x = np.asarray(x)
-            self._variables_dict = dict(zip(self._variable_names, self._x))
+            self._variables_dict = {
+                name: val.item() for name, val in zip(self._variable_names, self._x)
+            }
 
         self._fval = fval
         self._raw_results = raw_results
