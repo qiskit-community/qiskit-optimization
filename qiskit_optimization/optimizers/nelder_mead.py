@@ -40,10 +40,8 @@ class NELDER_MEAD(SciPyOptimizer):  # pylint: disable=invalid-name
 
     _OPTIONS = ["maxiter", "maxfev", "disp", "xatol", "adaptive"]
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
     # pylint: disable=unused-argument
-    def __init__(  # pylint: disable=all
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         maxiter: int | None = None,
         maxfev: int = 1000,

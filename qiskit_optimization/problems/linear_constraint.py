@@ -27,9 +27,7 @@ class LinearConstraint(Constraint):
     # Note: added, duplicating in effect that in Constraint, to avoid issues with Sphinx
     Sense = ConstraintSense
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
-    def __init__(  # pylint: disable=all
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         quadratic_program: Any,
         name: str,

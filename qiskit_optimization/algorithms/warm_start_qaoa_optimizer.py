@@ -198,9 +198,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
 
     """
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
-    def __init__(  # pylint: disable=all
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         pre_solver: OptimizationAlgorithm,
         relax_for_pre_solver: bool,

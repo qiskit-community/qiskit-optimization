@@ -161,9 +161,7 @@ class SPSA(Optimizer):
 
     """
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
-    def __init__(  # pylint: disable=all
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         maxiter: int = 100,
         blocking: bool = False,
@@ -282,10 +280,8 @@ class SPSA(Optimizer):
         self._nfev: int | None = None  # the number of function evaluations
         self._smoothed_hessian: np.ndarray | None = None  # smoothed average of the Hessians
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
     @staticmethod
-    def calibrate(  # pylint: disable=all
+    def calibrate(  # pylint: disable=too-many-positional-arguments
         loss: Callable[[np.ndarray], float],
         initial_point: np.ndarray,
         c: float = 0.2,
@@ -417,9 +413,7 @@ class SPSA(Optimizer):
             "termination_checker": self.termination_checker,
         }
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
-    def _point_sample(self, loss, x, eps, delta1, delta2):  # pylint: disable=all
+    def _point_sample(self, loss, x, eps, delta1, delta2):  # pylint: disable=too-many-positional-arguments
         """A single sample of the gradient at position ``x`` in direction ``delta``."""
         # points to evaluate
         points = [x + eps * delta1, x - eps * delta1]
@@ -484,9 +478,7 @@ class SPSA(Optimizer):
             hessian_estimate / num_samples,
         )
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
-    def _compute_update(self, loss, x, k, eps, lse_solver):  # pylint: disable=all
+    def _compute_update(self, loss, x, k, eps, lse_solver):  # pylint: disable=too-many-positional-arguments
         # compute the perturbations
         if isinstance(self.resamplings, dict):
             num_samples = self.resamplings.get(k, 1)

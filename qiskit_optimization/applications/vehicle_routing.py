@@ -215,11 +215,9 @@ class VehicleRouting(GraphOptimizationApplication):
         """
         self._depot = depot
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(  # pylint: disable=all
+    def create_random_instance(  # pylint: disable=too-many-positional-arguments
         n: int,
         low: int = 0,
         high: int = 100,

@@ -117,9 +117,7 @@ def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
     return buf
 
 
-# Delete all pylint checks because (too-many-positional-arguments) is unknown
-# option value in some platforms in github CI
-def expr2str(  # pylint: disable=all
+def expr2str(  # pylint: disable=too-many-positional-arguments
     constant: float = 0.0,
     linear: Optional[LinearExpression] = None,
     quadratic: Optional[QuadraticExpression] = None,

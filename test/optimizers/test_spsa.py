@@ -129,9 +129,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             def __init__(self):
                 self.values = []
 
-            # Delete all pylint checks because (too-many-positional-arguments) is unknown
-            # option value in some platforms in github CI
-            def __call__(  # pylint: disable=all
+            def __call__(  # pylint: disable=too-many-positional-arguments
                 self, nfev, point, fvalue, stepsize, accepted
             ) -> bool:
                 self.values.append(fvalue)

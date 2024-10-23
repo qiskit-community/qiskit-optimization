@@ -30,9 +30,7 @@ class SlsqpOptimizationResult(OptimizationResult):
     SLSQP optimization result, defines additional properties that may be returned by the optimizer.
     """
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
-    def __init__(  # pylint: disable=all
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Union[List[float], np.ndarray],
         fval: float,
@@ -105,10 +103,8 @@ class SlsqpOptimizer(MultiStartOptimizer):
         >>> result = optimizer.solve(problem)
     """
 
-    # Delete all pylint checks because (too-many-positional-arguments) is unknown
-    # option value in some platforms in github CI
     # pylint: disable=redefined-builtin
-    def __init__(  # pylint: disable=all
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         iter: int = 100,
         acc: float = 1.0e-6,
