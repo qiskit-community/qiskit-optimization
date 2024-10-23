@@ -217,7 +217,7 @@ class VehicleRouting(GraphOptimizationApplication):
 
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(
+    def create_random_instance(  # pylint: disable=too-many-positional-arguments
         n: int,
         low: int = 0,
         high: int = 100,

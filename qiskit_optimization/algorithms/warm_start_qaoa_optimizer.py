@@ -198,7 +198,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
 
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         pre_solver: OptimizationAlgorithm,
         relax_for_pre_solver: bool,

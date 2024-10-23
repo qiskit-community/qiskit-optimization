@@ -97,7 +97,7 @@ class OptimizationResult:
         should maintain the order when generating a new ``OptimizationResult`` object.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Union[List[float], np.ndarray] | None,
         fval: float | None,

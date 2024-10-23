@@ -117,7 +117,7 @@ def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
     return buf
 
 
-def expr2str(
+def expr2str(  # pylint: disable=too-many-positional-arguments
     constant: float = 0.0,
     linear: Optional[LinearExpression] = None,
     quadratic: Optional[QuadraticExpression] = None,

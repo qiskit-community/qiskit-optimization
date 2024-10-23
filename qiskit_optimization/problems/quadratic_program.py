@@ -185,7 +185,7 @@ class QuadraticProgram:
             key_format = ""
         return self._add_variables(1, lowerbound, upperbound, vartype, name, key_format)[1][0]
 
-    def _add_variables(
+    def _add_variables(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int],
@@ -239,7 +239,7 @@ class QuadraticProgram:
             variables.append(variable)
         return names, variables
 
-    def _var_dict(
+    def _var_dict(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int],
@@ -277,7 +277,7 @@ class QuadraticProgram:
             zip(*self._add_variables(keys, lowerbound, upperbound, vartype, name, key_format))
         )
 
-    def _var_list(
+    def _var_list(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int],
@@ -333,7 +333,7 @@ class QuadraticProgram:
         """
         return self._add_variable(lowerbound, upperbound, Variable.Type.CONTINUOUS, name)
 
-    def continuous_var_dict(
+    def continuous_var_dict(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int] = 0,
@@ -367,7 +367,7 @@ class QuadraticProgram:
             keys, lowerbound, upperbound, Variable.Type.CONTINUOUS, name, key_format
         )
 
-    def continuous_var_list(
+    def continuous_var_list(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int] = 0,
@@ -494,7 +494,7 @@ class QuadraticProgram:
         """
         return self._add_variable(lowerbound, upperbound, Variable.Type.INTEGER, name)
 
-    def integer_var_dict(
+    def integer_var_dict(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int] = 0,
@@ -526,7 +526,7 @@ class QuadraticProgram:
         """
         return self._var_dict(keys, lowerbound, upperbound, Variable.Type.INTEGER, name, key_format)
 
-    def integer_var_list(
+    def integer_var_list(  # pylint: disable=too-many-positional-arguments
         self,
         keys: Union[int, Sequence],
         lowerbound: Union[float, int] = 0,
@@ -717,7 +717,7 @@ class QuadraticProgram:
         """
         return self._quadratic_constraints_index
 
-    def quadratic_constraint(
+    def quadratic_constraint(  # pylint: disable=too-many-positional-arguments
         self,
         linear: Union[ndarray, spmatrix, List[float], Dict[Union[int, str], float]] = None,
         quadratic: Union[
