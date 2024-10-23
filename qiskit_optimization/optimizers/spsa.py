@@ -413,7 +413,9 @@ class SPSA(Optimizer):
             "termination_checker": self.termination_checker,
         }
 
-    def _point_sample(self, loss, x, eps, delta1, delta2):  # pylint: disable=too-many-positional-arguments
+    def _point_sample(
+        self, loss, x, eps, delta1, delta2
+    ):  # pylint: disable=too-many-positional-arguments
         """A single sample of the gradient at position ``x`` in direction ``delta``."""
         # points to evaluate
         points = [x + eps * delta1, x - eps * delta1]
@@ -478,7 +480,9 @@ class SPSA(Optimizer):
             hessian_estimate / num_samples,
         )
 
-    def _compute_update(self, loss, x, k, eps, lse_solver):  # pylint: disable=too-many-positional-arguments
+    def _compute_update(
+        self, loss, x, k, eps, lse_solver
+    ):  # pylint: disable=too-many-positional-arguments
         # compute the perturbations
         if isinstance(self.resamplings, dict):
             num_samples = self.resamplings.get(k, 1)
