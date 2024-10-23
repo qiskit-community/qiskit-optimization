@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -38,7 +38,7 @@ class QuadraticObjective(QuadraticProgramElement):
 
     Sense = ObjSense
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         quadratic_program: Any,
         constant: float = 0.0,
