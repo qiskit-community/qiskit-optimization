@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -39,7 +39,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
     values of just one solution. Explore ``samples`` for all possible solutions.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Optional[Union[List[float], np.ndarray]],
         fval: float,
