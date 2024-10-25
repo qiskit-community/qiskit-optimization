@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -30,7 +30,7 @@ class SlsqpOptimizationResult(OptimizationResult):
     SLSQP optimization result, defines additional properties that may be returned by the optimizer.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         x: Union[List[float], np.ndarray],
         fval: float,
@@ -104,7 +104,7 @@ class SlsqpOptimizer(MultiStartOptimizer):
     """
 
     # pylint: disable=redefined-builtin
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         iter: int = 100,
         acc: float = 1.0e-6,

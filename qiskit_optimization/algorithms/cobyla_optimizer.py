@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -43,7 +43,7 @@ class CobylaOptimizer(MultiStartOptimizer):
         >>> result = optimizer.solve(problem)
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         rhobeg: float = 1.0,
         rhoend: float = 1e-4,
