@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -114,10 +114,10 @@ class Maxcut(GraphOptimizationApplication):
                     w = np.zeros((n, n))
                     header = False
                 else:
-                    s__, t__, _ = v
+                    s__, t__, w__ = v
                     s__ -= 1  # adjust 1-index
                     t__ -= 1  # ditto
-                    w[s__, t__] = t__
+                    w[s__, t__] = w__
                     count += 1
             assert m == count
         w += w.T
