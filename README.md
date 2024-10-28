@@ -2,6 +2,10 @@
 
 [![License](https://img.shields.io/github/license/Qiskit/qiskit-optimization.svg?style=popout-square)](https://opensource.org/licenses/Apache-2.0)<!--- long-description-skip-begin -->[![Build Status](https://github.com/qiskit-community/qiskit-optimization/workflows/Optimization%20Unit%20Tests/badge.svg?branch=main)](https://github.com/qiskit-community/qiskit-optimization/actions?query=workflow%3A"Optimization%20Unit%20Tests"+branch%3Amain+event%3Apush)[![](https://img.shields.io/github/release/Qiskit/qiskit-optimization.svg?style=popout-square)](https://github.com/qiskit-community/qiskit-optimization/releases)[![](https://img.shields.io/pypi/dm/qiskit-optimization.svg?style=popout-square)](https://pypi.org/project/qiskit-optimization/)[![Coverage Status](https://coveralls.io/repos/github/Qiskit/qiskit-optimization/badge.svg?branch=main)](https://coveralls.io/github/Qiskit/qiskit-optimization?branch=main)<!--- long-description-skip-end -->
 
+> [!WARNING]
+> **Qiskit Optimization is no longer officially supported by IBM**.
+> Like any other Apache 2 licensed code, you are free to use it or/and extend it, but please be aware that it is under your own risk.
+
 **Qiskit Optimization** is an open-source framework that covers the whole range from high-level modeling of optimization
 problems, with automatic conversion of problems to different required representations, to a suite
 of easy-to-use quantum optimization algorithms that are ready to run on classical simulators,
