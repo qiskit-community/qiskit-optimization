@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -127,7 +127,7 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
             (3, 4, 5),
             (3, 0, 5),
         ]
-        
+
         self.graph.add_nodes_from(range(5))
         for source, target, weight in self.edges_with_weights:
             self.graph.add_edge(source, target, weight=weight)
@@ -135,18 +135,18 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
         op = QuadraticProgram()
         for _ in range(25):
             op.binary_var()
-        
+
         result_vector = np.zeros(25)
         result_vector[0] = 1
         result_vector[6] = 1
         result_vector[12] = 1
         result_vector[23] = 1
         result_vector[19] = 1
-        
+
         self.optimal_path = [0, 1, 2, 4, 3]
         self.optimal_edges = [(0, 1), (1, 2), (2, 4), (4, 3), (3, 0)]
         self.optimal_cost = 25
-        
+
         self.result = OptimizationResult(
             x=result_vector,
             fval=self.optimal_cost,
@@ -158,17 +158,17 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
         """Test to_quadratic_program with custom graph"""
         tsp = Tsp(self.graph)
         quadratic_program = tsp.to_quadratic_program()
-        
+
         self.assertEqual(quadratic_program.name, "TSP")
         self.assertEqual(quadratic_program.get_num_vars(), 25)
-        
+
         for variable in quadratic_program.variables:
             self.assertEqual(variable.vartype, VarType.BINARY)
-            
+
         objective = quadratic_program.objective
         self.assertEqual(objective.constant, 0)
         self.assertEqual(objective.sense, QuadraticObjective.Sense.MINIMIZE)
-        
+
         # Test objective quadratic terms
         quadratic_terms = objective.quadratic.to_dict()
         for source, target, weight in self.edges_with_weights:
@@ -182,7 +182,7 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
                 self.assertEqual(quadratic_terms[key], weight)
 
         linear_constraints = quadratic_program.linear_constraints
-        
+
         # Test node constraints (each node appears once)
         for node in range(5):
             self.assertEqual(linear_constraints[node].sense, Constraint.Sense.EQ)
@@ -191,7 +191,7 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
                 linear_constraints[node].linear.to_dict(),
                 {5 * node + pos: 1 for pos in range(5)},
             )
-        
+
         # Test position constraints (each position filled once)
         for position in range(5):
             self.assertEqual(linear_constraints[5 + position].sense, Constraint.Sense.EQ)
@@ -204,11 +204,11 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
         # Test non-edge constraints
         non_edges = list(nx.non_edges(self.graph))
         constraint_idx = 10  # Start after node and position constraints
-        
+
         for i, j in non_edges:
             for k in range(5):
                 next_k = (k + 1) % 5
-                
+
                 # Check forward constraint: x[i,k] + x[j,(k+1)%n] <= 1
                 constraint = linear_constraints[constraint_idx]
                 self.assertEqual(constraint.sense, Constraint.Sense.LE)
@@ -218,7 +218,7 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
                 self.assertEqual(linear_dict[i * 5 + k], 1)
                 self.assertEqual(linear_dict[j * 5 + next_k], 1)
                 constraint_idx += 1
-                
+
                 # Check backward constraint: x[j,k] + x[i,(k+1)%n] <= 1
                 constraint = linear_constraints[constraint_idx]
                 self.assertEqual(constraint.sense, Constraint.Sense.LE)
@@ -228,7 +228,7 @@ class TestTspCustomGraph(QiskitOptimizationTestCase):
                 self.assertEqual(linear_dict[j * 5 + k], 1)
                 self.assertEqual(linear_dict[i * 5 + next_k], 1)
                 constraint_idx += 1
-        
+
         # Verify total number of constraints
         expected_constraints = (
             5  # node constraints
