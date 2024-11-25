@@ -21,6 +21,7 @@ from ddt import data, ddt
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import CplexOptimizer, OptimizationResultStatus
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import read_from_lp_file
 
 
 @ddt
@@ -44,7 +45,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
         # load optimization problem
         problem = QuadraticProgram()
         lp_file = self.get_resource_path(filename, "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem = read_from_lp_file(lp_file)
 
         # solve problem with cplex
         result = cplex_optimizer.solve(problem)
@@ -69,7 +70,7 @@ class TestCplexOptimizer(QiskitOptimizationTestCase):
         # load optimization problem
         problem = QuadraticProgram()
         lp_file = self.get_resource_path(filename, "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem = read_from_lp_file(lp_file)
 
         # solve problem with cplex
         result = cplex_optimizer.solve(problem)

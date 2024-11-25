@@ -35,6 +35,7 @@ from qiskit_optimization.converters import (
 )
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import read_from_lp_file
 
 
 @ddt
@@ -94,7 +95,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             # load optimization problem
             problem = QuadraticProgram()
             lp_file = self.get_resource_path(filename, "algorithms/resources")
-            problem.read_from_lp_file(lp_file)
+            problem = read_from_lp_file(lp_file)
 
             # solve problem with cplex
             cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
@@ -137,7 +138,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             # load optimization problem
             problem = QuadraticProgram()
             lp_file = self.get_resource_path(filename, "algorithms/resources")
-            problem.read_from_lp_file(lp_file)
+            problem = read_from_lp_file(lp_file)
 
             # solve problem
             result = min_eigen_optimizer.solve(problem)

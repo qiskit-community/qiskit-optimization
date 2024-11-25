@@ -20,8 +20,8 @@ from typing import Dict, List, Optional, Tuple, Union, cast
 from warnings import warn
 
 import numpy as np
-from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
+from qiskit.utils.deprecation import deprecate_func
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from scipy.sparse import spmatrix
@@ -911,52 +911,58 @@ class QuadraticProgram:
                         elem.quadratic_program = self
             setattr(self, attr, val)
 
+    @deprecate_func(
+        additional_msg=(
+            "Please use export_as_lp_string from qiskit_optimization.translators.file_io instead."
+        ),
+        since="0.6.1",
+        pending=True,
+    )
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
 
         Returns:
             A string representing the quadratic program.
         """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
 
-        return to_docplex_mp(self).export_as_lp_string()
+        # pylint: disable=cyclic-import
+        from ..translators.file_io import export_as_lp_string
+
+        return export_as_lp_string(self)
 
     @_optionals.HAS_CPLEX.require_in_call
+    @deprecate_func(
+        additional_msg=(
+            "Please use read_from_lp_file from qiskit_optimization.translators.file_io instead."
+        ),
+        since="0.6.1",
+        pending=True,
+    )
     def read_from_lp_file(self, filename: str) -> None:
-        """Loads the quadratic program from a LP file.
+        """Loads the quadratic program from a LP file (may be gzip'ed).
 
         Args:
             filename: The filename of the file to be loaded.
 
         Raises:
-            FileNotFoundError: If the file does not exist.
+            IOError: If the file type is not recognized, not supported or the file is not found.
 
         Note:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
 
-        def _parse_problem_name(filename: str) -> str:
-            # Because docplex model reader uses the base name as model name,
-            # we parse the model name in the LP file manually.
-            # https://ibmdecisionoptimization.github.io/docplex-doc/mp/docplex.mp.model_reader.html
-            prefix = "\\Problem name:"
-            model_name = ""
-            with open(filename, encoding="utf8") as file:
-                for line in file:
-                    if line.startswith(prefix):
-                        model_name = line[len(prefix) :].strip()
-                    if not line.startswith("\\"):
-                        break
-            return model_name
-
         # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import from_docplex_mp
+        from ..translators.file_io import read_from_lp_file
 
-        model = ModelReader().read(filename, model_name=_parse_problem_name(filename))
-        other = from_docplex_mp(model)
-        self._copy_from(other, include_name=True)
+        self._copy_from(read_from_lp_file(filename), include_name=True)
 
+    @deprecate_func(
+        additional_msg=(
+            "Please use write_to_lp_file from qiskit_optimization.translators.file_io instead."
+        ),
+        since="0.6.1",
+        pending=True,
+    )
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
 
@@ -969,11 +975,11 @@ class QuadraticProgram:
             OSError: If this cannot open a file.
             DOcplexException: If filename is an empty string
         """
-        # pylint: disable=cyclic-import
-        from ..translators.docplex_mp import to_docplex_mp
 
-        mdl = to_docplex_mp(self)
-        mdl.export_as_lp(filename)
+        # pylint: disable=cyclic-import
+        from ..translators.file_io import write_to_lp_file
+
+        write_to_lp_file(self, filename)
 
     def substitute_variables(
         self,

@@ -21,6 +21,7 @@ import numpy as np
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import GurobiOptimizer
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.translators import read_from_lp_file
 
 
 @ddt
@@ -43,7 +44,7 @@ class TestGurobiOptimizer(QiskitOptimizationTestCase):
         # load optimization problem
         problem = QuadraticProgram()
         lp_file = self.get_resource_path(filename, "algorithms/resources")
-        problem.read_from_lp_file(lp_file)
+        problem = read_from_lp_file(lp_file)
 
         # solve problem with gurobi
         result = gurobi_optimizer.solve(problem)
