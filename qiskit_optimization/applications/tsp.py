@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -46,18 +46,29 @@ class Tsp(GraphOptimizationApplication):
         mdl = Model(name="TSP")
         n = self._graph.number_of_nodes()
         x = {(i, k): mdl.binary_var(name=f"x_{i}_{k}") for i in range(n) for k in range(n)}
+
+        # Only sum over existing edges in the graph
         tsp_func = mdl.sum(
             self._graph.edges[i, j]["weight"] * x[(i, k)] * x[(j, (k + 1) % n)]
-            for i in range(n)
-            for j in range(n)
+            for i, j in self._graph.edges
             for k in range(n)
-            if i != j
         )
+        # Add reverse edges since we have an undirected graph
+        tsp_func += mdl.sum(
+            self._graph.edges[i, j]["weight"] * x[(j, k)] * x[(i, (k + 1) % n)]
+            for i, j in self._graph.edges
+            for k in range(n)
+        )
+
         mdl.minimize(tsp_func)
         for i in range(n):
             mdl.add_constraint(mdl.sum(x[(i, k)] for k in range(n)) == 1)
         for k in range(n):
             mdl.add_constraint(mdl.sum(x[(i, k)] for i in range(n)) == 1)
+        for i, j in nx.non_edges(self._graph):
+            for k in range(n):
+                mdl.add_constraint(x[i, k] + x[j, (k + 1) % n] <= 1)
+                mdl.add_constraint(x[j, k] + x[i, (k + 1) % n] <= 1)
         op = from_docplex_mp(mdl)
         return op
 
@@ -73,7 +84,7 @@ class Tsp(GraphOptimizationApplication):
             A list of nodes whose indices correspond to its order in a prospective cycle.
         """
         x = self._result_to_x(result)
-        n = int(np.sqrt(len(x)))
+        n = self._graph.number_of_nodes()
         route = []  # type: List[Union[int, List[int]]]
         for p__ in range(n):
             p_step = []
@@ -140,6 +151,8 @@ class Tsp(GraphOptimizationApplication):
     @staticmethod
     def parse_tsplib_format(filename: str) -> "Tsp":
         """Read a graph in TSPLIB format from file and return a Tsp instance.
+
+        Only the EUC_2D edge weight format is supported.
 
         Args:
             filename: the name of the file.
