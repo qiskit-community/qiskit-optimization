@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Added support for non-complete graphs for the TSP problem.
