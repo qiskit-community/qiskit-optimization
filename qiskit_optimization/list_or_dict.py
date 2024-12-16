@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,9 +10,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Optimization test packages """
+"""Introduced new type to maintain readability."""
 
-from .optimization_test_case import QiskitOptimizationTestCase
-from .algorithms_test_case import QiskitAlgorithmsTestCase
+from typing import TypeVar, List, Union, Optional, Dict
 
-__all__ = ["QiskitOptimizationTestCase", "QiskitAlgorithmsTestCase"]
+_T = TypeVar("_T")  # Pylint does not allow single character class names.
+ListOrDict = Union[List[Optional[_T]], Dict[str, _T]]
