@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,9 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Optimization test packages """
+"""Common qiskit_algorithms utility functions."""
 
-from .optimization_test_case import QiskitOptimizationTestCase
-from .algorithms_test_case import QiskitAlgorithmsTestCase
+from .algorithm_globals import algorithm_globals
+from .validate_initial_point import validate_initial_point
+from .validate_bounds import validate_bounds
 
-__all__ = ["QiskitOptimizationTestCase", "QiskitAlgorithmsTestCase"]
+__all__ = [
+    "algorithm_globals",
+    "validate_initial_point",
+    "validate_bounds",
+]

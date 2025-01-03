@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    Added QAOA (Quantum Approximate Optimization Algorithm) implementation
+    migrated from qiskit-algorithms. This migration includes the core QAOA
+    implementation and its essential dependencies, following the same migration
+    pattern established in qiskit-machine-learning#817.
