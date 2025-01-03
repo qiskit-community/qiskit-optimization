@@ -495,43 +495,49 @@ class TestPrettyprint(QiskitOptimizationTestCase):
             q_p = QuadraticProgram(name)
             _ = q_p.prettyprint()
 
-        with self.subTest("linear variable name - func"), self.assertRaises(
-            QiskitOptimizationError
+        with (
+            self.subTest("linear variable name - func"),
+            self.assertRaises(QiskitOptimizationError),
         ):
             q_p = QuadraticProgram()
             q_p.binary_var(name)
             _ = prettyprint(q_p)
 
-        with self.subTest("linear variable name - meth"), self.assertRaises(
-            QiskitOptimizationError
+        with (
+            self.subTest("linear variable name - meth"),
+            self.assertRaises(QiskitOptimizationError),
         ):
             q_p = QuadraticProgram()
             q_p.binary_var(name)
             _ = q_p.prettyprint()
 
-        with self.subTest("linear constraint name - func"), self.assertRaises(
-            QiskitOptimizationError
+        with (
+            self.subTest("linear constraint name - func"),
+            self.assertRaises(QiskitOptimizationError),
         ):
             q_p = QuadraticProgram()
             q_p.linear_constraint(name=name)
             _ = prettyprint(q_p)
 
-        with self.subTest("linear constraint name - meth"), self.assertRaises(
-            QiskitOptimizationError
+        with (
+            self.subTest("linear constraint name - meth"),
+            self.assertRaises(QiskitOptimizationError),
         ):
             q_p = QuadraticProgram()
             q_p.linear_constraint(name=name)
             _ = q_p.prettyprint()
 
-        with self.subTest("quadratic constraint name - func"), self.assertRaises(
-            QiskitOptimizationError
+        with (
+            self.subTest("quadratic constraint name - func"),
+            self.assertRaises(QiskitOptimizationError),
         ):
             q_p = QuadraticProgram()
             q_p.quadratic_constraint(name=name)
             _ = prettyprint(q_p)
 
-        with self.subTest("quadratic constraint name - meth"), self.assertRaises(
-            QiskitOptimizationError
+        with (
+            self.subTest("quadratic constraint name - meth"),
+            self.assertRaises(QiskitOptimizationError),
         ):
             q_p = QuadraticProgram()
             q_p.quadratic_constraint(name=name)
