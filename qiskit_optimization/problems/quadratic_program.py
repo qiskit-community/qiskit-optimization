@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -364,7 +364,12 @@ class QuadraticProgram:
                                      nested substitution.
         """
         return self._var_dict(
-            keys, lowerbound, upperbound, Variable.Type.CONTINUOUS, name, key_format
+            keys=keys,
+            lowerbound=lowerbound,
+            upperbound=upperbound,
+            vartype=Variable.Type.CONTINUOUS,
+            name=name,
+            key_format=key_format,
         )
 
     def continuous_var_list(  # pylint: disable=too-many-positional-arguments
@@ -442,7 +447,14 @@ class QuadraticProgram:
             QiskitOptimizationError: if `key_format` has more than one substitution or a
                                      nested substitution.
         """
-        return self._var_dict(keys, 0, 1, Variable.Type.BINARY, name, key_format)
+        return self._var_dict(
+            keys=keys,
+            lowerbound=0,
+            upperbound=1,
+            vartype=Variable.Type.BINARY,
+            name=name,
+            key_format=key_format,
+        )
 
     def binary_var_list(
         self,
@@ -524,7 +536,14 @@ class QuadraticProgram:
             QiskitOptimizationError: if `key_format` has more than one substitution or a
                                      nested substitution.
         """
-        return self._var_dict(keys, lowerbound, upperbound, Variable.Type.INTEGER, name, key_format)
+        return self._var_dict(
+            keys=keys,
+            lowerbound=lowerbound,
+            upperbound=upperbound,
+            vartype=Variable.Type.INTEGER,
+            name=name,
+            key_format=key_format,
+        )
 
     def integer_var_list(  # pylint: disable=too-many-positional-arguments
         self,

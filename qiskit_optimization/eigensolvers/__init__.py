@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2025.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,18 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Qiskit Optimization Exception """
+"""The Eigensolvers package"""
 
-from qiskit.exceptions import QiskitError
+from .numpy_eigensolver import NumPyEigensolver, NumPyEigensolverResult
+from .eigensolver import Eigensolver, EigensolverResult
 
-
-class QiskitOptimizationError(QiskitError):
-    """Class for errors returned by Qiskit optimization module."""
-
-    pass
-
-
-class AlgorithmError(QiskitError):
-    """For Algorithm specific errors."""
-
-    pass
+__all__ = [
+    "NumPyEigensolver",
+    "NumPyEigensolverResult",
+    "Eigensolver",
+    "EigensolverResult",
+]

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -112,11 +112,11 @@ class TestPrettyprint(QiskitOptimizationTestCase):
             q_p.linear_constraint({"x": 1, "y": 2}, "<=", 1, "lin_leq")
             q_p.linear_constraint({"x": 1, "y": 2}, ">=", 1, "lin_geq")
             q_p.quadratic_constraint(
-                {"x": 1, "y": 1},
-                {("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
-                "==",
-                1,
-                "quad_eq",
+                linear={"x": 1, "y": 1},
+                quadratic={("x", "x"): 1, ("y", "z"): -1, ("z", "z"): 2},
+                sense="==",
+                rhs=1,
+                name="quad_eq",
             )
             q_p.quadratic_constraint(
                 {"x": 1, "y": 1},

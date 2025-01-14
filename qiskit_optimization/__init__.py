@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -85,9 +85,15 @@ Submodules
 
 """
 
-from .exceptions import QiskitOptimizationError
+from .exceptions import QiskitOptimizationError, AlgorithmError
 from .infinity import INFINITY  # must be at the top of the file
 from .problems.quadratic_program import QuadraticProgram
 from .version import __version__
 
-__all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError", "INFINITY"]
+__all__ = [
+    "__version__",
+    "QuadraticProgram",
+    "QiskitOptimizationError",
+    "AlgorithmError",
+    "INFINITY",
+]

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2025.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,18 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Qiskit Optimization Exception """
+"""Common qiskit_algorithms utility functions."""
 
-from qiskit.exceptions import QiskitError
+from .algorithm_globals import algorithm_globals
+from .validate_initial_point import validate_initial_point
+from .validate_bounds import validate_bounds
 
-
-class QiskitOptimizationError(QiskitError):
-    """Class for errors returned by Qiskit optimization module."""
-
-    pass
-
-
-class AlgorithmError(QiskitError):
-    """For Algorithm specific errors."""
-
-    pass
+__all__ = [
+    "algorithm_globals",
+    "validate_initial_point",
+    "validate_bounds",
+]

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2025.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,18 +10,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Qiskit Optimization Exception """
+"""Introduced new type to maintain readability."""
 
-from qiskit.exceptions import QiskitError
+from typing import TypeVar, List, Union, Optional, Dict
 
-
-class QiskitOptimizationError(QiskitError):
-    """Class for errors returned by Qiskit optimization module."""
-
-    pass
-
-
-class AlgorithmError(QiskitError):
-    """For Algorithm specific errors."""
-
-    pass
+_T = TypeVar("_T")  # Pylint does not allow single character class names.
+ListOrDict = Union[List[Optional[_T]], Dict[str, _T]]
