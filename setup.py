@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -73,12 +73,12 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.9",
     extras_require={
-        "cplex": ["cplex; python_version < '3.12' and platform_machine != 'arm64'"],
+        "cplex": [
+            "cplex; python_version < '3.13' and platform_system != 'Darwin' or python_version < '3.12' and platform_system == 'Darwin'"
+        ],
         "cvx": ["cvxpy"],
         "matplotlib": ["matplotlib"],
-        "gurobi": [
-            "gurobipy; platform_machine != 'arm64' or python_version >= '3.9' and platform_machine == 'arm64'"
-        ],
+        "gurobi": ["gurobipy; python_version >= '3.9'"],
     },
     project_urls={
         "Bug Tracker": "https://github.com/qiskit-community/qiskit-optimization/issues",
