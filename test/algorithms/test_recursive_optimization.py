@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,9 +17,6 @@ from test import QiskitOptimizationTestCase
 
 import numpy as np
 from qiskit.primitives import Sampler
-from qiskit_algorithms import QAOA, NumPyMinimumEigensolver
-from qiskit_algorithms.optimizers import SLSQP
-from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
@@ -36,7 +33,10 @@ from qiskit_optimization.converters import (
     LinearEqualityToPenalty,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.minimum_eigensolvers import QAOA, NumPyMinimumEigensolver
+from qiskit_optimization.optimizers import COBYLA
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.utils import algorithm_globals
 
 
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
@@ -132,7 +132,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         algorithm_globals.random_seed = seed
         qaoa = QAOA(
             sampler=Sampler(),
-            optimizer=SLSQP(),
+            optimizer=COBYLA(),
             reps=1,
         )
         warm_qaoa = WarmStartQAOAOptimizer(

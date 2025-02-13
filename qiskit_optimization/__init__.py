@@ -26,7 +26,7 @@ This module enables easy, efficient modeling of optimization problems using `doc
 A uniform interface as well as automatic conversion between different problem representations
 allows users to solve problems using a large set of algorithms, from variational quantum algorithms,
 such as the Quantum Approximate Optimization Algorithm
-(:class:`~qiskit_algorithms.QAOA`), to
+(:class:`~qiskit_optimization.minimum_eigensolvers.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
 (:class:`~algorithms.GroverOptimizer`), leveraging
 fundamental `minimum eigensolvers
@@ -85,7 +85,7 @@ Submodules
 
 """
 
-from .exceptions import QiskitOptimizationError, AlgorithmError
+from .exceptions import AlgorithmError, QiskitOptimizationError
 from .infinity import INFINITY  # must be at the top of the file
 from .problems.quadratic_program import QuadraticProgram
 from .version import __version__

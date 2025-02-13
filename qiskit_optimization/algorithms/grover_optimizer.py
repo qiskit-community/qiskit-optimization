@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -21,9 +21,6 @@ import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import QuadraticForm
 from qiskit.primitives import BaseSampler
-from qiskit_algorithms import AmplificationProblem
-from qiskit_algorithms.amplitude_amplifiers.grover import Grover
-from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,
@@ -31,9 +28,11 @@ from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationResultStatus,
     SolutionSample,
 )
+from qiskit_optimization.amplitude_amplifiers.grover import AmplificationProblem, Grover
 from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram, Variable
+from qiskit_optimization.utils import algorithm_globals
 
 logger = logging.getLogger(__name__)
 

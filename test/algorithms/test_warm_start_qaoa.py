@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,8 +18,6 @@ from test import QiskitOptimizationTestCase
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.primitives.sampler import Sampler
-from qiskit_algorithms import QAOA
-from qiskit_algorithms.optimizers import SLSQP
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import SlsqpOptimizer
@@ -29,6 +27,8 @@ from qiskit_optimization.algorithms.warm_start_qaoa_optimizer import (
     WarmStartQAOAOptimizer,
 )
 from qiskit_optimization.applications.max_cut import Maxcut
+from qiskit_optimization.minimum_eigensolvers import QAOA
+from qiskit_optimization.optimizers import COBYLA
 from qiskit_optimization.translators import from_docplex_mp
 
 
@@ -50,7 +50,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         presolver = GoemansWilliamsonOptimizer(num_cuts=10)
         problem = Maxcut(graph).to_quadratic_program()
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=SLSQP(), reps=1)
+        qaoa = QAOA(sampler=Sampler(), optimizer=COBYLA(), reps=1)
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=presolver,
@@ -82,7 +82,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         problem = from_docplex_mp(model)
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=SLSQP(), reps=1)
+        qaoa = QAOA(sampler=Sampler(), optimizer=COBYLA(), reps=1)
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
@@ -109,7 +109,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         model.minimize((u - v + 2) ** 2)
         problem = from_docplex_mp(model)
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=SLSQP(), reps=1)
+        qaoa = QAOA(sampler=Sampler(), optimizer=COBYLA(), reps=1)
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
             relax_for_pre_solver=True,

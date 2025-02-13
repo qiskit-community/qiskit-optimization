@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -19,9 +19,6 @@ import numpy as np
 from ddt import data, ddt, unpack
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Estimator, Sampler
-from qiskit_algorithms import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
-from qiskit_algorithms.optimizers import COBYLA, SPSA
-from qiskit_algorithms.utils import algorithm_globals
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
@@ -34,7 +31,10 @@ from qiskit_optimization.converters import (
     QuadraticProgramToQubo,
 )
 from qiskit_optimization.exceptions import QiskitOptimizationError
+from qiskit_optimization.minimum_eigensolvers import QAOA, VQE, NumPyMinimumEigensolver, SamplingVQE
+from qiskit_optimization.optimizers import COBYLA, SPSA
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.utils import algorithm_globals
 
 
 @ddt

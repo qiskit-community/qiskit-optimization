@@ -1,1 +1,2 @@
 numpy>=1.20.0
+jedi<0.19  # to suppress black format error of jedi in tutorials

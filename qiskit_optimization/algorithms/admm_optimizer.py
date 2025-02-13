@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,9 +17,9 @@ import time
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit_algorithms import NumPyMinimumEigensolver
 
 from ..converters import MaximizeToMinimize
+from ..minimum_eigensolvers import NumPyMinimumEigensolver
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
 from ..problems.linear_expression import LinearExpression

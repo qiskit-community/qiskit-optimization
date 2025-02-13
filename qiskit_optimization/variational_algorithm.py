@@ -23,13 +23,14 @@ overridden to opt-out of this infrastructure but still meet the interface requir
 
     This component has some function that is normally random. If you want to reproduce behavior
     then you should set the random number generator seed in the algorithm_globals
-    (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
+    (``qiskit_optimization.utils.algorithm_globals.random_seed = seed``).
 """
 
 from __future__ import annotations
-from abc import ABC, abstractmethod
-import numpy as np
 
+from abc import ABC, abstractmethod
+
+import numpy as np
 from qiskit.circuit import QuantumCircuit
 
 from .algorithm_result import AlgorithmResult
