@@ -74,7 +74,7 @@ setuptools.setup(
     python_requires=">=3.9",
     extras_require={
         "cplex": [
-            "cplex; python_version < '3.13' and platform_system != 'Darwin' or python_version < '3.12' and platform_system == 'Darwin'"
+            "cplex; (python_version < '3.13' and platform_system != 'Darwin') or (python_version < '3.12' and platform_system == 'Darwin')"
         ],
         "cvx": ["cvxpy"],
         "matplotlib": ["matplotlib"],
