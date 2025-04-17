@@ -78,7 +78,7 @@ setuptools.setup(
         ],
         "cvx": ["cvxpy"],
         "matplotlib": ["matplotlib"],
-        "gurobi": ["gurobipy; python_version >= '3.9'"],
+        "gurobi": ["gurobipy"],
     },
     project_urls={
         "Bug Tracker": "https://github.com/qiskit-community/qiskit-optimization/issues",
