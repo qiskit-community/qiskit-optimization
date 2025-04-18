@@ -28,11 +28,8 @@ allows users to solve problems using a large set of algorithms, from variational
 such as the Quantum Approximate Optimization Algorithm
 (:class:`~qiskit_optimization.minimum_eigensolvers.QAOA`), to
 `Grover Adaptive Search <https://arxiv.org/abs/quant-ph/9607014>`_
-(:class:`~algorithms.GroverOptimizer`), leveraging
-fundamental `minimum eigensolvers
-<https://qiskit-community.github.io/qiskit-algorithms/apidocs/qiskit_algorithms.html#minimum-eigensolvers>`_
-provided by
-`Qiskit Algorithms <https://qiskit-community.github.io/qiskit-algorithms/>`_.
+(:class:`~qiskit_optimization.algorithms.GroverOptimizer`), leveraging fundamental minimum
+eigensolvers (:class:`~qiskit_optimization.minimum_eigensolvers.MinimumEigensolver`).
 Furthermore, the modular design
 of the optimization module allows it to be easily extended and facilitates rapid development and
 testing of new algorithms. Compatible classical optimizers are also provided for testing,
@@ -82,6 +79,11 @@ Submodules
    converters
    problems
    translators
+   # modules copied from qiskit_algorithms
+   eigensolvers
+   minimum_eigensolvers
+   optimizers
+   utils
 
 """
 

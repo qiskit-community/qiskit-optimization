@@ -12,7 +12,7 @@
 
 """
 Optimizers (:mod:`qiskit_optimization.optimizers`)
-================================================
+==================================================
 Classical Optimizers.
 
 This package contains a variety of classical optimizers and were designed for use by
