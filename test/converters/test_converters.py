@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,6 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from docplex.mp.model import Model
 from qiskit.quantum_info import SparsePauliOp
-from qiskit_algorithms import NumPyMinimumEigensolver
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization import QiskitOptimizationError, QuadraticProgram
@@ -30,6 +29,7 @@ from qiskit_optimization.converters import (
     LinearEqualityToPenalty,
     MaximizeToMinimize,
 )
+from qiskit_optimization.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit_optimization.problems import Constraint, Variable
 from qiskit_optimization.translators import from_docplex_mp
 

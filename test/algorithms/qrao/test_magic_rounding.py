@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,6 @@ import networkx as nx
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import Sampler
-from qiskit_algorithms import NumPyMinimumEigensolver
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.algorithms.qrao import (
@@ -29,6 +28,7 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingResult,
 )
 from qiskit_optimization.applications import Maxcut
+from qiskit_optimization.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit_optimization.problems import QuadraticProgram
 
 

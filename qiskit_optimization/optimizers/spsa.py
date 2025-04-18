@@ -16,19 +16,18 @@ This implementation allows both standard first-order and second-order SPSA.
 """
 from __future__ import annotations
 
-from collections import deque
-from collections.abc import Iterator
-from typing import Callable, Any, SupportsFloat
 import logging
 import warnings
+from collections import deque
+from collections.abc import Iterator
 from time import time
+from typing import Any, Callable, SupportsFloat
 
-import scipy
 import numpy as np
+import scipy
 
 from ..utils import algorithm_globals
-
-from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
+from .optimizer import POINT, Optimizer, OptimizerResult, OptimizerSupportLevel
 
 # number of function evaluations, parameters, loss, stepsize, accepted
 CALLBACK = Callable[[int, np.ndarray, float, SupportsFloat, bool], None]
@@ -77,7 +76,7 @@ class SPSA(Optimizer):
 
         This component has some function that is normally random. If you want to reproduce behavior
         then you should set the random number generator seed in the algorithm_globals
-        (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
+        (``qiskit_optimization.utils.algorithm_globals.random_seed = seed``).
 
 
     Examples:
@@ -88,7 +87,7 @@ class SPSA(Optimizer):
         .. code-block:: python
 
             import numpy as np
-            from qiskit_algorithms.optimizers import SPSA
+            from qiskit_optimization.optimizers import SPSA
             from qiskit.circuit.library import PauliTwoDesign
             from qiskit.primitives import Estimator
             from qiskit.quantum_info import SparsePauliOp
@@ -118,7 +117,7 @@ class SPSA(Optimizer):
         .. code-block:: python
 
             import numpy as np
-            from qiskit_algorithms.optimizers import SPSA
+            from qiskit_optimization.optimizers import SPSA
 
             def objective(x):
                 return np.linalg.norm(x) + .04*np.random.rand(1)

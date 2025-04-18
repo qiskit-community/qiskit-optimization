@@ -20,7 +20,6 @@ from time import time
 from typing import Any
 
 import numpy as np
-
 from qiskit.circuit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
@@ -28,20 +27,19 @@ from qiskit.primitives.utils import init_observable
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
 
-from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict
 from ..minimum_eigensolvers.sampling_mes import (
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
-
 from ..observables_evaluator import estimate_observables
 from ..optimizers.optimizer import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
+from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from .diagonal_estimator import _DiagonalEstimator
 
 logger = logging.getLogger(__name__)
@@ -51,16 +49,16 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
     r"""The Variational Quantum Eigensolver algorithm, optimized for diagonal Hamiltonians.
     VQE is a hybrid quantum-classical algorithm that uses a variational technique to find the
     minimum eigenvalue of a given diagonal Hamiltonian operator :math:`H_{\text{diag}}`.
-    In contrast to the :class:`~qiskit_algorithms.minimum_eigensolvers.VQE` class, the
+    In contrast to the :class:`~qiskit_optimization.minimum_eigensolvers.VQE` class, the
     ``SamplingVQE`` algorithm is executed using a :attr:`sampler` primitive.
     An instance of ``SamplingVQE`` also requires an :attr:`ansatz`, a parameterized
     :class:`.QuantumCircuit`, to prepare the trial state :math:`|\psi(\vec\theta)\rangle`. It also
     needs a classical :attr:`optimizer` which varies the circuit parameters :math:`\vec\theta` to
     minimize the objective function, which depends on the chosen :attr:`aggregation`.
     The optimizer can either be one of Qiskit's optimizers, such as
-    :class:`~qiskit_algorithms.optimizers.SPSA` or a callable with the following signature:
+    :class:`~qiskit_optimization.optimizers.SPSA` or a callable with the following signature:
     .. code-block:: python
-        from qiskit_algorithms.optimizers import OptimizerResult
+        from qiskit_optimization.optimizers import OptimizerResult
         def my_minimizer(fun, x0, jac=None, bounds=None) -> OptimizerResult:
             # Note that the callable *must* have these argument names!
             # Args:

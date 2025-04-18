@@ -15,15 +15,15 @@ from typing import List, Optional, Union, cast
 
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
+
+from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
+from ..exceptions import QiskitOptimizationError
 from ..minimum_eigensolvers import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
-
-from ..converters.quadratic_program_to_qubo import QuadraticProgramConverter, QuadraticProgramToQubo
-from ..exceptions import QiskitOptimizationError
 from ..problems.quadratic_program import QuadraticProgram, Variable
 from .optimization_algorithm import (
     OptimizationAlgorithm,
@@ -109,7 +109,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
 
     .. code-block::
 
-        from qiskit_algorithms import QAOA
+        from qiskit_optimization.minimum_eigensolvers import QAOA
         from qiskit_optimization.problems import QuadraticProgram
         from qiskit_optimization.algorithms import MinimumEigenOptimizer
         problem = QuadraticProgram()
@@ -222,7 +222,8 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
                 raise QiskitOptimizationError(
                     "MinimumEigenOptimizer does not support this minimum eigensolver "
                     f"{type(self._min_eigen_solver)}. "
-                    "You can use qiskit_algorithms.SamplingMinimumEigensolver instead."
+                    "You can use qiskit_optimization.minimum_eigensolvers."
+                    "SamplingMinimumEigensolver instead."
                 )
             if eigen_result.eigenstate is not None:
                 raw_samples = self._eigenvector_to_solutions(
