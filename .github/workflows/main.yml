@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8]
+        python-version: [3.9]
     steps:
       - name: Print Concurrency Group
         env:
@@ -119,16 +119,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.9, '3.10', 3.11, 3.12]
+        python-version: [3.9, '3.10', 3.11, 3.12]
         include:
           - os: macos-latest
-            python-version: 3.8
+            python-version: 3.9
           - os: macos-latest
             python-version: 3.11
           - os: windows-latest
-            python-version: 3.8
+            python-version: 3.9
           - os: windows-latest
-            python-version: 3.11
+            python-version: 3.12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -197,7 +197,7 @@ jobs:
           fi
           coverage3 combine
           mv .coverage ./ci-artifact-data/opt.dat
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.9 }}
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
@@ -225,7 +225,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.11]
+        python-version: [3.9, 3.12]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -290,30 +290,26 @@ jobs:
           cd docs/_build/html
           mkdir artifacts
           tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
-        if: ${{ matrix.python-version == 3.8 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+        if: ${{ matrix.python-version == 3.9 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
         shell: bash
       - name: Run upload stable tutorials
         uses: actions/upload-artifact@v4
         with:
           name: tutorials-stable${{ matrix.python-version }}
           path: docs/_build/html/artifacts/tutorials.tar.gz
-        if: ${{ matrix.python-version == 3.8 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+        if: ${{ matrix.python-version == 3.9 && !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
   Deprecation_Messages_and_Coverage:
     if: github.repository_owner == 'qiskit-community'
     needs: [Checks, Optimization, Tutorials]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v4
-        with:
-          name: ubuntu-latest-3.8
-          path: /tmp/o38
       - uses: actions/download-artifact@v4
         with:
           name: ubuntu-latest-3.9
@@ -332,29 +328,29 @@ jobs:
           path: /tmp/o312
       - uses: actions/download-artifact@v4
         with:
-          name: macos-latest-3.8
-          path: /tmp/m38
+          name: macos-latest-3.9
+          path: /tmp/m39
       - uses: actions/download-artifact@v4
         with:
           name: macos-latest-3.11
-          path: /tmp/m311
+          path: /tmp/m312
       - uses: actions/download-artifact@v4
         with:
-          name: windows-latest-3.8
-          path: /tmp/w38
+          name: windows-latest-3.9
+          path: /tmp/w39
       - uses: actions/download-artifact@v4
         with:
-          name: windows-latest-3.11
-          path: /tmp/w311
+          name: windows-latest-3.12
+          path: /tmp/w312
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o38/opt.dep /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/o312/opt.dep /tmp/m38/opt.dep /tmp/m311/opt.dep /tmp/w38/opt.dep /tmp/w311/opt.dep || true
+          sort -f -u /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/o312/opt.dep /tmp/m39/opt.dep /tmp/m311/opt.dep /tmp/w39/opt.dep /tmp/w312/opt.dep || true
         shell: bash
       - name: Coverage combine
-        run: coverage3 combine /tmp/o38/opt.dat
+        run: coverage3 combine /tmp/o39/opt.dat
         shell: bash
       - name: Upload to Coveralls
         env:
