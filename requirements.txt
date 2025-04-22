@@ -1,7 +1,7 @@
 qiskit>=0.44,<2
 qiskit-algorithms>=0.2.0
-scipy>=1.9.0,<1.14
-numpy>=1.17,<2.2.0
+scipy>=1.9.0
+numpy>=1.17
 docplex>=2.21.207,!=2.24.231
 setuptools>=40.1.0
 networkx>=2.6.3

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -207,7 +207,6 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         # and quadratic terms
         offset = 0
         linear = np.zeros(num_vars, dtype=int)
-        quadratic = np.zeros((num_vars, num_vars), dtype=int)
 
         # rhs = num_vars - 1 correspond to multiple variable with >= n - 1 case.
         if sense == ConstraintSense.GE and rhs == num_vars - 1:

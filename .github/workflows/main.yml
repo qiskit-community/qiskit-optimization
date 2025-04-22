@@ -119,7 +119,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9, '3.10', 3.11, 3.12]
+        python-version: [3.9, '3.10', 3.11, 3.12, 3.13]
         include:
           - os: macos-latest
             python-version: 3.9
@@ -328,6 +328,10 @@ jobs:
           path: /tmp/o312
       - uses: actions/download-artifact@v4
         with:
+          name: ubuntu-latest-3.13
+          path: /tmp/o313
+      - uses: actions/download-artifact@v4
+        with:
           name: macos-latest-3.9
           path: /tmp/m39
       - uses: actions/download-artifact@v4
@@ -347,7 +351,7 @@ jobs:
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/o312/opt.dep /tmp/m39/opt.dep /tmp/m311/opt.dep /tmp/w39/opt.dep /tmp/w312/opt.dep || true
+          sort -f -u /tmp/o39/opt.dep /tmp/o310/opt.dep /tmp/o311/opt.dep /tmp/o312/opt.dep /tmp/o313/opt.dep /tmp/m39/opt.dep /tmp/m311/opt.dep /tmp/w39/opt.dep /tmp/w312/opt.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/o39/opt.dat
