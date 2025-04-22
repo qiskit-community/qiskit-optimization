@@ -857,9 +857,9 @@ class ADMMOptimizer(OptimizationAlgorithm):
         cts_result = self._continuous_optimizer.solve(qp_copy)
         logger.debug("Continuous relaxation: %s", cts_result.x)
 
-        self._state.x0 = cts_result.x[self._state.binary_indices]
-        self._state.u = cts_result.x[self._state.continuous_indices]
-        self._state.z = cts_result.x[self._state.binary_indices]
+        self._state.x0[:] = cts_result.x[self._state.binary_indices]
+        self._state.u[:] = cts_result.x[self._state.continuous_indices]
+        self._state.z[:] = cts_result.x[self._state.binary_indices]
 
     @property
     def parameters(self) -> ADMMParameters:
