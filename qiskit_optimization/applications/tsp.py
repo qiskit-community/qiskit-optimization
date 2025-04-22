@@ -140,7 +140,7 @@ class Tsp(GraphOptimizationApplication):
         """
         if seed:
             algorithm_globals.random_seed = seed
-        coord = algorithm_globals.random.uniform(low, high, (n, 2))
+        coord = algorithm_globals.random.uniform(low, high, (n, 2)).tolist()
         pos = {i: (coord_[0], coord_[1]) for i, coord_ in enumerate(coord)}
         graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
