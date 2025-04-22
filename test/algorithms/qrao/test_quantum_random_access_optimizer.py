@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,9 +17,6 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
-from qiskit_algorithms import VQE, NumPyMinimumEigensolver, NumPyMinimumEigensolverResult, VQEResult
-from qiskit_algorithms.optimizers import COBYLA
-from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit_optimization.algorithms import SolutionSample
 from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
@@ -30,7 +27,15 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingContext,
     RoundingResult,
 )
+from qiskit_optimization.minimum_eigensolvers import (
+    VQE,
+    NumPyMinimumEigensolver,
+    NumPyMinimumEigensolverResult,
+    VQEResult,
+)
+from qiskit_optimization.optimizers import COBYLA
 from qiskit_optimization.problems import QuadraticProgram
+from qiskit_optimization.utils import algorithm_globals
 
 
 class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
