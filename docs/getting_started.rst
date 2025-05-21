@@ -8,7 +8,7 @@ Installation
 ============
 
 Qiskit Optimization depends on Qiskit, which has its own
-`installation instructions <https://docs.quantum.ibm.com/start/install>`__ detailing the
+`installation instructions <https://quantum.cloud.ibm.com/docs/guides/install-qiskit>`__ detailing the
 installation options for Qiskit and its supported environments/platforms. You should refer to
 that first. Then the information here can be followed which focuses on the additional installation
 specific to Qiskit Optimization.
@@ -21,7 +21,7 @@ See :ref:`optional_installs` for more information.
 
     .. tab-item:: Start locally
 
-        The simplest way to get started is to follow the `Qiskit installation instructions <https://docs.quantum.ibm.com/start/install>`__
+        The simplest way to get started is to follow the `Qiskit installation instructions <https://quantum.cloud.ibm.com/docs/guides/install-qiskit>`__
 
         In your virtual environment where you installed Qiskit, also install ``qiskit-optimization``:
 
@@ -44,7 +44,7 @@ See :ref:`optional_installs` for more information.
 
        Since Qiskit Optimization depends on Qiskit, and its latest changes may require new or changed
        features of Qiskit, you should first follow Qiskit's `"Install from source"` instructions
-       `here <https://docs.quantum.ibm.com/start/install-qiskit-source>`__
+       `here <https://quantum.cloud.ibm.com/docs/start/install-qiskit-source>`__
 
        .. raw:: html
 
