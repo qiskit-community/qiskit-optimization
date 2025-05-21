@@ -182,7 +182,7 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy", None),
     "networkx": ("https://networkx.org/documentation/stable", None),
     "docplex.mp": ("https://ibmdecisionoptimization.github.io/docplex-doc/mp", None),
-    "qiskit": ("https://docs.quantum.ibm.com/api/qiskit", None),
+    "qiskit": ("https://quantum.cloud.ibm.com/docs/api/qiskit", None),
     "qiskit_algorithms": ("https://qiskit-community.github.io/qiskit-algorithms", None),
 }
 
