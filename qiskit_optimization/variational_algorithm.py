@@ -91,7 +91,7 @@ class VariationalResult(AlgorithmResult):
         return self._optimal_value
 
     @optimal_value.setter
-    def optimal_value(self, value: int) -> None:
+    def optimal_value(self, value: float) -> None:
         """Sets optimal value"""
         self._optimal_value = value
 
