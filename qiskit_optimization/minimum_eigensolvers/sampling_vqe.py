@@ -359,7 +359,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         result.optimal_parameters = dict(
             zip(self.ansatz.parameters, optimizer_result.x)  # type: ignore[arg-type]
         )
-        result.optimal_value = optimizer_result.fun
+        result.optimal_value = optimizer_result.fun  # type: ignore[assignment]
         result.optimizer_time = optimizer_time
         result.aux_operators_evaluated = aux_operators_evaluated  # type: ignore[assignment]
         result.optimizer_result = optimizer_result
