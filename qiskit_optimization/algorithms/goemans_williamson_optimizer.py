@@ -241,7 +241,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
 
         Returns:
             chi: a list of length |V| where the i-th element is +1 or -1, representing which
-                set the it-h vertex is in. Returns None if an error occurs.
+                set the i-th vertex is in. Returns None if an error occurs.
         """
         # pylint: disable=import-error
         import cvxpy as cvx

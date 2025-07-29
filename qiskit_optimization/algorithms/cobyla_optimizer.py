@@ -27,7 +27,7 @@ from ..converters import MaximizeToMinimize
 
 
 class CobylaOptimizer(MultiStartOptimizer):
-    """The SciPy COBYLA optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The SciPy COBYLA optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``scipy.optimize.fmin_cobyla``
     (https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.optimize.fmin_cobyla.html)

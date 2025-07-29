@@ -84,7 +84,7 @@ class SlsqpOptimizationResult(OptimizationResult):
 
 
 class SlsqpOptimizer(MultiStartOptimizer):
-    """The SciPy SLSQP optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The SciPy SLSQP optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``scipy.optimize.fmin_slsqp``
     (https://docs.scipy.org/doc/scipy-0.13.0/reference/generated/scipy.optimize.fmin_slsqp.html)

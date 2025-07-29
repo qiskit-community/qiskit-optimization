@@ -21,7 +21,7 @@ from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
 @_optionals.HAS_GUROBIPY.require_in_instance
 class GurobiOptimizer(OptimizationAlgorithm):
-    """The Gurobi optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The Gurobi optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``gurobipy``
     to be used within the optimization module.

@@ -27,7 +27,7 @@ from .optimization_algorithm import (
 
 @_optionals.HAS_CPLEX.require_in_instance
 class CplexOptimizer(OptimizationAlgorithm):
-    """The CPLEX optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The CPLEX optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``cplex.Cplex`` (https://pypi.org/project/cplex/)
     to be used within the optimization module.

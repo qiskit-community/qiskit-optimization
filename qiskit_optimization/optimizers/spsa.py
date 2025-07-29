@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 class SPSA(Optimizer):
     """Simultaneous Perturbation Stochastic Approximation (SPSA) optimizer.
 
-    SPSA [1] is an gradient descent method for optimizing systems with multiple unknown parameters.
+    SPSA [1] is a gradient descent method for optimizing systems with multiple unknown parameters.
     As an optimization method, it is appropriately suited to large-scale population models,
     adaptive modeling, and simulation optimization.
 
