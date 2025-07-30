@@ -58,13 +58,15 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
 
     def test_optimizer_scipy_callable(self):
         """Test passing a SciPy optimizer directly as callable."""
+        # Note: if maxiter is set too low, it may be automatically rounded up by `minimize`
+        maxiter = 10
         vqe = SamplingVQE(
             Sampler(),
             RealAmplitudes(),
-            partial(scipy_minimize, method="COBYLA", options={"maxiter": 2}),
+            partial(scipy_minimize, method="COBYLA", options={"maxiter": maxiter}),
         )
         result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
-        self.assertEqual(result.cost_function_evals, 2)
+        self.assertEqual(result.cost_function_evals, maxiter)
 
     def test_optimizer_callable(self):
         """Test passing a optimizer directly as callable."""
