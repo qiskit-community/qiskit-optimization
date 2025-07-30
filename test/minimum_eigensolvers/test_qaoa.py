@@ -180,7 +180,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         with self.subTest(msg="QAOA 6x6"):
             self.assertIn(graph_solution, {"010101", "101010"})
 
-    @idata([[W2, S2, None], [W2, S2, [0.0, 0.0]], [W2, S2, [1.0, 0.8]]])
+    @idata([[W2, S2, None], [W2, S2, [0.001, 0.0]], [W2, S2, [1.0, 0.8]]])
     @unpack
     def test_qaoa_initial_point(self, w, solutions, init_pt):
         """Check first parameter value used is initial point as expected"""
@@ -224,7 +224,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             )
         )
         qubit_op, _ = self._get_operator(w)
-        qaoa = QAOA(self.sampler, NELDER_MEAD(disp=True), reps=2)
+        qaoa = QAOA(self.sampler, NELDER_MEAD(), reps=2)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
 
         self.assertLess(result.eigenvalue, -0.97)
@@ -290,8 +290,11 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         Returns:
             Binary string as numpy.ndarray of ints.
         """
-        values = list(state_vector.values())
-        n = int(np.log2(len(values)))
+        max_key = max(state_vector.keys())
+        n = max_key.bit_length()
+        values = np.zeros(max_key + 1)
+        for k, v in state_vector.items():
+            values[k] = v
         k = np.argmax(np.abs(values))
         x = np.zeros(n)
         for i in range(n):

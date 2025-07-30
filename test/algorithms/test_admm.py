@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -144,7 +144,10 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         Gambella, C., & Simonetto, A. (2020).
         Multi-block ADMM Heuristics for Mixed-Binary Optimization on Classical
         and Quantum Computers.
-        arXiv preprint arXiv:2001.02069."""
+        arXiv preprint arXiv:2001.02069.
+
+        Note: coefficients of w of cons1 is modified from 2 to 3 to break symmetry.
+        """
         mdl = Model("ex5")
 
         # pylint:disable=invalid-name
@@ -153,7 +156,7 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         t = mdl.binary_var(name="t")
 
         mdl.minimize(v + w + t)
-        mdl.add_constraint(2 * v + 2 * w + t <= 3, "cons1")
+        mdl.add_constraint(2 * v + 3 * w + t <= 3, "cons1")
         mdl.add_constraint(v + w + t >= 1, "cons2")
         mdl.add_constraint(v + w == 1, "cons3")
 
@@ -174,9 +177,9 @@ class TestADMMOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(solution)
         self.assertIsInstance(solution, ADMMOptimizationResult)
         self.assertIsNotNone(solution.x)
-        np.testing.assert_almost_equal([1.0, 0.0, 1.0], solution.x, 3)
+        np.testing.assert_almost_equal(solution.x, [1.0, 0.0, 1.0], 3)
         self.assertIsNotNone(solution.fval)
-        np.testing.assert_almost_equal(2.0, solution.fval, 3)
+        np.testing.assert_almost_equal(solution.fval, 2, 3)
         self.assertIsNotNone(solution.state)
         self.assertIsInstance(solution.state, ADMMState)
 
