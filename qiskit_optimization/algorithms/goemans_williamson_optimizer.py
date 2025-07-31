@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -241,7 +241,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
 
         Returns:
             chi: a list of length |V| where the i-th element is +1 or -1, representing which
-                set the it-h vertex is in. Returns None if an error occurs.
+                set the i-th vertex is in. Returns None if an error occurs.
         """
         # pylint: disable=import-error
         import cvxpy as cvx

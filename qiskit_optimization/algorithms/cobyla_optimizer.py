@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -27,7 +27,7 @@ from ..converters import MaximizeToMinimize
 
 
 class CobylaOptimizer(MultiStartOptimizer):
-    """The SciPy COBYLA optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The SciPy COBYLA optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``scipy.optimize.fmin_cobyla``
     (https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.optimize.fmin_cobyla.html)

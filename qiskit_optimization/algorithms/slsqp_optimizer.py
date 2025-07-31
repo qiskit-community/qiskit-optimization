@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -84,7 +84,7 @@ class SlsqpOptimizationResult(OptimizationResult):
 
 
 class SlsqpOptimizer(MultiStartOptimizer):
-    """The SciPy SLSQP optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The SciPy SLSQP optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``scipy.optimize.fmin_slsqp``
     (https://docs.scipy.org/doc/scipy-0.13.0/reference/generated/scipy.optimize.fmin_slsqp.html)
