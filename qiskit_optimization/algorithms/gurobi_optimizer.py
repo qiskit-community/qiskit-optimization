@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -21,7 +21,7 @@ from .optimization_algorithm import OptimizationAlgorithm, OptimizationResult
 
 @_optionals.HAS_GUROBIPY.require_in_instance
 class GurobiOptimizer(OptimizationAlgorithm):
-    """The Gurobi optimizer wrapped as an Qiskit :class:`OptimizationAlgorithm`.
+    """The Gurobi optimizer wrapped as a Qiskit :class:`OptimizationAlgorithm`.
 
     This class provides a wrapper for ``gurobipy``
     to be used within the optimization module.

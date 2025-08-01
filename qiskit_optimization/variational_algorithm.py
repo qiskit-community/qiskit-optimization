@@ -12,7 +12,7 @@
 
 """The Variational Algorithm Base Class.
 
-This class can be used an interface for working with Variation Algorithms, such as VQE,
+This class can be used an interface for working with Variational Algorithms, such as VQE,
 QAOA, or QSVM, and also provides helper utilities for implementing new variational algorithms.
 Writing a new variational algorithm is a simple as extending this class, implementing a cost
 function for the new algorithm to pass to the optimizer, and running :meth:`find_minimum` method
@@ -54,7 +54,7 @@ class VariationalAlgorithm(ABC):
 
 
 class VariationalResult(AlgorithmResult):
-    """Variation Algorithm Result."""
+    """Variational Algorithm Result."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -92,7 +92,7 @@ class VariationalResult(AlgorithmResult):
         return self._optimal_value
 
     @optimal_value.setter
-    def optimal_value(self, value: int) -> None:
+    def optimal_value(self, value: float) -> None:
         """Sets optimal value"""
         self._optimal_value = value
 

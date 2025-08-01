@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -33,7 +33,7 @@ class TestCobylaOptimizer(QiskitOptimizationTestCase):
         problem.minimize(linear=[2, 2], quadratic=[[2, 0.25], [0.25, 0.5]])
 
         # solve problem with cobyla
-        cobyla = CobylaOptimizer()
+        cobyla = CobylaOptimizer(catol=1e-6)
         result = cobyla.solve(problem)
 
         # analyze results
@@ -53,7 +53,7 @@ class TestCobylaOptimizer(QiskitOptimizationTestCase):
         problem.quadratic_constraint(linear=linear, quadratic=quadratic, rhs=-1 / 2)
 
         # solve problem with cobyla
-        cobyla = CobylaOptimizer()
+        cobyla = CobylaOptimizer(catol=1e-6)
         result = cobyla.solve(problem)
 
         # analyze results
@@ -103,7 +103,7 @@ class TestCobylaOptimizer(QiskitOptimizationTestCase):
         problem.minimize(linear=[2, 2], quadratic=[[2, 0.25], [0.25, 0.5]])
 
         # solve problem with cobyla
-        cobyla = CobylaOptimizer(trials=3)
+        cobyla = CobylaOptimizer(trials=3, catol=1e-6)
         result = cobyla.solve(problem)
 
         # analyze results
