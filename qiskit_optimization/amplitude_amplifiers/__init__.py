@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2025.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,14 +10,16 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Common qiskit optimization algorithms utility functions."""
+"""Amplitude Amplifiers Package"""
 
-from .algorithm_globals import algorithm_globals
-from .validate_bounds import validate_bounds
-from .validate_initial_point import validate_initial_point
+from .amplification_problem import AmplificationProblem
+from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult
+from .grover import Grover, GroverResult
 
 __all__ = [
-    "algorithm_globals",
-    "validate_initial_point",
-    "validate_bounds",
+    "AmplitudeAmplifier",
+    "AmplitudeAmplifierResult",
+    "AmplificationProblem",
+    "Grover",
+    "GroverResult",
 ]

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -48,8 +48,8 @@ For example:
 
 .. code-block:: python
 
-    from qiskit_algorithms.optimizers import COBYLA
-    from qiskit_algorithms import VQE
+    from qiskit_optimization.optimizers import COBYLA
+    from qiskit_optimization.minimum_eigensolvers import VQE
     from qiskit.circuit.library import RealAmplitudes
     from qiskit.primitives import Estimator
 

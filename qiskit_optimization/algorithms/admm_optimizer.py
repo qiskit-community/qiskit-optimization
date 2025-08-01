@@ -17,9 +17,9 @@ import time
 from typing import List, Optional, Tuple, cast
 
 import numpy as np
-from qiskit_algorithms import NumPyMinimumEigensolver
 
 from ..converters import MaximizeToMinimize
+from ..minimum_eigensolvers import NumPyMinimumEigensolver
 from ..problems.constraint import Constraint
 from ..problems.linear_constraint import LinearConstraint
 from ..problems.linear_expression import LinearExpression
