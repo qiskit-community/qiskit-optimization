@@ -191,7 +191,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             optimizer_result = self.optimizer.minimize(
                 fun=evaluate_energy,  # type: ignore[arg-type]
                 x0=initial_point,
-                jac=evaluate_gradient,  # type: ignore[arg-type]
+                jac=evaluate_gradient,
                 bounds=bounds,
             )
 
@@ -295,6 +295,8 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         Raises:
             AlgorithmError: If the primitive job to evaluate the gradient fails.
         """
+        if self.gradient is None:
+            return None
 
         def evaluate_gradient(parameters: np.ndarray) -> np.ndarray:
             # broadcasting not required for the estimator gradients
