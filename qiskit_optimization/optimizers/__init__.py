@@ -18,11 +18,6 @@ Classical Optimizers.
 This package contains a variety of classical optimizers and were designed for use by
 qiskit_optimization's quantum variational algorithms, such as
 :class:`~qiskit_optimization.minimum_eigensolvers.SamplingVQE`.
-Logically, these optimizers can be divided into two categories:
-
-`Local Optimizers`_
-  Given an optimization problem, a **local optimizer** is a function
-  that attempts to find an optimal value within the neighboring set of a candidate solution.
 
 .. currentmodule:: qiskit_optimization.optimizers
 
@@ -35,11 +30,10 @@ Optimizer Base Classes
 
    Optimizer
    OptimizerResult
-   OptimizerSupportLevel
    Minimizer
 
-Local Optimizers
-----------------
+Optimizers
+----------
 
 .. autosummary::
    :toctree: ../stubs/

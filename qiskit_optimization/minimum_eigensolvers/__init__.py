@@ -13,6 +13,7 @@
 """
 Minimum Eigensolvers (:mod:`qiskit_optimization.minimum_eigensolvers`)
 ======================================================================
+Algorithms to find the minimum eigenvalue of an operator.
 
 .. currentmodule:: qiskit_optimization.minimum_eigensolvers
 

@@ -13,6 +13,7 @@
 """
 Eigensolvers (:mod:`qiskit_optimization.eigensolvers`)
 ======================================================
+Algorithms to find eigenvalues of an operator.
 
 .. currentmodule:: qiskit_optimization.eigensolvers
 
