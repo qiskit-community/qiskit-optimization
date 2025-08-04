@@ -229,9 +229,14 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             )
 
         # Get the circuit corresponding to the relaxed solution.
-        if isinstance(relaxed_result, VariationalResult):
+        # `hasattr` is used for compatibility with qiskit-algorithms
+        if isinstance(relaxed_result, VariationalResult) or (
+            hasattr(relaxed_result, "optimal_circuit") and hasattr(relaxed_result, "optimal_point")
+        ):
             circuit = relaxed_result.optimal_circuit.assign_parameters(relaxed_result.optimal_point)
-        elif isinstance(relaxed_result, NumPyMinimumEigensolverResult):
+        elif isinstance(relaxed_result, NumPyMinimumEigensolverResult) or hasattr(
+            relaxed_result, "eigenstate"
+        ):
             statevector = relaxed_result.eigenstate
             circuit = QuantumCircuit(encoding.num_qubits)
             circuit.initialize(statevector)
