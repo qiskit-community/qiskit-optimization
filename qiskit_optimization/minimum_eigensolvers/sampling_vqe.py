@@ -57,7 +57,9 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
     minimize the objective function, which depends on the chosen :attr:`aggregation`.
     The optimizer can either be one of Qiskit's optimizers, such as
     :class:`~qiskit_optimization.optimizers.SPSA` or a callable with the following signature:
+
     .. code-block:: python
+
         from qiskit_optimization.optimizers import OptimizerResult
         def my_minimizer(fun, x0, jac=None, bounds=None) -> OptimizerResult:
             # Note that the callable *must* have these argument names!
@@ -70,13 +72,18 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             result.x = # optimal parameters
             result.fun = # optimal function value
             return result
+
     The above signature also allows one to use any SciPy minimizer, for instance as
+
     .. code-block:: python
+
         from functools import partial
         from scipy.optimize import minimize
         optimizer = partial(minimize, method="L-BFGS-B")
+
     The following attributes can be set via the initializer but can also be read and updated once
     the ``SamplingVQE`` object has been constructed.
+
     Attributes:
         sampler (BaseSamplerV1 or BaseSamplerV2): The sampler primitive to sample the circuits.
         ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
@@ -93,6 +100,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             can access the intermediate data at each optimization step. These data are: the
             evaluation count, the optimizer parameters for the ansatz, the evaluated value, and the
             metadata dictionary.
+
     References:
         [1]: Barkoutsos, P. K., Nannicini, G., Robert, A., Tavernelli, I., and Woerner, S.,
             "Improving Variational Quantum Optimization using CVaR"

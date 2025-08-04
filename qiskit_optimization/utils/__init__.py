@@ -10,7 +10,22 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Common qiskit optimization algorithms utility functions."""
+"""
+Utility functions (:mod:`qiskit_optimization.utils`)
+====================================================
+
+.. currentmodule:: qiskit_optimization.utils
+
+Utility functions
+-----------------
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   algorithm_globals
+   validate_initial_point
+   validate_bounds
+"""
 
 from .algorithm_globals import algorithm_globals
 from .validate_bounds import validate_bounds

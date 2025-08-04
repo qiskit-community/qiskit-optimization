@@ -10,7 +10,23 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Eigensolvers package"""
+"""
+Eigensolvers (:mod:`qiskit_optimization.eigensolvers`)
+======================================================
+
+.. currentmodule:: qiskit_optimization.eigensolvers
+
+Eigensolvers
+------------
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   NumPyEigensolver
+   NumPyEigensolverResult
+   Eigensolver
+   EigensolverResult
+"""
 
 from .numpy_eigensolver import NumPyEigensolver, NumPyEigensolverResult
 from .eigensolver import Eigensolver, EigensolverResult
