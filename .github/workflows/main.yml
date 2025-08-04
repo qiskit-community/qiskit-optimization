@@ -274,6 +274,8 @@ jobs:
         run: |
           # clean last sphinx output
           make clean_sphinx
+          # install qiskit-algorithms
+          pip install qiskit-algorithms
           # get current version
           version=$(pip show qiskit-optimization | awk -F. '/^Version:/ { print substr($1,10), $2-1 }' OFS=.)
           # download stable version
