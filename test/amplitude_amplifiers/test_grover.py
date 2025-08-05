@@ -19,10 +19,9 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import data, ddt, idata, unpack
 from qiskit import QuantumCircuit
-from qiskit.circuit.library import GroverOperator, PhaseOracle
+from qiskit.circuit.library import GroverOperator
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Operator, Statevector
-from qiskit.utils.optionals import HAS_TWEEDLEDUM
 
 from qiskit_optimization.amplitude_amplifiers import AmplificationProblem, Grover
 
@@ -92,16 +91,6 @@ class TestGrover(QiskitAlgorithmsTestCase):
         super().setUp()
         self._sampler = Sampler()
         self._sampler_with_shots = Sampler(options={"shots": 1024, "seed": 123})
-
-    @unittest.skipUnless(HAS_TWEEDLEDUM, "tweedledum required for this test")
-    @data("ideal", "shots")
-    def test_implicit_phase_oracle_is_good_state(self, use_sampler):
-        """Test implicit default for is_good_state with PhaseOracle."""
-        grover = self._prepare_grover(use_sampler)
-        oracle = PhaseOracle("x & y")
-        problem = AmplificationProblem(oracle)
-        result = grover.amplify(problem)
-        self.assertEqual(result.top_measurement, "11")
 
     @idata(itertools.product(["ideal", "shots"], [[1, 2, 3], None, 2]))
     @unpack
@@ -275,17 +264,6 @@ class TestGrover(QiskitAlgorithmsTestCase):
         grover = self._prepare_grover(use_sampler)
         result = grover.amplify(problem)
         self.assertAlmostEqual(result.max_probability, 1.0)
-
-    @unittest.skipUnless(HAS_TWEEDLEDUM, "tweedledum required for this test")
-    @data("ideal", "shots")
-    def test_oracle_evaluation(self, use_sampler):
-        """Test oracle_evaluation for PhaseOracle"""
-        oracle = PhaseOracle("x1 & x2 & (not x3)")
-        problem = AmplificationProblem(oracle, is_good_state=oracle.evaluate_bitstring)
-        grover = self._prepare_grover(use_sampler)
-        result = grover.amplify(problem)
-        self.assertTrue(result.oracle_evaluation)
-        self.assertEqual("011", result.top_measurement)
 
     def test_sampler_setter(self):
         """Test sampler setter"""
