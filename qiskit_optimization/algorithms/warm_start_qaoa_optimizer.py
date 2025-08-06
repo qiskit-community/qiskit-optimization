@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -19,10 +19,10 @@ from typing import Dict, List, Optional, Tuple, Union, cast
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit_algorithms import QAOA
 
 from ..converters.quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
+from ..minimum_eigensolvers import QAOA
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import VarType
 from .minimum_eigen_optimizer import MinimumEigenOptimizationResult, MinimumEigenOptimizer

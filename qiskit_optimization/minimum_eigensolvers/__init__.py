@@ -10,13 +10,37 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""The Minimum Eigensolvers package."""
+"""
+Minimum Eigensolvers (:mod:`qiskit_optimization.minimum_eigensolvers`)
+======================================================================
+Algorithms to find the minimum eigenvalue of an operator.
 
-from .sampling_mes import SamplingMinimumEigensolver, SamplingMinimumEigensolverResult
+.. currentmodule:: qiskit_optimization.minimum_eigensolvers
+
+Minimum Eigensolvers
+--------------------
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   SamplingMinimumEigensolver
+   SamplingMinimumEigensolverResult
+   MinimumEigensolver
+   MinimumEigensolverResult
+   NumPyMinimumEigensolver
+   NumPyMinimumEigensolverResult
+   SamplingVQE
+   QAOA
+   VQE
+   VQEResult
+"""
+
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
 from .numpy_minimum_eigensolver import NumPyMinimumEigensolver, NumPyMinimumEigensolverResult
 from .qaoa import QAOA
+from .sampling_mes import SamplingMinimumEigensolver, SamplingMinimumEigensolverResult
 from .sampling_vqe import SamplingVQE
+from .vqe import VQE, VQEResult
 
 __all__ = [
     "SamplingMinimumEigensolver",
@@ -27,4 +51,6 @@ __all__ = [
     "NumPyMinimumEigensolverResult",
     "SamplingVQE",
     "QAOA",
+    "VQE",
+    "VQEResult",
 ]

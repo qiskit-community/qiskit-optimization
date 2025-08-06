@@ -154,10 +154,17 @@ class OptimizerSupportLevel(IntEnum):
     """Support Level enum for features such as bounds, gradient and initial point"""
 
     # pylint: disable=invalid-name
-    not_supported = 0  # Does not support the corresponding parameter in optimize()
-    ignored = 1  # Feature can be passed as non None but will be ignored
-    supported = 2  # Feature is supported
-    required = 3  # Feature is required and must be given, None is invalid
+    not_supported = 0
+    """Does not support the corresponding parameter in ``optimize()``"""
+
+    ignored = 1
+    """Feature can be passed as non None but will be ignored"""
+
+    supported = 2
+    """Feature is supported"""
+
+    required = 3
+    """Feature is required and must be given, None is invalid"""
 
 
 class Optimizer(ABC):

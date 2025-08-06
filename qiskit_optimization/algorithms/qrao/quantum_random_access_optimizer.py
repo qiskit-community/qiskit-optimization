@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,16 +13,10 @@
 """Quantum Random Access Optimizer class."""
 from __future__ import annotations
 
-from typing import cast, List
+from typing import List, cast
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit_algorithms import (
-    MinimumEigensolver,
-    MinimumEigensolverResult,
-    NumPyMinimumEigensolverResult,
-    VariationalResult,
-)
 
 from qiskit_optimization.algorithms import (
     OptimizationAlgorithm,
@@ -31,7 +25,13 @@ from qiskit_optimization.algorithms import (
     SolutionSample,
 )
 from qiskit_optimization.converters import QuadraticProgramToQubo
+from qiskit_optimization.minimum_eigensolvers import (
+    MinimumEigensolver,
+    MinimumEigensolverResult,
+    NumPyMinimumEigensolverResult,
+)
 from qiskit_optimization.problems import QuadraticProgram, Variable
+from qiskit_optimization.variational_algorithm import VariationalResult
 
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme
@@ -229,9 +229,14 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
             )
 
         # Get the circuit corresponding to the relaxed solution.
-        if isinstance(relaxed_result, VariationalResult):
+        # `hasattr` is used for compatibility with qiskit-algorithms
+        if isinstance(relaxed_result, VariationalResult) or (
+            hasattr(relaxed_result, "optimal_circuit") and hasattr(relaxed_result, "optimal_point")
+        ):
             circuit = relaxed_result.optimal_circuit.assign_parameters(relaxed_result.optimal_point)
-        elif isinstance(relaxed_result, NumPyMinimumEigensolverResult):
+        elif isinstance(relaxed_result, NumPyMinimumEigensolverResult) or hasattr(
+            relaxed_result, "eigenstate"
+        ):
             statevector = relaxed_result.eigenstate
             circuit = QuantumCircuit(encoding.num_qubits)
             circuit.initialize(statevector)

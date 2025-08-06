@@ -1,0 +1,11 @@
+---
+upgrade:
+  - |
+    Removed the dependency on ``qiskit-algorithms`` and ported the necessary classes.
+    Specifically, the following modules are ported:
+
+    - :mod:`qiskit_optimization.eigensolvers`
+    - :mod:`qiskit_optimization.minimum_eigensolvers`
+    - :mod:`qiskit_optimization.optimizers`
+    - :mod:`qiskit_optimization.utils`
+

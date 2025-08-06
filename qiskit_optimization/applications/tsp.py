@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,12 +16,12 @@ from typing import Dict, List, Optional, Union
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
-from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit_optimization.algorithms import OptimizationResult
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
+from qiskit_optimization.utils import algorithm_globals
 
 from .graph_optimization_application import GraphOptimizationApplication
 
@@ -140,7 +140,7 @@ class Tsp(GraphOptimizationApplication):
         """
         if seed:
             algorithm_globals.random_seed = seed
-        coord = algorithm_globals.random.uniform(low, high, (n, 2))
+        coord = algorithm_globals.random.uniform(low, high, (n, 2)).tolist()
         pos = {i: (coord_[0], coord_[1]) for i, coord_ in enumerate(coord)}
         graph = nx.random_geometric_graph(n, np.hypot(high - low, high - low) + 1, pos=pos)
         for w, v in graph.edges:
