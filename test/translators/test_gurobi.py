@@ -13,8 +13,10 @@
 """Test from_gurobipy and to_gurobipy"""
 
 import unittest
-from tempfile import NamedTemporaryFile
+from os import path
+from tempfile import TemporaryDirectory
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
@@ -47,13 +49,18 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         mod.setObjective(1 + x + 2 * y - x * y + 2 * z * z)
         mod.addConstr(2 * x - z == 1, name="c0")
         mod.addConstr(2 * x - z + 3 * y * z == 1, name="q0")
+
         q_mod = to_gurobipy(q_p)
-        with NamedTemporaryFile(mode="w+", suffix=".lp") as file:
-            q_mod.write(file.name)
-            q_mod_str = file.read()
-        with NamedTemporaryFile(mode="w+", suffix=".lp") as file:
-            mod.write(file.name)
-            mod_str = file.read()
+        with TemporaryDirectory() as tmpdir:
+            file_name = path.join(tmpdir, "mod.lp")
+            q_mod.write(file_name)
+            with open(file_name, encoding="utf-8") as file:
+                q_mod_str = file.read()
+
+            file_name = path.join(tmpdir, "mod2.lp")
+            mod.write(file_name)
+            with open(file_name, encoding="utf-8") as file:
+                mod_str = file.read()
         self.assertEqual(q_mod_str, mod_str)
 
         with self.assertRaises(QiskitOptimizationError):
