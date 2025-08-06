@@ -1,0 +1,15 @@
+---
+deprecations:
+  - |
+    Deprecates the methods :meth:`.QuadraticProgram.export_as_lp_string`,
+    :meth:`.QuadraticProgram.read_from_lp_file`,
+    and :meth:`.QuadraticProgram.write_to_lp_file`
+    in order to remove the dependency on cplex package,
+    which has seen limited maintenance and updates in recent years.
+
+    Users can read models from LP files and write models in LP format
+    using functions :func:`to_docplex_mp`, :func:`from_docplex_mp`,
+    :func:`to_gurobipy`, and :func:`from_gurobipy`.
+
+    Users can print out :class:`.QuadraticProgram` model with
+    the method :meth:`.QuadraticProgram.prettyprint`.
