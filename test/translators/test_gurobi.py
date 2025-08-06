@@ -48,10 +48,10 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         mod.addConstr(2 * x - z == 1, name="c0")
         mod.addConstr(2 * x - z + 3 * y * z == 1, name="q0")
         q_mod = to_gurobipy(q_p)
-        with NamedTemporaryFile(suffix=".lp") as file:
+        with NamedTemporaryFile(mode="w+", suffix=".lp") as file:
             q_mod.write(file.name)
             q_mod_str = file.read()
-        with NamedTemporaryFile(suffix=".lp") as file:
+        with NamedTemporaryFile(mode="w+", suffix=".lp") as file:
             mod.write(file.name)
             mod_str = file.read()
         self.assertEqual(q_mod_str, mod_str)
