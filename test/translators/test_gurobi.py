@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,7 +13,10 @@
 """Test from_gurobipy and to_gurobipy"""
 
 import unittest
+from os import path
+from tempfile import TemporaryDirectory
 from test.optimization_test_case import QiskitOptimizationTestCase
+
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import Constraint, QuadraticProgram
@@ -34,7 +37,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = from_gurobipy(to_gurobipy(q_p))
-        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
+        self.assertEqual(q_p.prettyprint(), q_p2.prettyprint())
 
         # pylint: disable=import-error
         import gurobipy as gp
@@ -47,8 +50,18 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         mod.addConstr(2 * x - z == 1, name="c0")
         mod.addConstr(2 * x - z + 3 * y * z == 1, name="q0")
 
-        # Here I am unsure what to do, let's come back to it later
-        # self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
+        q_mod = to_gurobipy(q_p)
+        with TemporaryDirectory() as tmpdir:
+            file_name = path.join(tmpdir, "mod.lp")
+            q_mod.write(file_name)
+            with open(file_name, encoding="utf-8") as file:
+                q_mod_str = file.read()
+
+            file_name = path.join(tmpdir, "mod2.lp")
+            mod.write(file_name)
+            with open(file_name, encoding="utf-8") as file:
+                mod_str = file.read()
+        self.assertEqual(q_mod_str, mod_str)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()

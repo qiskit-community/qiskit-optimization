@@ -24,6 +24,7 @@ from docplex.mp.model_reader import ModelReader
 from numpy import ndarray
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+from qiskit.utils import deprecate_func
 from scipy.sparse import spmatrix
 
 import qiskit_optimization.optionals as _optionals
@@ -930,6 +931,7 @@ class QuadraticProgram:
                         elem.quadratic_program = self
             setattr(self, attr, val)
 
+    @deprecate_func(since="0.7.0", additional_msg="Use prettyprint instead.")
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
 
@@ -942,6 +944,7 @@ class QuadraticProgram:
         return to_docplex_mp(self).export_as_lp_string()
 
     @_optionals.HAS_CPLEX.require_in_call
+    @deprecate_func(since="0.7.0", additional_msg="Use from_docplex_mp or from_gurobipy instead.")
     def read_from_lp_file(self, filename: str) -> None:
         """Loads the quadratic program from a LP file.
 
@@ -976,6 +979,7 @@ class QuadraticProgram:
         other = from_docplex_mp(model)
         self._copy_from(other, include_name=True)
 
+    @deprecate_func(since="0.7.0", additional_msg="Use to_docplex_mp or to_gurobipy instead.")
     def write_to_lp_file(self, filename: str) -> None:
         """Writes the quadratic program to an LP file.
 

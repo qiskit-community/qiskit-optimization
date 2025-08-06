@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -38,7 +38,7 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = from_docplex_mp(to_docplex_mp(q_p))
-        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
+        self.assertEqual(q_p.prettyprint(), q_p2.prettyprint())
 
         mod = Model("test")
         x = mod.binary_var("x")
@@ -47,7 +47,8 @@ class TestDocplexMpTranslator(QiskitOptimizationTestCase):
         mod.minimize(1 + x + 2 * y - x * y + 2 * z * z)
         mod.add(2 * x - z == 1, "c0")
         mod.add(2 * x - z + 3 * y * z == 1, "q0")
-        self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
+        q_mod = to_docplex_mp(q_p)
+        self.assertEqual(q_mod.export_as_lp_string(), mod.export_as_lp_string())
 
     def test_from_without_variable_names(self):
         """test from_docplex_mp without explicit variable names"""
