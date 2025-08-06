@@ -931,6 +931,7 @@ class QuadraticProgram:
                         elem.quadratic_program = self
             setattr(self, attr, val)
 
+    @deprecate_func(since="0.7.0", additional_msg="Use prettyprint instead.")
     def export_as_lp_string(self) -> str:
         """Returns the quadratic program as a string of LP format.
 

@@ -13,6 +13,7 @@
 """Test from_gurobipy and to_gurobipy"""
 
 import unittest
+from tempfile import NamedTemporaryFile
 from test.optimization_test_case import QiskitOptimizationTestCase
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.exceptions import QiskitOptimizationError
@@ -34,7 +35,7 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         q_p.linear_constraint({"x": 2, "z": -1}, "==", 1)
         q_p.quadratic_constraint({"x": 2, "z": -1}, {("y", "z"): 3}, "==", 1)
         q_p2 = from_gurobipy(to_gurobipy(q_p))
-        self.assertEqual(q_p.export_as_lp_string(), q_p2.export_as_lp_string())
+        self.assertEqual(q_p.prettyprint(), q_p2.prettyprint())
 
         # pylint: disable=import-error
         import gurobipy as gp
@@ -46,9 +47,14 @@ class TestGurobiTranslator(QiskitOptimizationTestCase):
         mod.setObjective(1 + x + 2 * y - x * y + 2 * z * z)
         mod.addConstr(2 * x - z == 1, name="c0")
         mod.addConstr(2 * x - z + 3 * y * z == 1, name="q0")
-
-        # Here I am unsure what to do, let's come back to it later
-        # self.assertEqual(q_p.export_as_lp_string(), mod.export_as_lp_string())
+        q_mod = to_gurobipy(q_p)
+        with NamedTemporaryFile(suffix=".lp") as file:
+            q_mod.write(file.name)
+            q_mod_str = file.read()
+        with NamedTemporaryFile(suffix=".lp") as file:
+            mod.write(file.name)
+            mod_str = file.read()
+        self.assertEqual(q_mod_str, mod_str)
 
         with self.assertRaises(QiskitOptimizationError):
             mod = gp.Model()
