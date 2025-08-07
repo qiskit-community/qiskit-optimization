@@ -133,4 +133,4 @@ class QAOA(SamplingVQE):
         # Recreates a circuit based on operator parameter.
         self.ansatz = QAOAAnsatz(
             operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
-        ).decompose()  # TODO remove decompose once #6674 is fixed <-- I don't know what this issue is
+        )

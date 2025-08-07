@@ -17,11 +17,13 @@ from collections import defaultdict
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.passmanager import BasePassManager
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
 from qiskit.quantum_info import SparsePauliOp
+from qiskit_optimization import AlgorithmError
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
-from qiskit_optimization.exceptions import AlgorithmError, QiskitOptimizationError
+from qiskit_optimization.exceptions import QiskitOptimizationError
 
 from .quantum_random_access_encoding import (
     _z_to_21p_qrac_basis_circuit,
@@ -57,9 +59,10 @@ class MagicRounding(RoundingScheme):
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV1 | BaseSamplerV2,
         basis_sampling: str = "uniform",
         seed: int | None = None,
+        passmanager: BasePassManager | None = None,
     ):
         """
         Args:
@@ -75,6 +78,7 @@ class MagicRounding(RoundingScheme):
                 sampling.
             seed: Seed for random number generator, which is used to sample the
                 magic bases.
+            passmanager: Pass manager to transpile the circuits
 
         Raises:
             ValueError: If ``basis_sampling`` is not ``"uniform"`` or ``"weighted"``.
@@ -88,13 +92,23 @@ class MagicRounding(RoundingScheme):
         self._sampler = sampler
         self._rng = np.random.default_rng(seed)
         self._basis_sampling = basis_sampling
-        if self._sampler.options.get("shots") is None:
-            raise ValueError("Magic rounding requires a sampler configured with a number of shots.")
-        self._shots = sampler.options.shots
+        self._passmanager = passmanager
+        if isinstance(self._sampler, BaseSamplerV1):
+            if self._sampler.options.get("shots") is None:
+                raise ValueError(
+                    "Magic rounding requires a sampler configured with a number of shots."
+                )
+            self._shots = sampler.options.shots
+        else:  # BaseSamplerV2
+            if self._sampler.default_shots is None:
+                raise ValueError(
+                    "Magic rounding requires a sampler configured with a number of shots."
+                )
+            self._shots = self._sampler.default_shots
         super().__init__()
 
     @property
-    def sampler(self) -> BaseSampler:
+    def sampler(self) -> BaseSamplerV1 | BaseSamplerV2:
         """Returns the Sampler used to sample the magic bases."""
         return self._sampler
 
@@ -165,6 +179,8 @@ class MagicRounding(RoundingScheme):
             QiskitOptimizationError: If some of the results from the primitive job are not collected.
         """
         circuits = self._make_circuits(circuit, bases, vars_per_qubit)
+        if self._passmanager:
+            circuits = self._passmanager.run(circuits)
         # Execute each of the rotated circuits and collect the results
         # Batch the circuits into jobs where each group has the same number of
         # shots, so that you can wait for the queue as few times as possible if
@@ -181,14 +197,27 @@ class MagicRounding(RoundingScheme):
             circuit_indices_by_shots[shots].append(i)
 
         for shots, indices in sorted(circuit_indices_by_shots.items(), reverse=True):
+            circuits_ = [circuits[i] for i in indices]
             try:
-                job = self._sampler.run([circuits[i] for i in indices], shots=shots)
+                job = self._sampler.run(circuits_, shots=shots)
                 result = job.result()
             except Exception as exc:
                 raise AlgorithmError(
                     "The primitive job to evaluate the magic state failed."
                 ) from exc
-            counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
+
+            if isinstance(result, SamplerResult):
+                counts_list = [dist.binary_probabilities() for dist in result.quasi_dists]
+            else:
+                counts_list = [
+                    getattr(res.data, circ.cregs[0].name).get_counts()
+                    for res, circ in zip(result, circuits_)
+                ]
+                counts_list = [
+                    {k: v / sum(counts.values()) for k, v in counts.items()}
+                    for counts in counts_list
+                ]
+
             if len(counts_list) != len(indices):
                 raise QiskitOptimizationError(
                     "Internal error: The number of circuits and the results from the primitive job "
@@ -231,7 +260,7 @@ class MagicRounding(RoundingScheme):
         """
         output_bits = []
         # iterate in order over decision variables
-        for _, (q, op) in sorted(var2op.items()):
+        for q, op in var2op.values():
             # get the decoding outcome index for the variable
             # corresponding to this Pauli op.
             op_index = self._OP_INDICES[vars_per_qubit][str(op.paulis[0])]
