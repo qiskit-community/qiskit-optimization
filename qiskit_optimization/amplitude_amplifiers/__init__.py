@@ -13,13 +13,9 @@
 """Amplitude Amplifiers Package"""
 
 from .amplification_problem import AmplificationProblem
-from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult
-from .grover import Grover, GroverResult
+from .grover import Grover
 
 __all__ = [
-    "AmplitudeAmplifier",
-    "AmplitudeAmplifierResult",
     "AmplificationProblem",
     "Grover",
-    "GroverResult",
 ]

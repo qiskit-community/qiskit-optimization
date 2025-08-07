@@ -15,21 +15,14 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Generator, Iterator
-from typing import Any
 
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler
-from qiskit.quantum_info import Statevector
-
-from qiskit_optimization.exceptions import AlgorithmError
-from qiskit_optimization.utils import algorithm_globals
 
 from .amplification_problem import AmplificationProblem
-from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult
 
 
-class Grover(AmplitudeAmplifier):
+class Grover:
     r"""Grover's Search algorithm.
 
     .. note::
@@ -115,7 +108,6 @@ class Grover(AmplitudeAmplifier):
         iterations: list[int] | Iterator[int] | int | None = None,
         growth_rate: float | None = None,
         sample_from_iterations: bool = False,
-        sampler: BaseSampler | None = None,
     ) -> None:
         r"""
         Args:
@@ -161,124 +153,8 @@ class Grover(AmplitudeAmplifier):
         else:
             self._iterations = iterations  # type: ignore[assignment]
 
-        self._sampler = sampler
         self._sample_from_iterations = sample_from_iterations
         self._iterations_arg = iterations
-
-    @property
-    def sampler(self) -> BaseSampler | None:
-        """Get the sampler.
-
-        Returns:
-            The sampler used to run this algorithm.
-        """
-        return self._sampler
-
-    @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
-        """Set the sampler.
-
-        Args:
-            sampler: The sampler used to run this algorithm.
-        """
-        self._sampler = sampler
-
-    def amplify(self, amplification_problem: AmplificationProblem) -> "GroverResult":
-        """Run the Grover algorithm.
-
-        Args:
-            amplification_problem: The amplification problem.
-
-        Returns:
-            The result as a ``GroverResult``, where e.g. the most likely state can be queried
-            as ``result.top_measurement``.
-
-        Raises:
-            ValueError: If sampler is not set.
-            AlgorithmError: If sampler job fails.
-            TypeError: If ``is_good_state`` is not provided and is required (i.e. when iterations
-            is ``None`` or a ``list``)
-        """
-        if self._sampler is None:
-            raise ValueError("A sampler must be provided.")
-
-        if isinstance(self._iterations, list):
-            max_iterations = len(self._iterations)
-            max_power = np.inf  # no cap on the power
-            iterator: Iterator[int] = iter(self._iterations)
-        else:
-            max_iterations = max(10, 2**amplification_problem.oracle.num_qubits)
-            max_power = np.ceil(
-                2 ** (len(amplification_problem.grover_operator.reflection_qubits) / 2)
-            )
-            iterator = self._iterations
-
-        result = GroverResult()
-
-        iterations = []
-        top_measurement = "0" * len(amplification_problem.objective_qubits)
-        oracle_evaluation = False
-        all_circuit_results = []
-        max_probability = 0
-
-        for _ in range(max_iterations):  # iterate at most to the max number of iterations
-            # get next power and check if allowed
-            power = next(iterator)
-
-            if power > max_power:
-                break
-
-            iterations.append(power)  # store power
-
-            # sample from [0, power) if specified
-            if self._sample_from_iterations:
-                power = int(algorithm_globals.random.integers(power))
-            # Run a grover experiment for a given power of the Grover operator.
-            if self._sampler is not None:
-                qc = self.construct_circuit(amplification_problem, power, measurement=True)
-                job = self._sampler.run([qc])
-
-                try:
-                    results = job.result()
-                except Exception as exc:
-                    raise AlgorithmError("Sampler job failed.") from exc
-
-                num_bits = len(amplification_problem.objective_qubits)
-                circuit_results: dict[str, Any] | Statevector | np.ndarray = {
-                    np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
-                }
-                top_measurement, max_probability = max(
-                    circuit_results.items(), key=lambda x: x[1]  # type: ignore[union-attr]
-                )
-
-            all_circuit_results.append(circuit_results)
-
-            if (isinstance(self._iterations_arg, int)) and (
-                amplification_problem.is_good_state is None
-            ):
-                oracle_evaluation = None  # cannot check for good state without is_good_state arg
-                break
-
-            # is_good_state arg must be provided if iterations arg is not an integer
-            if (
-                self._iterations_arg is None or isinstance(self._iterations_arg, list)
-            ) and amplification_problem.is_good_state is None:
-                raise TypeError("An is_good_state function is required with the provided oracle")
-
-            # only check if top measurement is a good state if an is_good_state arg is provided
-            oracle_evaluation = amplification_problem.is_good_state(top_measurement)
-
-            if oracle_evaluation is True:
-                break  # we found a solution
-
-        result.iterations = iterations
-        result.top_measurement = top_measurement
-        result.assignment = amplification_problem.post_processing(top_measurement)
-        result.oracle_evaluation = oracle_evaluation
-        result.circuit_results = all_circuit_results  # type: ignore[assignment]
-        result.max_probability = max_probability
-
-        return result
 
     @staticmethod
     def optimal_num_iterations(num_solutions: int, num_qubits: int) -> int:
@@ -327,29 +203,3 @@ class Grover(AmplitudeAmplifier):
             qc.measure(problem.objective_qubits, measurement_cr)
 
         return qc
-
-
-class GroverResult(AmplitudeAmplifierResult):
-    """Grover Result."""
-
-    def __init__(self) -> None:
-        super().__init__()
-        self._iterations: list[int] | None = None
-
-    @property
-    def iterations(self) -> list[int]:
-        """All the powers of the Grover operator that have been tried.
-
-        Returns:
-            The powers of the Grover operator tested.
-        """
-        return self._iterations
-
-    @iterations.setter
-    def iterations(self, value: list[int]) -> None:
-        """Set the powers of the Grover operator that have been tried.
-
-        Args:
-            value: A new value for the powers.
-        """
-        self._iterations = value

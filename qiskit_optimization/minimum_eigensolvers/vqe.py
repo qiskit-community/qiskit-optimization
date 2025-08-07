@@ -21,7 +21,7 @@ from typing import Any
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV1
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..exceptions import AlgorithmError
@@ -111,7 +111,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV1,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
