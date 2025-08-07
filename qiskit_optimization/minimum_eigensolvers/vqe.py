@@ -26,14 +26,13 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict
-from ..observables_evaluator import estimate_observables
 from ..optimizers import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
-
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
-from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
+from .observables_evaluator import estimate_observables
+from .variational_algorithm import VariationalAlgorithm, VariationalResult
 
 logger = logging.getLogger(__name__)
 

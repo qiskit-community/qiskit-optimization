@@ -20,17 +20,13 @@ from typing import Any
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import (
-    BaseEstimatorV1,
-    BaseSamplerV1,
-    BaseSamplerV2,
-    EstimatorResult,
-)
+from qiskit.primitives import (BaseEstimatorV1, BaseSamplerV1, BaseSamplerV2,
+                               EstimatorResult)
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from ..algorithm_job import AlgorithmJob
 from ..utils.primitives import _circuit_key, _init_observable
+from .algorithm_job import AlgorithmJob
 
 
 @dataclass(frozen=True)

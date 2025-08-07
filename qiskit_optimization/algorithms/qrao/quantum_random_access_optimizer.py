@@ -31,7 +31,7 @@ from qiskit_optimization.minimum_eigensolvers import (
     NumPyMinimumEigensolverResult,
 )
 from qiskit_optimization.problems import QuadraticProgram, Variable
-from qiskit_optimization.variational_algorithm import VariationalResult
+from qiskit_optimization.minimum_eigensolvers.variational_algorithm import VariationalResult
 
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme

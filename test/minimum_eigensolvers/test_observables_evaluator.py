@@ -21,10 +21,10 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.operators import SparsePauliOp
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV1
 
 from qiskit_optimization.exceptions import AlgorithmError
-from qiskit_optimization.observables_evaluator import (
+from qiskit_optimization.minimum_eigensolvers.observables_evaluator import (
     estimate_observables,
     _handle_zero_ops,
     _prepare_result,
@@ -37,7 +37,7 @@ class TestEstimateObservables(QiskitAlgorithmsTestCase):
     def setUp(self):
         """Set up a basic quantum circuit and estimator for testing."""
         super().setUp()
-        self.estimator = MagicMock(spec=BaseEstimator)
+        self.estimator = MagicMock(spec=BaseEstimatorV1)
         self.quantum_state = QuantumCircuit(2)  # Simple 2-qubit circuit
         self.observable = SparsePauliOp.from_list([("Z", 1)])
         self.observable_2 = SparsePauliOp.from_list([("X", 1)])

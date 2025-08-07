@@ -14,16 +14,16 @@
 
 from __future__ import annotations
 
-from typing import Callable, Union, Tuple, Dict, List, Optional
 import logging
-import numpy as np
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
+import numpy as np
 from qiskit.quantum_info import Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from ..eigensolvers.numpy_eigensolver import NumPyEigensolver
-from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
 from ..list_or_dict import ListOrDict
+from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
+from .numpy_eigensolver import NumPyEigensolver
 
 logger = logging.getLogger(__name__)
 

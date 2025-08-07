@@ -11,16 +11,15 @@
 # that they have been altered from the originals.
 
 """
-This module implements the abstract base class for algorithm results.
+This module implements the base class for algorithm results.
 """
 
-from abc import ABC
 import inspect
 import pprint
 
 
-class AlgorithmResult(ABC):
-    """Abstract Base Class for algorithm results."""
+class AlgorithmResult:
+    """Base Class for algorithm results."""
 
     def __str__(self) -> str:
         result = {}

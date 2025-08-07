@@ -20,7 +20,7 @@ from qiskit.circuit import QuantumCircuit
 from qiskit_optimization.utils.algorithm_globals import algorithm_globals
 
 
-def validate_initial_point(point: np.ndarray | None | None, circuit: QuantumCircuit) -> np.ndarray:
+def validate_initial_point(point: np.ndarray | None, circuit: QuantumCircuit) -> np.ndarray:
     r"""
     Validate a choice of initial point against a choice of circuit. If no point is provided, a
     random point will be generated within certain parameter bounds. It will first look to the
