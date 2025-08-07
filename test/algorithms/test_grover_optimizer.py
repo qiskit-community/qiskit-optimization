@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2025.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -22,8 +22,6 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils import optionals
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Sampler, SamplerV2
-from qiskit_algorithms import NumPyMinimumEigensolver
-from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit_optimization.algorithms import (
     GroverOptimizer,
@@ -37,8 +35,10 @@ from qiskit_optimization.converters import (
     MaximizeToMinimize,
     QuadraticProgramToQubo,
 )
+from qiskit_optimization.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.translators import from_docplex_mp
+from qiskit_optimization.utils import algorithm_globals
 
 
 @ddt

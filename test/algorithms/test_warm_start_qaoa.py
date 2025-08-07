@@ -16,8 +16,12 @@ import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
+from ddt import data, ddt
 from docplex.mp.model import Model
-from qiskit.primitives.sampler import Sampler
+from qiskit import generate_preset_pass_manager
+from qiskit.utils.optionals import HAS_AER
+from qiskit_aer import AerSimulator
+from qiskit_aer.primitives import Sampler, SamplerV2
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import SlsqpOptimizer
@@ -30,13 +34,29 @@ from qiskit_optimization.applications.max_cut import Maxcut
 from qiskit_optimization.minimum_eigensolvers import QAOA
 from qiskit_optimization.optimizers import COBYLA
 from qiskit_optimization.translators import from_docplex_mp
+from qiskit_optimization.utils import algorithm_globals
 
 
+@ddt
 class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
     """Tests for the warm start QAOA optimizer."""
 
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
+    def setUp(self):
+        super().setUp()
+        self.seed = 17
+        algorithm_globals.random_seed = self.seed
+        self.sampler = {
+            "v1": Sampler(run_options={"seed_simulator": self.seed}),
+            "v2": SamplerV2(seed=18),
+        }
+        self.passmanager = generate_preset_pass_manager(
+            optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
+        )
+
     @unittest.skipIf(not _optionals.HAS_CVXPY, "CVXPY not available.")
-    def test_max_cut(self):
+    @data("v1", "v2")
+    def test_max_cut(self, version):
         """Basic test on the max cut problem."""
         graph = np.array(
             [
@@ -47,10 +67,12 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
             ]
         )
 
-        presolver = GoemansWilliamsonOptimizer(num_cuts=10)
+        presolver = GoemansWilliamsonOptimizer(num_cuts=10, seed=self.seed)
         problem = Maxcut(graph).to_quadratic_program()
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=COBYLA(), reps=1)
+        qaoa = QAOA(
+            sampler=self.sampler[version], optimizer=COBYLA(), reps=1, passmanager=self.passmanager
+        )
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=presolver,
@@ -64,11 +86,12 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)
-        np.testing.assert_almost_equal([0, 0, 1, 0], result_warm.x, 3)
+        np.testing.assert_allclose(result_warm.x, [0, 0, 1, 0])
         self.assertIsNotNone(result_warm.fval)
-        np.testing.assert_almost_equal(4, result_warm.fval, 3)
+        np.testing.assert_allclose(result_warm.fval, 4)
 
-    def test_constrained_binary(self):
+    @data("v1", "v2")
+    def test_constrained_binary(self, version):
         """Constrained binary optimization problem."""
         model = Model()
         v = model.binary_var(name="v")
@@ -82,7 +105,9 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         problem = from_docplex_mp(model)
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=COBYLA(), reps=1)
+        qaoa = QAOA(
+            sampler=self.sampler[version], optimizer=COBYLA(), reps=1, passmanager=self.passmanager
+        )
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
@@ -95,11 +120,12 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)
-        np.testing.assert_almost_equal([1, 0, 1], result_warm.x, 3)
+        np.testing.assert_allclose(result_warm.x, [1, 0, 1])
         self.assertIsNotNone(result_warm.fval)
-        np.testing.assert_almost_equal(2, result_warm.fval, 3)
+        np.testing.assert_allclose(result_warm.fval, 2)
 
-    def test_simple_qubo(self):
+    @data("v1", "v2")
+    def test_simple_qubo(self, version):
         """Test on a simple QUBO problem."""
         model = Model()
         # pylint:disable=invalid-name
@@ -109,7 +135,9 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         model.minimize((u - v + 2) ** 2)
         problem = from_docplex_mp(model)
 
-        qaoa = QAOA(sampler=Sampler(), optimizer=COBYLA(), reps=1)
+        qaoa = QAOA(
+            sampler=self.sampler[version], optimizer=COBYLA(), reps=1, passmanager=self.passmanager
+        )
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),
             relax_for_pre_solver=True,
@@ -120,9 +148,9 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)
-        np.testing.assert_almost_equal([0, 1], result_warm.x, 3)
+        np.testing.assert_allclose(result_warm.x, [0, 1])
         self.assertIsNotNone(result_warm.fval)
-        np.testing.assert_almost_equal(1, result_warm.fval, 3)
+        np.testing.assert_allclose(result_warm.fval, 1)
 
 
 if __name__ == "__main__":

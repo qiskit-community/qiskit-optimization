@@ -28,6 +28,7 @@ from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict
 from ..optimizers import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
+
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult

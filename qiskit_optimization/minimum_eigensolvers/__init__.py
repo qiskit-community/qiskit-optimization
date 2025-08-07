@@ -42,11 +42,9 @@ Minimum Eigensolvers
 from .eigensolver import Eigensolver, EigensolverResult
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
 from .numpy_eigensolver import NumPyEigensolver, NumPyEigensolverResult
-from .numpy_minimum_eigensolver import (NumPyMinimumEigensolver,
-                                        NumPyMinimumEigensolverResult)
+from .numpy_minimum_eigensolver import NumPyMinimumEigensolver, NumPyMinimumEigensolverResult
 from .qaoa import QAOA
-from .sampling_mes import (SamplingMinimumEigensolver,
-                           SamplingMinimumEigensolverResult)
+from .sampling_mes import SamplingMinimumEigensolver, SamplingMinimumEigensolverResult
 from .sampling_vqe import SamplingVQE
 from .vqe import VQE, VQEResult
 
