@@ -20,7 +20,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV1
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from .exceptions import AlgorithmError
@@ -28,7 +28,7 @@ from .list_or_dict import ListOrDict
 
 
 def estimate_observables(
-    estimator: BaseEstimator,
+    estimator: BaseEstimatorV1,
     quantum_state: QuantumCircuit,
     observables: ListOrDict[BaseOperator],
     parameter_values: Sequence[float] | None = None,

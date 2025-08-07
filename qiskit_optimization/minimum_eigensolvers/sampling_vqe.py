@@ -23,7 +23,7 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
-from qiskit.primitives.utils import init_observable
+from ..utils.primitives import init_observable
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
 
