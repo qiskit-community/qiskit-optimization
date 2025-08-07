@@ -22,6 +22,7 @@ from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
 from ..optimizers.optimizer import Minimizer, Optimizer
 from ..utils.validation import validate_min
 from .sampling_vqe import SamplingVQE

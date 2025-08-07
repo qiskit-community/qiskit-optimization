@@ -16,8 +16,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any
-import numpy as np
 
+import numpy as np
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..algorithm_result import AlgorithmResult

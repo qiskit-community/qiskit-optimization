@@ -13,22 +13,22 @@
 """Evaluator of observables for algorithms."""
 
 from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
-
 from qiskit import QuantumCircuit
+from qiskit.primitives import BaseEstimatorV1, BaseEstimatorV2
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.primitives import BaseEstimatorV1
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from .exceptions import AlgorithmError
-from .list_or_dict import ListOrDict
+from ..exceptions import AlgorithmError
+from ..list_or_dict import ListOrDict
 
 
 def estimate_observables(
-    estimator: BaseEstimatorV1,
+    estimator: BaseEstimatorV1 | BaseEstimatorV2,
     quantum_state: QuantumCircuit,
     observables: ListOrDict[BaseOperator],
     parameter_values: Sequence[float] | None = None,
@@ -63,13 +63,18 @@ def estimate_observables(
 
     if len(observables_list) > 0:
         observables_list = _handle_zero_ops(observables_list)
-        quantum_state = [quantum_state] * len(observables)
-        parameter_values_: Sequence[float] | Sequence[Sequence[float]] | None = parameter_values
-        if parameter_values is not None:
-            parameter_values_ = [parameter_values] * len(observables)
         try:
-            estimator_job = estimator.run(quantum_state, observables_list, parameter_values_)
-            expectation_values = estimator_job.result().values
+            if isinstance(estimator, BaseEstimatorV1):
+                if parameter_values is not None:
+                    parameter_values_ = [parameter_values] * len(observables)
+                else:
+                    parameter_values_ = None
+                quantum_state = [quantum_state] * len(observables)
+                estimator_job = estimator.run(quantum_state, observables_list, parameter_values_)
+                expectation_values = estimator_job.result().values
+            else:
+                estimator_job = estimator.run([(quantum_state, observables_list, parameter_values)])
+                expectation_values = estimator_job.result()[0].data.evs
         except Exception as exc:
             raise AlgorithmError("The primitive job failed!") from exc
 

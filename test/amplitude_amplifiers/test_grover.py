@@ -13,16 +13,15 @@
 """Test Grover's algorithm."""
 
 import itertools
-import unittest
 from test import QiskitAlgorithmsTestCase
 
 import numpy as np
-from ddt import data, ddt, idata, unpack
+from ddt import data, ddt
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import GroverOperator
 from qiskit.quantum_info import Operator, Statevector
 
-from qiskit_optimization.amplitude_amplifiers import AmplificationProblem, Grover
+from qiskit_optimization.amplitude_amplifiers import AmplificationProblem
 
 
 @ddt

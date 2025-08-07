@@ -33,8 +33,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 
-from .algorithm_result import AlgorithmResult
-from .optimizers import OptimizerResult
+from ..algorithm_result import AlgorithmResult
+from ..optimizers import OptimizerResult
 
 
 class VariationalAlgorithm(ABC):
