@@ -29,7 +29,7 @@ from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationResultStatus,
     SolutionSample,
 )
-from qiskit_optimization.amplitude_amplifiers.grover import AmplificationProblem, Grover
+from qiskit_optimization.algorithms.amplitude_amplifiers.grover import AmplificationProblem, Grover
 from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram, Variable

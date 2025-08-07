@@ -21,7 +21,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import GroverOperator
 from qiskit.quantum_info import Operator, Statevector
 
-from qiskit_optimization.amplitude_amplifiers import AmplificationProblem
+from qiskit_optimization.algorithms.amplitude_amplifiers import AmplificationProblem
 
 
 @ddt

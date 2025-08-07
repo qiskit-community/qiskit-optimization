@@ -20,7 +20,7 @@ from ddt import data, ddt
 
 from qiskit.quantum_info import Operator, SparsePauliOp, Pauli, ScalarOp
 
-from qiskit_optimization.eigensolvers import NumPyEigensolver
+from qiskit_optimization.minimum_eigensolvers import NumPyEigensolver
 from qiskit_optimization import AlgorithmError
 
 H2_SPARSE_PAULI = SparsePauliOp(
