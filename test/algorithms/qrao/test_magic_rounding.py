@@ -17,8 +17,8 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 import numpy as np
 from ddt import data, ddt
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import Sampler, StatevectorSampler
-from qiskit_algorithms import NumPyMinimumEigensolver
+from qiskit.primitives import StatevectorSampler
+from qiskit_aer.primitives import Sampler
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.algorithms.qrao import (
@@ -28,6 +28,7 @@ from qiskit_optimization.algorithms.qrao import (
     RoundingContext,
     RoundingResult,
 )
+from qiskit_optimization.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit_optimization.problems import QuadraticProgram
 
 
@@ -43,9 +44,11 @@ class TestMagicRounding(QiskitOptimizationTestCase):
         self.problem.binary_var("y")
         self.problem.binary_var("z")
         self.problem.minimize(linear={"x": 1, "y": 2, "z": 3})
+        seed = 1
+        shots = 10000
         self._sampler = {
-            "v1": Sampler(options={"shots": 10000, "seed": 42}),
-            "v2": StatevectorSampler(default_shots=10000, seed=42),
+            "v1": Sampler(run_options={"shots": shots, "seed_simulator": seed}),
+            "v2": StatevectorSampler(default_shots=shots, seed=seed),
         }
 
     @data("v1", "v2")
@@ -307,7 +310,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
 
         with self.assertRaises(ValueError):
             # circuit is None
-            sampler = Sampler(options={"shots": 10000, "seed": 42})
+            sampler = self._sampler["v1"]
             magic_rounding = MagicRounding(sampler=sampler)
             rounding_context = RoundingContext(encoding, expectation_values=[1, 1, 1], circuit=None)
             magic_rounding.round(rounding_context)
@@ -328,7 +331,7 @@ class TestMagicRounding(QiskitOptimizationTestCase):
 
         with self.assertRaises(ValueError):
             # vars_per_qubit is invalid
-            sampler = Sampler(options={"shots": 10000, "seed": 42})
+            sampler = self._sampler["v1"]
             magic_rounding = MagicRounding(sampler=sampler)
             magic_rounding._make_circuits(circuit=QuantumCircuit(1), bases=[[0]], vars_per_qubit=4)
 
