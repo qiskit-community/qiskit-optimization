@@ -17,8 +17,11 @@ from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt, unpack
+from qiskit import generate_preset_pass_manager
 from qiskit.circuit.library import TwoLocal
-from qiskit.primitives import Estimator, Sampler
+from qiskit.utils.optionals import HAS_AER
+from qiskit_aer import AerSimulator
+from qiskit_aer.primitives import Estimator, Sampler, SamplerV2
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import CplexOptimizer, MinimumEigenOptimizer
@@ -41,15 +44,30 @@ from qiskit_optimization.utils import algorithm_globals
 class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     """Min Eigen Optimizer Tests."""
 
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
     def setUp(self):
         super().setUp()
 
         self._seed = 123
+        algorithm_globals.random_seed = self._seed
+        passmanager = generate_preset_pass_manager(
+            optimization_level=1, target=AerSimulator().target
+        )
 
         # setup minimum eigen solvers
         self.min_eigen_solvers = {
             "exact": NumPyMinimumEigensolver(),
-            "qaoa": QAOA(sampler=Sampler(), optimizer=COBYLA()),
+            "qaoa_v1": QAOA(
+                sampler=Sampler(run_options={"seed_simulator": self._seed}),
+                optimizer=COBYLA(),
+                reps=2,
+            ),
+            "qaoa_v2": QAOA(
+                sampler=SamplerV2(seed=self._seed),
+                optimizer=COBYLA(),
+                reps=2,
+                passmanager=passmanager,
+            ),
         }
 
         # test minimize
@@ -72,45 +90,45 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.op_ordering.binary_var("y")
         self.op_ordering.minimize(linear={"x": 1, "y": -2})
 
+    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     @data(
         ("exact", None, "op_ip1.lp"),
-        ("qaoa", None, "op_ip1.lp"),
-        ("qaoa", 10000, "op_ip1.lp"),
+        ("qaoa_v1", None, "op_ip1.lp"),
+        ("qaoa_v1", 10000, "op_ip1.lp"),
+        ("qaoa_v2", None, "op_ip1.lp"),
+        ("qaoa_v2", 10000, "op_ip1.lp"),
     )
     @unpack
-    @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_min_eigen_optimizer(self, min_eigen_solver_name, shots, filename):
         """Min Eigen Optimizer Test"""
-        try:
-            # get minimum eigen solver
-            min_eigen_solver = self.min_eigen_solvers[min_eigen_solver_name]
-            if min_eigen_solver_name == "qaoa":
-                min_eigen_solver.sampler.options.shots = shots
-                min_eigen_solver.sampler.options.seed = self._seed
+        # get minimum eigen solver
+        min_eigen_solver = self.min_eigen_solvers[min_eigen_solver_name]
+        if min_eigen_solver_name == "qaoa_v1":
+            min_eigen_solver.sampler.options.shots = shots
+        elif min_eigen_solver_name == "qaoa_v2":
+            min_eigen_solver.sampler.options.default_shots = shots
 
-            # construct minimum eigen optimizer
-            min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
+        # construct minimum eigen optimizer
+        min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
 
-            # load optimization problem
-            problem = QuadraticProgram()
-            lp_file = self.get_resource_path(filename, "algorithms/resources")
-            problem.read_from_lp_file(lp_file)
+        # load optimization problem
+        problem = QuadraticProgram()
+        lp_file = self.get_resource_path(filename, "algorithms/resources")
+        problem.read_from_lp_file(lp_file)
 
-            # solve problem with cplex
-            cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
-            cplex_result = cplex.solve(problem)
+        # solve problem with cplex
+        cplex = CplexOptimizer(cplex_parameters={"threads": 1, "randomseed": 1})
+        cplex_result = cplex.solve(problem)
 
-            # solve problem
-            result = min_eigen_optimizer.solve(problem)
-            self.assertIsNotNone(result)
+        # solve problem
+        result = min_eigen_optimizer.solve(problem)
+        self.assertIsNotNone(result)
 
-            # analyze results
-            self.assertAlmostEqual(cplex_result.fval, result.fval)
+        # analyze results
+        self.assertAlmostEqual(cplex_result.fval, result.fval)
 
-            # check that eigensolver result is present
-            self.assertIsNotNone(result.min_eigen_solver_result)
-        except RuntimeError as ex:
-            self.fail(str(ex))
+        # check that eigensolver result is present
+        self.assertIsNotNone(result.min_eigen_solver_result)
 
     @data(
         ("op_ip1.lp", -470, 12, OptimizationResultStatus.SUCCESS),
@@ -120,37 +138,34 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_min_eigen_optimizer_with_filter(self, filename, lowerbound, fval, status):
         """Min Eigen Optimizer Test"""
-        try:
-            # get minimum eigen solver
-            min_eigen_solver = NumPyMinimumEigensolver()
+        # get minimum eigen solver
+        min_eigen_solver = NumPyMinimumEigensolver()
 
-            # set filter
-            # pylint: disable=unused-argument
-            def filter_criterion(x, v, aux):
-                return v > lowerbound
+        # set filter
+        # pylint: disable=unused-argument
+        def filter_criterion(x, v, aux):
+            return v > lowerbound
 
-            min_eigen_solver.filter_criterion = filter_criterion
+        min_eigen_solver.filter_criterion = filter_criterion
 
-            # construct minimum eigen optimizer
-            min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
+        # construct minimum eigen optimizer
+        min_eigen_optimizer = MinimumEigenOptimizer(min_eigen_solver)
 
-            # load optimization problem
-            problem = QuadraticProgram()
-            lp_file = self.get_resource_path(filename, "algorithms/resources")
-            problem.read_from_lp_file(lp_file)
+        # load optimization problem
+        problem = QuadraticProgram()
+        lp_file = self.get_resource_path(filename, "algorithms/resources")
+        problem.read_from_lp_file(lp_file)
 
-            # solve problem
-            result = min_eigen_optimizer.solve(problem)
-            self.assertIsNotNone(result)
+        # solve problem
+        result = min_eigen_optimizer.solve(problem)
+        self.assertIsNotNone(result)
 
-            # analyze results
-            self.assertAlmostEqual(fval, result.fval)
-            self.assertEqual(status, result.status)
+        # analyze results
+        self.assertAlmostEqual(fval, result.fval)
+        self.assertEqual(status, result.status)
 
-            # check that eigensolver result is present
-            self.assertIsNotNone(result.min_eigen_solver_result)
-        except RuntimeError as ex:
-            self.fail(str(ex))
+        # check that eigensolver result is present
+        self.assertIsNotNone(result.min_eigen_solver_result)
 
     def test_converter_list(self):
         """Test converter list"""
@@ -218,12 +233,11 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(result.raw_samples[0].probability, 1.0)
         self.assertEqual(result.raw_samples[0].status, success)
 
-    def test_samples_qaoa(self):
+    @data("qaoa_v1", "qaoa_v2")
+    def test_samples_qaoa(self, version):
         """Test samples for QAOA"""
         # test minimize
-        algorithm_globals.random_seed = 4
-        sampler = Sampler()
-        qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
+        qaoa = self.min_eigen_solvers[version]
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_minimize)
         success = OptimizationResultStatus.SUCCESS
@@ -243,9 +257,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         np.testing.assert_array_almost_equal(result.raw_samples[0].x, [1, 0, 0, 0, 0])
         self.assertAlmostEqual(result.raw_samples[0].fval, opt_sol)
         self.assertEqual(result.raw_samples[0].status, success)
+
         # test maximize
         opt_sol = 2
-        qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
+        qaoa = self.min_eigen_solvers[version]
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_maximize)
         self.assertAlmostEqual(sum(s.probability for s in result.samples), 1)
@@ -271,9 +286,10 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
             self.op_maximize.objective.sense.value * result.raw_samples[0].fval, opt_sol
         )
         self.assertEqual(result.raw_samples[0].status, success)
+
         # test bit ordering
         opt_sol = -2
-        qaoa = QAOA(sampler=sampler, optimizer=COBYLA(), reps=2)
+        qaoa = self.min_eigen_solvers[version]
         min_eigen_optimizer = MinimumEigenOptimizer(qaoa)
         result = min_eigen_optimizer.solve(self.op_ordering)
         self.assertEqual(result.fval, opt_sol)
@@ -298,7 +314,6 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
     def test_samples_vqe(self):
         """Test samples for VQE"""
         # test minimize
-        algorithm_globals.random_seed = 1
         opt_sol = -2
         success = OptimizationResultStatus.SUCCESS
         optimizer = SPSA(maxiter=100)
