@@ -18,6 +18,7 @@ import numpy as np
 from ddt import data, ddt
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import StatevectorSampler
+from qiskit.utils.optionals import HAS_AER
 from qiskit_aer.primitives import Sampler
 
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
@@ -36,6 +37,7 @@ from qiskit_optimization.problems import QuadraticProgram
 class TestMagicRounding(QiskitOptimizationTestCase):
     """MagicRounding tests."""
 
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
     def setUp(self):
         """Set up for all tests."""
         super().setUp()
