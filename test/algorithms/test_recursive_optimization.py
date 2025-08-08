@@ -16,7 +16,11 @@ import unittest
 from test import QiskitOptimizationTestCase
 
 import numpy as np
-from qiskit.primitives import Sampler
+from ddt import data, ddt
+from qiskit import generate_preset_pass_manager
+from qiskit.utils.optionals import HAS_AER
+from qiskit_aer import AerSimulator
+from qiskit_aer.primitives import Sampler, SamplerV2
 
 import qiskit_optimization.optionals as _optionals
 from qiskit_optimization.algorithms import (
@@ -39,8 +43,22 @@ from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.utils import algorithm_globals
 
 
+@ddt
 class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
     """Recursive Min Eigen Optimizer Tests."""
+
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
+    def setUp(self):
+        super().setUp()
+        self.seed = 17
+        algorithm_globals.random_seed = self.seed
+        self.sampler = {
+            "v1": Sampler(run_options={"seed_simulator": self.seed}),
+            "v2": SamplerV2(seed=18),
+        }
+        self.passmanager = generate_preset_pass_manager(
+            optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
+        )
 
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
     def test_recursive_min_eigen_optimizer(self):
@@ -126,14 +144,14 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         self.assertIsNotNone(result.history[1])
 
     @unittest.skipIf(not _optionals.HAS_CPLEX, "CPLEX not available.")
-    def test_recursive_warm_qaoa(self):
+    @data("v1", "v2")
+    def test_recursive_warm_qaoa(self, version):
         """Test the recursive optimizer with warm start qaoa."""
-        seed = 1234
-        algorithm_globals.random_seed = seed
         qaoa = QAOA(
-            sampler=Sampler(),
+            sampler=self.sampler[version],
             optimizer=COBYLA(),
             reps=1,
+            passmanager=self.passmanager,
         )
         warm_qaoa = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(), relax_for_pre_solver=True, qaoa=qaoa
