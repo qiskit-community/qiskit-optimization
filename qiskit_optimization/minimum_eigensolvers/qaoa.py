@@ -132,6 +132,7 @@ class QAOA(SamplingVQE):
     def _check_operator_ansatz(self, operator: BaseOperator):
         # Recreates a circuit based on operator parameter.
         if isinstance(self.mixer, QuantumCircuit):
+            # workaround for https://github.com/Qiskit/qiskit/issues/14838
             from qiskit.circuit.library import QAOAAnsatz
 
             self.ansatz = QAOAAnsatz(
