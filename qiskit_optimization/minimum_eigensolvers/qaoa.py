@@ -18,7 +18,6 @@ from typing import Any, Callable
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -132,6 +131,22 @@ class QAOA(SamplingVQE):
 
     def _check_operator_ansatz(self, operator: BaseOperator):
         # Recreates a circuit based on operator parameter.
-        self.ansatz = QAOAAnsatz(
-            operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
-        )
+        if isinstance(self.mixer, QuantumCircuit):
+            from qiskit.circuit.library import QAOAAnsatz
+
+            self.ansatz = QAOAAnsatz(
+                operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+            )
+        else:
+            try:
+                from qiskit.circuit.library import qaoa_ansatz
+
+                self.ansatz = qaoa_ansatz(
+                    operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+                )
+            except ImportError:
+                from qiskit.circuit.library import QAOAAnsatz
+
+                self.ansatz = QAOAAnsatz(
+                    operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+                )
