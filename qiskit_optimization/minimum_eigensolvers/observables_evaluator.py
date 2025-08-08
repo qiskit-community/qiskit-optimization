@@ -72,13 +72,15 @@ def estimate_observables(
                 quantum_state = [quantum_state] * len(observables)
                 estimator_job = estimator.run(quantum_state, observables_list, parameter_values_)
                 expectation_values = estimator_job.result().values
+                metadata = estimator_job.result().metadata
             else:
                 estimator_job = estimator.run([(quantum_state, observables_list, parameter_values)])
-                expectation_values = estimator_job.result()[0].data.evs
+                result = estimator_job.result()
+                expectation_values = result[0].data.evs
+                metadata = [result[0].metadata] * len(expectation_values)
         except Exception as exc:
             raise AlgorithmError("The primitive job failed!") from exc
 
-        metadata = estimator_job.result().metadata
         # Discard values below threshold
         observables_means = expectation_values * (np.abs(expectation_values) > threshold)
         # zip means and metadata into tuples
