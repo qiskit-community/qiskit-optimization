@@ -60,7 +60,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         self.seed = 42
         algorithm_globals.random_seed = self.seed
         self.sampler = {
-            "v1": Sampler(backend_options={"seed_simulator": self.seed}),
+            "v1": Sampler(run_options={"seed_simulator": self.seed}),
             "v2": SamplerV2(seed=self.seed),
         }
         self.passmanager = generate_preset_pass_manager(
