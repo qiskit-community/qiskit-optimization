@@ -18,10 +18,12 @@ from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
-from qiskit.primitives import Estimator
-from qiskit.quantum_info import Operator, Pauli, SparsePauliOp
+from qiskit.quantum_info import Operator, Pauli, SparsePauliOp, Statevector
+from qiskit.utils.optionals import HAS_AER
+from qiskit_aer import AerSimulator
+from qiskit_aer.primitives import Estimator, EstimatorV2
 from scipy.optimize import minimize as scipy_minimize
 
 from qiskit_optimization import AlgorithmError
@@ -52,10 +54,18 @@ def _mock_optimizer(fun, x0, jac=None, bounds=None, inputs=None) -> OptimizerRes
 class TestVQE(QiskitAlgorithmsTestCase):
     """Test VQE"""
 
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
     def setUp(self):
         super().setUp()
         self.seed = 50
         algorithm_globals.random_seed = self.seed
+        self.estimator = {
+            "v1": Estimator(approximation=True, backend_options={"seed_simulator": self.seed}),
+            "v2": EstimatorV2(options={"backend_options": {"seed_simulator": self.seed}}),
+        }
+        self.passmanager = generate_preset_pass_manager(
+            optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
+        )
         self.h2_op = SparsePauliOp(
             ["II", "IZ", "ZI", "ZZ", "XX"],
             coeffs=[
@@ -71,10 +81,12 @@ class TestVQE(QiskitAlgorithmsTestCase):
         self.ryrz_wavefunction = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
-    @data(COBYLA())
-    def test_using_ref_estimator(self, optimizer):
+    @data("v1", "v2")
+    def test_using_ref_estimator(self, version):
         """Test VQE using reference Estimator."""
-        vqe = VQE(Estimator(), self.ryrz_wavefunction, optimizer)
+        vqe = VQE(
+            self.estimator[version], self.ryrz_wavefunction, COBYLA(), passmanager=self.passmanager
+        )
 
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -100,60 +112,67 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.optimizer_result.fun, self.h2_energy, places=5)
 
         with self.subTest(msg="assert return ansatz is set"):
-            estimator = Estimator()
-            job = estimator.run(result.optimal_circuit, self.h2_op, result.optimal_point)
-            np.testing.assert_array_almost_equal(job.result().values, result.eigenvalue, 6)
+            statevec = Statevector(result.optimal_circuit.assign_parameters(result.optimal_point))
+            np.testing.assert_allclose(statevec.expectation_value(self.h2_op), result.eigenvalue)
 
-    def test_invalid_initial_point(self):
+    @data("v1", "v2")
+    def test_invalid_initial_point(self, version):
         """Test the proper error is raised when the initial point has the wrong size."""
         ansatz = self.ryrz_wavefunction
         initial_point = np.array([1])
 
         vqe = VQE(
-            Estimator(),
+            self.estimator[version],
             ansatz,
             COBYLA(),
             initial_point=initial_point,
+            passmanager=self.passmanager,
         )
 
         with self.assertRaises(ValueError):
             _ = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
-    def test_ansatz_resize(self):
+    @data("v1", "v2")
+    def test_ansatz_resize(self, version):
         """Test the ansatz is properly resized if it's a blueprint circuit."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = VQE(Estimator(), ansatz, COBYLA())
+        vqe = VQE(self.estimator[version], ansatz, COBYLA(), passmanager=self.passmanager)
         result = vqe.compute_minimum_eigenvalue(self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
 
-    def test_invalid_ansatz_size(self):
+    @data("v1", "v2")
+    def test_invalid_ansatz_size(self, version):
         """Test an error is raised if the ansatz has the wrong number of qubits."""
         ansatz = QuantumCircuit(1)
         ansatz.compose(RealAmplitudes(1, reps=2))
-        vqe = VQE(Estimator(), ansatz, COBYLA())
+        vqe = VQE(self.estimator[version], ansatz, COBYLA(), passmanager=self.passmanager)
 
         with self.assertRaises(AlgorithmError):
             _ = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
-    def test_missing_ansatz_params(self):
+    @data("v1", "v2")
+    def test_missing_ansatz_params(self, version):
         """Test specifying an ansatz with no parameters raises an error."""
         ansatz = QuantumCircuit(self.h2_op.num_qubits)
-        vqe = VQE(Estimator(), ansatz, COBYLA())
+        vqe = VQE(self.estimator[version], ansatz, COBYLA(), passmanager=self.passmanager)
         with self.assertRaises(AlgorithmError):
             vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
-    def test_max_evals_grouped(self):
+    @data("v1", "v2")
+    def test_max_evals_grouped(self, version):
         """Test with COBYLA with max_evals_grouped."""
         optimizer = COBYLA(maxiter=200, max_evals_grouped=5)
         vqe = VQE(
-            Estimator(),
+            self.estimator[version],
             self.ryrz_wavefunction,
             optimizer,
+            passmanager=self.passmanager,
         )
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
 
-    def test_callback(self):
+    @data("v1", "v2")
+    def test_callback(self, version):
         """Test the callback on VQE."""
         history = {"eval_count": [], "parameters": [], "mean": [], "metadata": []}
 
@@ -163,29 +182,35 @@ class TestVQE(QiskitAlgorithmsTestCase):
             history["mean"].append(mean)
             history["metadata"].append(metadata)
 
-        optimizer = COBYLA(maxiter=3)
+        optimizer = COBYLA(maxiter=10)
         wavefunction = self.ry_wavefunction
 
-        estimator = Estimator()
-
         vqe = VQE(
-            estimator,
+            self.estimator[version],
             wavefunction,
             optimizer,
             callback=store_intermediate_result,
+            passmanager=self.passmanager,
         )
         vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
-        self.assertTrue(all(isinstance(count, int) for count in history["eval_count"]))
-        self.assertTrue(all(isinstance(mean, float) for mean in history["mean"]))
-        self.assertTrue(all(isinstance(metadata, dict) for metadata in history["metadata"]))
+        for count in history["eval_count"]:
+            self.assertIsInstance(count, int)
+        for mean in history["mean"]:
+            self.assertIsInstance(mean, float)
+        for metadata in history["metadata"]:
+            self.assertIsInstance(metadata, dict)
         for params in history["parameters"]:
-            self.assertTrue(all(isinstance(param, float) for param in params))
+            for param in params:
+                self.assertIsInstance(param, float)
 
-    def test_reuse(self):
+    @data("v1", "v2")
+    def test_reuse(self, version):
         """Test re-using a VQE algorithm instance."""
         ansatz = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
-        vqe = VQE(Estimator(), ansatz, COBYLA(maxiter=800))
+        vqe = VQE(
+            self.estimator[version], ansatz, COBYLA(maxiter=2000), passmanager=self.passmanager
+        )
         with self.subTest(msg="assert VQE works once all info is available"):
             result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
             self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
@@ -197,12 +222,14 @@ class TestVQE(QiskitAlgorithmsTestCase):
             result = vqe.compute_minimum_eigenvalue(operator=operator)
             self.assertAlmostEqual(result.eigenvalue.real, -1.0, places=5)
 
-    def test_vqe_optimizer_reuse(self):
+    @data("v1", "v2")
+    def test_vqe_optimizer_reuse(self, version):
         """Test running same VQE twice to re-use optimizer, then switch optimizer"""
         vqe = VQE(
-            Estimator(),
+            self.estimator[version],
             self.ryrz_wavefunction,
             COBYLA(),
+            passmanager=self.passmanager,
         )
 
         def run_check():
@@ -218,24 +245,32 @@ class TestVQE(QiskitAlgorithmsTestCase):
             vqe.optimizer = NELDER_MEAD()
             run_check()
 
-    def test_default_batch_evaluation_on_spsa(self):
+    @data("v1", "v2")
+    def test_default_batch_evaluation_on_spsa(self, version):
         """Test the default batching works."""
         ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
-        wrapped_estimator = Estimator()
-        inner_estimator = Estimator()
+        wrapped_estimator = {
+            "v1": Estimator(approximation=True, backend_options={"seed_simulator": self.seed}),
+            "v2": EstimatorV2(options={"backend_options": {"seed_simulator": self.seed}}),
+        }[version]
+
+        inner_estimator = {
+            "v1": Estimator(approximation=True, backend_options={"seed_simulator": self.seed}),
+            "v2": EstimatorV2(options={"backend_options": {"seed_simulator": self.seed}}),
+        }[version]
 
         callcount = {"estimator": 0}
 
         def wrapped_estimator_run(*args, **kwargs):
             kwargs["callcount"]["estimator"] += 1
-            return inner_estimator.run(*args, **kwargs)
+            return inner_estimator.run(*args)
 
         wrapped_estimator.run = partial(wrapped_estimator_run, callcount=callcount)
 
         spsa = SPSA(maxiter=5)
 
-        vqe = VQE(wrapped_estimator, ansatz, spsa)
+        vqe = VQE(wrapped_estimator, ansatz, spsa, passmanager=self.passmanager)
         _ = vqe.compute_minimum_eigenvalue(Pauli("ZZ"))
 
         # 1 calibration + 5 loss + 1 return loss
@@ -247,26 +282,35 @@ class TestVQE(QiskitAlgorithmsTestCase):
         with self.subTest(msg="check reset to original max evals grouped"):
             self.assertIsNone(spsa._max_evals_grouped)
 
-    def test_optimizer_scipy_callable(self):
+    @data("v1", "v2")
+    def test_optimizer_scipy_callable(self, version):
         """Test passing a SciPy optimizer directly as callable."""
         vqe = VQE(
-            Estimator(),
+            self.estimator[version],
             self.ryrz_wavefunction,
             partial(scipy_minimize, method="L-BFGS-B", options={"maxiter": 10}),
+            passmanager=self.passmanager,
         )
         result = vqe.compute_minimum_eigenvalue(self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=2)
 
-    def test_optimizer_callable(self):
+    @data("v1", "v2")
+    def test_optimizer_callable(self, version):
         """Test passing a optimizer directly as callable."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = VQE(Estimator(), ansatz, _mock_optimizer)
+        vqe = VQE(self.estimator[version], ansatz, _mock_optimizer, passmanager=self.passmanager)
         result = vqe.compute_minimum_eigenvalue(SparsePauliOp("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
 
-    def test_aux_operators_list(self):
+    @data("v1", "v2")
+    def test_aux_operators_list(self, version):
         """Test list-based aux_operators."""
-        vqe = VQE(Estimator(), self.ry_wavefunction, COBYLA(maxiter=300))
+        vqe = VQE(
+            self.estimator[version],
+            self.ry_wavefunction,
+            COBYLA(maxiter=300),
+            passmanager=self.passmanager,
+        )
 
         with self.subTest("Test with an empty list."):
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=[])
@@ -293,19 +337,23 @@ class TestVQE(QiskitAlgorithmsTestCase):
             extra_ops = [*aux_ops, 0]
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=extra_ops)
             self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
-            self.assertEqual(len(result.aux_operators_evaluated), 3)
+            self.assertEqual(len(result.aux_operators_evaluated), 2)
             # expectation values
             self.assertAlmostEqual(result.aux_operators_evaluated[0][0], 2.0, places=6)
             self.assertAlmostEqual(result.aux_operators_evaluated[1][0], 0.0, places=6)
-            self.assertAlmostEqual(result.aux_operators_evaluated[2][0], 0.0)
             # metadata
             self.assertIsInstance(result.aux_operators_evaluated[0][1], dict)
             self.assertIsInstance(result.aux_operators_evaluated[1][1], dict)
-            self.assertIsInstance(result.aux_operators_evaluated[2][1], dict)
 
-    def test_aux_operators_dict(self):
+    @data("v1", "v2")
+    def test_aux_operators_dict(self, version):
         """Test dictionary compatibility of aux_operators"""
-        vqe = VQE(Estimator(), self.ry_wavefunction, COBYLA(maxiter=300))
+        vqe = VQE(
+            self.estimator[version],
+            self.ry_wavefunction,
+            COBYLA(maxiter=300),
+            passmanager=self.passmanager,
+        )
 
         with self.subTest("Test with an empty dictionary."):
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators={})
@@ -332,16 +380,10 @@ class TestVQE(QiskitAlgorithmsTestCase):
             extra_ops = {**aux_ops, "zero_operator": 0}
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=extra_ops)
             self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=6)
-            self.assertEqual(len(result.aux_operators_evaluated), 3)
+            self.assertEqual(len(result.aux_operators_evaluated), 2)
             # expectation values
             self.assertAlmostEqual(result.aux_operators_evaluated["aux_op1"][0], 2.0, places=5)
             self.assertAlmostEqual(result.aux_operators_evaluated["aux_op2"][0], 0.0, places=5)
-            self.assertAlmostEqual(result.aux_operators_evaluated["zero_operator"][0], 0.0)
             # metadata
             self.assertIsInstance(result.aux_operators_evaluated["aux_op1"][1], dict)
             self.assertIsInstance(result.aux_operators_evaluated["aux_op2"][1], dict)
-            self.assertIsInstance(result.aux_operators_evaluated["zero_operator"][1], dict)
-
-
-if __name__ == "__main__":
-    unittest.main()

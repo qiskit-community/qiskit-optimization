@@ -204,10 +204,13 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             operator = operator.apply_layout(layout)
             if aux_operators:
                 if isinstance(aux_operators, list):
-                    aux_operators = [op.apply_layout(layout) for op in aux_operators]
+                    aux_operators = [
+                        0 if op == 0 else op.apply_layout(layout) for op in aux_operators
+                    ]
                 else:
                     aux_operators = {
-                        key: op.apply_layout(layout) for key, op in aux_operators.items()
+                        key: 0 if op == 0 else op.apply_layout(layout)
+                        for key, op in aux_operators.items()
                     }
         else:
             ansatz = self.ansatz
