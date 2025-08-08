@@ -73,7 +73,9 @@ from qiskit_optimization.utils import algorithm_globals
 from qiskit_optimization.minimum_eigensolvers import QAOA
 from qiskit_optimization.optimizers import SPSA
 
-from qiskit.primitives import Sampler
+from qiskit import generate_preset_pass_manager
+from qiskit_aer import AerSimulator
+from qiskit_aer.primitives import SamplerV2
 
 # Generate a graph of 4 nodes
 n = 4
@@ -99,8 +101,9 @@ seed = 1234
 algorithm_globals.random_seed = seed
 
 spsa = SPSA(maxiter=250)
-sampler = Sampler()
-qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5)
+sampler = SamplerV2()
+passmanager = generate_preset_pass_manager(backend=AerSimulator())
+qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5, passmanager=passmanager)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4

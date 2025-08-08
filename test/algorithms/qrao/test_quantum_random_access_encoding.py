@@ -19,8 +19,10 @@ import networkx as nx
 import numpy as np
 from ddt import data, ddt, unpack
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import Estimator, StatevectorEstimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
+from qiskit.utils.optionals import HAS_AER
+from qiskit_aer.primitives import Estimator
 
 from qiskit_optimization.algorithms.qrao import (
     EncodingCommutationVerifier,
@@ -251,13 +253,22 @@ class TestQuantumRandomAccessEncoding(QiskitOptimizationTestCase):
 class TestEncodingCommutationVerifier(QiskitOptimizationTestCase):
     """Tests for EncodingCommutationVerifier."""
 
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
+    def setUp(self):
+        """Set up for all tests."""
+        super().setUp()
+        self.estimator = {
+            "v1": Estimator(approximation=True),
+            "v2": StatevectorEstimator(),
+        }
+
     def check_problem_commutation(
         self, problem: QuadraticProgram, max_vars_per_qubit: int, version: str
     ):
         """Utility function to check that the problem commutes with its encoding"""
         encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=max_vars_per_qubit)
         encoding.encode(problem)
-        estimator = Estimator() if version == "v1" else StatevectorEstimator()
+        estimator = self.estimator[version]
         verifier = EncodingCommutationVerifier(encoding, estimator)
         self.assertEqual(len(verifier), 2**encoding.num_vars)
         for _, obj_val, encoded_obj_val in verifier:
