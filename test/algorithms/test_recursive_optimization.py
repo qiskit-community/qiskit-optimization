@@ -154,7 +154,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             passmanager=self.passmanager,
         )
         warm_qaoa = WarmStartQAOAOptimizer(
-            pre_solver=SlsqpOptimizer(trials=4), relax_for_pre_solver=True, qaoa=qaoa
+            pre_solver=SlsqpOptimizer(acc=0), relax_for_pre_solver=True, qaoa=qaoa
         )
 
         recursive_min_eigen_optimizer = RecursiveMinimumEigenOptimizer(warm_qaoa, min_num_vars=4)
