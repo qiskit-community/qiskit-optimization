@@ -149,7 +149,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
         """Test the recursive optimizer with warm start qaoa."""
         qaoa = QAOA(
             sampler=self.sampler[version],
-            optimizer=COBYLA(),
+            optimizer=COBYLA(maxiter=1000),
             reps=1,
             passmanager=self.passmanager,
         )
