@@ -58,12 +58,12 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
         self.min_eigen_solvers = {
             "exact": NumPyMinimumEigensolver(),
             "qaoa_v1": QAOA(
-                sampler=Sampler(run_options={"seed_simulator": self._seed}),
+                sampler=Sampler(run_options={"seed_simulator": self._seed, "shots": 10000}),
                 optimizer=COBYLA(),
                 reps=2,
             ),
             "qaoa_v2": QAOA(
-                sampler=SamplerV2(seed=self._seed),
+                sampler=SamplerV2(seed=self._seed, default_shots=10000),
                 optimizer=COBYLA(),
                 reps=2,
                 passmanager=passmanager,
