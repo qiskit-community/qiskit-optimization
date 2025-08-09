@@ -24,9 +24,9 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 from scipy import sparse as scisparse
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
 from ..utils.validation import validate_min
 from .eigensolver import Eigensolver, EigensolverResult
+from .list_or_dict import ListOrDict
 
 logger = logging.getLogger(__name__)
 

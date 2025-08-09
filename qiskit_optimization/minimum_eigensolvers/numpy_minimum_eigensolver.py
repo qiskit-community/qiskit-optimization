@@ -21,7 +21,7 @@ import numpy as np
 from qiskit.quantum_info import Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from ..list_or_dict import ListOrDict
+from .list_or_dict import ListOrDict
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
 from .numpy_eigensolver import NumPyEigensolver
 

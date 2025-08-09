@@ -21,7 +21,7 @@ import numpy as np
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..algorithm_result import AlgorithmResult
-from ..list_or_dict import ListOrDict
+from .list_or_dict import ListOrDict
 
 
 class Eigensolver(ABC):
