@@ -24,7 +24,7 @@ from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
+from .list_or_dict import ListOrDict
 
 
 def estimate_observables(
