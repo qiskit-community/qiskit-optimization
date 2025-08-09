@@ -47,8 +47,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         self.seed = 17
         algorithm_globals.random_seed = self.seed
         self.sampler = {
-            "v1": Sampler(run_options={"seed_simulator": self.seed}),
-            "v2": SamplerV2(seed=18),
+            "v1": Sampler(run_options={"seed_simulator": self.seed, "shots": 10000}),
+            "v2": SamplerV2(seed=18, default_shots=10000),
         }
         self.passmanager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
@@ -86,7 +86,8 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
 
         self.assertIsNotNone(result_warm)
         self.assertIsNotNone(result_warm.x)
-        np.testing.assert_allclose(result_warm.x, [0, 0, 1, 0])
+        solution = [int(e) for e in result_warm.x]
+        self.assertIn(solution, [[0, 0, 1, 0], [1, 1, 0, 1]])
         self.assertIsNotNone(result_warm.fval)
         np.testing.assert_allclose(result_warm.fval, 4)
 

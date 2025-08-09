@@ -70,8 +70,8 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         self.seed = 10598
         algorithm_globals.random_seed = self.seed
         self.sampler = {
-            "v1": Sampler(run_options={"seed_simulator": self.seed}),
-            "v2": SamplerV2(seed=self.seed),
+            "v1": Sampler(run_options={"seed_simulator": self.seed, "shots": 10000}),
+            "v2": SamplerV2(seed=self.seed, default_shots=10000),
         }
         self.passmanager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
