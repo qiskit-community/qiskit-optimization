@@ -101,7 +101,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         self._num_cuts = num_cuts
         self._sort_cuts = sort_cuts
         self._unique_cuts = unique_cuts
-        np.random.seed(seed)
+        self._rng = np.random.default_rng(seed)
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with the optimizer implementing this method.
@@ -284,7 +284,7 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
             chi = chi + 0.00001 * np.identity(num_vertices)
         x = np.linalg.cholesky(chi).T
 
-        r = np.random.normal(size=(self._num_cuts, num_vertices))
+        r = self._rng.normal(size=(self._num_cuts, num_vertices))
 
         return (np.dot(r, x) > 0) + 0
 

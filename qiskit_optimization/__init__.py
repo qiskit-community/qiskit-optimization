@@ -80,7 +80,6 @@ Submodules
    problems
    translators
    # modules copied from qiskit_algorithms
-   eigensolvers
    minimum_eigensolvers
    optimizers
    utils

@@ -26,12 +26,14 @@ from qiskit_optimization.algorithms import (
 )
 from qiskit_optimization.converters import QuadraticProgramToQubo
 from qiskit_optimization.minimum_eigensolvers import (
-    MinimumEigensolver,
-    MinimumEigensolverResult,
     NumPyMinimumEigensolverResult,
 )
+from qiskit_optimization.minimum_eigensolvers.minimum_eigensolver import (
+    MinimumEigensolver,
+    MinimumEigensolverResult,
+)
+from qiskit_optimization.minimum_eigensolvers.variational_algorithm import VariationalResult
 from qiskit_optimization.problems import QuadraticProgram, Variable
-from qiskit_optimization.variational_algorithm import VariationalResult
 
 from .quantum_random_access_encoding import QuantumRandomAccessEncoding
 from .rounding_common import RoundingContext, RoundingResult, RoundingScheme

@@ -11,6 +11,9 @@
 # that they have been altered from the originals.
 
 """An implementation of the ADMM algorithm."""
+
+from __future__ import annotations
+
 import copy
 import logging
 import time
@@ -125,22 +128,22 @@ class ADMMState:
         # Optimization problem itself
         self.op = op
         # Indices of the variables
-        self.binary_indices = None  # type: Optional[List[int]]
-        self.continuous_indices = None  # type: Optional[List[int]]
-        self.step1_absolute_indices = None  # type: Optional[List[int]]
-        self.step1_relative_indices = None  # type: Optional[List[int]]
+        self.binary_indices: list[int] | None = None
+        self.continuous_indices: list[int] | None = None
+        self.step1_absolute_indices: list[int] | None = None
+        self.step1_relative_indices: list[int] | None = None
 
         # define heavily used matrix, they are used at each iteration, so let's cache them,
         # they are np.ndarrays
         # pylint:disable=invalid-name
         # objective
-        self.q0 = None  # type: Optional[np.ndarray]
-        self.c0 = None  # type: Optional[np.ndarray]
-        self.q1 = None  # type: Optional[np.ndarray]
-        self.c1 = None  # type: Optional[np.ndarray]
+        self.q0: np.ndarray | None = None
+        self.c0: np.ndarray | None = None
+        self.q1: np.ndarray | None = None
+        self.c1: np.ndarray | None = None
         # constraints
-        self.a0 = None  # type: Optional[np.ndarray]
-        self.b0 = None  # type: Optional[np.ndarray]
+        self.a0: np.ndarray | None = None
+        self.b0: np.ndarray | None = None
 
         # These are the parameters that are updated in the ADMM iterations.
         self.u = np.zeros(op.get_num_continuous_vars())
@@ -152,24 +155,24 @@ class ADMMState:
         self.lambda_mult = np.zeros(binary_size)
 
         # The following structures store quantities obtained in each ADMM iteration.
-        self.cost_iterates = []  # type: List[float]
-        self.residuals = []  # type: List[float]
-        self.dual_residuals = []  # type: List[float]
-        self.cons_r = []  # type: List[float]
-        self.merits = []  # type: List[float]
-        self.lambdas = []  # type: List[float]
-        self.x0_saved = []  # type: List[np.ndarray]
-        self.u_saved = []  # type: List[np.ndarray]
-        self.z_saved = []  # type: List[np.ndarray]
-        self.y_saved = []  # type: List[np.ndarray]
+        self.cost_iterates: list[float] = []
+        self.residuals: list[float] = []
+        self.dual_residuals: list[float] = []
+        self.cons_r: list[float] = []
+        self.merits: list[float] = []
+        self.lambdas: list[float] = []
+        self.x0_saved: list[np.ndarray] = []
+        self.u_saved: list[np.ndarray] = []
+        self.z_saved: list[np.ndarray] = []
+        self.y_saved: list[np.ndarray] = []
         self.rho = rho_initial
 
         # lin. eq. constraints with bin. vars. only
-        self.binary_equality_constraints = []  # type: List[LinearConstraint]
+        self.binary_equality_constraints: list[LinearConstraint] = []
         # all equality constraints
-        self.equality_constraints = []  # type: List[Constraint]
+        self.equality_constraints: list[Constraint] = []
         # all inequality constraints
-        self.inequality_constraints = []  # type: List[Constraint]
+        self.inequality_constraints: list[Constraint] = []
 
 
 class ADMMOptimizationResult(OptimizationResult):
@@ -238,7 +241,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # internal state where we'll keep intermediate solution
         # here, we just declare the class variable, the variable is initialized in kept in
         # the solve method.
-        self._state = None  # type: Optional[ADMMState]
+        self._state: ADMMState | None = None
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with the optimizer implementing this method.

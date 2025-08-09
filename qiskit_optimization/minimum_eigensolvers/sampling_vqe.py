@@ -23,24 +23,24 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
-from qiskit.primitives.utils import init_observable
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
 from ..minimum_eigensolvers.sampling_mes import (
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
-from ..observables_evaluator import estimate_observables
 from ..optimizers.optimizer import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
+from ..utils.primitives import _init_observable
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
-from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from .diagonal_estimator import _DiagonalEstimator
+from .list_or_dict import ListOrDict
+from .observables_evaluator import estimate_observables
+from .variational_algorithm import VariationalAlgorithm, VariationalResult
 
 logger = logging.getLogger(__name__)
 
@@ -185,7 +185,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         self,
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
-    ) -> SamplingMinimumEigensolverResult:
+    ) -> SamplingVQEResult:
         # check that the number of qubits of operator and ansatz match, and resize if possible
         self._check_operator_ansatz(operator)
 
@@ -200,14 +200,17 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         if self.passmanager:
             ansatz: QuantumCircuit = self.passmanager.run(self.ansatz)
             layout = ansatz.layout
-            operator = init_observable(operator)
+            operator = _init_observable(operator)
             operator = operator.apply_layout(layout)
             if aux_operators:
                 if isinstance(aux_operators, list):
-                    aux_operators = [op.apply_layout(layout) for op in aux_operators]
+                    aux_operators = [
+                        0 if op == 0 else op.apply_layout(layout) for op in aux_operators
+                    ]
                 else:
                     aux_operators = {
-                        key: op.apply_layout(layout) for key, op in aux_operators.items()
+                        key: 0 if op == 0 else op.apply_layout(layout)
+                        for key, op in aux_operators.items()
                     }
         else:
             ansatz = self.ansatz

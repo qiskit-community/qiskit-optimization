@@ -56,7 +56,7 @@ class QiskitAlgorithmGlobals:
     # change their code to use this. So simply changing from:
     #     from qiskit.utils import algorithm_globals
     # to
-    #     from qiskit_algorithm.utils import algorithm_globals
+    #     from qiskit_optimization.utils import algorithm_globals
 
     def __init__(self) -> None:
         self._random_seed: int | None = None

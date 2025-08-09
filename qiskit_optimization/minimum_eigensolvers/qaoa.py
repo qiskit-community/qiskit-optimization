@@ -18,10 +18,10 @@ from typing import Any, Callable
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
 from ..optimizers.optimizer import Minimizer, Optimizer
 from ..utils.validation import validate_min
 from .sampling_vqe import SamplingVQE
@@ -131,6 +131,23 @@ class QAOA(SamplingVQE):
 
     def _check_operator_ansatz(self, operator: BaseOperator):
         # Recreates a circuit based on operator parameter.
-        self.ansatz = QAOAAnsatz(
-            operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
-        ).decompose()  # TODO remove decompose once #6674 is fixed <-- I don't know what this issue is
+        if isinstance(self.mixer, QuantumCircuit):
+            # workaround for https://github.com/Qiskit/qiskit/issues/14838
+            from qiskit.circuit.library import QAOAAnsatz
+
+            self.ansatz = QAOAAnsatz(
+                operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+            )
+        else:
+            try:
+                from qiskit.circuit.library import qaoa_ansatz
+
+                self.ansatz = qaoa_ansatz(
+                    operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+                )
+            except ImportError:
+                from qiskit.circuit.library import QAOAAnsatz
+
+                self.ansatz = QAOAAnsatz(
+                    operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+                )
