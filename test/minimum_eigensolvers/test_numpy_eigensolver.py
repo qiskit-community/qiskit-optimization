@@ -17,11 +17,10 @@ from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
+from qiskit.quantum_info import Operator, Pauli, ScalarOp, SparsePauliOp
 
-from qiskit.quantum_info import Operator, SparsePauliOp, Pauli, ScalarOp
-
-from qiskit_optimization.minimum_eigensolvers import NumPyEigensolver
 from qiskit_optimization import AlgorithmError
+from qiskit_optimization.minimum_eigensolvers.numpy_eigensolver import NumPyEigensolver
 
 H2_SPARSE_PAULI = SparsePauliOp(
     ["II", "ZI", "IZ", "ZZ", "XX"],
