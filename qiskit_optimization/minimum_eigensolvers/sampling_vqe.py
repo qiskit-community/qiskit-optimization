@@ -185,7 +185,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         self,
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
-    ) -> SamplingMinimumEigensolverResult:
+    ) -> SamplingVQEResult:
         # check that the number of qubits of operator and ansatz match, and resize if possible
         self._check_operator_ansatz(operator)
 
