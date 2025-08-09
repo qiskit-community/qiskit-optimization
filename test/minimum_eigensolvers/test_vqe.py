@@ -209,7 +209,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test re-using a VQE algorithm instance."""
         ansatz = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
         vqe = VQE(
-            self.estimator[version], ansatz, COBYLA(maxiter=2000), passmanager=self.passmanager
+            self.estimator[version], ansatz, COBYLA(maxiter=3000), passmanager=self.passmanager
         )
         with self.subTest(msg="assert VQE works once all info is available"):
             result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)

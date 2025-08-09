@@ -101,7 +101,7 @@ seed = 1234
 algorithm_globals.random_seed = seed
 
 spsa = SPSA(maxiter=250)
-sampler = SamplerV2()
+sampler = SamplerV2(seed=seed, default_shots=10000)
 passmanager = generate_preset_pass_manager(backend=AerSimulator())
 qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5, passmanager=passmanager)
 algorithm = MinimumEigenOptimizer(qaoa)
