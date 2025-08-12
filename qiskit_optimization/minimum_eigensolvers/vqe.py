@@ -29,7 +29,7 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 from ..exceptions import AlgorithmError
 from ..optimizers import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
-from ..utils.primitives import _init_observable
+from ..utils.primitives import _apply_layout, _init_observable
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
@@ -187,12 +187,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             operator = _init_observable(operator)
             operator = operator.apply_layout(layout)
             if aux_operators:
-                if isinstance(aux_operators, list):
-                    aux_operators = [op.apply_layout(layout) for op in aux_operators if op != 0]
-                else:
-                    aux_operators = {
-                        key: op.apply_layout(layout) for key, op in aux_operators.items() if op != 0
-                    }
+                aux_operators = _apply_layout(aux_operators, layout)
         else:
             ansatz = self.ansatz
 

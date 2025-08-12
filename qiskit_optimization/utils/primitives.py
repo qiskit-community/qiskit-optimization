@@ -17,12 +17,14 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 import numpy as np
-
 from qiskit.circuit import QuantumCircuit
 from qiskit.exceptions import QiskitError
 from qiskit.quantum_info import PauliList, SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info.operators.symplectic.base_pauli import BasePauli
+from qiskit.transpiler import TranspileLayout
+
+from qiskit_optimization import QiskitOptimizationError
 
 
 def _init_observable(observable: BaseOperator | str) -> SparsePauliOp:
@@ -102,3 +104,17 @@ def _circuit_key(circuit: QuantumCircuit, functional: bool = True) -> tuple:
         circuit.name,
         *functional_key,
     )
+
+
+def _apply_layout(
+    operators: list[SparsePauliOp | int] | dict[str, SparsePauliOp | int], layout: TranspileLayout
+) -> list[SparsePauliOp] | dict[str, SparsePauliOp]:
+    op_list = operators if isinstance(operators, list) else operators.values()
+    if any(op == 0 for op in op_list):
+        raise QiskitOptimizationError("Zero operator is not supported since Qiskit 2.1.0")
+
+    if isinstance(operators, list):
+        return [op.apply_layout(layout) for op in operators]
+    else:
+        op_dict: dict[str, SparsePauliOp] = operators
+        return {key: op.apply_layout(layout) for key, op in op_dict.items()}

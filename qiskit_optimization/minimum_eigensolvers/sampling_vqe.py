@@ -30,7 +30,7 @@ from qiskit.result import QuasiDistribution
 from ..exceptions import AlgorithmError
 from ..optimizers.optimizer import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
-from ..utils.primitives import _init_observable
+from ..utils.primitives import _apply_layout, _init_observable
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
@@ -211,15 +211,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             operator = _init_observable(operator)
             operator = operator.apply_layout(layout)
             if aux_operators:
-                if isinstance(aux_operators, list):
-                    aux_operators = [
-                        0 if op == 0 else op.apply_layout(layout) for op in aux_operators
-                    ]
-                else:
-                    aux_operators = {
-                        key: 0 if op == 0 else op.apply_layout(layout)
-                        for key, op in aux_operators.items()
-                    }
+                aux_operators = _apply_layout(aux_operators, layout)
         else:
             ansatz = self.ansatz
 

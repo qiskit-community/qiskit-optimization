@@ -27,7 +27,7 @@ from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Estimator, EstimatorV2
 from scipy.optimize import minimize as scipy_minimize
 
-from qiskit_optimization import AlgorithmError
+from qiskit_optimization import AlgorithmError, QiskitOptimizationError
 from qiskit_optimization.minimum_eigensolvers import VQE
 from qiskit_optimization.optimizers import (
     COBYLA,
@@ -336,15 +336,8 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
         with self.subTest("Test with additional zero operator."):
             extra_ops = [*aux_ops, 0]
-            result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=extra_ops)
-            self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
-            self.assertEqual(len(result.aux_operators_evaluated), 2)
-            # expectation values
-            self.assertAlmostEqual(result.aux_operators_evaluated[0][0], 2.0, places=6)
-            self.assertAlmostEqual(result.aux_operators_evaluated[1][0], 0.0, places=6)
-            # metadata
-            self.assertIsInstance(result.aux_operators_evaluated[0][1], dict)
-            self.assertIsInstance(result.aux_operators_evaluated[1][1], dict)
+            with self.assertRaises(QiskitOptimizationError):
+                result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=extra_ops)
 
     @data("v1", "v2")
     def test_aux_operators_dict(self, version):
@@ -379,12 +372,5 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
         with self.subTest("Test with additional zero operator."):
             extra_ops = {**aux_ops, "zero_operator": 0}
-            result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=extra_ops)
-            self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=6)
-            self.assertEqual(len(result.aux_operators_evaluated), 2)
-            # expectation values
-            self.assertAlmostEqual(result.aux_operators_evaluated["aux_op1"][0], 2.0, places=5)
-            self.assertAlmostEqual(result.aux_operators_evaluated["aux_op2"][0], 0.0, places=5)
-            # metadata
-            self.assertIsInstance(result.aux_operators_evaluated["aux_op1"][1], dict)
-            self.assertIsInstance(result.aux_operators_evaluated["aux_op2"][1], dict)
+            with self.assertRaises(QiskitOptimizationError):
+                result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=extra_ops)
