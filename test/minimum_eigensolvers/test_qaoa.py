@@ -19,10 +19,11 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 import rustworkx as rx
 from ddt import data, ddt, idata, unpack
-from qiskit import QuantumCircuit, generate_preset_pass_manager
+from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.result import QuasiDistribution
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_AER
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Sampler, SamplerV2

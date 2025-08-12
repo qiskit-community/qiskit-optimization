@@ -17,7 +17,7 @@ from test import QiskitOptimizationTestCase
 
 import numpy as np
 from ddt import data, ddt
-from qiskit import generate_preset_pass_manager
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_AER
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Sampler, SamplerV2

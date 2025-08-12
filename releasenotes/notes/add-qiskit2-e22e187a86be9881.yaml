@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Added support for using Qiskit Optimization with Qiskit version 2.X.
+upgrade:
+  - |
+    Support for running with Qiskit version 0.X has been removed.
+    To run Qiskit Optimization you need a minimum Qiskit version of 1.1.0.

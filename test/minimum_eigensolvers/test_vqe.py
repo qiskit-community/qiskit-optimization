@@ -18,9 +18,10 @@ from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
-from qiskit import QuantumCircuit, generate_preset_pass_manager
+from qiskit import QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.quantum_info import Operator, Pauli, SparsePauliOp, Statevector
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_AER
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Estimator, EstimatorV2

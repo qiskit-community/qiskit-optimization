@@ -73,7 +73,7 @@ from qiskit_optimization.utils import algorithm_globals
 from qiskit_optimization.minimum_eigensolvers import QAOA
 from qiskit_optimization.optimizers import SPSA
 
-from qiskit import generate_preset_pass_manager
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import SamplerV2
 
@@ -102,7 +102,7 @@ algorithm_globals.random_seed = seed
 
 spsa = SPSA(maxiter=250)
 sampler = SamplerV2(seed=seed, default_shots=10000)
-passmanager = generate_preset_pass_manager(backend=AerSimulator())
+passmanager = generate_preset_pass_manager(optimization_level=1, backend=AerSimulator())
 qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5, passmanager=passmanager)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
