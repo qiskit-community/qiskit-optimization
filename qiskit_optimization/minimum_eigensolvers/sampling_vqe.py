@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Callable
 from time import time
 from typing import Any
@@ -27,10 +28,6 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
 
 from ..exceptions import AlgorithmError
-from ..minimum_eigensolvers.sampling_mes import (
-    SamplingMinimumEigensolver,
-    SamplingMinimumEigensolverResult,
-)
 from ..optimizers.optimizer import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
 from ..utils.primitives import _init_observable
@@ -40,6 +37,10 @@ from ..utils.set_batching import _set_default_batchsize
 from .diagonal_estimator import _DiagonalEstimator
 from .list_or_dict import ListOrDict
 from .observables_evaluator import estimate_observables
+from .sampling_mes import (
+    SamplingMinimumEigensolver,
+    SamplingMinimumEigensolverResult,
+)
 from .variational_algorithm import VariationalAlgorithm, VariationalResult
 
 logger = logging.getLogger(__name__)
@@ -146,6 +147,13 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self._initial_point = initial_point
+
+        if isinstance(sampler, BaseSamplerV1):
+            warnings.warn(
+                "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     @property
     def initial_point(self) -> np.ndarray | None:

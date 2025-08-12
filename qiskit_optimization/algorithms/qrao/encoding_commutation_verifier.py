@@ -14,6 +14,8 @@
 
 from __future__ import annotations
 
+import warnings
+
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseEstimatorV1, BaseEstimatorV2
 
@@ -40,6 +42,13 @@ class EncodingCommutationVerifier:
         self._encoding = encoding
         self._estimator = estimator
         self._passmanager = passmanager
+
+        if isinstance(estimator, BaseEstimatorV1):
+            warnings.warn(
+                "Using Estimator V1 is deprecated since 0.7.0. Instead use Estimator V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     def __len__(self) -> int:
         return 2**self._encoding.num_vars

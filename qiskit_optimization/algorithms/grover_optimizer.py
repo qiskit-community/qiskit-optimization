@@ -14,6 +14,7 @@
 
 import logging
 import math
+import warnings
 from copy import deepcopy
 from typing import Dict, List, Optional, Union, cast
 
@@ -23,13 +24,13 @@ from qiskit.circuit.library import QuadraticForm
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, PrimitiveResult
 
+from qiskit_optimization.algorithms.amplitude_amplifiers.grover import AmplificationProblem, Grover
 from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationAlgorithm,
     OptimizationResult,
     OptimizationResultStatus,
     SolutionSample,
 )
-from qiskit_optimization.algorithms.amplitude_amplifiers.grover import AmplificationProblem, Grover
 from qiskit_optimization.converters import QuadraticProgramConverter, QuadraticProgramToQubo
 from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems import QuadraticProgram, Variable
@@ -76,6 +77,13 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._converters = self._prepare_converters(converters, penalty)
         self._sampler = sampler
         self._passmanager = passmanager
+
+        if isinstance(sampler, BaseSamplerV1):
+            warnings.warn(
+                "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     def get_compatibility_msg(self, problem: QuadraticProgram) -> str:
         """Checks whether a given problem can be solved with this optimizer.

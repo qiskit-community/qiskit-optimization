@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Sequence
 from typing import Any
 
@@ -55,6 +56,12 @@ def estimate_observables(
     Raises:
         AlgorithmError: If a primitive job is not successful.
     """
+    if isinstance(estimator, BaseEstimatorV1):
+        warnings.warn(
+            "Using Estimator V1 is deprecated since 0.7.0. Instead use Estimator V2.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
 
     if isinstance(observables, dict):
         observables_list = list(observables.values())

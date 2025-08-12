@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Callable
 from time import time
 from typing import Any
@@ -151,6 +152,13 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self.initial_point = initial_point
+
+        if isinstance(estimator, BaseEstimatorV1):
+            warnings.warn(
+                "Using Estimator V1 is deprecated since 0.7.0. Instead use Estimator V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     @property
     def initial_point(self) -> np.ndarray | None:

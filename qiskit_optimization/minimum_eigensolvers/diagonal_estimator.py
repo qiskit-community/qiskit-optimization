@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Callable, Iterable, Mapping, MappingView, Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -38,6 +39,8 @@ class _DiagonalEstimatorResult(EstimatorResult):
 
 class _DiagonalEstimator(BaseEstimatorV1):
     """An estimator for diagonal observables."""
+
+    # TODO: _DiaginalEstimator should be updated to inherit BaseEstimatorV2
 
     def __init__(
         self,
@@ -70,6 +73,13 @@ class _DiagonalEstimator(BaseEstimatorV1):
         self.callback = callback
         self._circuit_ids: dict[tuple, QuantumCircuit] = {}
         self._observable_ids: dict[int, BaseOperator] = {}
+
+        if isinstance(sampler, BaseSamplerV1):
+            warnings.warn(
+                "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     def _run(
         self,

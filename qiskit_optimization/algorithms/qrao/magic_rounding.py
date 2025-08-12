@@ -13,6 +13,7 @@
 """Magic basis rounding module"""
 from __future__ import annotations
 
+import warnings
 from collections import defaultdict
 
 import numpy as np
@@ -20,8 +21,8 @@ from qiskit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
 from qiskit.quantum_info import SparsePauliOp
-from qiskit_optimization import AlgorithmError
 
+from qiskit_optimization import AlgorithmError
 from qiskit_optimization.algorithms import OptimizationResultStatus, SolutionSample
 from qiskit_optimization.exceptions import QiskitOptimizationError
 
@@ -94,6 +95,12 @@ class MagicRounding(RoundingScheme):
         self._basis_sampling = basis_sampling
         self._passmanager = passmanager
         if isinstance(self._sampler, BaseSamplerV1):
+            warnings.warn(
+                "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+
             if self._sampler.options.get("shots") is None:
                 raise ValueError(
                     "Magic rounding requires a sampler configured with a number of shots."

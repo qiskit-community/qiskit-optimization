@@ -21,8 +21,6 @@ from ..exceptions import QiskitOptimizationError
 from ..minimum_eigensolvers import (
     NumPyMinimumEigensolver,
     NumPyMinimumEigensolverResult,
-)
-from ..minimum_eigensolvers.sampling_mes import (
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
