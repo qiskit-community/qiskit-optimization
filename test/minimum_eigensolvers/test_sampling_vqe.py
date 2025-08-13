@@ -63,7 +63,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
             "v1": Sampler(run_options={"seed_simulator": self.seed}),
             "v2": SamplerV2(seed=self.seed),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
         )
         algorithm_globals.random_seed = self.seed
@@ -77,7 +77,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
             self.sampler[version],
             RealAmplitudes(),
             partial(scipy_minimize, method="COBYLA", options={"maxiter": maxiter}),
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
         self.assertEqual(result.cost_function_evals, maxiter)
@@ -87,7 +87,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         """Test passing a optimizer directly as callable."""
         ansatz = RealAmplitudes(1, reps=1)
         vqe = SamplingVQE(
-            self.sampler[version], ansatz, _mock_optimizer, passmanager=self.passmanager
+            self.sampler[version], ansatz, _mock_optimizer, pass_manager=self.pass_manager
         )
         result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
@@ -114,7 +114,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
                     ansatz,
                     _mock_optimizer,
                     aggregation=best_measurement,
-                    passmanager=self.passmanager,
+                    pass_manager=self.pass_manager,
                 )
                 result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
 

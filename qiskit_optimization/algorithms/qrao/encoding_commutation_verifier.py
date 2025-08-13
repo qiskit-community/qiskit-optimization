@@ -31,17 +31,17 @@ class EncodingCommutationVerifier:
         self,
         encoding: QuantumRandomAccessEncoding,
         estimator: BaseEstimatorV1 | BaseEstimatorV2,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ):
         """
         Args:
             encoding: The encoding to verify.
             estimator: The estimator to use for the verification.
-            passmanager: The pass manager to transpile the circuits
+            pass_manager: The pass manager to transpile the circuits
         """
         self._encoding = encoding
         self._estimator = estimator
-        self._passmanager = passmanager
+        self._pass_manager = pass_manager
 
         if isinstance(estimator, BaseEstimatorV1):
             warnings.warn(
@@ -65,8 +65,8 @@ class EncodingCommutationVerifier:
         str_dvars = f"{i:0{encoding.num_vars}b}"
         dvars = [int(b) for b in str_dvars]
         encoded_bitstr_qc = encoding.state_preparation_circuit(dvars)
-        if self._passmanager:
-            encoded_bitstr_qc = self._passmanager.run(encoded_bitstr_qc)
+        if self._pass_manager:
+            encoded_bitstr_qc = self._pass_manager.run(encoded_bitstr_qc)
 
         # Evaluate the original objective function
         problem = encoding.problem

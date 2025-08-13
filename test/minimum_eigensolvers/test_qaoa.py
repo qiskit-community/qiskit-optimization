@@ -74,7 +74,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             "v1": Sampler(run_options={"seed_simulator": self.seed, "shots": 10000}),
             "v2": SamplerV2(seed=self.seed, default_shots=10000),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
         )
 
@@ -95,7 +95,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         qubit_op, _ = self._get_operator(w)
 
         qaoa = QAOA(
-            self.sampler[version], COBYLA(), reps=reps, mixer=mixer, passmanager=self.passmanager
+            self.sampler[version], COBYLA(), reps=reps, mixer=mixer, pass_manager=self.pass_manager
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
 
@@ -129,7 +129,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         mixer.rx(theta, range(num_qubits))
 
         qaoa = QAOA(
-            self.sampler[version], optimizer, reps=prob, mixer=mixer, passmanager=self.passmanager
+            self.sampler[version], optimizer, reps=prob, mixer=mixer, pass_manager=self.pass_manager
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         x = self._sample_most_likely(result.eigenstate)
@@ -149,7 +149,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             mixer.rx(theta, range(num_qubits))
 
         qaoa = QAOA(
-            self.sampler[version], optimizer, reps=2, mixer=mixer, passmanager=self.passmanager
+            self.sampler[version], optimizer, reps=2, mixer=mixer, pass_manager=self.pass_manager
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         x = self._sample_most_likely(result.eigenstate)
@@ -168,7 +168,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         mixer.rx(np.pi / 2, range(num_qubits))
 
         qaoa = QAOA(
-            self.sampler[version], COBYLA(), reps=1, mixer=mixer, passmanager=self.passmanager
+            self.sampler[version], COBYLA(), reps=1, mixer=mixer, pass_manager=self.pass_manager
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         # we just assert that we get a result, it is not meaningful.
@@ -180,7 +180,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         qubit_op, _ = self._get_operator(
             np.array([[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]])
         )
-        qaoa = QAOA(self.sampler[version], COBYLA(), reps=1, passmanager=self.passmanager)
+        qaoa = QAOA(self.sampler[version], COBYLA(), reps=1, pass_manager=self.pass_manager)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         x = self._sample_most_likely(result.eigenstate)
         graph_solution = self._get_graph_solution(x)
@@ -232,7 +232,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             COBYLA(),
             initial_point=init_pt,
             callback=cb_callback,
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
 
@@ -260,7 +260,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             )
         )
         qubit_op, _ = self._get_operator(w)
-        qaoa = QAOA(self.sampler[version], NELDER_MEAD(), reps=2, passmanager=self.passmanager)
+        qaoa = QAOA(self.sampler[version], NELDER_MEAD(), reps=2, pass_manager=self.pass_manager)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         self.assertLess(result.eigenvalue, -0.97)
 
@@ -276,7 +276,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         qaoa = QAOA(
             self.sampler[version],
             partial(scipy_minimize, method="Nelder-Mead", options={"maxiter": 2}),
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         result = qaoa.compute_minimum_eigenvalue(qubit_op)
         self.assertEqual(result.cost_function_evals, 5)

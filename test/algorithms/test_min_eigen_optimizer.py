@@ -50,7 +50,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
 
         self._seed = 123
         algorithm_globals.random_seed = self._seed
-        passmanager = generate_preset_pass_manager(
+        pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target
         )
 
@@ -66,7 +66,7 @@ class TestMinEigenOptimizer(QiskitOptimizationTestCase):
                 sampler=SamplerV2(seed=self._seed, default_shots=10000),
                 optimizer=COBYLA(),
                 reps=2,
-                passmanager=passmanager,
+                pass_manager=pass_manager,
             ),
         }
 

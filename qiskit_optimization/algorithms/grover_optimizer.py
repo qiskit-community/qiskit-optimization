@@ -51,7 +51,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         ] = None,
         penalty: Optional[float] = None,
         sampler: Optional[Union[BaseSamplerV1, BaseSamplerV2]] = None,
-        passmanager: Optional[BasePassManager] = None,
+        pass_manager: Optional[BasePassManager] = None,
     ) -> None:
         """
         Args:
@@ -64,7 +64,7 @@ class GroverOptimizer(OptimizationAlgorithm):
             penalty: The penalty factor used in the default
                 :class:`~qiskit_optimization.converters.QuadraticProgramToQubo` converter
             sampler: A Sampler to use for sampling the results of the circuits.
-            passmanager: A pass manager to use to transpile the circuits
+            pass_manager: A pass manager to use to transpile the circuits
 
         Raises:
             ValueError: If both a quantum instance and sampler are set.
@@ -76,7 +76,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         self._circuit_results = {}  # type: dict
         self._converters = self._prepare_converters(converters, penalty)
         self._sampler = sampler
-        self._passmanager = passmanager
+        self._pass_manager = pass_manager
 
         if isinstance(sampler, BaseSamplerV1):
             warnings.warn(
@@ -305,8 +305,8 @@ class GroverOptimizer(OptimizationAlgorithm):
 
     def _get_prob_dist(self, qc: QuantumCircuit) -> Dict[str, float]:
         """Gets probabilities from a given backend."""
-        if self._passmanager:
-            qc = self._passmanager.run(qc)
+        if self._pass_manager:
+            qc = self._pass_manager.run(qc)
 
         # Execute job and filter results.
         job = self._sampler.run([qc])

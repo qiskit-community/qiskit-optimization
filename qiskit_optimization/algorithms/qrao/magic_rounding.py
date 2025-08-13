@@ -63,7 +63,7 @@ class MagicRounding(RoundingScheme):
         sampler: BaseSamplerV1 | BaseSamplerV2,
         basis_sampling: str = "uniform",
         seed: int | None = None,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ):
         """
         Args:
@@ -79,7 +79,7 @@ class MagicRounding(RoundingScheme):
                 sampling.
             seed: Seed for random number generator, which is used to sample the
                 magic bases.
-            passmanager: Pass manager to transpile the circuits
+            pass_manager: Pass manager to transpile the circuits
 
         Raises:
             ValueError: If ``basis_sampling`` is not ``"uniform"`` or ``"weighted"``.
@@ -93,7 +93,7 @@ class MagicRounding(RoundingScheme):
         self._sampler = sampler
         self._rng = np.random.default_rng(seed)
         self._basis_sampling = basis_sampling
-        self._passmanager = passmanager
+        self._pass_manager = pass_manager
         if isinstance(self._sampler, BaseSamplerV1):
             warnings.warn(
                 "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
@@ -186,8 +186,8 @@ class MagicRounding(RoundingScheme):
             QiskitOptimizationError: If some of the results from the primitive job are not collected.
         """
         circuits = self._make_circuits(circuit, bases, vars_per_qubit)
-        if self._passmanager:
-            circuits = self._passmanager.run(circuits)
+        if self._pass_manager:
+            circuits = self._pass_manager.run(circuits)
         # Execute each of the rotated circuits and collect the results
         # Batch the circuits into jobs where each group has the same number of
         # shots, so that you can wait for the queue as few times as possible if

@@ -101,6 +101,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             can access the intermediate data at each optimization step. These data are: the
             evaluation count, the optimizer parameters for the ansatz, the evaluated value, and the
             metadata dictionary.
+        pass_manager (BasePassManager | None): A pass manager to transpile the circuits.
 
     References:
         [1]: Barkoutsos, P. K., Nannicini, G., Robert, A., Tavernelli, I., and Woerner, S.,
@@ -117,7 +118,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
@@ -135,6 +136,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 estimated value, and the metadata dictionary.
+            pass_manager: A pass manager to transpile the circuits.
         """
         super().__init__()
 
@@ -143,7 +145,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         self.optimizer = optimizer
         self.aggregation = aggregation
         self.callback = callback
-        self.passmanager = passmanager
+        self.pass_manager = pass_manager
 
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self._initial_point = initial_point
@@ -205,8 +207,8 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         bounds = validate_bounds(self.ansatz)
 
-        if self.passmanager:
-            ansatz: QuantumCircuit = self.passmanager.run(self.ansatz)
+        if self.pass_manager:
+            ansatz: QuantumCircuit = self.pass_manager.run(self.ansatz)
             layout = ansatz.layout
             operator = _init_observable(operator)
             operator = operator.apply_layout(layout)

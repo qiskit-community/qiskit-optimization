@@ -102,8 +102,8 @@ algorithm_globals.random_seed = seed
 
 spsa = SPSA(maxiter=250)
 sampler = SamplerV2(seed=seed, default_shots=10000)
-passmanager = generate_preset_pass_manager(optimization_level=1, backend=AerSimulator())
-qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5, passmanager=passmanager)
+pass_manager = generate_preset_pass_manager(optimization_level=1, backend=AerSimulator())
+qaoa = QAOA(sampler=sampler, optimizer=spsa, reps=5, pass_manager=pass_manager)
 algorithm = MinimumEigenOptimizer(qaoa)
 result = algorithm.solve(problem)
 print(result.prettyprint())  # prints solution, x=[1, 0, 1, 0], the cost, fval=4

@@ -56,7 +56,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             "v1": Sampler(run_options={"seed_simulator": self.seed, "shots": 10000}),
             "v2": SamplerV2(seed=18, default_shots=10000),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
         )
 
@@ -151,7 +151,7 @@ class TestRecursiveMinEigenOptimizer(QiskitOptimizationTestCase):
             sampler=self.sampler[version],
             optimizer=COBYLA(maxiter=1000),
             reps=1,
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         warm_qaoa = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(acc=0), relax_for_pre_solver=True, qaoa=qaoa

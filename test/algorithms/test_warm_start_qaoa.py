@@ -50,7 +50,7 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
             "v1": Sampler(run_options={"seed_simulator": self.seed, "shots": 10000}),
             "v2": SamplerV2(seed=18, default_shots=10000),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
         )
 
@@ -71,7 +71,10 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         problem = Maxcut(graph).to_quadratic_program()
 
         qaoa = QAOA(
-            sampler=self.sampler[version], optimizer=COBYLA(), reps=1, passmanager=self.passmanager
+            sampler=self.sampler[version],
+            optimizer=COBYLA(),
+            reps=1,
+            pass_manager=self.pass_manager,
         )
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
@@ -107,7 +110,10 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         problem = from_docplex_mp(model)
 
         qaoa = QAOA(
-            sampler=self.sampler[version], optimizer=COBYLA(), reps=1, passmanager=self.passmanager
+            sampler=self.sampler[version],
+            optimizer=COBYLA(),
+            reps=1,
+            pass_manager=self.pass_manager,
         )
         aggregator = MeanAggregator()
         optimizer = WarmStartQAOAOptimizer(
@@ -137,7 +143,10 @@ class TestWarmStartQAOAOptimizer(QiskitOptimizationTestCase):
         problem = from_docplex_mp(model)
 
         qaoa = QAOA(
-            sampler=self.sampler[version], optimizer=COBYLA(), reps=1, passmanager=self.passmanager
+            sampler=self.sampler[version],
+            optimizer=COBYLA(),
+            reps=1,
+            pass_manager=self.pass_manager,
         )
         optimizer = WarmStartQAOAOptimizer(
             pre_solver=SlsqpOptimizer(),

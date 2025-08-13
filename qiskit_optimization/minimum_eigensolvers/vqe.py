@@ -106,6 +106,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             can access the intermediate data at each optimization step. These data are: the
             evaluation count, the optimizer parameters for the ansatz, the evaluated mean, and the
             metadata dictionary.
+        pass_manager: A pass manager to transpile the circuits.
 
     References:
         [1]: Peruzzo, A., et al, "A variational eigenvalue solver on a quantum processor"
@@ -121,7 +122,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         gradient: None = None,
         initial_point: np.ndarray | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
@@ -140,6 +141,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 estimated value, and the metadata dictionary.
+            pass_manager: A pass manager to transpile the circuits.
         """
         super().__init__()
 
@@ -148,7 +150,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         self.optimizer = optimizer
         self.gradient = gradient
         self.callback = callback
-        self.passmanager = passmanager
+        self.pass_manager = pass_manager
 
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self.initial_point = initial_point
@@ -181,8 +183,8 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
         start_time = time()
 
-        if self.passmanager:
-            ansatz: QuantumCircuit = self.passmanager.run(self.ansatz)
+        if self.pass_manager:
+            ansatz: QuantumCircuit = self.pass_manager.run(self.ansatz)
             layout = ansatz.layout
             operator = _init_observable(operator)
             operator = operator.apply_layout(layout)

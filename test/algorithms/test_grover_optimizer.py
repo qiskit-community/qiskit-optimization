@@ -53,7 +53,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
             "v1": Sampler(run_options={"seed_simulator": 123}),
             "v2": SamplerV2(seed=123),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target
         )
         self.n_iter = 8
@@ -65,7 +65,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
             num_iterations=num_iterations,
             converters=converters,
             sampler=self.sampler[version],
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         return grover_optimizer
 

@@ -63,7 +63,7 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
             "v1": Estimator(approximation=True, backend_options={"seed_simulator": self.seed}),
             "v2": EstimatorV2(options={"backend_options": {"seed_simulator": self.seed}}),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
         )
 
@@ -92,7 +92,7 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
             ansatz=self.ansatz,
             optimizer=COBYLA(tol=1e-6),
             estimator=self.estimator[version],
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
         relaxed_results, rounding_context = qrao.solve_relaxed(encoding=self.encoding)
@@ -133,7 +133,7 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
             ansatz=self.ansatz,
             optimizer=COBYLA(),
             estimator=self.estimator[version],
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         with self.assertRaises(TypeError):
             QuantumRandomAccessOptimizer(min_eigen_solver=vqe)

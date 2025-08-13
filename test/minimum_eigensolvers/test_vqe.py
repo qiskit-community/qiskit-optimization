@@ -64,7 +64,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             "v1": Estimator(approximation=True, backend_options={"seed_simulator": self.seed}),
             "v2": EstimatorV2(options={"backend_options": {"seed_simulator": self.seed}}),
         }
-        self.passmanager = generate_preset_pass_manager(
+        self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
         )
         self.h2_op = SparsePauliOp(
@@ -86,7 +86,10 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_using_ref_estimator(self, version):
         """Test VQE using reference Estimator."""
         vqe = VQE(
-            self.estimator[version], self.ryrz_wavefunction, COBYLA(), passmanager=self.passmanager
+            self.estimator[version],
+            self.ryrz_wavefunction,
+            COBYLA(),
+            pass_manager=self.pass_manager,
         )
 
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
@@ -127,7 +130,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             ansatz,
             COBYLA(),
             initial_point=initial_point,
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
 
         with self.assertRaises(ValueError):
@@ -137,7 +140,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_ansatz_resize(self, version):
         """Test the ansatz is properly resized if it's a blueprint circuit."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = VQE(self.estimator[version], ansatz, COBYLA(), passmanager=self.passmanager)
+        vqe = VQE(self.estimator[version], ansatz, COBYLA(), pass_manager=self.pass_manager)
         result = vqe.compute_minimum_eigenvalue(self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
 
@@ -146,7 +149,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test an error is raised if the ansatz has the wrong number of qubits."""
         ansatz = QuantumCircuit(1)
         ansatz.compose(RealAmplitudes(1, reps=2))
-        vqe = VQE(self.estimator[version], ansatz, COBYLA(), passmanager=self.passmanager)
+        vqe = VQE(self.estimator[version], ansatz, COBYLA(), pass_manager=self.pass_manager)
 
         with self.assertRaises(AlgorithmError):
             _ = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
@@ -155,7 +158,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_missing_ansatz_params(self, version):
         """Test specifying an ansatz with no parameters raises an error."""
         ansatz = QuantumCircuit(self.h2_op.num_qubits)
-        vqe = VQE(self.estimator[version], ansatz, COBYLA(), passmanager=self.passmanager)
+        vqe = VQE(self.estimator[version], ansatz, COBYLA(), pass_manager=self.pass_manager)
         with self.assertRaises(AlgorithmError):
             vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -167,7 +170,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.estimator[version],
             self.ryrz_wavefunction,
             optimizer,
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
@@ -191,7 +194,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             wavefunction,
             optimizer,
             callback=store_intermediate_result,
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -210,7 +213,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test re-using a VQE algorithm instance."""
         ansatz = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
         vqe = VQE(
-            self.estimator[version], ansatz, COBYLA(maxiter=3000), passmanager=self.passmanager
+            self.estimator[version], ansatz, COBYLA(maxiter=3000), pass_manager=self.pass_manager
         )
         with self.subTest(msg="assert VQE works once all info is available"):
             result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
@@ -230,7 +233,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.estimator[version],
             self.ryrz_wavefunction,
             COBYLA(),
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
 
         def run_check():
@@ -271,7 +274,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
         spsa = SPSA(maxiter=5)
 
-        vqe = VQE(wrapped_estimator, ansatz, spsa, passmanager=self.passmanager)
+        vqe = VQE(wrapped_estimator, ansatz, spsa, pass_manager=self.pass_manager)
         _ = vqe.compute_minimum_eigenvalue(Pauli("ZZ"))
 
         # 1 calibration + 5 loss + 1 return loss
@@ -290,7 +293,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.estimator[version],
             self.ryrz_wavefunction,
             partial(scipy_minimize, method="L-BFGS-B", options={"maxiter": 10}),
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
         result = vqe.compute_minimum_eigenvalue(self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=2)
@@ -299,7 +302,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_optimizer_callable(self, version):
         """Test passing a optimizer directly as callable."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = VQE(self.estimator[version], ansatz, _mock_optimizer, passmanager=self.passmanager)
+        vqe = VQE(self.estimator[version], ansatz, _mock_optimizer, pass_manager=self.pass_manager)
         result = vqe.compute_minimum_eigenvalue(SparsePauliOp("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
 
@@ -310,7 +313,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.estimator[version],
             self.ry_wavefunction,
             COBYLA(maxiter=300),
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
 
         with self.subTest("Test with an empty list."):
@@ -346,7 +349,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.estimator[version],
             self.ry_wavefunction,
             COBYLA(maxiter=300),
-            passmanager=self.passmanager,
+            pass_manager=self.pass_manager,
         )
 
         with self.subTest("Test with an empty dictionary."):

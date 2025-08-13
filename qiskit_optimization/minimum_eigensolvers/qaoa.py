@@ -86,7 +86,7 @@ class QAOA(SamplingVQE):
         initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
@@ -110,7 +110,7 @@ class QAOA(SamplingVQE):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 evaluated value, the metadata dictionary.
-            passmanager: A pass manager to transpile the circuits.
+            pass_manager: A pass manager to transpile the circuits.
         """
         validate_min("reps", reps, 1)
 
@@ -126,7 +126,7 @@ class QAOA(SamplingVQE):
             initial_point=initial_point,
             aggregation=aggregation,
             callback=callback,
-            passmanager=passmanager,
+            pass_manager=pass_manager,
         )
 
     def _check_operator_ansatz(self, operator: BaseOperator):
