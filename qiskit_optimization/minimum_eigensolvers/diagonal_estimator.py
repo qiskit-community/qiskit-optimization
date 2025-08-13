@@ -40,7 +40,7 @@ class _DiagonalEstimatorResult(EstimatorResult):
 class _DiagonalEstimator(BaseEstimatorV1):
     """An estimator for diagonal observables."""
 
-    # TODO: _DiaginalEstimator should be updated to inherit BaseEstimatorV2
+    # TODO: _DiagonalEstimator should be updated to inherit BaseEstimatorV2
 
     def __init__(
         self,
