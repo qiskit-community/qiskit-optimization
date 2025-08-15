@@ -1,7 +1,11 @@
 ---
 features:
   - |
-    Added QAOA (Quantum Approximate Optimization Algorithm) implementation
-    migrated from qiskit-algorithms. This migration includes the core QAOA
-    implementation and its essential dependencies, following the same migration
+    Added :class:`.QAOA` (Quantum Approximate Optimization Algorithm),
+    :class:`.VQE` (Variational Quantum Eigensolver), and
+    :class:`.NumPyMinimumEigensolver`
+    migrated from qiskit-algorithms. This migration includes the core
+    implementations and their essential dependencies, following the same migration
     pattern established in qiskit-machine-learning#817.
+
+    Change ``qiskit_algorithms.minimum_eigensolvers`` to ``qiskit_optimization.minimum_eigensolvers``.
