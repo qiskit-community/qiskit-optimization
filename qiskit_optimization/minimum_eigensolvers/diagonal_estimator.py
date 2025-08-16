@@ -14,19 +14,19 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Mapping, Iterable, MappingView
-from typing import Any
-
+import warnings
+from collections.abc import Callable, Iterable, Mapping, MappingView, Sequence
 from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
-from qiskit.primitives.utils import init_observable, _circuit_key
+from qiskit.primitives import BaseEstimatorV1, BaseSamplerV1, BaseSamplerV2, EstimatorResult
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from ..algorithm_job import AlgorithmJob
+from ..utils.primitives import _circuit_key, _init_observable
+from .algorithm_job import AlgorithmJob
 
 
 @dataclass(frozen=True)
@@ -37,12 +37,14 @@ class _DiagonalEstimatorResult(EstimatorResult):
     best_measurements: Sequence[Mapping[str, Any]] | None = None
 
 
-class _DiagonalEstimator(BaseEstimator):
+class _DiagonalEstimator(BaseEstimatorV1):
     """An estimator for diagonal observables."""
+
+    # TODO: _DiagonalEstimator should be updated to inherit BaseEstimatorV2
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV1 | BaseSamplerV2,
         aggregation: float | Callable[[Iterable[tuple[float, float]]], float] | None = None,
         callback: Callable[[Sequence[Mapping[str, Any]]], None] | None = None,
         **options,
@@ -59,7 +61,7 @@ class _DiagonalEstimator(BaseEstimator):
 
         """
         super().__init__(options=options)
-        self._circuits: list[QuantumCircuit] = []  # See Qiskit pull request 11051
+        self._circuits: list[QuantumCircuit] = []
         self._parameters: list[MappingView] = []
         self._observables: list[SparsePauliOp] = []
 
@@ -69,8 +71,15 @@ class _DiagonalEstimator(BaseEstimator):
 
         self.aggregation = aggregation
         self.callback = callback
-        self._circuit_ids: dict[int, QuantumCircuit] = {}
+        self._circuit_ids: dict[tuple, QuantumCircuit] = {}
         self._observable_ids: dict[int, BaseOperator] = {}
+
+        if isinstance(sampler, BaseSamplerV1):
+            warnings.warn(
+                "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     def _run(
         self,
@@ -98,7 +107,7 @@ class _DiagonalEstimator(BaseEstimator):
             else:
                 observable_indices.append(len(self._observables))
                 self._observable_ids[id(observable)] = len(self._observables)
-                converted_observable = init_observable(observable)
+                converted_observable = _init_observable(observable)
                 _check_observable_is_diagonal(converted_observable)  # check it's diagonal
                 self._observables.append(converted_observable)
         job = AlgorithmJob(
@@ -114,13 +123,29 @@ class _DiagonalEstimator(BaseEstimator):
         parameter_values: Sequence[Sequence[float]],
         **run_options,
     ) -> _DiagonalEstimatorResult:
-        job = self.sampler.run(
-            [self._circuits[i] for i in circuits],
-            parameter_values,
-            **run_options,
-        )
-        sampler_result = job.result()
-        samples = sampler_result.quasi_dists
+        if isinstance(self.sampler, BaseSamplerV1):
+            job = self.sampler.run(
+                [self._circuits[i] for i in circuits],
+                parameter_values,
+                **run_options,
+            )
+            sampler_result = job.result()
+            metadata = sampler_result.metadata
+            samples = sampler_result.quasi_dists
+        else:  # BaseSamplerV2
+            job = self.sampler.run(
+                [(self._circuits[i], val) for i, val in zip(circuits, parameter_values)],
+                **run_options,
+            )
+            sampler_pub_result = job.result()
+            metadata = []
+            samples = []
+            for i, result in zip(circuits, sampler_pub_result):
+                creg = self._circuits[i].cregs[0].name
+                counts = getattr(result.data, creg).get_int_counts()
+                shots = sum(counts.values())
+                samples.append({key: val / shots for key, val in counts.items()})
+                metadata.append(result.metadata)
 
         # a list of dictionaries containing: {state: (measurement probability, value)}
         evaluations: list[dict[int, tuple[float, float]]] = [
@@ -151,7 +176,7 @@ class _DiagonalEstimator(BaseEstimator):
             self.callback(best_measurements)
 
         return _DiagonalEstimatorResult(
-            values=results, metadata=sampler_result.metadata, best_measurements=best_measurements
+            values=results, metadata=metadata, best_measurements=best_measurements
         )
 
 

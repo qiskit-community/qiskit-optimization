@@ -10,27 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-utils.algorithm_globals
-=======================
-Common (global) properties used across qiskit_optimization.
-
-.. currentmodule:: qiskit_optimization.utils.algorithm_globals
-
-Includes:
-
-  * Random number generator and random seed.
-
-    Algorithms can use the generator for random values, as needed, and it
-    can be seeded here for reproducible results when using such an algorithm.
-    This is often important, for example in unit tests, where the same
-    outcome is desired each time (reproducible) and not have it be variable
-    due to randomness.
-
-Attributes:
-    random_seed (int | None): Random generator seed (read/write).
-    random (np.random.Generator): Random generator (read-only)
-"""
+"""Global properties for algorithms"""
 
 from __future__ import annotations
 
@@ -40,23 +20,39 @@ import numpy as np
 
 
 class QiskitAlgorithmGlobals:
-    """Global properties for algorithms."""
+    """
+    Common (global) properties used across qiskit_optimization.
+
+    Includes:
+
+    * Random number generator and random seed.
+
+        Algorithms can use the generator for random values, as needed, and it
+        can be seeded here for reproducible results when using such an algorithm.
+        This is often important, for example in unit tests, where the same
+        outcome is desired each time (reproducible) and not have it be variable
+        due to randomness.
+
+    Attributes:
+        random_seed (int | None): Random generator seed (read/write).
+        random (np.random.Generator): Random generator (read-only)
+    """
 
     # The code is done to work even after some future removal of algorithm_globals
     # from Qiskit (qiskit.utils). All that is needed in the future, after that, if
     # this is updated, is just the logic in the except blocks.
     #
-    # If the Qiskit version exists this acts a redirect to that (it delegates the
+    # If the Qiskit Algorithms version exists this acts a redirect to that (it delegates the
     # calls off to it). In the future when that does not exist this has similar code
     # in the except blocks here, as noted above, that will take over. By delegating
-    # to the Qiskit instance it means that any existing code that uses that continues
+    # to the Qiskit Algorithms instance it means that any existing code that uses that continues
     # to work. Logic here in qiskit_optimization though uses this instance and the
-    # random check here has logic to warn if the seed here is not the same as the Qiskit
-    # version so we can detect direct usage of the Qiskit version and alert the user to
+    # random check here has logic to warn if the seed here is not the same as the Qiskit Algorithms
+    # version so we can detect direct usage of the Qiskit Algorithms version and alert the user to
     # change their code to use this. So simply changing from:
-    #     from qiskit.utils import algorithm_globals
+    #     from qiskit_algorithms.utils import algorithm_globals
     # to
-    #     from qiskit_algorithm.utils import algorithm_globals
+    #     from qiskit_optimization.utils import algorithm_globals
 
     def __init__(self) -> None:
         self._random_seed: int | None = None
@@ -69,7 +65,7 @@ class QiskitAlgorithmGlobals:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=DeprecationWarning)
 
-                from qiskit.utils import algorithm_globals as qiskit_globals
+                from qiskit_algorithms.utils import algorithm_globals as qiskit_globals
 
                 return qiskit_globals.random_seed
 
@@ -87,7 +83,7 @@ class QiskitAlgorithmGlobals:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=DeprecationWarning)
 
-                from qiskit.utils import algorithm_globals as qiskit_globals
+                from qiskit_algorithms.utils import algorithm_globals as qiskit_globals
 
                 qiskit_globals.random_seed = seed
                 # Mirror the seed here when set via this random_seed. If the seed is
@@ -105,15 +101,15 @@ class QiskitAlgorithmGlobals:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=DeprecationWarning)
 
-                from qiskit.utils import algorithm_globals as qiskit_globals
+                from qiskit_algorithms.utils import algorithm_globals as qiskit_globals
 
                 if self._random_seed != qiskit_globals.random_seed:
                     # If the seeds are different - likely this local is None and the qiskit.utils
                     # algorithms global was seeded directly then we will warn to use this here as
                     # the Qiskit version is planned to be removed in a future version of Qiskit.
                     warnings.warn(
-                        "Using random that is seeded via qiskit.utils algorithm_globals is deprecated "
-                        "since version 0.2.0. Instead set random_seed directly to "
+                        "Using random that is seeded via qiskit_algorithms.utils algorithm_globals "
+                        "is deprecated since version 0.7.0. Instead set random_seed directly to "
                         "qiskit_optimization.utils algorithm_globals.",
                         category=DeprecationWarning,
                         stacklevel=2,

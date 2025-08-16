@@ -15,8 +15,12 @@ import unittest
 from test.optimization_test_case import QiskitOptimizationTestCase
 
 import numpy as np
+from ddt import data, ddt
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.primitives import Estimator
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.utils.optionals import HAS_AER
+from qiskit_aer import AerSimulator
+from qiskit_aer.primitives import Estimator, EstimatorV2
 
 from qiskit_optimization.algorithms import SolutionSample
 from qiskit_optimization.algorithms.optimization_algorithm import OptimizationResultStatus
@@ -38,9 +42,11 @@ from qiskit_optimization.problems import QuadraticProgram
 from qiskit_optimization.utils import algorithm_globals
 
 
+@ddt
 class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
     """QuantumRandomAccessOptimizer tests."""
 
+    @unittest.skipUnless(HAS_AER, "qiskit-aer is required to run this test")
     def setUp(self):
         super().setUp()
         self.problem = QuadraticProgram()
@@ -51,7 +57,15 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.encoding = QuantumRandomAccessEncoding(max_vars_per_qubit=3)
         self.encoding.encode(self.problem)
         self.ansatz = RealAmplitudes(self.encoding.num_qubits)  # for VQE
-        algorithm_globals.random_seed = 50
+        self.seed = 50
+        algorithm_globals.random_seed = self.seed
+        self.estimator = {
+            "v1": Estimator(approximation=True, backend_options={"seed_simulator": self.seed}),
+            "v2": EstimatorV2(options={"backend_options": {"seed_simulator": self.seed}}),
+        }
+        self.pass_manager = generate_preset_pass_manager(
+            optimization_level=1, target=AerSimulator().target, seed_transpiler=self.seed
+        )
 
     def test_solve_relaxed_numpy(self):
         """Test QuantumRandomAccessOptimizer with NumPyMinimumEigensolver."""
@@ -71,12 +85,14 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(rounding_context.expectation_values[1], 0.53452, places=5)
         self.assertAlmostEqual(rounding_context.expectation_values[2], 0.80178, places=5)
 
-    def test_solve_relaxed_vqe(self):
+    @data("v1", "v2")
+    def test_solve_relaxed_vqe(self, version):
         """Test QuantumRandomAccessOptimizer with VQE."""
         vqe = VQE(
             ansatz=self.ansatz,
             optimizer=COBYLA(tol=1e-6),
-            estimator=Estimator(),
+            estimator=self.estimator[version],
+            pass_manager=self.pass_manager,
         )
         qrao = QuantumRandomAccessOptimizer(min_eigen_solver=vqe)
         relaxed_results, rounding_context = qrao.solve_relaxed(encoding=self.encoding)
@@ -97,7 +113,8 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(rounding_context.expectation_values[1], 0, delta=1e-4)
         self.assertAlmostEqual(rounding_context.expectation_values[2], 0.94865, delta=1e-4)
 
-    def test_require_aux_operator_support(self):
+    @data("v1", "v2")
+    def test_require_aux_operator_support(self, version):
         """Test whether the eigensolver supports auxiliary operator.
         If auxiliary operators are not supported, a TypeError should be raised.
         """
@@ -115,7 +132,8 @@ class TestQuantumRandomAccessOptimizer(QiskitOptimizationTestCase):
         vqe = ModifiedVQE(
             ansatz=self.ansatz,
             optimizer=COBYLA(),
-            estimator=Estimator(),
+            estimator=self.estimator[version],
+            pass_manager=self.pass_manager,
         )
         with self.assertRaises(TypeError):
             QuantumRandomAccessOptimizer(min_eigen_solver=vqe)

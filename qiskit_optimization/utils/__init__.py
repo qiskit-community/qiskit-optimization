@@ -23,8 +23,6 @@ Utility functions
    :nosignatures:
 
    algorithm_globals
-   validate_initial_point
-   validate_bounds
 """
 
 from .algorithm_globals import algorithm_globals

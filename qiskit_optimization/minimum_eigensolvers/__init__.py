@@ -23,33 +23,30 @@ Minimum Eigensolvers
    :toctree: ../stubs/
    :nosignatures:
 
-   SamplingMinimumEigensolver
-   SamplingMinimumEigensolverResult
-   MinimumEigensolver
-   MinimumEigensolverResult
    NumPyMinimumEigensolver
    NumPyMinimumEigensolverResult
+   SamplingMinimumEigensolver
+   SamplingMinimumEigensolverResult
    SamplingVQE
+   SamplingVQEResult
    QAOA
    VQE
    VQEResult
 """
 
-from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
 from .numpy_minimum_eigensolver import NumPyMinimumEigensolver, NumPyMinimumEigensolverResult
 from .qaoa import QAOA
 from .sampling_mes import SamplingMinimumEigensolver, SamplingMinimumEigensolverResult
-from .sampling_vqe import SamplingVQE
+from .sampling_vqe import SamplingVQE, SamplingVQEResult
 from .vqe import VQE, VQEResult
 
 __all__ = [
-    "SamplingMinimumEigensolver",
-    "SamplingMinimumEigensolverResult",
-    "MinimumEigensolver",
-    "MinimumEigensolverResult",
     "NumPyMinimumEigensolver",
     "NumPyMinimumEigensolverResult",
+    "SamplingMinimumEigensolver",
+    "SamplingMinimumEigensolverResult",
     "SamplingVQE",
+    "SamplingVQEResult",
     "QAOA",
     "VQE",
     "VQEResult",

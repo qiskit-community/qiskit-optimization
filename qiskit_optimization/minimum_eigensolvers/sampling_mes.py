@@ -13,14 +13,16 @@
 """The Sampling Minimum Eigensolver interface."""
 
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from typing import Any
 
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
+
 from ..algorithm_result import AlgorithmResult
-from ..list_or_dict import ListOrDict
+from .list_or_dict import ListOrDict
 
 
 class SamplingMinimumEigensolver(ABC):

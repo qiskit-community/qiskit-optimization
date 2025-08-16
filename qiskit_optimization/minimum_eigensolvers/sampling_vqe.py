@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Callable
 from time import time
 from typing import Any
@@ -23,24 +24,24 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
-from qiskit.primitives.utils import init_observable
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
-from ..minimum_eigensolvers.sampling_mes import (
-    SamplingMinimumEigensolver,
-    SamplingMinimumEigensolverResult,
-)
-from ..observables_evaluator import estimate_observables
 from ..optimizers.optimizer import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
+from ..utils.primitives import _apply_layout, _init_observable
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
-from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from .diagonal_estimator import _DiagonalEstimator
+from .list_or_dict import ListOrDict
+from .observables_evaluator import estimate_observables
+from .sampling_mes import (
+    SamplingMinimumEigensolver,
+    SamplingMinimumEigensolverResult,
+)
+from .variational_algorithm import VariationalAlgorithm, VariationalResult
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             can access the intermediate data at each optimization step. These data are: the
             evaluation count, the optimizer parameters for the ansatz, the evaluated value, and the
             metadata dictionary.
+        pass_manager (BasePassManager | None): A pass manager to transpile the circuits.
 
     References:
         [1]: Barkoutsos, P. K., Nannicini, G., Robert, A., Tavernelli, I., and Woerner, S.,
@@ -116,7 +118,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
@@ -134,6 +136,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 estimated value, and the metadata dictionary.
+            pass_manager: A pass manager to transpile the circuits.
         """
         super().__init__()
 
@@ -142,10 +145,17 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         self.optimizer = optimizer
         self.aggregation = aggregation
         self.callback = callback
-        self.passmanager = passmanager
+        self.pass_manager = pass_manager
 
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self._initial_point = initial_point
+
+        if isinstance(sampler, BaseSamplerV1):
+            warnings.warn(
+                "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     @property
     def initial_point(self) -> np.ndarray | None:
@@ -185,7 +195,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         self,
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
-    ) -> SamplingMinimumEigensolverResult:
+    ) -> SamplingVQEResult:
         # check that the number of qubits of operator and ansatz match, and resize if possible
         self._check_operator_ansatz(operator)
 
@@ -197,18 +207,13 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         bounds = validate_bounds(self.ansatz)
 
-        if self.passmanager:
-            ansatz: QuantumCircuit = self.passmanager.run(self.ansatz)
+        if self.pass_manager:
+            ansatz: QuantumCircuit = self.pass_manager.run(self.ansatz)
             layout = ansatz.layout
-            operator = init_observable(operator)
+            operator = _init_observable(operator)
             operator = operator.apply_layout(layout)
             if aux_operators:
-                if isinstance(aux_operators, list):
-                    aux_operators = [op.apply_layout(layout) for op in aux_operators]
-                else:
-                    aux_operators = {
-                        key: op.apply_layout(layout) for key, op in aux_operators.items()
-                    }
+                aux_operators = _apply_layout(aux_operators, layout)
         else:
             ansatz = self.ansatz
 

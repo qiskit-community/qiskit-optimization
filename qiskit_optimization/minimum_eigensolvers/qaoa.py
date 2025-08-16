@@ -18,10 +18,10 @@ from typing import Any, Callable
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
 from ..optimizers.optimizer import Minimizer, Optimizer
 from ..utils.validation import validate_min
 from .sampling_vqe import SamplingVQE
@@ -86,7 +86,7 @@ class QAOA(SamplingVQE):
         initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
-        passmanager: BasePassManager | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
@@ -110,7 +110,7 @@ class QAOA(SamplingVQE):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 evaluated value, the metadata dictionary.
-            passmanager: A pass manager to transpile the circuits.
+            pass_manager: A pass manager to transpile the circuits.
         """
         validate_min("reps", reps, 1)
 
@@ -126,11 +126,28 @@ class QAOA(SamplingVQE):
             initial_point=initial_point,
             aggregation=aggregation,
             callback=callback,
-            passmanager=passmanager,
+            pass_manager=pass_manager,
         )
 
     def _check_operator_ansatz(self, operator: BaseOperator):
         # Recreates a circuit based on operator parameter.
-        self.ansatz = QAOAAnsatz(
-            operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
-        ).decompose()  # TODO remove decompose once #6674 is fixed <-- I don't know what this issue is
+        if isinstance(self.mixer, QuantumCircuit):
+            # workaround for https://github.com/Qiskit/qiskit/issues/14838
+            from qiskit.circuit.library import QAOAAnsatz
+
+            self.ansatz = QAOAAnsatz(
+                operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+            )
+        else:
+            try:
+                from qiskit.circuit.library import qaoa_ansatz
+
+                self.ansatz = qaoa_ansatz(
+                    operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+                )
+            except ImportError:
+                from qiskit.circuit.library import QAOAAnsatz
+
+                self.ansatz = QAOAAnsatz(
+                    operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
+                )

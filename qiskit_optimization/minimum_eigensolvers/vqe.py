@@ -15,25 +15,28 @@
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Callable
 from time import time
 from typing import Any
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.passmanager import BasePassManager
+from qiskit.primitives import BaseEstimatorV1, BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
-from ..observables_evaluator import estimate_observables
 from ..optimizers import Minimizer, Optimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
+from ..utils.primitives import _apply_layout, _init_observable
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
-from ..variational_algorithm import VariationalAlgorithm, VariationalResult
+from .list_or_dict import ListOrDict
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
+from .observables_evaluator import estimate_observables
+from .variational_algorithm import VariationalAlgorithm, VariationalResult
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +106,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             can access the intermediate data at each optimization step. These data are: the
             evaluation count, the optimizer parameters for the ansatz, the evaluated mean, and the
             metadata dictionary.
+        pass_manager: A pass manager to transpile the circuits.
 
     References:
         [1]: Peruzzo, A., et al, "A variational eigenvalue solver on a quantum processor"
@@ -111,13 +115,14 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV1 | BaseEstimatorV2,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
         gradient: None = None,
         initial_point: np.ndarray | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
@@ -136,6 +141,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 estimated value, and the metadata dictionary.
+            pass_manager: A pass manager to transpile the circuits.
         """
         super().__init__()
 
@@ -143,9 +149,18 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         self.ansatz = ansatz
         self.optimizer = optimizer
         self.gradient = gradient
+        self.callback = callback
+        self.pass_manager = pass_manager
+
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self.initial_point = initial_point
-        self.callback = callback
+
+        if isinstance(estimator, BaseEstimatorV1):
+            warnings.warn(
+                "Using Estimator V1 is deprecated since 0.7.0. Instead use Estimator V2.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
 
     @property
     def initial_point(self) -> np.ndarray | None:
@@ -168,10 +183,20 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
         start_time = time()
 
-        evaluate_energy = self._get_evaluate_energy(self.ansatz, operator)
+        if self.pass_manager:
+            ansatz: QuantumCircuit = self.pass_manager.run(self.ansatz)
+            layout = ansatz.layout
+            operator = _init_observable(operator)
+            operator = operator.apply_layout(layout)
+            if aux_operators:
+                aux_operators = _apply_layout(aux_operators, layout)
+        else:
+            ansatz = self.ansatz
+
+        evaluate_energy = self._get_evaluate_energy(ansatz, operator)
 
         if self.gradient is not None:
-            evaluate_gradient = self._get_evaluate_gradient(self.ansatz, operator)
+            evaluate_gradient = self._get_evaluate_gradient(ansatz, operator)
         else:
             evaluate_gradient = None
 
@@ -210,7 +235,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         if aux_operators is not None:
             aux_operators_evaluated = estimate_observables(
                 self.estimator,
-                self.ansatz,
+                ansatz,
                 aux_operators,
                 optimizer_result.x,  # type: ignore[arg-type]
             )
@@ -218,7 +243,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             aux_operators_evaluated = None
 
         return self._build_vqe_result(
-            self.ansatz,
+            ansatz,
             optimizer_result,
             aux_operators_evaluated,  # type: ignore[arg-type]
             optimizer_time,
@@ -256,18 +281,37 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
             parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
-            batch_size = len(parameters)
 
-            try:
-                job = self.estimator.run(batch_size * [ansatz], batch_size * [operator], parameters)
-                estimator_result = job.result()
-            except Exception as exc:
-                raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
+            if isinstance(self.estimator, BaseEstimatorV1):
+                batch_size = len(parameters)
 
-            values = estimator_result.values
+                try:
+                    job = self.estimator.run(
+                        batch_size * [ansatz], batch_size * [operator], parameters
+                    )
+                    estimator_result = job.result()
+                except Exception as exc:
+                    raise AlgorithmError(
+                        "The primitive job to evaluate the energy failed!"
+                    ) from exc
+
+                values = estimator_result.values
+                metadata = estimator_result.metadata
+            else:
+                try:
+                    job = self.estimator.run([(ansatz, operator, parameters)])
+                    estimator_result = job.result()
+                except Exception as exc:
+                    raise AlgorithmError(
+                        "The primitive job to evaluate the energy failed!"
+                    ) from exc
+
+                values = estimator_result[0].data.evs
+                if values.shape == ():
+                    values = [values.item()]
+                metadata = [estimator_result[0].metadata] * len(values)
 
             if self.callback is not None:
-                metadata = estimator_result.metadata
                 for params, value, meta in zip(parameters, values, metadata):
                     eval_count += 1
                     self.callback(eval_count, params, value, meta)

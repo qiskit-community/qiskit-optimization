@@ -14,19 +14,19 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
-from typing import Callable, Union, Tuple, Dict, List, Optional, cast
 import logging
-import numpy as np
-from scipy import sparse as scisparse
+from collections.abc import Iterable
+from typing import Callable, Dict, List, Optional, Tuple, Union, cast
 
+import numpy as np
 from qiskit.quantum_info import SparsePauliOp, Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+from scipy import sparse as scisparse
 
+from ..exceptions import AlgorithmError
 from ..utils.validation import validate_min
 from .eigensolver import Eigensolver, EigensolverResult
-from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
+from .list_or_dict import ListOrDict
 
 logger = logging.getLogger(__name__)
 

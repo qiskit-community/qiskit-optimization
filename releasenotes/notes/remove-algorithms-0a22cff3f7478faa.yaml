@@ -1,11 +1,20 @@
 ---
 upgrade:
   - |
-    Removed the dependency on ``qiskit-algorithms`` and ported the necessary classes.
-    Specifically, the following modules are ported:
+    Removed the dependency on ``qiskit-algorithms``.
+features:
+  - |
+    Added :obj:`.algorithm_globals` migrated from qiskit-algorithms.
 
-    - :mod:`qiskit_optimization.eigensolvers`
-    - :mod:`qiskit_optimization.minimum_eigensolvers`
-    - :mod:`qiskit_optimization.optimizers`
-    - :mod:`qiskit_optimization.utils`
+    Change ``qiskit_algorithms.utils.algorithm_globals`` to ``qiskit_optimization.utils.algorithm_globals``.
+  - |
+    Added the following optimizers migrated from qiskit-algorithms.
 
+    * :class:`.COBYLA`
+    * :class:`.NELDER_MEAD`
+    * :class:`.SciPyOptimizer`
+    * :class:`.SPSA`
+
+    Change ``qiskit_algorithms.optimizers`` to ``qiskit_optimization.optimizers``.
+
+    Note that qiskit-optimization does not include all optimizers of qiskit-algorithms.
