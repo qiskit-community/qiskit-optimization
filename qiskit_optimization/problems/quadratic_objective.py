@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,10 @@
 # that they have been altered from the originals.
 
 """Quadratic Objective."""
+from __future__ import annotations
 
 from enum import Enum
-from typing import Union, List, Dict, Tuple, Any, Optional
+from typing import Any
 
 from numpy import ndarray
 from scipy.sparse import spmatrix
@@ -42,17 +43,10 @@ class QuadraticObjective(QuadraticProgramElement):
         self,
         quadratic_program: Any,
         constant: float = 0.0,
-        linear: Optional[
-            Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]]
-        ] = None,
-        quadratic: Optional[
-            Union[
-                ndarray,
-                spmatrix,
-                List[List[float]],
-                Dict[Tuple[Union[int, str], Union[int, str]], float],
-            ]
-        ] = None,
+        linear: ndarray | spmatrix | list[float] | dict[str | int, float] | None = None,
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float] | None
+        ) = None,
         sense: ObjSense = ObjSense.MINIMIZE,
     ) -> None:
         """Constructs a quadratic objective function.
@@ -104,7 +98,7 @@ class QuadraticObjective(QuadraticProgramElement):
     @linear.setter
     def linear(
         self,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+        linear: ndarray | spmatrix | list[float] | dict[str | int, float],
     ) -> None:
         """Sets the coefficients of the linear part of the objective function.
 
@@ -126,12 +120,9 @@ class QuadraticObjective(QuadraticProgramElement):
     @quadratic.setter
     def quadratic(
         self,
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
-        ],
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float]
+        ),
     ) -> None:
         """Sets the coefficients of the quadratic part of the objective function.
 
@@ -159,7 +150,7 @@ class QuadraticObjective(QuadraticProgramElement):
         """
         self._sense = sense
 
-    def evaluate(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> float:
+    def evaluate(self, x: ndarray | list | dict[int | str, float]) -> float:
         """Evaluate the quadratic objective for given variable values.
 
         Args:
@@ -180,7 +171,7 @@ class QuadraticObjective(QuadraticProgramElement):
             )
         return self.constant + self.linear.evaluate(x) + self.quadratic.evaluate(x)
 
-    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
+    def evaluate_gradient(self, x: ndarray | list | dict[int | str, float]) -> ndarray:
         """Evaluate the gradient of the quadratic objective for given variable values.
 
         Args:

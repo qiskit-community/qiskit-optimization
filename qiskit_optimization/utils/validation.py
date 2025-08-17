@@ -14,10 +14,8 @@
 Validation module
 """
 
-from typing import Set
 
-
-def validate_in_set(name: str, value: object, values: Set[object]) -> None:
+def validate_in_set(name: str, value: object, values: set[object]) -> None:
     """
     Args:
         name: value name.

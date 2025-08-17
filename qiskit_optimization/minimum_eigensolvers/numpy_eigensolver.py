@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Iterable
-from typing import Callable, Dict, List, Optional, Tuple, Union, cast
+from typing import Callable, Optional, Union, cast
 
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp, Statevector
@@ -31,7 +31,7 @@ from .list_or_dict import ListOrDict
 logger = logging.getLogger(__name__)
 
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
+    [Union[list, np.ndarray], float, Optional[ListOrDict[tuple[float, dict[str, float]]]]], bool
 ]
 
 
@@ -162,9 +162,9 @@ class NumPyEigensolver(Eigensolver):
     def _solve_dense(op_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if op_matrix.all() == op_matrix.conj().T.all():
             # Operator is Hermitian
-            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
+            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
         else:
-            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
+            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
 
     @staticmethod
     def _eval_aux_operators(

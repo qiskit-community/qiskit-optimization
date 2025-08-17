@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,10 +10,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 """The inequality to equality converter."""
+from __future__ import annotations
 
 import copy
 import math
-from typing import List, Optional, Union
 
 import numpy as np
 
@@ -50,8 +50,8 @@ class InequalityToEquality(QuadraticProgramConverter):
                 - 'continuous': All slack variables will be continuous variables.
                 - 'auto': Use integer variables if possible, otherwise use continuous variables.
         """
-        self._src: Optional[QuadraticProgram] = None
-        self._dst: Optional[QuadraticProgram] = None
+        self._src: QuadraticProgram | None = None
+        self._dst: QuadraticProgram | None = None
         self._mode = mode
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -252,7 +252,7 @@ class InequalityToEquality(QuadraticProgramConverter):
             new_linear[slack_name] = sign
         return new_linear, quadratic.coefficients, "==", new_rhs, name
 
-    def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
+    def interpret(self, x: np.ndarray | list[float]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
 
         Args:

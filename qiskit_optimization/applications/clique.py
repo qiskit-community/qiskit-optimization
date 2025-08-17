@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """An application class for the clique."""
-from typing import Optional, Union, List, Dict
+from __future__ import annotations
 
 import networkx as nx
 import numpy as np
@@ -32,9 +32,7 @@ class Clique(GraphOptimizationApplication):
         <https://en.wikipedia.org/wiki/Clique_(graph_theory)>`_
     """
 
-    def __init__(
-        self, graph: Union[nx.Graph, np.ndarray, List], size: Optional[int] = None
-    ) -> None:
+    def __init__(self, graph: nx.Graph | np.ndarray | list, size: int | None = None) -> None:
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
@@ -70,7 +68,7 @@ class Clique(GraphOptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[int]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -88,8 +86,8 @@ class Clique(GraphOptimizationApplication):
 
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 
@@ -100,14 +98,14 @@ class Clique(GraphOptimizationApplication):
         x = self._result_to_x(result)
         nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
-    def _node_colors(self, x: np.ndarray) -> List[str]:
+    def _node_colors(self, x: np.ndarray) -> list[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with dark gray.
         return ["r" if x[node] else "darkgrey" for node in self._graph.nodes]
 
     @property
-    def size(self) -> Optional[int]:
+    def size(self) -> int | None:
         """Getter of size
 
         Returns:
@@ -116,7 +114,7 @@ class Clique(GraphOptimizationApplication):
         return self._size
 
     @size.setter
-    def size(self, size: Optional[int]) -> None:
+    def size(self, size: int | None) -> None:
         """Setter of size
 
         Args:

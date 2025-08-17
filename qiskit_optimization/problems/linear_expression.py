@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,9 @@
 # that they have been altered from the originals.
 
 """Linear expression interface."""
+from __future__ import annotations
 
-from typing import List, Union, Dict, Any
+from typing import Any
 from dataclasses import dataclass
 
 from numpy import ndarray
@@ -40,7 +41,7 @@ class LinearExpression(QuadraticProgramElement):
     def __init__(
         self,
         quadratic_program: Any,
-        coefficients: Union[ndarray, spmatrix, List[float], Dict[Union[int, str], float]],
+        coefficients: ndarray | spmatrix | list[float] | dict[int | str, float],
     ) -> None:
         """Creates a new linear expression.
 
@@ -56,7 +57,7 @@ class LinearExpression(QuadraticProgramElement):
         super().__init__(quadratic_program)
         self.coefficients = coefficients
 
-    def __getitem__(self, i: Union[int, str]) -> float:
+    def __getitem__(self, i: int | str) -> float:
         """Returns the i-th coefficient where i can be a variable name or index.
 
         Args:
@@ -69,13 +70,13 @@ class LinearExpression(QuadraticProgramElement):
             i = self.quadratic_program.variables_index[i]
         return self.coefficients[0, i]
 
-    def __setitem__(self, i: Union[int, str], value: float) -> None:
+    def __setitem__(self, i: int | str, value: float) -> None:
         if isinstance(i, str):
             i = self.quadratic_program.variables_index[i]
         self._coefficients[0, i] = value
 
     def _coeffs_to_dok_matrix(
-        self, coefficients: Union[ndarray, spmatrix, List, Dict[Union[int, str], float]]
+        self, coefficients: ndarray | spmatrix | list | dict[int | str, float]
     ) -> dok_matrix:
         """Maps given 1d-coefficients to a dok_matrix.
 
@@ -119,7 +120,7 @@ class LinearExpression(QuadraticProgramElement):
     @coefficients.setter
     def coefficients(
         self,
-        coefficients: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+        coefficients: ndarray | spmatrix | list[float] | dict[str | int, float],
     ) -> None:
         """Sets the coefficients of the linear expression.
 
@@ -136,7 +137,7 @@ class LinearExpression(QuadraticProgramElement):
         """
         return self._coefficients.toarray()[0]
 
-    def to_dict(self, use_name: bool = False) -> Dict[Union[int, str], float]:
+    def to_dict(self, use_name: bool = False) -> dict[int | str, float]:
         """Returns the coefficients of the linear expression as dictionary, either using variable
         names or indices as keys.
 
@@ -154,7 +155,7 @@ class LinearExpression(QuadraticProgramElement):
         else:
             return {k: v for (_, k), v in self._coefficients.items()}
 
-    def evaluate(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> float:
+    def evaluate(self, x: ndarray | list | dict[int | str, float]) -> float:
         """Evaluate the linear expression for given variables.
 
         Args:
@@ -173,7 +174,7 @@ class LinearExpression(QuadraticProgramElement):
         return val
 
     # pylint: disable=unused-argument
-    def evaluate_gradient(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> ndarray:
+    def evaluate_gradient(self, x: ndarray | list | dict[int | str, float]) -> ndarray:
         """Evaluate the gradient of the linear expression for given variables.
 
         Args:

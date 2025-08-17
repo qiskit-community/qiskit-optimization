@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from logging import getLogger
-from typing import Any, Dict, List, Tuple, Type, Union, cast
+from typing import Any, cast
 
 import numpy as np
 from qiskit.quantum_info import Statevector
@@ -99,12 +99,12 @@ class OptimizationResult:
 
     def __init__(  # pylint: disable=too-many-positional-arguments
         self,
-        x: Union[List[float], np.ndarray] | None,
+        x: list[float] | np.ndarray | None,
         fval: float | None,
-        variables: List[Variable],
+        variables: list[Variable],
         status: OptimizationResultStatus,
         raw_results: Any | None = None,
-        samples: List[SolutionSample] | None = None,
+        samples: list[SolutionSample] | None = None,
     ) -> None:
         """
         Args:
@@ -168,7 +168,7 @@ class OptimizationResult:
             f"status: {self._status.name}"
         )
 
-    def __getitem__(self, key: Union[int, str]) -> float:
+    def __getitem__(self, key: int | str) -> float:
         """Returns the value of the variable whose index or name is equal to ``key``.
 
         The key can be an integer or a string.
@@ -256,7 +256,7 @@ class OptimizationResult:
         return self._status
 
     @property
-    def variables(self) -> List[Variable]:
+    def variables(self) -> list[Variable]:
         """Returns the list of variables of the optimization problem.
 
         Returns:
@@ -265,7 +265,7 @@ class OptimizationResult:
         return self._variables
 
     @property
-    def variables_dict(self) -> Dict[str, float]:
+    def variables_dict(self) -> dict[str, float]:
         """Returns the variable values as a dictionary of the variable name and corresponding value.
 
         Returns:
@@ -274,7 +274,7 @@ class OptimizationResult:
         return self._variables_dict
 
     @property
-    def variable_names(self) -> List[str]:
+    def variable_names(self) -> list[str]:
         """Returns the list of variable names of the optimization problem.
 
         Returns:
@@ -283,7 +283,7 @@ class OptimizationResult:
         return self._variable_names
 
     @property
-    def samples(self) -> List[SolutionSample]:
+    def samples(self) -> list[SolutionSample]:
         """Returns the list of solution samples
 
         Returns:
@@ -320,7 +320,7 @@ class OptimizationAlgorithm(ABC):
         return len(self.get_compatibility_msg(problem)) == 0
 
     @abstractmethod
-    def solve(self, problem: QuadraticProgram) -> "OptimizationResult":
+    def solve(self, problem: QuadraticProgram) -> OptimizationResult:
         """Tries to solves the given problem using the optimizer.
 
         Runs the optimizer to try to solve the optimization problem.
@@ -358,7 +358,7 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _get_feasibility_status(
-        problem: QuadraticProgram, x: Union[List[float], np.ndarray]
+        problem: QuadraticProgram, x: list[float] | np.ndarray
     ) -> OptimizationResultStatus:
         """Returns whether the input result is feasible or not for the given problem.
 
@@ -377,9 +377,9 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _prepare_converters(
-        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None,
         penalty: float | None = None,
-    ) -> List[QuadraticProgramConverter]:
+    ) -> list[QuadraticProgramConverter]:
         """Prepare a list of converters from the input.
 
         Args:
@@ -410,7 +410,7 @@ class OptimizationAlgorithm(ABC):
     @staticmethod
     def _convert(
         problem: QuadraticProgram,
-        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]],
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter],
     ) -> QuadraticProgram:
         """Convert the problem with the converters
 
@@ -433,8 +433,8 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _check_converters(
-        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None,
-    ) -> List[QuadraticProgramConverter]:
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None,
+    ) -> list[QuadraticProgramConverter]:
         if converters is None:
             converters = []
         if not isinstance(converters, list):
@@ -448,8 +448,8 @@ class OptimizationAlgorithm(ABC):
         cls,
         x: np.ndarray,
         problem: QuadraticProgram,
-        converters: Union[QuadraticProgramConverter, List[QuadraticProgramConverter]] | None = None,
-        result_class: Type[OptimizationResult] = OptimizationResult,
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
+        result_class: type[OptimizationResult] = OptimizationResult,
         **kwargs,
     ) -> OptimizationResult:
         """Convert back the result of the converted problem to the result of the original problem.
@@ -490,13 +490,13 @@ class OptimizationAlgorithm(ABC):
     def _interpret_samples(
         cls,
         problem: QuadraticProgram,
-        raw_samples: List[SolutionSample],
+        raw_samples: list[SolutionSample],
         converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
-    ) -> Tuple[List[SolutionSample], SolutionSample]:
+    ) -> tuple[list[SolutionSample], SolutionSample]:
         """Interpret and sort all samples and return the raw sample corresponding to the best one"""
         converters = cls._check_converters(converters)
 
-        prob: Dict[Tuple, float] = {}
+        prob: dict[tuple, float] = {}
         array = {}
         index = {}
         for i, sample in enumerate(raw_samples):
@@ -524,10 +524,10 @@ class OptimizationAlgorithm(ABC):
 
     @staticmethod
     def _eigenvector_to_solutions(
-        eigenvector: Union[QuasiDistribution, Statevector, dict, np.ndarray],
+        eigenvector: QuasiDistribution | Statevector | dict | np.ndarray,
         qubo: QuadraticProgram,
         min_probability: float = _MIN_PROBABILITY,
-    ) -> List[SolutionSample]:
+    ) -> list[SolutionSample]:
         """Convert the eigenvector to the bitstrings and corresponding eigenvalues.
 
         Args:

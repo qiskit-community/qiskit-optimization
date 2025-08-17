@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,10 @@
 # that they have been altered from the originals.
 
 """Converter to convert a problem with equality constraints to unconstrained with penalty terms."""
+from __future__ import annotations
 
 import logging
-from typing import Optional, cast, Union, Tuple, List
+from typing import cast, Union
 
 import numpy as np
 
@@ -30,15 +31,15 @@ logger = logging.getLogger(__name__)
 class LinearEqualityToPenalty(QuadraticProgramConverter):
     """Convert a problem with only equality constraints to unconstrained with penalty terms."""
 
-    def __init__(self, penalty: Optional[float] = None) -> None:
+    def __init__(self, penalty: float | None = None) -> None:
         """
         Args:
             penalty: Penalty factor to scale equality constraints that are added to objective.
                      If None is passed, a penalty factor will be automatically calculated on
                      every conversion.
         """
-        self._src_num_vars: Optional[int] = None
-        self._penalty: Optional[float] = penalty
+        self._src_num_vars: int | None = None
+        self._penalty: float | None = penalty
         self._should_define_penalty: bool = penalty is None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -111,7 +112,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
                     # according to implementation of quadratic terms in OptimizationModel,
                     # don't need to multiply by 2, since loops run over (x, y) and (y, x).
-                    tup = cast(Union[Tuple[int, int], Tuple[str, str]], (j, k))
+                    tup = cast(Union[tuple[int, int], tuple[str, str]], (j, k))
                     quadratic[tup] = quadratic.get(tup, 0.0) + sense * penalty * coef_1 * coef_2
 
         if problem.objective.sense == QuadraticObjective.Sense.MINIMIZE:
@@ -156,7 +157,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         quad_b = problem.objective.quadratic.bounds
         return 1.0 + (lin_b.upperbound - lin_b.lowerbound) + (quad_b.upperbound - quad_b.lowerbound)
 
-    def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
+    def interpret(self, x: np.ndarray | list[float]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem
 
         Args:
@@ -177,7 +178,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         return np.asarray(x)
 
     @property
-    def penalty(self) -> Optional[float]:
+    def penalty(self) -> float | None:
         """Returns the penalty factor used in conversion.
 
         Returns:
@@ -186,7 +187,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
         return self._penalty
 
     @penalty.setter
-    def penalty(self, penalty: Optional[float]) -> None:
+    def penalty(self, penalty: float | None) -> None:
         """Set a new penalty factor.
 
         Args:

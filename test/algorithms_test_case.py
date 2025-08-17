@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """Algorithms Test Case"""
+from __future__ import annotations
 
-from typing import Optional
 from abc import ABC
 import warnings
 import inspect
@@ -75,7 +75,7 @@ class QiskitAlgorithmsTestCase(unittest.TestCase, ABC):
             level = logging._nameToLevel.get(os.getenv("LOG_LEVEL"), logging.INFO)
             cls.log.setLevel(level)
 
-    def get_resource_path(self, filename: str, path: Optional[str] = None) -> str:
+    def get_resource_path(self, filename: str, path: str | None = None) -> str:
         """Get the absolute path to a resource.
         Args:
             filename: filename or relative path to the resource.

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,7 +11,8 @@
 # that they have been altered from the originals.
 
 """An application class for the exact cover."""
-from typing import List, Union, cast
+from __future__ import annotations
+from typing import cast
 
 import numpy as np
 from docplex.mp.model import Model
@@ -30,7 +31,7 @@ class ExactCover(OptimizationApplication):
         https://en.wikipedia.org/wiki/Exact_cover
     """
 
-    def __init__(self, subsets: List[List[int]]) -> None:
+    def __init__(self, subsets: list[list[int]]) -> None:
         """
         Args:
             subsets: A list of subsets
@@ -39,7 +40,7 @@ class ExactCover(OptimizationApplication):
         self._set = []
         for sub in self._subsets:
             self._set.extend(sub)
-        self._set = cast(List, np.unique(self._set))
+        self._set = cast(list, np.unique(self._set))
 
     def to_quadratic_program(self) -> QuadraticProgram:
         """Convert an exact cover instance into a
@@ -59,7 +60,7 @@ class ExactCover(OptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[list[int]]:
         """Interpret a result as a list of subsets
 
         Args:

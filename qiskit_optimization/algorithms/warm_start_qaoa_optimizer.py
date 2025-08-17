@@ -11,10 +11,11 @@
 # that they have been altered from the originals.
 
 """Implementation of the warm start QAOA optimizer."""
+from __future__ import annotations
 
 import copy
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Tuple, Union, cast
+from typing import cast
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -33,7 +34,7 @@ class BaseAggregator(ABC):
     """A base abstract class for aggregates results"""
 
     @abstractmethod
-    def aggregate(self, results: List[MinimumEigenOptimizationResult]) -> List[SolutionSample]:
+    def aggregate(self, results: list[MinimumEigenOptimizationResult]) -> list[SolutionSample]:
         """
         Aggregates the results.
 
@@ -49,7 +50,7 @@ class BaseAggregator(ABC):
 class MeanAggregator(BaseAggregator):
     """Aggregates the results by averaging the probability of each sample."""
 
-    def aggregate(self, results: List[MinimumEigenOptimizationResult]) -> List[SolutionSample]:
+    def aggregate(self, results: list[MinimumEigenOptimizationResult]) -> list[SolutionSample]:
         """
         Args:
             results: List of result objects that need to be combined.
@@ -60,7 +61,7 @@ class MeanAggregator(BaseAggregator):
 
         # Use a dict for fast solution look-up
         # Key: sample code, value: tuple of fval, probability
-        dict_samples: Dict[str, Tuple[float, float]] = {}
+        dict_samples: dict[str, tuple[float, float]] = {}
 
         def _to_string(x: np.ndarray) -> str:
             return "".join(str(int(v)) for v in x)
@@ -124,7 +125,7 @@ class WarmStartQAOAFactory:
             )
         self._epsilon = epsilon
 
-    def create_initial_variables(self, solution: np.ndarray) -> List[float]:
+    def create_initial_variables(self, solution: np.ndarray) -> list[float]:
         """
         Creates initial variable values to warm start QAOA.
 
@@ -146,7 +147,7 @@ class WarmStartQAOAFactory:
 
         return initial_variables
 
-    def create_initial_state(self, initial_variables: List[float]) -> QuantumCircuit:
+    def create_initial_state(self, initial_variables: list[float]) -> QuantumCircuit:
         """
         Creates an initial state quantum circuit to warm start QAOA.
 
@@ -164,7 +165,7 @@ class WarmStartQAOAFactory:
 
         return circuit
 
-    def create_mixer(self, initial_variables: List[float]) -> QuantumCircuit:
+    def create_mixer(self, initial_variables: list[float]) -> QuantumCircuit:
         """
         Creates an evolved mixer circuit as Ry(theta)Rz(-2beta)Ry(-theta).
 
@@ -205,12 +206,10 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         qaoa: QAOA,
         epsilon: float = 0.25,
         num_initial_solutions: int = 1,
-        warm_start_factory: Optional[WarmStartQAOAFactory] = None,
-        aggregator: Optional[BaseAggregator] = None,
-        penalty: Optional[float] = None,
-        converters: Optional[
-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
-        ] = None,
+        warm_start_factory: WarmStartQAOAFactory | None = None,
+        aggregator: BaseAggregator | None = None,
+        penalty: float | None = None,
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
     ) -> None:
         """Initializes the optimizer. For correct initialization either
             ``epsilon`` or ``circuit_factory`` must be passed. If only ``epsilon`` is specified
@@ -312,7 +311,7 @@ class WarmStartQAOAOptimizer(MinimumEigenOptimizer):
         # construct operator and offset
         operator, offset = converted_problem.to_ising()
 
-        results: List[MinimumEigenOptimizationResult] = []
+        results: list[MinimumEigenOptimizationResult] = []
         for pre_solution in pre_solutions:
             # Set the solver using the result of the pre-solver.
             initial_variables = self._warm_start_factory.create_initial_variables(pre_solution.x)

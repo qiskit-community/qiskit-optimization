@@ -11,10 +11,11 @@
 # that they have been altered from the originals.
 
 """A recursive minimal eigen optimizer in Qiskit optimization module."""
+from __future__ import annotations
 
 from copy import deepcopy
 from enum import Enum
-from typing import Dict, List, Optional, Tuple, Union, cast
+from typing import cast
 
 import numpy as np
 
@@ -54,12 +55,12 @@ class RecursiveMinimumEigenOptimizationResult(OptimizationResult):
 
     def __init__(  # pylint: disable=too-many-positional-arguments
         self,
-        x: Union[List[float], np.ndarray],
+        x: list[float] | np.ndarray,
         fval: float,
-        variables: List[Variable],
+        variables: list[Variable],
         status: OptimizationResultStatus,
-        replacements: Dict[str, Tuple[str, int]],
-        history: Tuple[List[MinimumEigenOptimizationResult], OptimizationResult],
+        replacements: dict[str, tuple[str, int]],
+        history: tuple[list[MinimumEigenOptimizationResult], OptimizationResult],
     ) -> None:
         """
         Constructs an instance of the result class.
@@ -83,7 +84,7 @@ class RecursiveMinimumEigenOptimizationResult(OptimizationResult):
         self._history = history
 
     @property
-    def replacements(self) -> Dict[str, Tuple[str, int]]:
+    def replacements(self) -> dict[str, tuple[str, int]]:
         """
         Returns a dictionary of substituted variables. Key is a variable being substituted,  value
         is a tuple of substituting variable and a weight, either 1 or -1."""
@@ -92,7 +93,7 @@ class RecursiveMinimumEigenOptimizationResult(OptimizationResult):
     @property
     def history(
         self,
-    ) -> Tuple[List[MinimumEigenOptimizationResult], OptimizationResult]:
+    ) -> tuple[list[MinimumEigenOptimizationResult], OptimizationResult]:
         """
         Returns intermediate results. The first element is a list of
         :class:`~qiskit_optimization.algorithms.MinimumEigenOptimizerResult` obtained by invoking
@@ -141,12 +142,10 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
         self,
         optimizer: OptimizationAlgorithm,
         min_num_vars: int = 1,
-        min_num_vars_optimizer: Optional[OptimizationAlgorithm] = None,
-        penalty: Optional[float] = None,
-        history: Optional[IntermediateResult] = IntermediateResult.LAST_ITERATION,
-        converters: Optional[
-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
-        ] = None,
+        min_num_vars_optimizer: OptimizationAlgorithm | None = None,
+        penalty: float | None = None,
+        history: IntermediateResult | None = IntermediateResult.LAST_ITERATION,
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
     ) -> None:
         """Initializes the recursive minimum eigen optimizer.
 
@@ -224,8 +223,8 @@ class RecursiveMinimumEigenOptimizer(OptimizationAlgorithm):
         problem_ref = deepcopy(problem_)
 
         # run recursive optimization until the resulting problem is small enough
-        replacements = {}  # type: Dict[str, Tuple[str, int]]
-        optimization_results = []  # type: List[OptimizationResult]
+        replacements: dict[str, tuple[str, int]] = {}
+        optimization_results: list[OptimizationResult] = []
         while problem_.get_num_vars() > self._min_num_vars:
 
             # solve current problem with optimizer

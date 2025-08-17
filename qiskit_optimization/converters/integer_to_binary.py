@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,9 @@
 # that they have been altered from the originals.
 
 """The converter to map integer variables in a quadratic program to binary variables."""
+from __future__ import annotations
 
 import copy
-from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -46,9 +46,9 @@ class IntegerToBinary(QuadraticProgramConverter):
     _delimiter = "@"  # users are supposed not to use this character in variable names
 
     def __init__(self) -> None:
-        self._src: Optional[QuadraticProgram] = None
-        self._dst: Optional[QuadraticProgram] = None
-        self._conv: Dict[Variable, List[Tuple[str, int]]] = {}
+        self._src: QuadraticProgram | None = None
+        self._dst: QuadraticProgram | None = None
+        self._conv: dict[Variable, list[tuple[str, int]]] = {}
         # e.g., self._conv = {x: [('x@1', 1), ('x@2', 2)]}
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -97,7 +97,7 @@ class IntegerToBinary(QuadraticProgramConverter):
 
     def _convert_var(
         self, name: str, lowerbound: float, upperbound: float
-    ) -> List[Tuple[str, int]]:
+    ) -> list[tuple[str, int]]:
         var_range = upperbound - lowerbound
         power = int(np.log2(var_range)) if var_range > 0 else 0
         bounded_coef = var_range - (2**power - 1)
@@ -106,10 +106,10 @@ class IntegerToBinary(QuadraticProgramConverter):
         return [(name + self._delimiter + str(i), coef) for i, coef in enumerate(coeffs)]
 
     def _convert_linear_coefficients_dict(
-        self, coefficients: Dict[str, float]
-    ) -> Tuple[Dict[str, float], float]:
+        self, coefficients: dict[str, float]
+    ) -> tuple[dict[str, float], float]:
         constant = 0.0
-        linear: Dict[str, float] = {}
+        linear: dict[str, float] = {}
         for name, v in coefficients.items():
             x = self._src.get_variable(name)
             if x in self._conv:
@@ -122,10 +122,10 @@ class IntegerToBinary(QuadraticProgramConverter):
         return linear, constant
 
     def _convert_quadratic_coefficients_dict(
-        self, coefficients: Dict[Tuple[str, str], float]
-    ) -> Tuple[Dict[Tuple[str, str], float], Dict[str, float], float]:
+        self, coefficients: dict[tuple[str, str], float]
+    ) -> tuple[dict[tuple[str, str], float], dict[str, float], float]:
         constant = 0.0
-        linear: Dict[str, float] = {}
+        linear: dict[str, float] = {}
         quadratic = {}
         for (name_i, name_j), v in coefficients.items():
             x = self._src.get_variable(name_i)
@@ -211,7 +211,7 @@ class IntegerToBinary(QuadraticProgramConverter):
                 constraint.name,
             )
 
-    def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
+    def interpret(self, x: np.ndarray | list[float]) -> np.ndarray:
         """Convert back the converted problem (binary variables)
         to the original (integer variables).
 

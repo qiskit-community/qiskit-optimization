@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """An application class for the bin packing."""
+from __future__ import annotations
 
-from typing import List, Union, Optional
 
 import numpy as np
 from docplex.mp.model import Model
@@ -45,7 +45,7 @@ class BinPacking(OptimizationApplication):
     """
 
     def __init__(
-        self, weights: List[int], max_weight: int, max_number_of_bins: Optional[int] = None
+        self, weights: list[int], max_weight: int, max_number_of_bins: int | None = None
     ) -> None:
         """
         Args:
@@ -86,7 +86,7 @@ class BinPacking(OptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[list[int]]:
         """Interpret a result as item indices
 
         Args:
@@ -106,7 +106,7 @@ class BinPacking(OptimizationApplication):
         return items_in_bins
 
     @_optionals.HAS_MATPLOTLIB.require_in_call
-    def get_figure(self, result: Union[OptimizationResult, np.ndarray]) -> Figure:
+    def get_figure(self, result: OptimizationResult | np.ndarray) -> Figure:
         """Get plot of the solution of the Bin Packing Problem.
 
         Args:

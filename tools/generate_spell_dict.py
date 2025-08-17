@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,7 +12,6 @@
 
 """ Generates spelling dictionaries for Sphinx and Pylint and combine them. """
 
-from typing import Set, List
 import sys
 import os
 import argparse
@@ -46,10 +45,10 @@ class SpellDictGenerator:
         self._jupyter_execute_dir = os.path.join(
             self._docs_dir, SpellDictGenerator._JUPYTER_EXECUTE_DIR
         )
-        self._sphinx_words: Set[str] = set()
-        self._pylint_words: Set[str] = set()
+        self._sphinx_words: set[str] = set()
+        self._pylint_words: set[str] = set()
 
-    def generate_sphinx_spell_words(self) -> Set[str]:
+    def generate_sphinx_spell_words(self) -> set[str]:
         """
         Generates Sphinx spelling dictionary
 
@@ -89,7 +88,7 @@ class SpellDictGenerator:
                 shutil.rmtree(self._jupyter_execute_dir)
 
     @staticmethod
-    def _get_sphinx_spell_words(path: str) -> Set[str]:
+    def _get_sphinx_spell_words(path: str) -> set[str]:
         words = set()
         for item in os.listdir(path):
             fullpath = os.path.join(path, item)
@@ -104,7 +103,7 @@ class SpellDictGenerator:
         return words
 
     @staticmethod
-    def _extract_sphinx_spell_words(file_path: str) -> Set[str]:
+    def _extract_sphinx_spell_words(file_path: str) -> set[str]:
         words = set()
         with open(file_path, "rt", encoding="utf8") as file:
             for line in file:
@@ -117,7 +116,7 @@ class SpellDictGenerator:
                     words.add(word)
         return words
 
-    def generate_pylint_spell_words(self) -> Set[str]:
+    def generate_pylint_spell_words(self) -> set[str]:
         """
         Generates Pylint spelling dictionary
 
@@ -158,7 +157,7 @@ class SpellDictGenerator:
                 self._pylint_words.update(words)
         return self._pylint_words
 
-    def merge_sort_dict_to_output(self) -> List[str]:
+    def merge_sort_dict_to_output(self) -> list[str]:
         """Merge and sort Sphinx and Pylint dicts"""
         word_set = set(w.lower() for w in self._sphinx_words)
         word_set.update(w.lower() for w in self._pylint_words)

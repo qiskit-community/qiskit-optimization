@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """An application class for Traveling salesman problem (TSP)."""
-from typing import Dict, List, Optional, Union
+from __future__ import annotations
 
 import networkx as nx
 import numpy as np
@@ -72,9 +72,7 @@ class Tsp(GraphOptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(
-        self, result: Union[OptimizationResult, np.ndarray]
-    ) -> List[Union[int, List[int]]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[int | list[int]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -85,7 +83,7 @@ class Tsp(GraphOptimizationApplication):
         """
         x = self._result_to_x(result)
         n = self._graph.number_of_nodes()
-        route = []  # type: List[Union[int, List[int]]]
+        route: list[int | list[int]] = []
         for p__ in range(n):
             p_step = []
             for i in range(n):
@@ -99,8 +97,8 @@ class Tsp(GraphOptimizationApplication):
 
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 
@@ -126,7 +124,7 @@ class Tsp(GraphOptimizationApplication):
 
     @staticmethod
     # pylint: disable=undefined-variable
-    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> "Tsp":
+    def create_random_instance(n: int, low: int = 0, high: int = 100, seed: int = None) -> Tsp:
         """Create a random instance of the traveling salesman problem
 
         Args:
@@ -149,7 +147,7 @@ class Tsp(GraphOptimizationApplication):
         return Tsp(graph)
 
     @staticmethod
-    def parse_tsplib_format(filename: str) -> "Tsp":
+    def parse_tsplib_format(filename: str) -> Tsp:
         """Read a graph in TSPLIB format from file and return a Tsp instance.
 
         Only the EUC_2D edge weight format is supported.
@@ -213,7 +211,7 @@ class Tsp(GraphOptimizationApplication):
         return Tsp(graph)
 
     @staticmethod
-    def tsp_value(z: List[int], adj_matrix: np.ndarray) -> float:
+    def tsp_value(z: list[int], adj_matrix: np.ndarray) -> float:
         """Compute the TSP value of a solution.
         Args:
             z: list of cities.
