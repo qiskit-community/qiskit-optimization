@@ -103,17 +103,18 @@ class QuadraticExpression(QuadraticProgramElement):
         elif isinstance(coefficients, dict):
             coeffs: dict[tuple[int, int], float] = defaultdict(float)
             for (i, j), value in coefficients.items():
+                if value == 0:
+                    continue
                 if isinstance(i, str):
                     i = self.quadratic_program.variables_index[i]
                 if isinstance(j, str):
                     j = self.quadratic_program.variables_index[j]
                 if i > j:
                     i, j = j, i
-                if value != 0:
-                    coeffs[i, j] += value
+                coeffs[i, j] += value
             n = self.quadratic_program.get_num_vars()
             if coeffs:
-                rows, cols, values = zip(*[(i, j, v) for (i, j), v in coeffs.items()])
+                rows, cols, values = zip(*((i, j, v) for (i, j), v in coeffs.items()))
                 ret = dok_matrix(coo_matrix((values, (rows, cols)), shape=(n, n)).todok())
             else:
                 ret = dok_matrix((n, n))
