@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,9 @@
 # that they have been altered from the originals.
 
 """An abstract class for graph optimization application classes."""
+from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -29,7 +29,7 @@ class GraphOptimizationApplication(OptimizationApplication):
     An abstract class for graph optimization applications.
     """
 
-    def __init__(self, graph: Union[nx.Graph, np.ndarray, List]) -> None:
+    def __init__(self, graph: nx.Graph | np.ndarray | list) -> None:
         """
         Args:
             graph: A graph representing a problem. It can be specified directly as a
@@ -42,8 +42,8 @@ class GraphOptimizationApplication(OptimizationApplication):
     @_optionals.HAS_MATPLOTLIB.require_in_call
     def draw(
         self,
-        result: Optional[Union[OptimizationResult, np.ndarray]] = None,
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray | None = None,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw a graph with the result. When the result is None, draw an original graph without
         colors.
@@ -60,8 +60,8 @@ class GraphOptimizationApplication(OptimizationApplication):
     @abstractmethod
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 

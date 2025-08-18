@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """An application class for the number partitioning."""
+from __future__ import annotations
 
-from typing import List, Union
 
 import numpy as np
 from docplex.mp.model import Model
@@ -31,7 +31,7 @@ class NumberPartition(OptimizationApplication):
         https://en.wikipedia.org/wiki/Partition_problem
     """
 
-    def __init__(self, number_set: List[int]) -> None:
+    def __init__(self, number_set: list[int]) -> None:
         """
         Args:
             number_set: A list of integers
@@ -54,7 +54,7 @@ class NumberPartition(OptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[list[int]]:
         """Interpret a result as a list of subsets
 
         Args:
@@ -64,7 +64,7 @@ class NumberPartition(OptimizationApplication):
             A list of subsets whose sum is the half of the total.
         """
         x = self._result_to_x(result)
-        num_subsets = [[], []]  # type: List[List[int]]
+        num_subsets: list[list[int]] = [[], []]
         for i, value in enumerate(x):
             if value == 0:
                 num_subsets[0].append(self._number_set[i])

@@ -11,12 +11,13 @@
 # that they have been altered from the originals.
 
 """Quadratic Program."""
+from __future__ import annotations
 
 import logging
 from collections.abc import Sequence
 from enum import Enum
 from math import isclose
-from typing import Dict, List, Optional, Tuple, Union, cast
+from typing import cast
 from warnings import warn
 
 import numpy as np
@@ -68,14 +69,14 @@ class QuadraticProgram:
         self.name = name
         self._status = QuadraticProgram.Status.VALID
 
-        self._variables: List[Variable] = []
-        self._variables_index: Dict[str, int] = {}
+        self._variables: list[Variable] = []
+        self._variables_index: dict[str, int] = {}
 
-        self._linear_constraints: List[LinearConstraint] = []
-        self._linear_constraints_index: Dict[str, int] = {}
+        self._linear_constraints: list[LinearConstraint] = []
+        self._linear_constraints_index: dict[str, int] = {}
 
-        self._quadratic_constraints: List[QuadraticConstraint] = []
-        self._quadratic_constraints_index: Dict[str, int] = {}
+        self._quadratic_constraints: list[QuadraticConstraint] = []
+        self._quadratic_constraints_index: dict[str, int] = {}
 
         self._objective = QuadraticObjective(self)
 
@@ -155,7 +156,7 @@ class QuadraticProgram:
         return self._status
 
     @property
-    def variables(self) -> List[Variable]:
+    def variables(self) -> list[Variable]:
         """Returns the list of variables of the quadratic program.
 
         Returns:
@@ -164,7 +165,7 @@ class QuadraticProgram:
         return self._variables
 
     @property
-    def variables_index(self) -> Dict[str, int]:
+    def variables_index(self) -> dict[str, int]:
         """Returns the dictionary that maps the name of a variable to its index.
 
         Returns:
@@ -174,10 +175,10 @@ class QuadraticProgram:
 
     def _add_variable(
         self,
-        lowerbound: Union[float, int],
-        upperbound: Union[float, int],
+        lowerbound: float | int,
+        upperbound: float | int,
         vartype: VarType,
-        name: Optional[str],
+        name: str | None,
     ) -> Variable:
         if not name:
             name = "x"
@@ -188,13 +189,13 @@ class QuadraticProgram:
 
     def _add_variables(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int],
-        upperbound: Union[float, int],
+        keys: int | Sequence,
+        lowerbound: float | int,
+        upperbound: float | int,
         vartype: VarType,
-        name: Optional[str],
+        name: str | None,
         key_format: str,
-    ) -> Tuple[List[str], List[Variable]]:
+    ) -> tuple[list[str], list[Variable]]:
         if isinstance(keys, int) and keys < 1:
             raise QiskitOptimizationError(f"Cannot create non-positive number of variables: {keys}")
         if not name:
@@ -242,13 +243,13 @@ class QuadraticProgram:
 
     def _var_dict(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int],
-        upperbound: Union[float, int],
+        keys: int | Sequence,
+        lowerbound: float | int,
+        upperbound: float | int,
         vartype: VarType,
-        name: Optional[str],
+        name: str | None,
         key_format: str,
-    ) -> Dict[str, Variable]:
+    ) -> dict[str, Variable]:
         """
         Adds a positive number of variables to the variable list and index and returns a
         dictionary mapping the variable names to their instances. If 'key_format' is present,
@@ -280,13 +281,13 @@ class QuadraticProgram:
 
     def _var_list(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int],
-        upperbound: Union[float, int],
+        keys: int | Sequence,
+        lowerbound: float | int,
+        upperbound: float | int,
         vartype: VarType,
-        name: Optional[str],
+        name: str | None,
         key_format: str,
-    ) -> List[Variable]:
+    ) -> list[Variable]:
         """
         Adds a positive number of variables to the variable list and index and returns a
         list of variable instances.
@@ -314,9 +315,9 @@ class QuadraticProgram:
 
     def continuous_var(
         self,
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
-        name: Optional[str] = None,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
+        name: str | None = None,
     ) -> Variable:
         """Adds a continuous variable to the quadratic program.
 
@@ -336,12 +337,12 @@ class QuadraticProgram:
 
     def continuous_var_dict(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
-        name: Optional[str] = None,
+        keys: int | Sequence,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
+        name: str | None = None,
         key_format: str = "{}",
-    ) -> Dict[str, Variable]:
+    ) -> dict[str, Variable]:
         """
         Uses 'var_dict' to construct a dictionary of continuous variables
 
@@ -375,12 +376,12 @@ class QuadraticProgram:
 
     def continuous_var_list(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
-        name: Optional[str] = None,
+        keys: int | Sequence,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
+        name: str | None = None,
         key_format: str = "{}",
-    ) -> List[Variable]:
+    ) -> list[Variable]:
         """
         Uses 'var_list' to construct a list of continuous variables
 
@@ -407,7 +408,7 @@ class QuadraticProgram:
             keys, lowerbound, upperbound, Variable.Type.CONTINUOUS, name, key_format
         )
 
-    def binary_var(self, name: Optional[str] = None) -> Variable:
+    def binary_var(self, name: str | None = None) -> Variable:
         """Adds a binary variable to the quadratic program.
 
         Args:
@@ -424,10 +425,10 @@ class QuadraticProgram:
 
     def binary_var_dict(
         self,
-        keys: Union[int, Sequence],
-        name: Optional[str] = None,
+        keys: int | Sequence,
+        name: str | None = None,
         key_format: str = "{}",
-    ) -> Dict[str, Variable]:
+    ) -> dict[str, Variable]:
         """
         Uses 'var_dict' to construct a dictionary of binary variables
 
@@ -459,10 +460,10 @@ class QuadraticProgram:
 
     def binary_var_list(
         self,
-        keys: Union[int, Sequence],
-        name: Optional[str] = None,
+        keys: int | Sequence,
+        name: str | None = None,
         key_format: str = "{}",
-    ) -> List[Variable]:
+    ) -> list[Variable]:
         """
         Uses 'var_list' to construct a list of binary variables
 
@@ -487,9 +488,9 @@ class QuadraticProgram:
 
     def integer_var(
         self,
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
-        name: Optional[str] = None,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
+        name: str | None = None,
     ) -> Variable:
         """Adds an integer variable to the quadratic program.
 
@@ -509,12 +510,12 @@ class QuadraticProgram:
 
     def integer_var_dict(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
-        name: Optional[str] = None,
+        keys: int | Sequence,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
+        name: str | None = None,
         key_format: str = "{}",
-    ) -> Dict[str, Variable]:
+    ) -> dict[str, Variable]:
         """
         Uses 'var_dict' to construct a dictionary of integer variables
 
@@ -548,12 +549,12 @@ class QuadraticProgram:
 
     def integer_var_list(  # pylint: disable=too-many-positional-arguments
         self,
-        keys: Union[int, Sequence],
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
-        name: Optional[str] = None,
+        keys: int | Sequence,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
+        name: str | None = None,
         key_format: str = "{}",
-    ) -> List[Variable]:
+    ) -> list[Variable]:
         """
         Uses 'var_list' to construct a list of integer variables
 
@@ -578,7 +579,7 @@ class QuadraticProgram:
         """
         return self._var_list(keys, lowerbound, upperbound, Variable.Type.INTEGER, name, key_format)
 
-    def get_variable(self, i: Union[int, str]) -> Variable:
+    def get_variable(self, i: int | str) -> Variable:
         """Returns a variable for a given name or index.
 
         Args:
@@ -592,7 +593,7 @@ class QuadraticProgram:
         else:
             return self.variables[self._variables_index[i]]
 
-    def get_num_vars(self, vartype: Optional[VarType] = None) -> int:
+    def get_num_vars(self, vartype: VarType | None = None) -> int:
         """Returns the total number of variables or the number of variables of the specified type.
 
         Args:
@@ -631,7 +632,7 @@ class QuadraticProgram:
         return self.get_num_vars(Variable.Type.INTEGER)
 
     @property
-    def linear_constraints(self) -> List[LinearConstraint]:
+    def linear_constraints(self) -> list[LinearConstraint]:
         """Returns the list of linear constraints of the quadratic program.
 
         Returns:
@@ -640,7 +641,7 @@ class QuadraticProgram:
         return self._linear_constraints
 
     @property
-    def linear_constraints_index(self) -> Dict[str, int]:
+    def linear_constraints_index(self) -> dict[str, int]:
         """Returns the dictionary that maps the name of a linear constraint to its index.
 
         Returns:
@@ -650,10 +651,10 @@ class QuadraticProgram:
 
     def linear_constraint(
         self,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[int, str], float]] = None,
-        sense: Union[str, ConstraintSense] = "<=",
+        linear: ndarray | spmatrix | list[float] | dict[int | str, float] | None = None,
+        sense: str | ConstraintSense = "<=",
         rhs: float = 0.0,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> LinearConstraint:
         """Adds a linear equality constraint to the quadratic program of the form:
             ``(linear * x) sense rhs``.
@@ -693,7 +694,7 @@ class QuadraticProgram:
         self.linear_constraints.append(constraint)
         return constraint
 
-    def get_linear_constraint(self, i: Union[int, str]) -> LinearConstraint:
+    def get_linear_constraint(self, i: int | str) -> LinearConstraint:
         """Returns a linear constraint for a given name or index.
 
         Args:
@@ -720,7 +721,7 @@ class QuadraticProgram:
         return len(self._linear_constraints)
 
     @property
-    def quadratic_constraints(self) -> List[QuadraticConstraint]:
+    def quadratic_constraints(self) -> list[QuadraticConstraint]:
         """Returns the list of quadratic constraints of the quadratic program.
 
         Returns:
@@ -729,7 +730,7 @@ class QuadraticProgram:
         return self._quadratic_constraints
 
     @property
-    def quadratic_constraints_index(self) -> Dict[str, int]:
+    def quadratic_constraints_index(self) -> dict[str, int]:
         """Returns the dictionary that maps the name of a quadratic constraint to its index.
 
         Returns:
@@ -739,16 +740,13 @@ class QuadraticProgram:
 
     def quadratic_constraint(  # pylint: disable=too-many-positional-arguments
         self,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[int, str], float]] = None,
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
-        ] = None,
-        sense: Union[str, ConstraintSense] = "<=",
+        linear: ndarray | spmatrix | list[float] | dict[int | str, float] | None = None,
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float] | None
+        ) = None,
+        sense: str | ConstraintSense = "<=",
         rhs: float = 0.0,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> QuadraticConstraint:
         """Adds a quadratic equality constraint to the quadratic program of the form:
             ``(x * quadratic * x + linear * x) sense rhs``.
@@ -792,7 +790,7 @@ class QuadraticProgram:
         self.quadratic_constraints.append(constraint)
         return constraint
 
-    def get_quadratic_constraint(self, i: Union[int, str]) -> QuadraticConstraint:
+    def get_quadratic_constraint(self, i: int | str) -> QuadraticConstraint:
         """Returns a quadratic constraint for a given name or index.
 
         Args:
@@ -818,7 +816,7 @@ class QuadraticProgram:
         """
         return len(self._quadratic_constraints)
 
-    def remove_linear_constraint(self, i: Union[str, int]) -> None:
+    def remove_linear_constraint(self, i: str | int) -> None:
         """Remove a linear constraint
 
         Args:
@@ -835,7 +833,7 @@ class QuadraticProgram:
             cst.name: j for j, cst in enumerate(self._linear_constraints)
         }
 
-    def remove_quadratic_constraint(self, i: Union[str, int]) -> None:
+    def remove_quadratic_constraint(self, i: str | int) -> None:
         """Remove a quadratic constraint
 
         Args:
@@ -864,13 +862,10 @@ class QuadraticProgram:
     def minimize(
         self,
         constant: float = 0.0,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
-        ] = None,
+        linear: ndarray | spmatrix | list[float] | dict[str | int, float] | None = None,
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float] | None
+        ) = None,
     ) -> None:
         """Sets a quadratic objective to be minimized.
 
@@ -889,13 +884,10 @@ class QuadraticProgram:
     def maximize(
         self,
         constant: float = 0.0,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]] = None,
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
-        ] = None,
+        linear: ndarray | spmatrix | list[float] | dict[str | int, float] | None = None,
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float] | None
+        ) = None,
     ) -> None:
         """Sets a quadratic objective to be maximized.
 
@@ -911,7 +903,7 @@ class QuadraticProgram:
             self, constant, linear, quadratic, QuadraticObjective.Sense.MAXIMIZE
         )
 
-    def _copy_from(self, other: "QuadraticProgram", include_name: bool) -> None:
+    def _copy_from(self, other: QuadraticProgram, include_name: bool) -> None:
         """Copy another QuadraticProgram to this updating QuadraticProgramElement
 
         Note: this breaks the consistency of `other`. You cannot use `other` after the copy.
@@ -1000,9 +992,9 @@ class QuadraticProgram:
 
     def substitute_variables(
         self,
-        constants: Optional[Dict[Union[str, int], float]] = None,
-        variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
-    ) -> "QuadraticProgram":
+        constants: dict[str | int, float] | None = None,
+        variables: dict[str | int, tuple[str | int, float]] | None = None,
+    ) -> QuadraticProgram:
         """Substitutes variables with constants or other variables.
 
         Args:
@@ -1031,7 +1023,7 @@ class QuadraticProgram:
 
         return substitute_variables(self, constants, variables)
 
-    def to_ising(self) -> Tuple[SparsePauliOp, float]:
+    def to_ising(self) -> tuple[SparsePauliOp, float]:
         """Return the Ising Hamiltonian of this problem.
 
         Variables are mapped to qubits in the same order, i.e.,
@@ -1083,8 +1075,8 @@ class QuadraticProgram:
         self._copy_from(other, include_name=False)
 
     def get_feasibility_info(
-        self, x: Union[List[float], np.ndarray]
-    ) -> Tuple[bool, List[Variable], List[Constraint]]:
+        self, x: list[float] | np.ndarray
+    ) -> tuple[bool, list[Variable], list[Constraint]]:
         """Returns whether a solution is feasible or not along with the violations.
         Args:
             x: a solution value, such as returned in an optimizer result.
@@ -1112,8 +1104,8 @@ class QuadraticProgram:
 
         # check whether the input satisfy the constraints of the problem
         violated_constraints = []
-        for constraint in cast(List[Constraint], self._linear_constraints) + cast(
-            List[Constraint], self._quadratic_constraints
+        for constraint in cast(list[Constraint], self._linear_constraints) + cast(
+            list[Constraint], self._quadratic_constraints
         ):
             lhs = constraint.evaluate(x)
             if constraint.sense == ConstraintSense.LE and lhs > constraint.rhs:
@@ -1127,7 +1119,7 @@ class QuadraticProgram:
 
         return feasible, violated_variables, violated_constraints
 
-    def is_feasible(self, x: Union[List[float], np.ndarray]) -> bool:
+    def is_feasible(self, x: list[float] | np.ndarray) -> bool:
         """Returns whether a solution is feasible or not.
 
         Args:

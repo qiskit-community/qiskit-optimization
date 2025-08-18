@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """An application class for the Sherrington Kirkpatrick (SK) model."""
+from __future__ import annotations
 
-from typing import Union, List, Optional
 
 import networkx as nx
 import numpy as np
@@ -39,9 +39,7 @@ class SKModel(OptimizationApplication):
         https://arxiv.org/abs/1211.1094
     """
 
-    def __init__(
-        self, num_sites: int, rng_or_seed: Optional[Union[np.random.Generator, int]] = None
-    ):
+    def __init__(self, num_sites: int, rng_or_seed: np.random.Generator | int | None = None):
         """
         Args:
             num_sites: number of sites
@@ -87,7 +85,7 @@ class SKModel(OptimizationApplication):
         mdl.minimize(objective)
         return from_docplex_mp(mdl)
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[int]:
         """Interpret a result as configuration of spins.
 
         Args:

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """An application class for the stable set."""
+from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -53,7 +53,7 @@ class StableSet(GraphOptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[int]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -71,8 +71,8 @@ class StableSet(GraphOptimizationApplication):
 
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 

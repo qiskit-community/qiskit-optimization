@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,9 @@
 # that they have been altered from the originals.
 
 """Converters to flip problem sense, e.g. maximization to minimization and vice versa."""
+from __future__ import annotations
 
 import copy
-from typing import Optional, List, Union
 
 import numpy as np
 
@@ -28,7 +28,7 @@ class _FlipProblemSense(QuadraticProgramConverter):
     vice versa, regardless of the current sense."""
 
     def __init__(self) -> None:
-        self._src_num_vars: Optional[int] = None
+        self._src_num_vars: int | None = None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
         """Flip the sense of a problem.
@@ -72,7 +72,7 @@ class _FlipProblemSense(QuadraticProgramConverter):
         else:
             return ObjSense.MAXIMIZE
 
-    def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
+    def interpret(self, x: np.ndarray | list[float]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem.
 
         Args:

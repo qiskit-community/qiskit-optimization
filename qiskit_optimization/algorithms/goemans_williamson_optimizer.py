@@ -14,8 +14,9 @@
 Implementation of the Goemans-Williamson algorithm as an optimizer.
 Requires CVXPY to run.
 """
+from __future__ import annotations
 import logging
-from typing import Optional, List, Tuple, Union, cast
+from typing import cast
 
 import numpy as np
 
@@ -41,12 +42,12 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
 
     def __init__(  # pylint: disable=too-many-positional-arguments
         self,
-        x: Optional[Union[List[float], np.ndarray]],
+        x: list[float] | np.ndarray | None,
         fval: float,
-        variables: List[Variable],
+        variables: list[Variable],
         status: OptimizationResultStatus,
-        samples: Optional[List[SolutionSample]],
-        sdp_solution: Optional[np.ndarray] = None,
+        samples: list[SolutionSample] | None,
+        sdp_solution: np.ndarray | None = None,
     ) -> None:
         """
         Args:
@@ -61,7 +62,7 @@ class GoemansWilliamsonOptimizationResult(OptimizationResult):
         self._sdp_solution = sdp_solution
 
     @property
-    def sdp_solution(self) -> Optional[np.ndarray]:
+    def sdp_solution(self) -> np.ndarray | None:
         """
         Returns:
             Returns an SDP solution of the problem.
@@ -188,8 +189,8 @@ class GoemansWilliamsonOptimizer(OptimizationAlgorithm):
         )
 
     def _get_unique_cuts(
-        self, solutions: List[Tuple[np.ndarray, float]]
-    ) -> List[Tuple[np.ndarray, float]]:
+        self, solutions: list[tuple[np.ndarray, float]]
+    ) -> list[tuple[np.ndarray, float]]:
         """
         Returns:
             Unique Goemans-Williamson cuts.

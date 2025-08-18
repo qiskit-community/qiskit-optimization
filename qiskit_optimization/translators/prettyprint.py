@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,11 @@
 # that they have been altered from the originals.
 
 """Translate ``QuadraticProgram`` into a pretty-printed string"""
+from __future__ import annotations
 
 from io import StringIO
 from math import isclose
-from typing import List, Optional, Union, cast
+from typing import cast
 
 import numpy as np
 
@@ -30,7 +31,7 @@ from qiskit_optimization.problems import (
 DEFAULT_TRUNCATE = 50
 
 
-def _int_if_close(val: Union[int, float, np.integer, np.floating]) -> Union[int, float]:
+def _int_if_close(val: int | float | np.integer | np.floating) -> int | float:
     """Convert a value into an integer if possible
 
     Note: if abs(val) is too large, int(val) is not correct
@@ -98,7 +99,7 @@ def _check_name(name: str, name_type: str) -> None:
         raise QiskitOptimizationError(f"{name_type} name is not printable: {repr(name)}")
 
 
-def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
+def _concatenate_terms(terms: list[str], wrap: int, indent: int) -> str:
     ind = " " * indent
     if wrap == 0:
         return ind + " ".join(terms)
@@ -119,8 +120,8 @@ def _concatenate_terms(terms: List[str], wrap: int, indent: int) -> str:
 
 def expr2str(  # pylint: disable=too-many-positional-arguments
     constant: float = 0.0,
-    linear: Optional[LinearExpression] = None,
-    quadratic: Optional[QuadraticExpression] = None,
+    linear: LinearExpression | None = None,
+    quadratic: QuadraticExpression | None = None,
     truncate: int = 0,
     suffix: str = "",
     wrap: int = 0,

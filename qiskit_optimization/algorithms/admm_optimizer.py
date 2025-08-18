@@ -17,7 +17,7 @@ from __future__ import annotations
 import copy
 import logging
 import time
-from typing import List, Optional, Tuple, cast
+from typing import cast
 
 import numpy as np
 
@@ -182,7 +182,7 @@ class ADMMOptimizationResult(OptimizationResult):
         self,
         x: np.ndarray,
         fval: float,
-        variables: List[Variable],
+        variables: list[Variable],
         state: ADMMState,
         status: OptimizationResultStatus,
     ) -> None:
@@ -215,9 +215,9 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
     def __init__(
         self,
-        qubo_optimizer: Optional[OptimizationAlgorithm] = None,
-        continuous_optimizer: Optional[OptimizationAlgorithm] = None,
-        params: Optional[ADMMParameters] = None,
+        qubo_optimizer: OptimizationAlgorithm | None = None,
+        continuous_optimizer: OptimizationAlgorithm | None = None,
+        params: ADMMParameters | None = None,
     ) -> None:
         """
         Args:
@@ -400,7 +400,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         )
 
     @staticmethod
-    def _get_variable_indices(op: QuadraticProgram, var_type: VarType) -> List[int]:
+    def _get_variable_indices(op: QuadraticProgram, var_type: VarType) -> list[int]:
         """Returns a list of indices of the variables of the specified type.
 
         Args:
@@ -483,7 +483,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         # equality constraints with binary vars only
         self._state.a0, self._state.b0 = self._get_a0_b0()
 
-    def _get_step1_indices(self) -> Tuple[List[int], List[int]]:
+    def _get_step1_indices(self) -> tuple[list[int], list[int]]:
         """
         Constructs two arrays of absolute (pointing to the original problem) and relative (pointing
         to the list of all binary variables) indices of the variables considered
@@ -550,7 +550,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
         return step1_absolute_indices, step1_relative_indices
 
-    def _get_q(self, variable_indices: List[int]) -> np.ndarray:
+    def _get_q(self, variable_indices: list[int]) -> np.ndarray:
         """Constructs a quadratic matrix for the variables with the specified indices
         from the quadratic terms in the objective.
 
@@ -573,7 +573,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
 
         return q
 
-    def _get_a0_b0(self) -> Tuple[np.ndarray, np.ndarray]:
+    def _get_a0_b0(self) -> tuple[np.ndarray, np.ndarray]:
         """Constructs a matrix and a vector from the constraints in a form of Ax = b, where
         x is a vector of binary variables.
 
@@ -705,7 +705,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         x0_all_binaries[self._state.step1_relative_indices] = x0_qubo
         return x0_all_binaries
 
-    def _update_x1(self, op2: QuadraticProgram) -> Tuple[np.ndarray, np.ndarray]:
+    def _update_x1(self, op2: QuadraticProgram) -> tuple[np.ndarray, np.ndarray]:
         """Solves the Step2 QuadraticProgram via the continuous optimizer.
 
         Args:
@@ -734,7 +734,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         """
         return np.asarray(self._continuous_optimizer.solve(op3).x)
 
-    def _get_best_merit_solution(self) -> Tuple[np.ndarray, np.ndarray, float]:
+    def _get_best_merit_solution(self) -> tuple[np.ndarray, np.ndarray, float]:
         """The ADMM solution is that for which the merit value is the min
             * sol: Iterate with the min merit value
             * sol_val: Value of sol, according to the original objective
@@ -825,7 +825,7 @@ class ADMMOptimizer(OptimizationAlgorithm):
         """
         return self._state.op.objective.evaluate(self._get_current_solution())
 
-    def _get_solution_residuals(self, iteration: int) -> Tuple[float, float]:
+    def _get_solution_residuals(self, iteration: int) -> tuple[float, float]:
         """Compute primal and dual residual.
 
         Args:

@@ -13,7 +13,7 @@
 """Quantum Random Access Optimizer class."""
 from __future__ import annotations
 
-from typing import List, cast
+from typing import cast
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -227,7 +227,7 @@ class QuantumRandomAccessOptimizer(OptimizationAlgorithm):
         expectation_values: list[complex] | None = None
         if relaxed_result.aux_operators_evaluated is not None:
             expectation_values = cast(
-                List[complex], [v[0] for v in relaxed_result.aux_operators_evaluated]
+                list[complex], [v[0] for v in relaxed_result.aux_operators_evaluated]
             )
 
         # Get the circuit corresponding to the relaxed solution.

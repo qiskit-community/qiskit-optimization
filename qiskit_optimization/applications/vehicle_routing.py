@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,10 @@
 # that they have been altered from the originals.
 
 """An application class for the vehicle routing problem."""
+from __future__ import annotations
 
 import itertools
 import random
-from typing import List, Dict, Union, Optional
 
 import networkx as nx
 import numpy as np
@@ -35,7 +35,7 @@ class VehicleRouting(GraphOptimizationApplication):
 
     def __init__(
         self,
-        graph: Union[nx.Graph, np.ndarray, List],
+        graph: nx.Graph | np.ndarray | list,
         num_vehicles: int = 2,
         depot: int = 0,
     ) -> None:
@@ -103,7 +103,7 @@ class VehicleRouting(GraphOptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[List[int]]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[list[list[int]]]:
         """Interpret a result as a list of the routes for each vehicle
 
         Args:
@@ -122,7 +122,7 @@ class VehicleRouting(GraphOptimizationApplication):
                     if x[idx]:
                         edge_list.append([i, j])
                     idx += 1
-        route_list = []  # type: List[List[List[int]]]
+        route_list: list[list[list[int]]] = []
         for k in range(self.num_vehicles):
             i = 0
             start = self.depot
@@ -146,8 +146,8 @@ class VehicleRouting(GraphOptimizationApplication):
 
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 
@@ -169,12 +169,12 @@ class VehicleRouting(GraphOptimizationApplication):
             edge_cmap=mpl.colormaps["plasma"],
         )
 
-    def _edgelist(self, route_list: List[List[List[int]]]):
+    def _edgelist(self, route_list: list[list[list[int]]]):
         # Arrange route_list and return the list of the edges for the edge list of
         # nx.draw_networkx_edges
         return [edge for k in range(len(route_list)) for edge in route_list[k]]
 
-    def _edge_color(self, route_list: List[List[List[int]]]):
+    def _edge_color(self, route_list: list[list[list[int]]]):
         # Arrange route_list and return the list of the colors of each route
         # for edge_color of nx.draw_networkx_edges
         return [k / len(route_list) for k in range(len(route_list)) for edge in route_list[k]]
@@ -221,10 +221,10 @@ class VehicleRouting(GraphOptimizationApplication):
         n: int,
         low: int = 0,
         high: int = 100,
-        seed: Optional[int] = None,
+        seed: int | None = None,
         num_vehicle: int = 2,
         depot: int = 0,
-    ) -> "VehicleRouting":
+    ) -> VehicleRouting:
         """Create a random instance of the vehicle routing problem.
 
         Args:

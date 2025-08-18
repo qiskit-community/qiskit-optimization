@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,8 +12,8 @@
 
 
 """An application class for the Max-cut."""
+from __future__ import annotations
 
-from typing import List, Dict, Optional, Union
 import networkx as nx
 import numpy as np
 from docplex.mp.model import Model
@@ -55,8 +55,8 @@ class Maxcut(GraphOptimizationApplication):
 
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 
@@ -67,7 +67,7 @@ class Maxcut(GraphOptimizationApplication):
         x = self._result_to_x(result)
         nx.draw(self._graph, node_color=self._node_color(x), pos=pos, with_labels=True)
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[list[int]]:
         """Interpret a result as two lists of node indices
 
         Args:
@@ -77,7 +77,7 @@ class Maxcut(GraphOptimizationApplication):
             Two lists of node indices correspond to two node sets for the Max-cut
         """
         x = self._result_to_x(result)
-        cut = [[], []]  # type: List[List[int]]
+        cut: list[list[int]] = [[], []]
         for i, value in enumerate(x):
             if value == 0:
                 cut[0].append(i)
@@ -85,7 +85,7 @@ class Maxcut(GraphOptimizationApplication):
                 cut[1].append(i)
         return cut
 
-    def _node_color(self, x: np.ndarray) -> List[str]:
+    def _node_color(self, x: np.ndarray) -> list[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.
@@ -124,7 +124,7 @@ class Maxcut(GraphOptimizationApplication):
         return w
 
     @staticmethod
-    def get_gset_result(x: np.ndarray) -> Dict[int, int]:
+    def get_gset_result(x: np.ndarray) -> dict[int, int]:
         """Get graph solution in Gset format from binary string.
 
         Args:
