@@ -101,7 +101,7 @@ class QuadraticExpression(QuadraticProgramElement):
         if isinstance(coefficients, (list, ndarray, spmatrix)):
             return self._triangle_matrix(dok_matrix(coefficients))
         elif isinstance(coefficients, dict):
-            coeffs = defaultdict(float)
+            coeffs: dict[tuple[int, int], float] = defaultdict(float)
             for (i, j), value in coefficients.items():
                 if isinstance(i, str):
                     i = self.quadratic_program.variables_index[i]
