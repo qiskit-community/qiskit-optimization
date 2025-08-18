@@ -3,3 +3,6 @@ features:
   - |
     Improved the performance of :meth:`.QuadraticExpression.coefficients` setter,
     resulting in execution across various converters - particularly in :class:`.LinearEqualityToPenalty`.
+  - |
+    Improved the performance of :meth:`.LinearEqualityToPenalty.convert`.
+
