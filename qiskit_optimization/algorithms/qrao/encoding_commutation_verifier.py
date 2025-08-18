@@ -17,7 +17,7 @@ from __future__ import annotations
 import warnings
 
 from qiskit.passmanager import BasePassManager
-from qiskit.primitives import BaseEstimatorV1, BaseEstimatorV2
+from qiskit.primitives import BaseEstimatorV1, BaseEstimatorV2, StatevectorEstimator
 
 from qiskit_optimization.exceptions import QiskitOptimizationError
 
@@ -47,6 +47,19 @@ class EncodingCommutationVerifier:
             warnings.warn(
                 "Using Estimator V1 is deprecated since 0.7.0. Instead use Estimator V2.",
                 category=DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if (
+            isinstance(estimator, BaseEstimatorV2)
+            and not isinstance(estimator, StatevectorEstimator)
+            and pass_manager is None
+        ):
+            warnings.warn(
+                "Using Estimator V2 (other than StatevectorEstimator) without a pass_manager "
+                "may result in an error. Consider providing a pass_manager for proper "
+                "circuit transpilation.",
+                category=UserWarning,
                 stacklevel=2,
             )
 

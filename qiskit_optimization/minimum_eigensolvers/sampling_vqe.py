@@ -23,7 +23,7 @@ from typing import Any
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
-from qiskit.primitives import BaseSamplerV1, BaseSamplerV2
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, StatevectorSampler
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.result import QuasiDistribution
 
@@ -37,10 +37,7 @@ from ..utils.set_batching import _set_default_batchsize
 from .diagonal_estimator import _DiagonalEstimator
 from .list_or_dict import ListOrDict
 from .observables_evaluator import estimate_observables
-from .sampling_mes import (
-    SamplingMinimumEigensolver,
-    SamplingMinimumEigensolverResult,
-)
+from .sampling_mes import SamplingMinimumEigensolver, SamplingMinimumEigensolverResult
 from .variational_algorithm import VariationalAlgorithm, VariationalResult
 
 logger = logging.getLogger(__name__)
@@ -154,6 +151,19 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             warnings.warn(
                 "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
                 category=DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if (
+            isinstance(sampler, BaseSamplerV2)
+            and not isinstance(sampler, StatevectorSampler)
+            and pass_manager is None
+        ):
+            warnings.warn(
+                "Using Sampler V2 (other than StatevectorSampler) without a pass_manager "
+                "may result in an error. Consider providing a pass_manager for proper "
+                "circuit transpilation.",
+                category=UserWarning,
                 stacklevel=2,
             )
 

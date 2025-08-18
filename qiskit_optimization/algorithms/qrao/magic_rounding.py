@@ -19,7 +19,7 @@ from collections import defaultdict
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.passmanager import BasePassManager
-from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, SamplerResult, StatevectorSampler
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_optimization import AlgorithmError
@@ -107,6 +107,15 @@ class MagicRounding(RoundingScheme):
                 )
             self._shots = sampler.options.shots
         else:  # BaseSamplerV2
+            if not isinstance(sampler, StatevectorSampler) and pass_manager is None:
+                warnings.warn(
+                    "Using Sampler V2 (other than StatevectorSampler) without a pass_manager "
+                    "may result in an error. Consider providing a pass_manager for proper "
+                    "circuit transpilation.",
+                    category=UserWarning,
+                    stacklevel=2,
+                )
+
             if self._sampler.default_shots is None:
                 raise ValueError(
                     "Magic rounding requires a sampler configured with a number of shots."
