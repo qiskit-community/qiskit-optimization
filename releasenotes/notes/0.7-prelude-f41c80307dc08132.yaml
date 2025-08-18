@@ -17,7 +17,7 @@ prelude: >
     are now maintained directly within qiskit-optimization, ensuring consistent updates 
     and optimization-specific enhancements.
     
-    While V1 Primitives remain functional with deprecation warnings, users are strongly 
+    While V1 Primitive usage remains functional, with deprecation warnings, users are strongly 
     encouraged to migrate to V2 Primitives for optimal performance. The migration is 
     straightforward but requires attention to pass manager requirements for hardware and 
     simulator backends.

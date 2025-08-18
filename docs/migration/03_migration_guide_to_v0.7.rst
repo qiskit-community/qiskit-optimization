@@ -30,7 +30,7 @@ The main differences between V1 and V2 Primitives are:
 Key Changes
 -----------
 
-V1 Primitives are deprecated as of Qiskit Optimization v0.7.0 and will be removed in a future release. 
+V1 Primitive usage is deprecated as of Qiskit Optimization v0.7.0 and will be removed in a future release. 
 All algorithms now support both V1 and V2 Primitives with automatic detection and appropriate warnings.
 
 Migration from qiskit-algorithms to qiskit-optimization
