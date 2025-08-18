@@ -11,8 +11,9 @@
 # that they have been altered from the originals.
 
 """The COBYLA optimizer wrapped to be used within Qiskit optimization module."""
+from __future__ import annotations
 
-from typing import Optional, cast, List, Tuple, Any
+from typing import cast, Any
 
 import numpy as np
 from scipy.optimize import fmin_cobyla
@@ -48,7 +49,7 @@ class CobylaOptimizer(MultiStartOptimizer):
         rhobeg: float = 1.0,
         rhoend: float = 1e-4,
         maxfun: int = 1000,
-        disp: Optional[int] = None,
+        disp: int | None = None,
         catol: float = 2e-4,
         trials: int = 1,
         clip: float = 100.0,
@@ -145,8 +146,8 @@ class CobylaOptimizer(MultiStartOptimizer):
 
         # pylint: disable=no-member
         # add linear and quadratic constraints
-        for constraint in cast(List[Constraint], problem.linear_constraints) + cast(
-            List[Constraint], problem.quadratic_constraints
+        for constraint in cast(list[Constraint], problem.linear_constraints) + cast(
+            list[Constraint], problem.quadratic_constraints
         ):
             rhs = constraint.rhs
             sense = constraint.sense
@@ -164,7 +165,7 @@ class CobylaOptimizer(MultiStartOptimizer):
                 raise QiskitOptimizationError("Unsupported constraint type!")
 
         # actual minimization function to be called by multi_start_solve
-        def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
+        def _minimize(x_0: np.ndarray) -> tuple[np.ndarray, Any]:
             x = fmin_cobyla(
                 problem.objective.evaluate,
                 x_0,

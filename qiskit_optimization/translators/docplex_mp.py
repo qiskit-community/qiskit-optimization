@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,10 @@
 # that they have been altered from the originals.
 
 """Translator between a docplex.mp model and a quadratic program"""
+from __future__ import annotations
 
 from math import isclose
-from typing import Any, Dict, Optional, Tuple, cast
+from typing import Any, cast
 from warnings import warn
 
 from docplex.mp.basic import Expr
@@ -144,8 +145,8 @@ class _FromDocplexMp:
         """
         self._model: Model = model
         self._quadratic_program: QuadraticProgram = QuadraticProgram()
-        self._var_names: Dict[Var, str] = {}
-        self._var_bounds: Dict[str, Tuple[float, float]] = {}
+        self._var_names: dict[Var, str] = {}
+        self._var_bounds: dict[str, tuple[float, float]] = {}
 
     def _variables(self):
         # keep track of names separately, since docplex allows to have None names.
@@ -161,7 +162,7 @@ class _FromDocplexMp:
             self._var_names[x] = x_new.name
             self._var_bounds[x.name] = (x_new.lowerbound, x_new.upperbound)
 
-    def _linear_expr(self, expr: AbstractLinearExpr) -> Dict[str, float]:
+    def _linear_expr(self, expr: AbstractLinearExpr) -> dict[str, float]:
         # AbstractLinearExpr is a parent of LinearExpr, ConstantExpr, and ZeroExpr
         linear = {}
         for x, coeff in expr.iter_terms():
@@ -170,7 +171,7 @@ class _FromDocplexMp:
 
     def _quadratic_expr(
         self, expr: QuadExpr
-    ) -> Tuple[Dict[str, float], Dict[Tuple[str, str], float]]:
+    ) -> tuple[dict[str, float], dict[tuple[str, str], float]]:
         linear = self._linear_expr(expr.get_linear_part())
         quad = {}
         for x, y, coeff in expr.iter_quad_triplets():
@@ -179,7 +180,7 @@ class _FromDocplexMp:
             quad[i, j] = coeff
         return linear, quad
 
-    def quadratic_program(self, indicator_big_m: Optional[float]) -> QuadraticProgram:
+    def quadratic_program(self, indicator_big_m: float | None) -> QuadraticProgram:
         """Generate a quadratic program corresponding to the input Docplex model.
 
         Args:
@@ -245,7 +246,7 @@ class _FromDocplexMp:
         return self._quadratic_program
 
     @staticmethod
-    def _subtract(dict1: Dict[Any, float], dict2: Dict[Any, float]) -> Dict[Any, float]:
+    def _subtract(dict1: dict[Any, float], dict2: dict[Any, float]) -> dict[Any, float]:
         """Calculate dict1 - dict2"""
         ret = dict1.copy()
         for key, val2 in dict2.items():
@@ -261,7 +262,7 @@ class _FromDocplexMp:
 
     def _linear_constraint(
         self, constraint: LinearConstraint
-    ) -> Tuple[Dict[str, float], str, float]:
+    ) -> tuple[dict[str, float], str, float]:
         left_expr = constraint.get_left_expr()
         right_expr = constraint.get_right_expr()
         # for linear constraints we may get an instance of Var instead of expression,
@@ -289,7 +290,7 @@ class _FromDocplexMp:
 
     def _quadratic_constraint(
         self, constraint: QuadraticConstraint
-    ) -> Tuple[Dict[str, float], Dict[Tuple[str, str], float], str, float]:
+    ) -> tuple[dict[str, float], dict[tuple[str, str], float], str, float]:
         left_expr = constraint.get_left_expr()
         right_expr = constraint.get_right_expr()
         if not isinstance(left_expr, (Expr, Var)):
@@ -322,7 +323,7 @@ class _FromDocplexMp:
         rhs = right_expr.constant - left_expr.constant
         return linear, quadratic, self._sense_dict[constraint.sense], rhs
 
-    def _linear_bounds(self, linear: Dict[str, float]):
+    def _linear_bounds(self, linear: dict[str, float]):
         linear_lb = 0.0
         linear_ub = 0.0
         for var_name, val in linear.items():
@@ -337,7 +338,7 @@ class _FromDocplexMp:
         self,
         constraint: IndicatorConstraint,
         name: str,
-        indicator_big_m: Optional[float] = None,
+        indicator_big_m: float | None = None,
     ):
         binary_var = constraint.binary_var
         active_value = constraint.active_value
@@ -376,7 +377,7 @@ class _FromDocplexMp:
         return ret
 
 
-def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> QuadraticProgram:
+def from_docplex_mp(model: Model, indicator_big_m: float | None = None) -> QuadraticProgram:
     """Translate a docplex.mp model into a quadratic program.
 
     Note that this supports the following features of docplex:

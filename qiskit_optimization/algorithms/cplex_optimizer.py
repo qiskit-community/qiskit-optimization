@@ -11,8 +11,9 @@
 # that they have been altered from the originals.
 
 """The CPLEX optimizer wrapped to be used within Qiskit optimization module."""
+from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 from warnings import warn
 
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
@@ -41,9 +42,7 @@ class CplexOptimizer(OptimizationAlgorithm):
         >>> if optimizer: result = optimizer.solve(problem)
     """
 
-    def __init__(
-        self, disp: bool = False, cplex_parameters: Optional[Dict[str, Any]] = None
-    ) -> None:
+    def __init__(self, disp: bool = False, cplex_parameters: dict[str, Any] | None = None) -> None:
         """Initializes the CplexOptimizer.
 
         Args:
@@ -77,12 +76,12 @@ class CplexOptimizer(OptimizationAlgorithm):
         self._disp = disp
 
     @property
-    def cplex_parameters(self) -> Optional[Dict[str, Any]]:
+    def cplex_parameters(self) -> dict[str, Any] | None:
         """Returns parameters for CPLEX"""
         return self._cplex_parameters
 
     @cplex_parameters.setter
-    def cplex_parameters(self, parameters: Optional[Dict[str, Any]]):
+    def cplex_parameters(self, parameters: dict[str, Any] | None):
         """Set parameters for CPLEX
         Args:
             parameters: The parameters for CPLEX

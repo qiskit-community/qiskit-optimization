@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,12 +11,13 @@
 # that they have been altered from the originals.
 
 """Substitute variables of QuadraticProgram."""
+from __future__ import annotations
 
 import logging
 from collections import defaultdict
 from dataclasses import dataclass
 from math import isclose
-from typing import Dict, Optional, Tuple, Union, cast
+from typing import cast
 
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
@@ -40,14 +41,14 @@ class SubstitutionExpression:
     """Constant value"""
     coeff: float = 0.0
     """Coefficient of the new variable"""
-    variable: Optional[str] = None
+    variable: str | None = None
     """Variable name or `None`"""
 
 
 def substitute_variables(
     quadratic_program: QuadraticProgram,
-    constants: Optional[Dict[Union[str, int], float]] = None,
-    variables: Optional[Dict[Union[str, int], Tuple[Union[str, int], float]]] = None,
+    constants: dict[str | int, float] | None = None,
+    variables: dict[str | int, tuple[str | int, float]] | None = None,
 ) -> QuadraticProgram:
     """Substitutes variables with constants or other variables.
 
@@ -115,12 +116,12 @@ class _SubstituteVariables:
     variables"""
 
     def __init__(self) -> None:
-        self._src: Optional[QuadraticProgram] = None
-        self._dst: Optional[QuadraticProgram] = None
-        self._subs: Dict[str, SubstitutionExpression] = {}
+        self._src: QuadraticProgram | None = None
+        self._dst: QuadraticProgram | None = None
+        self._subs: dict[str, SubstitutionExpression] = {}
 
     def substitute_variables(
-        self, quadratic_program: QuadraticProgram, subs: Dict[str, SubstitutionExpression]
+        self, quadratic_program: QuadraticProgram, subs: dict[str, SubstitutionExpression]
     ) -> QuadraticProgram:
         """Substitutes variables with constants or other variables.
 
@@ -220,9 +221,9 @@ class _SubstituteVariables:
 
         return feasible
 
-    def _linear_expression(self, lin_expr: LinearExpression) -> Tuple[float, LinearExpression]:
+    def _linear_expression(self, lin_expr: LinearExpression) -> tuple[float, LinearExpression]:
         const = 0.0
-        lin_dict: Dict[str, float] = defaultdict(float)
+        lin_dict: dict[str, float] = defaultdict(float)
         for i, w_i in lin_expr.to_dict(use_name=True).items():
             i = cast(str, i)
             expr_i = self._subs.get(i, SubstitutionExpression(coeff=1, variable=i))
@@ -236,10 +237,10 @@ class _SubstituteVariables:
 
     def _quadratic_expression(
         self, quad_expr: QuadraticExpression
-    ) -> Tuple[float, Optional[LinearExpression], Optional[QuadraticExpression]]:
+    ) -> tuple[float, LinearExpression | None, QuadraticExpression | None]:
         const = 0.0
-        lin_dict: Dict[str, float] = defaultdict(float)
-        quad_dict: Dict[Tuple[str, str], float] = defaultdict(float)
+        lin_dict: dict[str, float] = defaultdict(float)
+        quad_dict: dict[tuple[str, str], float] = defaultdict(float)
         for (i, j), w_ij in quad_expr.to_dict(use_name=True).items():
             i = cast(str, i)
             j = cast(str, j)

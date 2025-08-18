@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 """An application class for the Knapsack problem"""
-from typing import List, Union
+from __future__ import annotations
 
 import numpy as np
 from docplex.mp.model import Model
@@ -30,7 +30,7 @@ class Knapsack(OptimizationApplication):
         https://en.wikipedia.org/wiki/Knapsack_problem
     """
 
-    def __init__(self, values: List[int], weights: List[int], max_weight: int) -> None:
+    def __init__(self, values: list[int], weights: list[int], max_weight: int) -> None:
         """
         Args:
             values: A list of the values of items
@@ -56,7 +56,7 @@ class Knapsack(OptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[int]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[int]:
         """Interpret a result as item indices
 
         Args:

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,11 +13,12 @@
 """Defines an abstract class for multi start optimizers. A multi start optimizer is an optimizer
 that may run minimization algorithm for the several time with different initial guesses to achieve
 better results. This implementation is suitable for local optimizers."""
+from __future__ import annotations
 
 import logging
 import time
 from abc import ABC
-from typing import Callable, Tuple, Any, Optional
+from typing import Callable, Any
 
 import numpy as np
 from scipy.stats import uniform
@@ -63,7 +64,7 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
 
     def multi_start_solve(
         self,
-        minimize: Callable[[np.ndarray], Tuple[np.ndarray, Any]],
+        minimize: Callable[[np.ndarray], tuple[np.ndarray, Any]],
         problem: QuadraticProgram,
     ) -> OptimizationResult:
         """Applies a multi start method given a local optimizer.
@@ -76,8 +77,8 @@ class MultiStartOptimizer(OptimizationAlgorithm, ABC):
             The result of the multi start algorithm applied to the problem.
         """
         fval_sol = INFINITY
-        x_sol: Optional[np.ndarray] = None
-        rest_sol: Optional[Tuple] = None
+        x_sol: np.ndarray | None = None
+        rest_sol: tuple | None = None
 
         # we deal with minimization in the optimizer, so turn the problem to minimization
         max2min = MaximizeToMinimize()

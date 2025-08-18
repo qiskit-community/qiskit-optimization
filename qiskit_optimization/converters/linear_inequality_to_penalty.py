@@ -11,9 +11,9 @@
 # that they have been altered from the originals.
 
 """Converter to convert a problem with inequality constraints to unconstrained with penalty terms."""
+from __future__ import annotations
 
 import logging
-from typing import Optional, Union, Tuple, List, Dict
 
 import numpy as np
 
@@ -56,7 +56,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
 
     """
 
-    def __init__(self, penalty: Optional[float] = None) -> None:
+    def __init__(self, penalty: float | None = None) -> None:
         """
         Args:
             penalty: Penalty factor to scale equality constraints that are added to objective.
@@ -64,9 +64,9 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
                      every conversion.
         """
 
-        self._src_num_vars: Optional[int] = None
-        self._dst: Optional[QuadraticProgram] = None
-        self._penalty: Optional[float] = penalty
+        self._src_num_vars: int | None = None
+        self._dst: QuadraticProgram | None = None
+        self._penalty: float | None = penalty
         self._should_define_penalty: bool = penalty is None
 
     def convert(self, problem: QuadraticProgram) -> QuadraticProgram:
@@ -184,7 +184,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
     @staticmethod
     def _conversion_table(
         constraint,
-    ) -> Tuple[int, np.ndarray, np.ndarray, Dict[int, int]]:
+    ) -> tuple[int, np.ndarray, np.ndarray, dict[int, int]]:
         """Construct conversion matrix for special constraint.
 
         Returns:
@@ -310,7 +310,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         quad_b = problem.objective.quadratic.bounds
         return 1.0 + (lin_b.upperbound - lin_b.lowerbound) + (quad_b.upperbound - quad_b.lowerbound)
 
-    def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
+    def interpret(self, x: np.ndarray | list[float]) -> np.ndarray:
         """Convert the result of the converted problem back to that of the original problem
 
         Args:
@@ -332,7 +332,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         return np.asarray(x)
 
     @property
-    def penalty(self) -> Optional[float]:
+    def penalty(self) -> float | None:
         """Returns the penalty factor used in conversion.
 
         Returns:
@@ -342,7 +342,7 @@ class LinearInequalityToPenalty(QuadraticProgramConverter):
         return self._penalty
 
     @penalty.setter
-    def penalty(self, penalty: Optional[float]) -> None:
+    def penalty(self, penalty: float | None) -> None:
         """Set a new penalty factor.
 
         Args:

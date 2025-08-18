@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,9 @@
 # that they have been altered from the originals.
 
 """An abstract class for optimization application classes."""
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from typing import Dict, Union
 
 import numpy as np
 from qiskit.quantum_info import Statevector
@@ -36,7 +36,7 @@ class OptimizationApplication(ABC):
         pass
 
     @abstractmethod
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]):
+    def interpret(self, result: OptimizationResult | np.ndarray):
         """Convert the calculation result of the problem
         (:class:`~qiskit_optimization.algorithms.OptimizationResult` or a binary array using
         np.ndarray) to the answer of the problem in an easy-to-understand format.
@@ -46,7 +46,7 @@ class OptimizationApplication(ABC):
         """
         pass
 
-    def _result_to_x(self, result: Union[OptimizationResult, np.ndarray]) -> np.ndarray:
+    def _result_to_x(self, result: OptimizationResult | np.ndarray) -> np.ndarray:
         # Return result.x for OptimizationResult and return result itself for np.ndarray
         if isinstance(result, OptimizationResult):
             x = result.x
@@ -61,7 +61,7 @@ class OptimizationApplication(ABC):
 
     @staticmethod
     def sample_most_likely(
-        state_vector: Union[QuasiDistribution, Statevector, np.ndarray, Dict]
+        state_vector: QuasiDistribution | Statevector | np.ndarray | dict,
     ) -> np.ndarray:
         """Compute the most likely binary string from state vector.
 

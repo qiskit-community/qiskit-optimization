@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """An application class for the graph partitioning."""
+from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -53,7 +53,7 @@ class GraphPartition(GraphOptimizationApplication):
         op = from_docplex_mp(mdl)
         return op
 
-    def interpret(self, result: Union[OptimizationResult, np.ndarray]) -> List[List[int]]:
+    def interpret(self, result: OptimizationResult | np.ndarray) -> list[list[int]]:
         """Interpret a result as a list of node indices
 
         Args:
@@ -63,7 +63,7 @@ class GraphPartition(GraphOptimizationApplication):
             A list of node indices divided into two groups.
         """
         x = self._result_to_x(result)
-        partition = [[], []]  # type: List[List[int]]
+        partition: list[list[int]] = [[], []]
         for i, value in enumerate(x):
             if value == 0:
                 partition[0].append(i)
@@ -73,8 +73,8 @@ class GraphPartition(GraphOptimizationApplication):
 
     def _draw_result(
         self,
-        result: Union[OptimizationResult, np.ndarray],
-        pos: Optional[Dict[int, np.ndarray]] = None,
+        result: OptimizationResult | np.ndarray,
+        pos: dict[int, np.ndarray] | None = None,
     ) -> None:
         """Draw the result with colors
 
@@ -85,7 +85,7 @@ class GraphPartition(GraphOptimizationApplication):
         x = self._result_to_x(result)
         nx.draw(self._graph, node_color=self._node_colors(x), pos=pos, with_labels=True)
 
-    def _node_colors(self, x: np.ndarray) -> List[str]:
+    def _node_colors(self, x: np.ndarray) -> list[str]:
         # Return a list of strings for draw.
         # Color a node with red when the corresponding variable is 1.
         # Otherwise color it with blue.

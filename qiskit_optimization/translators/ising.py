@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,7 +13,6 @@
 """Translator between an Ising Hamiltonian and a quadratic program"""
 
 import math
-from typing import Tuple
 
 import numpy as np
 from qiskit.quantum_info import Pauli, SparsePauliOp
@@ -23,7 +22,7 @@ from qiskit_optimization.exceptions import QiskitOptimizationError
 from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
-def to_ising(quad_prog: QuadraticProgram) -> Tuple[SparsePauliOp, float]:
+def to_ising(quad_prog: QuadraticProgram) -> tuple[SparsePauliOp, float]:
     """Return the Ising Hamiltonian of this problem.
 
     Variables are mapped to qubits in the same order, i.e.,

@@ -11,7 +11,8 @@
 # that they have been altered from the originals.
 
 """A wrapper for minimum eigen solvers to be used within the optimization module."""
-from typing import List, Optional, Union, cast
+from __future__ import annotations
+from typing import Union, cast
 
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
@@ -41,13 +42,13 @@ class MinimumEigenOptimizationResult(OptimizationResult):
 
     def __init__(  # pylint: disable=too-many-positional-arguments
         self,
-        x: Optional[Union[List[float], np.ndarray]],
-        fval: Optional[float],
-        variables: List[Variable],
+        x: list[float] | np.ndarray | None,
+        fval: float | None,
+        variables: list[Variable],
         status: OptimizationResultStatus,
-        samples: Optional[List[SolutionSample]] = None,
-        min_eigen_solver_result: Optional[MinimumEigensolverResult] = None,
-        raw_samples: Optional[List[SolutionSample]] = None,
+        samples: list[SolutionSample] | None = None,
+        min_eigen_solver_result: MinimumEigensolverResult | None = None,
+        raw_samples: list[SolutionSample] | None = None,
     ) -> None:
         """
         Args:
@@ -79,7 +80,7 @@ class MinimumEigenOptimizationResult(OptimizationResult):
         return self._min_eigen_solver_result
 
     @property
-    def raw_samples(self) -> Optional[List[SolutionSample]]:
+    def raw_samples(self) -> list[SolutionSample] | None:
         """Returns the list of raw solution samples of
         ``SamplingMinimumEigensolver`` or ``NumPyMinimumEigensolver``.
 
@@ -123,10 +124,8 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
     def __init__(
         self,
         min_eigen_solver: MinimumEigensolver,
-        penalty: Optional[float] = None,
-        converters: Optional[
-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
-        ] = None,
+        penalty: float | None = None,
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
     ) -> None:
         """
         This initializer takes the minimum eigen solver to be used to approximate the ground state
@@ -212,7 +211,7 @@ class MinimumEigenOptimizer(OptimizationAlgorithm):
         original_problem: QuadraticProgram,
     ):
         # only try to solve non-empty Ising Hamiltonians
-        eigen_result: Optional[MinimumEigensolverResult] = None
+        eigen_result: MinimumEigensolverResult | None = None
         if operator.num_qubits > 0:
             # approximate ground state of operator using min eigen solver
             eigen_result = self._min_eigen_solver.compute_minimum_eigenvalue(operator)

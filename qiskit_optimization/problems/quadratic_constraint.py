@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,9 @@
 # that they have been altered from the originals.
 
 """Quadratic Constraint."""
+from __future__ import annotations
 
-from typing import Union, List, Dict, Tuple, Any
+from typing import Any
 
 from numpy import ndarray
 from scipy.sparse import spmatrix
@@ -32,13 +33,10 @@ class QuadraticConstraint(Constraint):
         self,
         quadratic_program: Any,
         name: str,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
-        ],
+        linear: ndarray | spmatrix | list[float] | dict[str | int, float],
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float]
+        ),
         sense: ConstraintSense,
         rhs: float,
     ) -> None:
@@ -68,7 +66,7 @@ class QuadraticConstraint(Constraint):
     @linear.setter
     def linear(
         self,
-        linear: Union[ndarray, spmatrix, List[float], Dict[Union[str, int], float]],
+        linear: ndarray | spmatrix | list[float] | dict[str | int, float],
     ) -> None:
         """Sets the linear expression corresponding to the left-hand-side of the constraint.
         The coefficients can either be given by an array, a (sparse) 1d matrix, a list or a
@@ -92,12 +90,9 @@ class QuadraticConstraint(Constraint):
     @quadratic.setter
     def quadratic(
         self,
-        quadratic: Union[
-            ndarray,
-            spmatrix,
-            List[List[float]],
-            Dict[Tuple[Union[int, str], Union[int, str]], float],
-        ],
+        quadratic: (
+            ndarray | spmatrix | list[list[float]] | dict[tuple[int | str, int | str], float]
+        ),
     ) -> None:
         """Sets the quadratic expression corresponding to the left-hand-side of the constraint.
         The coefficients can either be given by an array, a (sparse) matrix, a list or a
@@ -108,7 +103,7 @@ class QuadraticConstraint(Constraint):
         """
         self._quadratic = QuadraticExpression(self.quadratic_program, quadratic)
 
-    def evaluate(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> float:
+    def evaluate(self, x: ndarray | list | dict[int | str, float]) -> float:
         """Evaluate the left-hand-side of the constraint.
 
         Args:

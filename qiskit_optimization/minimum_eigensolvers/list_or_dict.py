@@ -12,7 +12,7 @@
 
 """Introduced new type to maintain readability."""
 
-from typing import Dict, List, Optional, TypeVar, Union
+from typing import Optional, TypeVar, Union
 
 _T = TypeVar("_T")  # Pylint does not allow single character class names.
-ListOrDict = Union[List[Optional[_T]], Dict[str, _T]]
+ListOrDict = Union[list[Optional[_T]], dict[str, _T]]

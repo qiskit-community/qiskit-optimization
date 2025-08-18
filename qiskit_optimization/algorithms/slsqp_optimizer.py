@@ -11,7 +11,8 @@
 # that they have been altered from the originals.
 
 """The SLSQP optimizer wrapped to be used within Qiskit optimization module."""
-from typing import List, cast, Tuple, Any, Union, Optional
+from __future__ import annotations
+from typing import cast, Any
 
 import numpy as np
 from scipy.optimize import fmin_slsqp
@@ -32,14 +33,14 @@ class SlsqpOptimizationResult(OptimizationResult):
 
     def __init__(  # pylint: disable=too-many-positional-arguments
         self,
-        x: Union[List[float], np.ndarray],
+        x: list[float] | np.ndarray,
         fval: float,
-        variables: List[Variable],
+        variables: list[Variable],
         status: OptimizationResultStatus,
-        fx: Optional[np.ndarray] = None,
-        its: Optional[int] = None,
-        imode: Optional[int] = None,
-        smode: Optional[str] = None,
+        fx: np.ndarray | None = None,
+        its: int | None = None,
+        imode: int | None = None,
+        smode: str | None = None,
     ) -> None:
         """
         Constructs a result object with properties specific to SLSQP.
@@ -63,22 +64,22 @@ class SlsqpOptimizationResult(OptimizationResult):
 
     # pylint:disable=invalid-name
     @property
-    def fx(self) -> Optional[np.ndarray]:
+    def fx(self) -> np.ndarray | None:
         """Returns the final value of the objective function being actually optimized."""
         return self._fx
 
     @property
-    def its(self) -> Optional[int]:
+    def its(self) -> int | None:
         """Returns the number of iterations"""
         return self._its
 
     @property
-    def imode(self) -> Optional[int]:
+    def imode(self) -> int | None:
         """Returns the exit mode from the optimizer."""
         return self._imode
 
     @property
-    def smode(self) -> Optional[str]:
+    def smode(self) -> str | None:
         """Returns message describing the exit mode from the optimizer."""
         return self._smode
 
@@ -199,8 +200,8 @@ class SlsqpOptimizer(MultiStartOptimizer):
 
         # pylint: disable=no-member
         # add linear and quadratic constraints
-        for constraint in cast(List[Constraint], problem.linear_constraints) + cast(
-            List[Constraint], problem.quadratic_constraints
+        for constraint in cast(list[Constraint], problem.linear_constraints) + cast(
+            list[Constraint], problem.quadratic_constraints
         ):
             rhs = constraint.rhs
             sense = constraint.sense
@@ -215,7 +216,7 @@ class SlsqpOptimizer(MultiStartOptimizer):
                 raise QiskitOptimizationError("Unsupported constraint type!")
 
         # actual minimization function to be called by multi_start_solve
-        def _minimize(x_0: np.ndarray) -> Tuple[np.ndarray, Any]:
+        def _minimize(x_0: np.ndarray) -> tuple[np.ndarray, Any]:
             output = fmin_slsqp(
                 problem.objective.evaluate,
                 x_0,

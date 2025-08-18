@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,9 +11,10 @@
 # that they have been altered from the originals.
 
 """Variable interface"""
+from __future__ import annotations
 
 from enum import Enum
-from typing import Tuple, Union, Any
+from typing import Any
 
 from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
@@ -37,8 +38,8 @@ class Variable(QuadraticProgramElement):
         self,
         quadratic_program: Any,
         name: str,
-        lowerbound: Union[float, int] = 0,
-        upperbound: Union[float, int] = INFINITY,
+        lowerbound: float | int = 0,
+        upperbound: float | int = INFINITY,
         vartype: VarType = VarType.CONTINUOUS,
     ) -> None:
         """Creates a new Variable.
@@ -76,7 +77,7 @@ class Variable(QuadraticProgramElement):
         return self._name
 
     @property
-    def lowerbound(self) -> Union[float, int]:
+    def lowerbound(self) -> float | int:
         """Returns the lowerbound of the variable.
 
         Returns:
@@ -85,7 +86,7 @@ class Variable(QuadraticProgramElement):
         return self._lowerbound
 
     @lowerbound.setter
-    def lowerbound(self, lowerbound: Union[float, int]) -> None:
+    def lowerbound(self, lowerbound: float | int) -> None:
         """Sets the lowerbound of the variable.
 
         Args:
@@ -99,7 +100,7 @@ class Variable(QuadraticProgramElement):
         self._lowerbound = lowerbound
 
     @property
-    def upperbound(self) -> Union[float, int]:
+    def upperbound(self) -> float | int:
         """Returns the upperbound of the variable.
 
         Returns:
@@ -108,7 +109,7 @@ class Variable(QuadraticProgramElement):
         return self._upperbound
 
     @upperbound.setter
-    def upperbound(self, upperbound: Union[float, int]) -> None:
+    def upperbound(self, upperbound: float | int) -> None:
         """Sets the upperbound of the variable.
 
         Args:
@@ -140,7 +141,7 @@ class Variable(QuadraticProgramElement):
         """
         self._vartype = vartype
 
-    def as_tuple(self) -> Tuple[str, Union[float, int], Union[float, int], VarType]:
+    def as_tuple(self) -> tuple[str, float | int, float | int, VarType]:
         """Returns a tuple corresponding to this variable.
 
         Returns:

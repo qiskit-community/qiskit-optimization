@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Optional, Union
 
 import numpy as np
 from qiskit.quantum_info import Statevector
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 # future type annotations not supported in type aliases in 3.8
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
+    [Union[list, np.ndarray], float, Optional[ListOrDict[tuple[float, dict[str, float]]]]], bool
 ]
 
 

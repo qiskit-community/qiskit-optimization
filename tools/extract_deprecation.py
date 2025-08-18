@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,7 +12,8 @@
 
 """ Extract deprecation messages from input """
 
-from typing import List
+from __future__ import annotations
+
 import sys
 import os
 import argparse
@@ -24,7 +25,7 @@ class DeprecationExtractor:
     def __init__(self, in_file: str, out_file: str) -> None:
         self._input_filename = in_file
         self._output_filename = out_file
-        self._messages = None  # type: List[str]
+        self._messages: list[str] | None = None
 
     def extract_messages(self) -> bool:
         """

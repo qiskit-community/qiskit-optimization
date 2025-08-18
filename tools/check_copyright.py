@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """ Fix copyright year in header """
+from __future__ import annotations
 
-from typing import Tuple, Union, List
 import builtins
 import sys
 import os
@@ -47,7 +47,7 @@ class CopyrightChecker:
 
         return int(date[:4])
 
-    def _cmd_execute(self, args: List[str]) -> Tuple[str, Union[None, str]]:
+    def _cmd_execute(self, args: list[str]) -> tuple[str, None | str]:
         # execute command
         env = {}
         for k in ["SYSTEMROOT", "PATH"]:
@@ -73,7 +73,7 @@ class CopyrightChecker:
             err_str = err_str if err_str else None
             return out_str, err_str
 
-    def _get_changed_files(self) -> List[str]:
+    def _get_changed_files(self) -> list[str]:
         out_str, err_str = self._cmd_execute(["git", "diff", "--name-only", "HEAD"])
         if err_str:
             raise builtins.Exception(err_str)
@@ -98,7 +98,7 @@ class CopyrightChecker:
 
         return last_year
 
-    def check_copyright(self, file_path) -> Tuple[bool, bool, bool]:
+    def check_copyright(self, file_path) -> tuple[bool, bool, bool]:
         """check copyright for a file"""
         file_with_utf8 = False
         file_with_invalid_year = False
@@ -177,11 +177,11 @@ class CopyrightChecker:
 
         return file_with_utf8, file_with_invalid_year, file_has_header
 
-    def check(self) -> Tuple[int, int, int]:
+    def check(self) -> tuple[int, int, int]:
         """check copyright"""
         return self._check_copyright(self._root_dir)
 
-    def _check_copyright(self, path: str) -> Tuple[int, int, int]:
+    def _check_copyright(self, path: str) -> tuple[int, int, int]:
         files_with_utf8 = 0
         files_with_invalid_year = 0
         files_with_header = 0

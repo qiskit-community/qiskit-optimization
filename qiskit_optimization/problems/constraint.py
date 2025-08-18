@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,11 @@
 # that they have been altered from the originals.
 
 """Abstract Constraint."""
+from __future__ import annotations
 
 from abc import abstractmethod
 from enum import Enum
-from typing import Union, List, Dict, Any
+from typing import Any
 
 from numpy import ndarray
 
@@ -31,7 +32,7 @@ class ConstraintSense(Enum):
     EQ = 2
 
     @staticmethod
-    def convert(sense: Union[str, "ConstraintSense"]) -> "ConstraintSense":
+    def convert(sense: str | ConstraintSense) -> ConstraintSense:
         """Convert a string into a corresponding sense of constraints
 
         Args:
@@ -150,7 +151,7 @@ class Constraint(QuadraticProgramElement):
         self._rhs = rhs
 
     @abstractmethod
-    def evaluate(self, x: Union[ndarray, List, Dict[Union[int, str], float]]) -> float:
+    def evaluate(self, x: ndarray | list | dict[int | str, float]) -> float:
         """Evaluate left-hand-side of constraint for given values of variables.
 
         Args:

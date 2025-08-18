@@ -11,12 +11,13 @@
 # that they have been altered from the originals.
 
 """GroverOptimizer module"""
+from __future__ import annotations
 
 import logging
 import math
 import warnings
 from copy import deepcopy
-from typing import Dict, List, Optional, Union, cast
+from typing import cast
 
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
@@ -46,12 +47,10 @@ class GroverOptimizer(OptimizationAlgorithm):
         self,
         num_value_qubits: int,
         num_iterations: int = 3,
-        converters: Optional[
-            Union[QuadraticProgramConverter, List[QuadraticProgramConverter]]
-        ] = None,
-        penalty: Optional[float] = None,
-        sampler: Optional[Union[BaseSamplerV1, BaseSamplerV2]] = None,
-        pass_manager: Optional[BasePassManager] = None,
+        converters: QuadraticProgramConverter | list[QuadraticProgramConverter] | None = None,
+        penalty: float | None = None,
+        sampler: BaseSamplerV1 | BaseSamplerV2 | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         """
         Args:
@@ -303,7 +302,7 @@ class GroverOptimizer(OptimizationAlgorithm):
         # Pick a random outcome.
         return algorithm_globals.random.choice(list(probs.keys()), 1, p=list(probs.values()))[0]
 
-    def _get_prob_dist(self, qc: QuantumCircuit) -> Dict[str, float]:
+    def _get_prob_dist(self, qc: QuantumCircuit) -> dict[str, float]:
         """Gets probabilities from a given backend."""
         if self._pass_manager:
             qc = self._pass_manager.run(qc)
@@ -345,17 +344,17 @@ class GroverOptimizationResult(OptimizationResult):
 
     def __init__(  # pylint: disable=too-many-positional-arguments
         self,
-        x: Union[List[float], np.ndarray],
+        x: list[float] | np.ndarray,
         fval: float,
-        variables: List[Variable],
-        operation_counts: Dict[int, Dict[str, int]],
+        variables: list[Variable],
+        operation_counts: dict[int, dict[str, int]],
         n_input_qubits: int,
         n_output_qubits: int,
         intermediate_fval: float,
         threshold: float,
         status: OptimizationResultStatus,
-        samples: Optional[List[SolutionSample]] = None,
-        raw_samples: Optional[List[SolutionSample]] = None,
+        samples: list[SolutionSample] | None = None,
+        raw_samples: list[SolutionSample] | None = None,
     ) -> None:
         """
         Constructs a result object with the specific Grover properties.
@@ -392,7 +391,7 @@ class GroverOptimizationResult(OptimizationResult):
         self._threshold = threshold
 
     @property
-    def operation_counts(self) -> Dict[int, Dict[str, int]]:
+    def operation_counts(self) -> dict[int, dict[str, int]]:
         """Get the operation counts.
 
         Returns:
@@ -437,7 +436,7 @@ class GroverOptimizationResult(OptimizationResult):
         return self._threshold
 
     @property
-    def raw_samples(self) -> Optional[List[SolutionSample]]:
+    def raw_samples(self) -> list[SolutionSample] | None:
         """Returns the list of raw solution samples of ``GroverOptimizer``.
 
         Returns:

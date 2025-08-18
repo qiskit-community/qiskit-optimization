@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,8 +11,9 @@
 # that they have been altered from the originals.
 
 """A converter from quadratic program to a QUBO."""
+from __future__ import annotations
 
-from typing import List, Optional, Union, cast
+from typing import cast
 
 import numpy as np
 
@@ -38,7 +39,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         >>> problem2 = conv.convert(problem)
     """
 
-    def __init__(self, penalty: Optional[float] = None) -> None:
+    def __init__(self, penalty: float | None = None) -> None:
         """
         Args:
             penalty: Penalty factor to scale equality constraints that are added to objective.
@@ -77,7 +78,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
             problem = conv.convert(problem)
         return problem
 
-    def interpret(self, x: Union[np.ndarray, List[float]]) -> np.ndarray:
+    def interpret(self, x: np.ndarray | list[float]) -> np.ndarray:
         """Convert a result of a converted problem into that of the original problem.
 
         Args:
@@ -145,7 +146,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         return len(self.get_compatibility_msg(problem)) == 0
 
     @property
-    def penalty(self) -> Optional[float]:
+    def penalty(self) -> float | None:
         """Returns the penalty factor used in conversion.
 
         Returns:
@@ -154,7 +155,7 @@ class QuadraticProgramToQubo(QuadraticProgramConverter):
         return self._penalize_lin_eq_constraints.penalty
 
     @penalty.setter
-    def penalty(self, penalty: Optional[float]) -> None:
+    def penalty(self, penalty: float | None) -> None:
         """Set a new penalty factor.
 
         Args:
