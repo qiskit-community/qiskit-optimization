@@ -23,7 +23,7 @@ import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import QuadraticForm
 from qiskit.passmanager import BasePassManager
-from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, PrimitiveResult
+from qiskit.primitives import BaseSamplerV1, BaseSamplerV2, PrimitiveResult, StatevectorSampler
 
 from qiskit_optimization.algorithms.amplitude_amplifiers.grover import AmplificationProblem, Grover
 from qiskit_optimization.algorithms.optimization_algorithm import (
@@ -81,6 +81,19 @@ class GroverOptimizer(OptimizationAlgorithm):
             warnings.warn(
                 "Using Sampler V1 is deprecated since 0.7.0. Instead use Sampler V2.",
                 category=DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if (
+            isinstance(sampler, BaseSamplerV2)
+            and not isinstance(sampler, StatevectorSampler)
+            and pass_manager is None
+        ):
+            warnings.warn(
+                "Using Sampler V2 (other than StatevectorSampler) without a pass_manager "
+                "may result in an error. Consider providing a pass_manager for proper "
+                "circuit transpilation.",
+                category=UserWarning,
                 stacklevel=2,
             )
 

@@ -1,0 +1,28 @@
+---
+prelude: >
+    Qiskit Optimization 0.7 introduces significant architectural improvements focused on 
+    enhanced independence and modern primitives support. This release eliminates the 
+    dependency on qiskit-algorithms by migrating essential components directly into 
+    qiskit-optimization, ensuring better long-term stability and reducing external 
+    dependencies.
+    
+    The most notable change is comprehensive support for Qiskit's V2 Primitives 
+    (BaseEstimatorV2 and BaseSamplerV2), which are the foundation for future quantum computing workflows.
+    All minimum eigensolvers including VQE, QAOA, SamplingVQE, and specialized algorithms like QRAO and GroverOptimizer now
+    seamlessly support both V1 and V2 primitives with automatic detection.
+    
+    Key migrated components from qiskit-algorithms include essential optimizers (COBYLA, 
+    NELDER_MEAD, SciPyOptimizer, SPSA), minimum eigensolvers (VQE, QAOA, SamplingVQE, 
+    NumPyMinimumEigensolver), and utility functions (algorithm_globals). These components 
+    are now maintained directly within qiskit-optimization, ensuring consistent updates 
+    and optimization-specific enhancements.
+    
+    While V1 Primitive usage remains functional, with deprecation warnings, users are strongly 
+    encouraged to migrate to V2 Primitives for optimal performance. The migration is 
+    straightforward but requires attention to pass manager requirements for hardware and 
+    simulator backends.
+    A comprehensive `migration guides <https://qiskit-community.github.io/qiskit-optimization/migration/index.html>`_
+    is provided to assist users in updating their code.
+    
+    This release maintains full backward compatibility while positioning Qiskit 
+    Optimization for future developments in the quantum optimization ecosystem.
