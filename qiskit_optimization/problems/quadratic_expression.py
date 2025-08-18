@@ -13,16 +13,17 @@
 """Quadratic expression interface."""
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import Any
 
 import numpy as np
 from numpy import ndarray
-from scipy.sparse import spmatrix, dok_matrix, tril, triu
+from scipy.sparse import coo_matrix, dok_matrix, spmatrix, tril, triu
 
-from .quadratic_program_element import QuadraticProgramElement
 from ..exceptions import QiskitOptimizationError
 from ..infinity import INFINITY
 from .linear_expression import ExpressionBounds
+from .quadratic_program_element import QuadraticProgramElement
 
 
 class QuadraticExpression(QuadraticProgramElement):
@@ -98,20 +99,27 @@ class QuadraticExpression(QuadraticProgramElement):
             QiskitOptimizationError: if coefficients are given in unsupported format.
         """
         if isinstance(coefficients, (list, ndarray, spmatrix)):
-            coefficients = dok_matrix(coefficients)
+            return self._triangle_matrix(dok_matrix(coefficients))
         elif isinstance(coefficients, dict):
-            n = self.quadratic_program.get_num_vars()
-            coeffs = dok_matrix((n, n))
+            coeffs = defaultdict(float)
             for (i, j), value in coefficients.items():
                 if isinstance(i, str):
                     i = self.quadratic_program.variables_index[i]
                 if isinstance(j, str):
                     j = self.quadratic_program.variables_index[j]
-                coeffs[i, j] = value
-            coefficients = coeffs
+                if i > j:
+                    i, j = j, i
+                if value != 0:
+                    coeffs[i, j] += value
+            n = self.quadratic_program.get_num_vars()
+            if coeffs:
+                rows, cols, values = zip(*[(i, j, v) for (i, j), v in coeffs.items()])
+                ret = dok_matrix(coo_matrix((values, (rows, cols)), shape=(n, n)).todok())
+            else:
+                ret = dok_matrix((n, n))
+            return ret
         else:
             raise QiskitOptimizationError(f"Unsupported format for coefficients: {coefficients}")
-        return self._triangle_matrix(coefficients)
 
     @staticmethod
     def _triangle_matrix(mat: dok_matrix) -> dok_matrix:
@@ -276,7 +284,7 @@ class QuadraticExpression(QuadraticProgramElement):
 
     def __repr__(self):
         # pylint: disable=cyclic-import
-        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+        from ..translators.prettyprint import DEFAULT_TRUNCATE, expr2str
 
         return f"<{self.__class__.__name__}: {expr2str(quadratic=self, truncate=DEFAULT_TRUNCATE)}>"
 
