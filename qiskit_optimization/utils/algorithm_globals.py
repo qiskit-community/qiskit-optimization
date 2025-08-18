@@ -103,19 +103,19 @@ class QiskitAlgorithmGlobals:
 
                 from qiskit_algorithms.utils import algorithm_globals as qiskit_globals
 
-                if self._random_seed != qiskit_globals.random_seed:
-                    # If the seeds are different - likely this local is None and the qiskit.utils
-                    # algorithms global was seeded directly then we will warn to use this here as
-                    # the Qiskit version is planned to be removed in a future version of Qiskit.
-                    warnings.warn(
-                        "Using random that is seeded via qiskit_algorithms.utils algorithm_globals "
-                        "is deprecated since version 0.7.0. Instead set random_seed directly to "
-                        "qiskit_optimization.utils algorithm_globals.",
-                        category=DeprecationWarning,
-                        stacklevel=2,
-                    )
+            if self._random_seed != qiskit_globals.random_seed:
+                # If the seeds are different - likely this local is None and the qiskit.utils
+                # algorithms global was seeded directly then we will warn to use this here as
+                # the Qiskit version is planned to be removed in a future version of Qiskit.
+                warnings.warn(
+                    "Using random that is seeded via qiskit_algorithms.utils.algorithm_globals "
+                    "is deprecated since version 0.7.0. Instead set random_seed directly to "
+                    "qiskit_optimization.utils.algorithm_globals.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
 
-                return qiskit_globals.random
+            return qiskit_globals.random
 
         except ImportError:
             if self._random is None:
