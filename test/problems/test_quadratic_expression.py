@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -272,6 +272,32 @@ class TestQuadraticExpression(QiskitOptimizationTestCase):
             )
             self.assertEqual(str(expr), expected)
             self.assertEqual(repr(expr), f"<QuadraticExpression: {expected[:DEFAULT_TRUNCATE]}...>")
+
+    def test_coeffs_to_dok_matrix(self):
+        """test that the conversion from coefficients to a dok_matrix is correct"""
+        n = 4
+        q_p = QuadraticProgram()
+        q_p.binary_var_list(n)
+        coefficients = {
+            (1, 1): 1,
+            (1, 2): 2,
+            (2, 1): 3,
+            (1, 3): 3,
+            (3, 1): 3,
+            (2, 2): 4,
+            (2, 3): 12,
+            (3, 3): 9,
+        }
+        expr = QuadraticExpression(q_p, {(i, i): float(i) for i in range(n)})
+        expr.coefficients = coefficients
+        expected = dok_matrix((n, n))
+        expected[1, 1] = 1
+        expected[1, 2] = 5
+        expected[1, 3] = 6
+        expected[2, 2] = 4
+        expected[2, 3] = 12
+        expected[3, 3] = 9
+        np.testing.assert_allclose(expr.coefficients.todense(), expected.todense())
 
 
 if __name__ == "__main__":

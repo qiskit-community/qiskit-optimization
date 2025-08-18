@@ -14,16 +14,15 @@
 from __future__ import annotations
 
 import logging
-from typing import cast, Union
 
 import numpy as np
 
-from .quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
 from ..problems.constraint import Constraint
 from ..problems.quadratic_objective import QuadraticObjective
 from ..problems.quadratic_program import QuadraticProgram
 from ..problems.variable import Variable
+from .quadratic_program_converter import QuadraticProgramConverter
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +111,7 @@ class LinearEqualityToPenalty(QuadraticProgramConverter):
 
                     # according to implementation of quadratic terms in OptimizationModel,
                     # don't need to multiply by 2, since loops run over (x, y) and (y, x).
-                    tup = cast(Union[tuple[int, int], tuple[str, str]], (j, k))
+                    tup: tuple[int, int] | tuple[str, str] = (j, k)  # type: ignore[assignment]
                     quadratic[tup] = quadratic.get(tup, 0.0) + sense * penalty * coef_1 * coef_2
 
         if problem.objective.sense == QuadraticObjective.Sense.MINIMIZE:

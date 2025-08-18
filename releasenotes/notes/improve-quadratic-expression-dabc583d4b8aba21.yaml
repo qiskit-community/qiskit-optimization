@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Improved the performance of :attr:`.QuadraticExpression.coefficients` setter,
+    resulting in faster execution across various converters - particularly in :class:`.LinearEqualityToPenalty`.
+  - |
+    Improved the performance of :meth:`.LinearEqualityToPenalty.convert`.
+
