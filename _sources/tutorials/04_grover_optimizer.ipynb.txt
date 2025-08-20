@@ -78,11 +78,11 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from qiskit_algorithms import NumPyMinimumEigensolver\n",
-    "from qiskit.primitives import Sampler\n",
+    "from docplex.mp.model import Model\n",
+    "from qiskit.primitives import StatevectorSampler\n",
     "from qiskit_optimization.algorithms import GroverOptimizer, MinimumEigenOptimizer\n",
-    "from qiskit_optimization.translators import from_docplex_mp\n",
-    "from docplex.mp.model import Model"
+    "from qiskit_optimization.minimum_eigensolvers import NumPyMinimumEigensolver\n",
+    "from qiskit_optimization.translators import from_docplex_mp"
    ]
   },
   {
@@ -141,7 +141,7 @@
     }
    ],
    "source": [
-    "grover_optimizer = GroverOptimizer(6, num_iterations=10, sampler=Sampler())\n",
+    "grover_optimizer = GroverOptimizer(6, num_iterations=10, sampler=StatevectorSampler(seed=123))\n",
     "results = grover_optimizer.solve(qp)\n",
     "print(results.prettyprint())"
    ]
@@ -205,7 +205,7 @@
     {
      "data": {
       "text/html": [
-       "<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.0</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.1</td></tr><tr><td><code>qiskit-optimization</code></td><td>0.5.0</td></tr><tr><td><code>qiskit-machine-learning</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.15</td></tr><tr><td>Python compiler</td><td>Clang 14.0.0 (clang-1400.0.29.102)</td></tr><tr><td>Python build</td><td>main, Oct 11 2022 22:27:25</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>4</td></tr><tr><td>Memory (Gb)</td><td>16.0</td></tr><tr><td colspan='2'>Tue Dec 06 21:47:01 2022 JST</td></tr></table>"
+       "<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.1.1</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.7.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.11.13</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td colspan='2'>Mon Aug 18 14:19:53 2025 JST</td></tr></table>"
       ],
       "text/plain": [
        "<IPython.core.display.HTML object>"
@@ -217,7 +217,7 @@
     {
      "data": {
       "text/html": [
-       "<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2022.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div>"
+       "<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div>"
       ],
       "text/plain": [
        "<IPython.core.display.HTML object>"

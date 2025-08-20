@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Using Classical Optimization Solvers and Models with Qiskit Optimization" href="11_using_classical_optimization_solvers_and_models.html" /><link rel="prev" title="Application Classes for Optimization Problems" href="09_application_classes.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>Warm-starting quantum optimization - Qiskit Optimization 0.6.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Warm-starting quantum optimization - Qiskit Optimization 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -202,7 +202,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -229,7 +229,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Optimization 0.6.1</span>
+  <span class="sidebar-brand-text">Qiskit Optimization 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -242,6 +242,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/03_migration_guide_to_v0.7.html">Qiskit Optimization v0.7 Migration Guide</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -355,9 +356,35 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.minimum_eigensolvers.html">Minimum Eigensolvers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.minimum_eigensolvers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Minimum Eigensolvers (qiskit_optimization.minimum_eigensolvers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.QAOA.html">QAOA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html">VQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQEResult.html">VQEResult</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_optimization.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.utils.html">Utility functions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.utils</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Utility functions (qiskit_optimization.utils)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.utils.algorithm_globals.html">algorithm_globals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
 </ul>
 </li>
@@ -429,12 +456,12 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/10_warm_start_qaoa.ipynb">docs/tutorials/10_warm_start_qaoa.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.7/docs/tutorials/10_warm_start_qaoa.ipynb">docs/tutorials/10_warm_start_qaoa.ipynb</a>.</p>
 </div>
 <section id="Warm-starting-quantum-optimization">
-<h1>Warm-starting quantum optimization<a class="headerlink" href="#Warm-starting-quantum-optimization" title="Permalink to this heading">#</a></h1>
+<h1>Warm-starting quantum optimization<a class="headerlink" href="#Warm-starting-quantum-optimization" title="Link to this heading">¶</a></h1>
 <section id="Introduction">
-<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this heading">#</a></h2>
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Link to this heading">¶</a></h2>
 <p>Optimization problems with integer variables or constraints are often hard to solve. For example, the Quadratic Unconstrained Binary Optimization (QUBO) problem, i.e.</p>
 <p><span class="math">\begin{align}
 \min_{x\in\{0,1\}^n}x^T\Sigma x + \mu^Tx,
@@ -446,40 +473,50 @@
 <p>which becomes easy to solve as <span class="math notranslate nohighlight">\(x\)</span> now represents <span class="math notranslate nohighlight">\(n\)</span> continuous variables bound to the range <span class="math notranslate nohighlight">\([0, 1]\)</span>. Such relaxations can be leveraged to warm-start quantum optimization algorithms as shown in [1].</p>
 </section>
 <section id="References">
-<h2>References<a class="headerlink" href="#References" title="Permalink to this heading">#</a></h2>
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">¶</a></h2>
 <p>[1] <a class="reference external" href="http://arxiv.org/abs/2009.10095">D. J. Egger, J Marecek, S. Woerner, Warm-starting quantum optimization, arXiv:2009.10095</a></p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Problem modelling imports</span>
-<span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">docplex.mp.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorSampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">CplexOptimizer</span><span class="p">,</span> <span class="n">MinimumEigenOptimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.converters.quadratic_program_to_qubo</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuadraticProgramToQubo</span>
 
 <span class="c1"># Qiskit imports</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">QAOA</span><span class="p">,</span> <span class="n">NumPyMinimumEigensolver</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
-<span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span><span class="p">,</span> <span class="n">CplexOptimizer</span>
-<span class="kn">from</span> <span class="nn">qiskit_optimization</span> <span class="kn">import</span> <span class="n">QuadraticProgram</span>
-<span class="kn">from</span> <span class="nn">qiskit_optimization.problems.variable</span> <span class="kn">import</span> <span class="n">VarType</span>
-<span class="kn">from</span> <span class="nn">qiskit_optimization.converters.quadratic_program_to_qubo</span> <span class="kn">import</span> <span class="n">QuadraticProgramToQubo</span>
-<span class="kn">from</span> <span class="nn">qiskit_optimization.translators</span> <span class="kn">import</span> <span class="n">from_docplex_mp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span><span class="p">,</span> <span class="n">NumPyMinimumEigensolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.problems.variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">VarType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.translators</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_docplex_mp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_16911/2872558950.py:7: DeprecationWarning: Using Qiskit with Python 3.9 is deprecated as of the 2.1.0 release. Support for running Qiskit with Python 3.9 will be removed in the 2.3.0 release, which coincides with when Python 3.9 goes end of life.
+  from qiskit.primitives import StatevectorSampler
+</pre></div></div>
+</div>
 </section>
 <section id="Preliminaries:-relaxing-QUBOs">
-<h2>Preliminaries: relaxing QUBOs<a class="headerlink" href="#Preliminaries:-relaxing-QUBOs" title="Permalink to this heading">#</a></h2>
+<h2>Preliminaries: relaxing QUBOs<a class="headerlink" href="#Preliminaries:-relaxing-QUBOs" title="Link to this heading">¶</a></h2>
 <p>First, we show how to relax a QUBO built with a semi-definite positive matrix to obtain an easy-to-solve QP.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_problem</span><span class="p">(</span><span class="n">mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuadraticProgram</span><span class="p">:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">create_problem</span><span class="p">(</span><span class="n">mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuadraticProgram</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve the quadratic program using docplex.&quot;&quot;&quot;</span>
 
     <span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
@@ -497,7 +534,7 @@
     <span class="k">return</span> <span class="n">qp</span>
 
 
-<span class="k">def</span> <span class="nf">relax_problem</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuadraticProgram</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">relax_problem</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuadraticProgram</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Change all variables to continuous.&quot;&quot;&quot;</span>
     <span class="n">relaxed_problem</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">relaxed_problem</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
@@ -599,15 +636,15 @@ status: SUCCESS
 Problem name: docplex_model1
 
 Minimize
-  44.848800180000005*x0^2 + 85.40922044000001*x0*x1 + 85.82756812000001*x0*x2
-  + 85.10474512000002*x0*x3 + 85.33779216000002*x0*x4 + 85.34487328000002*x0*x5
-  + 42.907689680000004*x1^2 + 85.25672692*x1*x2 + 85.37044588*x1*x3
-  + 85.40530104000001*x1*x4 + 85.43763868000002*x1*x5 + 44.659937940000006*x2^2
-  + 85.47075640000001*x2*x3 + 85.16847248000002*x2*x4 + 85.41462864000002*x2*x5
-  + 43.89799534000001*x3^2 + 85.52806848000002*x3*x4 + 85.34065100000001*x3*x5
-  + 44.286024620000006*x4^2 + 85.68314192000001*x4*x5 + 44.858522820000005*x5^2
-  - 259.55339164000003*x0 - 258.22669164*x1 - 262.37689164*x2 - 260.57899164*x3
-  - 267.02739164*x4 - 259.54049164*x5 + 384.20308746000006
+  44.84880018*x0^2 + 85.40922044*x0*x1 + 85.82756812*x0*x2
+  + 85.10474511999999*x0*x3 + 85.33779215999999*x0*x4 + 85.34487328*x0*x5
+  + 42.90768968*x1^2 + 85.25672692*x1*x2 + 85.37044588*x1*x3 + 85.40530104*x1*x4
+  + 85.43763867999999*x1*x5 + 44.65993794*x2^2 + 85.4707564*x2*x3
+  + 85.16847247999999*x2*x4 + 85.41462863999999*x2*x5 + 43.89799534*x3^2
+  + 85.52806848*x3*x4 + 85.34065100000001*x3*x5 + 44.28602462*x4^2
+  + 85.68314192*x4*x5 + 44.85852282*x5^2 - 259.55339164*x0
+  - 258.22669163999996*x1 - 262.37689163999994*x2 - 260.57899163999997*x3
+  - 267.02739163999996*x4 - 259.54049163999997*x5 + 384.20308746
 
 Subject to
   No constraints
@@ -637,8 +674,8 @@ Subject to
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-objective function value: -17.012055025682855
-variable values: x0=0.1752499576180142, x1=1.4803888163988428e-07, x2=0.9709053264087596, x3=0.7384168677494174, x4=0.9999999916475085, x5=0.14438904470168756
+objective function value: -17.0120550256828
+variable values: x0=0.17524995761801193, x1=1.4803888163984595e-07, x2=0.970905326408768, x3=0.738416867749415, x4=0.9999999916475085, x5=0.1443890447016833
 status: SUCCESS
 </pre></div></div>
 </div>
@@ -656,22 +693,22 @@ status: SUCCESS
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[0.1752499576180142, 1.4803888163988428e-07, 0.9709053264087596, 0.7384168677494174, 0.9999999916475085, 0.14438904470168756]
+[0.17524995761801193, 1.4803888163984595e-07, 0.970905326408768, 0.738416867749415, 0.9999999916475085, 0.1443890447016833]
 </pre></div></div>
 </div>
 </section>
 <section id="QAOA">
-<h2>QAOA<a class="headerlink" href="#QAOA" title="Permalink to this heading">#</a></h2>
+<h2>QAOA<a class="headerlink" href="#QAOA" title="Link to this heading">¶</a></h2>
 <p>Here, we illustrate how to warm-start the quantum approximate optimization algorithm (QAOA) by leveraging the relaxed problem shown above.</p>
 <section id="Standard-QAOA">
-<h3>Standard QAOA<a class="headerlink" href="#Standard-QAOA" title="Permalink to this heading">#</a></h3>
+<h3>Standard QAOA<a class="headerlink" href="#Standard-QAOA" title="Link to this heading">¶</a></h3>
 <p>First, we use standard QAOA to solve the QUBO. To do this, we convert the QUBO to <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> class (note that the resulting problem is still a binary problem).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">12345</span>
-<span class="n">qaoa_mes</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span> <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">qaoa_mes</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span> <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 <span class="n">exact_mes</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -705,7 +742,7 @@ status: SUCCESS
 </div>
 </section>
 <section id="Warm-start-QAOA">
-<h3>Warm-start QAOA<a class="headerlink" href="#Warm-start-QAOA" title="Permalink to this heading">#</a></h3>
+<h3>Warm-start QAOA<a class="headerlink" href="#Warm-start-QAOA" title="Link to this heading">¶</a></h3>
 <p>Next, we compare this result to a warm-start QAOA in which we use the solution to the continuous relaxation of the problem. First, we create the initial state</p>
 <p><span class="math">\begin{align}
 |\phi^*\rangle=\bigotimes_{i=0}^{n-1}R_y(\theta_i)|0\rangle_n .
@@ -715,7 +752,7 @@ status: SUCCESS
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
 
 <span class="n">thetas</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c_star</span><span class="p">))</span> <span class="k">for</span> <span class="n">c_star</span> <span class="ow">in</span> <span class="n">c_stars</span><span class="p">]</span>
 
@@ -748,7 +785,7 @@ H_{M,i}^{(ws)}=
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
 
 <span class="n">beta</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;β&quot;</span><span class="p">)</span>
 
@@ -776,7 +813,7 @@ H_{M,i}^{(ws)}=
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ws_qaoa_mes</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span>
-    <span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">),</span>
     <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span>
     <span class="n">initial_state</span><span class="o">=</span><span class="n">init_qc</span><span class="p">,</span>
     <span class="n">mixer</span><span class="o">=</span><span class="n">ws_mixer</span><span class="p">,</span>
@@ -814,13 +851,13 @@ status: SUCCESS
 </div>
 </section>
 <section id="Analysis">
-<h3>Analysis<a class="headerlink" href="#Analysis" title="Permalink to this heading">#</a></h3>
+<h3>Analysis<a class="headerlink" href="#Analysis" title="Link to this heading">¶</a></h3>
 <p>Both results appear to give the same result. However, when we look at the underlying probability distribution we observe that the warm-start QAOA has a much higher probability of sampling the optimal solution.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">format_qaoa_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">format_qaoa_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
     <span class="n">qaoa_res</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
@@ -841,16 +878,16 @@ status: SUCCESS
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&#39;001110: value: 16.769, probability: 0.7%&#39;,
- &#39;011010: value: 15.744, probability: 0.7%&#39;,
- &#39;001011: value: 14.671, probability: 0.6%&#39;,
- &#39;101010: value: 14.626, probability: 0.7%&#39;,
- &#39;010110: value: 14.234, probability: 2.2%&#39;,
+[&#39;001110: value: 16.769, probability: 0.8%&#39;,
+ &#39;011010: value: 15.744, probability: 0.6%&#39;,
+ &#39;001011: value: 14.671, probability: 1.0%&#39;,
+ &#39;101010: value: 14.626, probability: 1.1%&#39;,
+ &#39;010110: value: 14.234, probability: 2.0%&#39;,
  &#39;100110: value: 13.953, probability: 1.6%&#39;,
- &#39;000111: value: 13.349, probability: 1.6%&#39;,
- &#39;110010: value: 12.410, probability: 3.0%&#39;,
- &#39;010011: value: 12.013, probability: 2.7%&#39;,
- &#39;100011: value: 11.559, probability: 3.3%&#39;]
+ &#39;000111: value: 13.349, probability: 2.1%&#39;,
+ &#39;110010: value: 12.410, probability: 2.3%&#39;,
+ &#39;010011: value: 12.013, probability: 2.5%&#39;,
+ &#39;100011: value: 11.559, probability: 2.1%&#39;]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -867,24 +904,24 @@ status: SUCCESS
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&#39;001110: value: 16.769, probability: 79.7%&#39;,
- &#39;001011: value: 14.671, probability: 0.8%&#39;,
- &#39;101010: value: 14.626, probability: 1.2%&#39;,
- &#39;100110: value: 13.953, probability: 0.0%&#39;,
- &#39;000111: value: 13.349, probability: 0.2%&#39;,
- &#39;100011: value: 11.559, probability: 0.0%&#39;]
+[&#39;001110: value: 16.769, probability: 50.1%&#39;,
+ &#39;001011: value: 14.671, probability: 2.1%&#39;,
+ &#39;101010: value: 14.626, probability: 5.0%&#39;,
+ &#39;100110: value: 13.953, probability: 1.2%&#39;,
+ &#39;000111: value: 13.349, probability: 0.6%&#39;,
+ &#39;100011: value: 11.559, probability: 0.1%&#39;]
 </pre></div></div>
 </div>
 </section>
 </section>
 <section id="id2">
-<h2>Warm-start QAOA<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<h2>Warm-start QAOA<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <p>The warm-start features above are available in the Qiskit optimization module as a single optimizer named <code class="docutils literal notranslate"><span class="pre">WarmStartQAOAOptimizer</span></code> which is illustrated below. This solver will solve a QUBO with a warm-start QAOA. It computes <span class="math notranslate nohighlight">\(c^*\)</span> by relaxing the problem. This behavior is controlled by setting <code class="docutils literal notranslate"><span class="pre">relax_for_pre_solver</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">WarmStartQAOAOptimizer</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">WarmStartQAOAOptimizer</span>
 </pre></div>
 </div>
 </div>
@@ -892,7 +929,7 @@ status: SUCCESS
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qaoa_mes</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span> <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qaoa_mes</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span> <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 <span class="n">ws_qaoa</span> <span class="o">=</span> <span class="n">WarmStartQAOAOptimizer</span><span class="p">(</span>
     <span class="n">pre_solver</span><span class="o">=</span><span class="n">CplexOptimizer</span><span class="p">(),</span> <span class="n">relax_for_pre_solver</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">qaoa</span><span class="o">=</span><span class="n">qaoa_mes</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.0</span>
 <span class="p">)</span>
@@ -932,19 +969,19 @@ status: SUCCESS
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&#39;001110: value: 16.769, probability: 79.7%&#39;,
- &#39;001011: value: 14.671, probability: 0.8%&#39;,
- &#39;101010: value: 14.626, probability: 1.2%&#39;,
- &#39;100110: value: 13.953, probability: 0.0%&#39;,
- &#39;000111: value: 13.349, probability: 0.2%&#39;,
- &#39;100011: value: 11.559, probability: 0.0%&#39;]
+[&#39;001110: value: 16.769, probability: 50.1%&#39;,
+ &#39;001011: value: 14.671, probability: 2.1%&#39;,
+ &#39;101010: value: 14.626, probability: 5.0%&#39;,
+ &#39;100110: value: 13.953, probability: 1.2%&#39;,
+ &#39;000111: value: 13.349, probability: 0.6%&#39;,
+ &#39;100011: value: 11.559, probability: 0.1%&#39;]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -955,13 +992,13 @@ status: SUCCESS
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.1</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.6.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Feb 28 03:00:46 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.1.2</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.7.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.9.23</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Aug 20 14:17:40 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -1015,7 +1052,7 @@ status: SUCCESS
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+                Copyright &#169; 2018, 2025, Qiskit Optimization Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1065,11 +1102,11 @@ status: SUCCESS
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09aae1b8"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>

@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Quantum Random Access Optimization" href="12_quantum_random_access_optimizer.html" /><link rel="prev" title="Warm-starting quantum optimization" href="10_warm_start_qaoa.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>Using Classical Optimization Solvers and Models with Qiskit Optimization - Qiskit Optimization 0.6.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Using Classical Optimization Solvers and Models with Qiskit Optimization - Qiskit Optimization 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -202,7 +202,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -229,7 +229,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Optimization 0.6.1</span>
+  <span class="sidebar-brand-text">Qiskit Optimization 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -242,6 +242,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/03_migration_guide_to_v0.7.html">Qiskit Optimization v0.7 Migration Guide</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -355,9 +356,35 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.minimum_eigensolvers.html">Minimum Eigensolvers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.minimum_eigensolvers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Minimum Eigensolvers (qiskit_optimization.minimum_eigensolvers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.QAOA.html">QAOA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html">VQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQEResult.html">VQEResult</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_optimization.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.utils.html">Utility functions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.utils</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Utility functions (qiskit_optimization.utils)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.utils.algorithm_globals.html">algorithm_globals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
 </ul>
 </li>
@@ -429,10 +456,10 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.6/docs/tutorials/11_using_classical_optimization_solvers_and_models.ipynb">docs/tutorials/11_using_classical_optimization_solvers_and_models.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization/blob/stable/0.7/docs/tutorials/11_using_classical_optimization_solvers_and_models.ipynb">docs/tutorials/11_using_classical_optimization_solvers_and_models.ipynb</a>.</p>
 </div>
 <section id="Using-Classical-Optimization-Solvers-and-Models-with-Qiskit-Optimization">
-<h1>Using Classical Optimization Solvers and Models with Qiskit Optimization<a class="headerlink" href="#Using-Classical-Optimization-Solvers-and-Models-with-Qiskit-Optimization" title="Permalink to this heading">#</a></h1>
+<h1>Using Classical Optimization Solvers and Models with Qiskit Optimization<a class="headerlink" href="#Using-Classical-Optimization-Solvers-and-Models-with-Qiskit-Optimization" title="Link to this heading">¶</a></h1>
 <p>We can use classical optimization solvers (CPLEX and Gurobi) with Qiskit Optimization. Docplex and Gurobipy are the Python APIs for CPLEX and Gurobi, respectively. We can load and save an optimization model by Docplex and Gurobipy and can apply CPLEX and Gurobi to <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>.</p>
 <p>If you want to use the CPLEX solver, you need to install <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'qiskit-optimization[cplex]'</span></code>. Docplex is automatically installed, as a dependent, when you install Qiskit Optimization.</p>
 <p>If you want to use Gurobi and Gurobipy, you need to install <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'qiskit-optimization[gurobi]'</span></code>.</p>
@@ -442,13 +469,13 @@
 <li><p><a class="reference external" href="https://pypi.org/project/gurobipy/">https://pypi.org/project/gurobipy/</a></p></li>
 </ul>
 <section id="CplexSolver-and-GurobiSolver">
-<h2>CplexSolver and GurobiSolver<a class="headerlink" href="#CplexSolver-and-GurobiSolver" title="Permalink to this heading">#</a></h2>
+<h2>CplexSolver and GurobiSolver<a class="headerlink" href="#CplexSolver-and-GurobiSolver" title="Link to this heading">¶</a></h2>
 <p>Qiskit Optimization supports the classical solvers of CPLEX and Gurobi as <code class="docutils literal notranslate"><span class="pre">CplexSolver</span></code> and <code class="docutils literal notranslate"><span class="pre">GurobiSolver</span></code>, respectively. We can solve <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> with <code class="docutils literal notranslate"><span class="pre">CplexSolver</span></code> and <code class="docutils literal notranslate"><span class="pre">GurobiSolver</span></code> as follows.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.problems</span> <span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.problems</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuadraticProgram</span>
 
 <span class="c1"># define a problem</span>
 <span class="n">qp</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">()</span>
@@ -486,7 +513,7 @@ Subject to
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">CplexOptimizer</span><span class="p">,</span> <span class="n">GurobiOptimizer</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">CplexOptimizer</span><span class="p">,</span> <span class="n">GurobiOptimizer</span>
 
 <span class="n">cplex_result</span> <span class="o">=</span> <span class="n">CplexOptimizer</span><span class="p">()</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
 <span class="n">gurobi_result</span> <span class="o">=</span> <span class="n">GurobiOptimizer</span><span class="p">()</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
@@ -499,19 +526,12 @@ Subject to
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Restricted license - for non-production use only - expires 2025-11-24
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+Restricted license - for non-production use only - expires 2026-11-23
 cplex
 objective function value: 4.0
 variable values: x=1.0, y=4.0
@@ -533,108 +553,24 @@ status: SUCCESS
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Version identifier: 22.1.0.0 | 2022-03-25 | 54982fbec
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-CPXPARAM_Read_DataCheck                          1
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-CPXPARAM_Threads                                 1
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-CPXPARAM_TimeLimit                               0.10000000000000001
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Found incumbent of value 0.000000 after 0.00 sec. (0.00 ticks)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Found incumbent of value 4.000000 after 0.00 sec. (0.00 ticks)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-Root node processing (before b&amp;c):
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-  Real time             =    0.00 sec. (0.00 ticks)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Sequential b&amp;c:
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-  Real time             =    0.00 sec. (0.00 ticks)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-                          ------------
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Total (root+branch&amp;cut) =    0.00 sec. (0.00 ticks)
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+Version identifier: 22.1.2.0 | 2024-12-10 | f4cec290b
+CPXPARAM_Read_DataCheck                          1
+CPXPARAM_Threads                                 1
+CPXPARAM_TimeLimit                               0.10000000000000001
+Found incumbent of value 0.000000 after 0.00 sec. (0.00 ticks)
+Found incumbent of value 4.000000 after 0.00 sec. (0.00 ticks)
+
+Root node processing (before b&amp;c):
+  Real time             =    0.00 sec. (0.00 ticks)
+Sequential b&amp;c:
+  Real time             =    0.00 sec. (0.00 ticks)
+                          ------------
+Total (root+branch&amp;cut) =    0.00 sec. (0.00 ticks)
 objective function value: 4.0
 variable values: x=1.0, y=4.0
 status: SUCCESS
@@ -645,13 +581,14 @@ status: SUCCESS
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.algorithms</span> <span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorSampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">QAOA</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
-
-<span class="n">meo</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">(),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">)))</span>
+<span class="n">meo</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span>
+    <span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">),</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">meo</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">prettyprint</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">display the best 5 solution samples&quot;</span><span class="p">)</span>
@@ -670,16 +607,16 @@ variable values: x=1.0, y=4.0
 status: SUCCESS
 
 display the best 5 solution samples
-SolutionSample(x=array([1., 4.]), fval=4.0, probability=0.041944773933828096, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([1., 3.]), fval=3.0, probability=0.07443253202894709, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([1., 2.]), fval=2.0, probability=0.13540988877110383, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([1., 1.]), fval=1.0, probability=0.12258577937645261, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
-SolutionSample(x=array([0., 0.]), fval=0.0, probability=0.0735318504545516, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1., 4.]), fval=np.float64(4.0), probability=0.060546875, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1., 3.]), fval=np.float64(3.0), probability=0.1123046875, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1., 2.]), fval=np.float64(2.0), probability=0.103515625, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([1., 1.]), fval=np.float64(1.0), probability=0.0712890625, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
+SolutionSample(x=array([0., 1.]), fval=np.float64(0.0), probability=0.10546875, status=&lt;OptimizationResultStatus.SUCCESS: 0&gt;)
 </pre></div></div>
 </div>
 </section>
 <section id="Translators-between-QuadraticProgram-and-Docplex/Gurobipy">
-<h2>Translators between <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> and Docplex/Gurobipy<a class="headerlink" href="#Translators-between-QuadraticProgram-and-Docplex/Gurobipy" title="Permalink to this heading">#</a></h2>
+<h2>Translators between <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> and Docplex/Gurobipy<a class="headerlink" href="#Translators-between-QuadraticProgram-and-Docplex/Gurobipy" title="Link to this heading">¶</a></h2>
 <p>Qiskit Optimization can load <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code> from a Docplex model and a Gurobipy model.</p>
 <p>First, we define an optimization problem by Docplex and Gurobipy.</p>
 <div class="nbinput docutils container">
@@ -687,7 +624,7 @@ SolutionSample(x=array([0., 0.]), fval=0.0, probability=0.0735318504545516, stat
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># docplex model</span>
-<span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">docplex.mp.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
 
 <span class="n">docplex_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s2">&quot;docplex&quot;</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">docplex_model</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
@@ -723,14 +660,14 @@ subject to {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># gurobi model</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">remove</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">remove</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tempfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
 
-<span class="kn">import</span> <span class="nn">gurobipy</span> <span class="k">as</span> <span class="nn">gp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gurobipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gp</span>
 
 
-<span class="k">def</span> <span class="nf">gpy_display</span><span class="p">(</span><span class="n">mdl</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gpy_display</span><span class="p">(</span><span class="n">mdl</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function to pretty-print a Gurobipy-Model.&quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.lp&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp_file</span><span class="p">:</span>
         <span class="n">mdl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -775,7 +712,7 @@ End
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.translators</span> <span class="kn">import</span> <span class="n">from_docplex_mp</span><span class="p">,</span> <span class="n">from_gurobipy</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.translators</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_docplex_mp</span><span class="p">,</span> <span class="n">from_gurobipy</span>
 
 <span class="n">qp</span> <span class="o">=</span> <span class="n">from_docplex_mp</span><span class="p">(</span><span class="n">docplex_model</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QuadraticProgram obtained from docpblex&quot;</span><span class="p">)</span>
@@ -832,7 +769,7 @@ Subject to
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_optimization.translators</span> <span class="kn">import</span> <span class="n">to_gurobipy</span><span class="p">,</span> <span class="n">to_docplex_mp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.translators</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_docplex_mp</span><span class="p">,</span> <span class="n">to_gurobipy</span>
 
 <span class="n">gmod</span> <span class="o">=</span> <span class="n">to_gurobipy</span><span class="p">(</span><span class="n">from_docplex_mp</span><span class="p">(</span><span class="n">docplex_model</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;convert docplex to gurobipy via QuadraticProgram&quot;</span><span class="p">)</span>
@@ -844,7 +781,7 @@ Subject to
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -864,13 +801,6 @@ Generals
  y
 End
 
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
 
 convert gurobipy to docplex via QuadraticProgram
 \ This file has been generated by DOcplex
@@ -896,7 +826,7 @@ End
 </pre></div></div>
 </div>
 <section id="Indicator-constraints-of-Docplex">
-<h3>Indicator constraints of Docplex<a class="headerlink" href="#Indicator-constraints-of-Docplex" title="Permalink to this heading">#</a></h3>
+<h3>Indicator constraints of Docplex<a class="headerlink" href="#Indicator-constraints-of-Docplex" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">from_docplex_mp</span></code> supports indicator constraints, e.g., <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">0</span> <span class="pre">=&gt;</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span> <span class="pre">&lt;=</span> <span class="pre">z</span></code> (u: binary variable) when we convert a Docplex model into <code class="docutils literal notranslate"><span class="pre">QuadraticProgram</span></code>. It converts indicator constraints into linear constraints using the big-M formulation.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -983,7 +913,7 @@ z=-1
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -994,13 +924,13 @@ z=-1
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.6.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Feb 28 03:00:52 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.1.2</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.7.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.9.23</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Aug 20 14:17:44 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -1047,7 +977,7 @@ z=-1
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+                Copyright &#169; 2018, 2025, Qiskit Optimization Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1092,11 +1022,11 @@ z=-1
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09aae1b8"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>

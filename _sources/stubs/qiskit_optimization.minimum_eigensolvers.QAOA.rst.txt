@@ -1,0 +1,34 @@
+﻿
+
+QAOA
+=============================================
+
+.. currentmodule:: qiskit_optimization.minimum_eigensolvers
+
+.. autoclass:: QAOA
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: QAOA.initial_point
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: QAOA.compute_minimum_eigenvalue
+   .. automethod:: QAOA.supports_aux_operators
+
+   
+   

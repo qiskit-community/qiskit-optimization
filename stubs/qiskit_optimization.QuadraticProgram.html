@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="QiskitOptimizationError" href="qiskit_optimization.QiskitOptimizationError.html" /><link rel="prev" title="Qiskit Optimization API Reference" href="../apidocs/qiskit_optimization.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>QuadraticProgram - Qiskit Optimization 0.6.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>QuadraticProgram - Qiskit Optimization 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -201,7 +201,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -228,7 +228,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Optimization 0.6.1</span>
+  <span class="sidebar-brand-text">Qiskit Optimization 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -241,6 +241,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/03_migration_guide_to_v0.7.html">Qiskit Optimization v0.7 Migration Guide</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -354,9 +355,35 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.translators.to_ising.html">to_ising</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.minimum_eigensolvers.html">Minimum Eigensolvers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.minimum_eigensolvers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Minimum Eigensolvers (qiskit_optimization.minimum_eigensolvers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.QAOA.html">QAOA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.VQE.html">VQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.minimum_eigensolvers.VQEResult.html">VQEResult</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_optimization.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.utils.html">Utility functions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.utils</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Utility functions (qiskit_optimization.utils)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_optimization.utils.algorithm_globals.html">algorithm_globals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
 </ul>
 </li>
@@ -427,23 +454,23 @@
         </div>
         <article role="main">
           <br><br><br><section id="quadraticprogram">
-<h1>QuadraticProgram<a class="headerlink" href="#quadraticprogram" title="Permalink to this heading">#</a></h1>
+<h1>QuadraticProgram<a class="headerlink" href="#quadraticprogram" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QuadraticProgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QuadraticProgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Quadratically Constrained Quadratic Program representation.</p>
 <p>This representation supports inequality and equality constraints,
 as well as continuous, binary, and integer variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the quadratic program.</p>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the quadratic program.</p>
 </dd>
 </dl>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.linear_constraints">
-<span class="sig-name descname"><span class="pre">linear_constraints</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.linear_constraints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">linear_constraints</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.linear_constraints" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the list of linear constraints of the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -454,7 +481,7 @@ as well as continuous, binary, and integer variables.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.linear_constraints_index">
-<span class="sig-name descname"><span class="pre">linear_constraints_index</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.linear_constraints_index" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">linear_constraints_index</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.linear_constraints_index" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the dictionary that maps the name of a linear constraint to its index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -465,7 +492,7 @@ as well as continuous, binary, and integer variables.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.name" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.name" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the name of the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -476,7 +503,7 @@ as well as continuous, binary, and integer variables.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.objective">
-<span class="sig-name descname"><span class="pre">objective</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.objective" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">objective</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.objective" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the quadratic objective.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -487,7 +514,7 @@ as well as continuous, binary, and integer variables.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.quadratic_constraints">
-<span class="sig-name descname"><span class="pre">quadratic_constraints</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.quadratic_constraints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">quadratic_constraints</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.quadratic_constraints" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the list of quadratic constraints of the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -498,7 +525,7 @@ as well as continuous, binary, and integer variables.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.quadratic_constraints_index">
-<span class="sig-name descname"><span class="pre">quadratic_constraints_index</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.quadratic_constraints_index" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">quadratic_constraints_index</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.quadratic_constraints_index" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the dictionary that maps the name of a quadratic constraint to its index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -509,7 +536,7 @@ as well as continuous, binary, and integer variables.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.status">
-<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.status" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.status" title="Link to this definition">¶</a></dt>
 <dd><p>Status of the quadratic program.
 It can be infeasible due to variable substitution.</p>
 <dl class="field-list simple">
@@ -521,7 +548,7 @@ It can be infeasible due to variable substitution.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.variables">
-<span class="sig-name descname"><span class="pre">variables</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.variables" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">variables</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.variables" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the list of variables of the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -532,7 +559,7 @@ It can be infeasible due to variable substitution.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.variables_index">
-<span class="sig-name descname"><span class="pre">variables_index</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.variables_index" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">variables_index</span></span><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.variables_index" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the dictionary that maps the name of a variable to its index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -544,11 +571,11 @@ It can be infeasible due to variable substitution.</p>
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.binary_var">
-<span class="sig-name descname"><span class="pre">binary_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.binary_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.binary_var" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">binary_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.binary_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.binary_var" title="Link to this definition">¶</a></dt>
 <dd><p>Adds a binary variable to the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name of the variable.
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name of the variable.
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -558,22 +585,22 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 <dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – if the variable name is already occupied.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.binary_var_dict">
-<span class="sig-name descname"><span class="pre">binary_var_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.binary_var_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.binary_var_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">binary_var_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.binary_var_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.binary_var_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Uses ‘var_dict’ to construct a dictionary of binary variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
-<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
-<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><em>Sequence</em></a>) – If keys: int, it is interpreted as the number of variables to construct.
+<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
+<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>Sequence</em>) – If keys: int, it is interpreted as the number of variables to construct.
 Otherwise, the elements of the sequence are converted to strings via ‘str’ and
 substituted into <cite>key_format</cite>.</p></li>
 </ul>
@@ -590,22 +617,22 @@ substituted into <cite>key_format</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>, <a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.binary_var_list">
-<span class="sig-name descname"><span class="pre">binary_var_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.binary_var_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.binary_var_list" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">binary_var_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.binary_var_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.binary_var_list" title="Link to this definition">¶</a></dt>
 <dd><p>Uses ‘var_list’ to construct a list of binary variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
-<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
-<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><em>Sequence</em></a>) – If keys: int, it is interpreted as the number of variables to construct.
+<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
+<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>Sequence</em>) – If keys: int, it is interpreted as the number of variables to construct.
 Otherwise, the elements of the sequence are converted to strings via ‘str’ and
 substituted into <cite>key_format</cite>.</p></li>
 </ul>
@@ -622,14 +649,14 @@ substituted into <cite>key_format</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a>[<a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.clear" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.clear" title="Link to this definition">¶</a></dt>
 <dd><p>Clears the quadratic program, i.e., deletes all variables, constraints, the
 objective function as well as the name.</p>
 <dl class="field-list simple">
@@ -638,14 +665,14 @@ objective function as well as the name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.continuous_var">
-<span class="sig-name descname"><span class="pre">continuous_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.continuous_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.continuous_var" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">continuous_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.continuous_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.continuous_var" title="Link to this definition">¶</a></dt>
 <dd><p>Adds a continuous variable to the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The lowerbound of the variable.</p></li>
-<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The upperbound of the variable.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name of the variable.
+<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The lowerbound of the variable.</p></li>
+<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The upperbound of the variable.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name of the variable.
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
 </ul>
 </dd>
@@ -656,24 +683,24 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 <dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – if the variable name is already occupied.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.continuous_var_dict">
-<span class="sig-name descname"><span class="pre">continuous_var_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.continuous_var_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.continuous_var_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">continuous_var_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.continuous_var_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.continuous_var_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Uses ‘var_dict’ to construct a dictionary of continuous variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
-<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
+<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
+<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
-<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
-<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><em>Sequence</em></a>) – If keys: int, it is interpreted as the number of variables to construct.
+<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
+<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>Sequence</em>) – If keys: int, it is interpreted as the number of variables to construct.
 Otherwise, the elements of the sequence are converted to strings via ‘str’ and
 substituted into <cite>key_format</cite>.</p></li>
 </ul>
@@ -690,24 +717,24 @@ substituted into <cite>key_format</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>, <a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.continuous_var_list">
-<span class="sig-name descname"><span class="pre">continuous_var_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.continuous_var_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.continuous_var_list" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">continuous_var_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.continuous_var_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.continuous_var_list" title="Link to this definition">¶</a></dt>
 <dd><p>Uses ‘var_list’ to construct a list of continuous variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
-<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
+<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
+<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
-<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
-<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><em>Sequence</em></a>) – If keys: int, it is interpreted as the number of variables to construct.
+<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
+<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>Sequence</em>) – If keys: int, it is interpreted as the number of variables to construct.
 Otherwise, the elements of the sequence are converted to strings via ‘str’ and
 substituted into <cite>key_format</cite>.</p></li>
 </ul>
@@ -724,28 +751,31 @@ substituted into <cite>key_format</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a>[<a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.export_as_lp_string">
-<span class="sig-name descname"><span class="pre">export_as_lp_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.export_as_lp_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.export_as_lp_string" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">export_as_lp_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.export_as_lp_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.export_as_lp_string" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the quadratic program as a string of LP format.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit_optimization.problems.quadratic_program.QuadraticProgram.export_as_lp_string()</span></code> is deprecated as of Qiskit 0.7.0. It will be removed no earlier than 3 months after the release date. Use prettyprint instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A string representing the quadratic program.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.from_ising">
-<span class="sig-name descname"><span class="pre">from_ising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.from_ising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.from_ising" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">from_ising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.from_ising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.from_ising" title="Link to this definition">¶</a></dt>
 <dd><p>Create a quadratic program from a qubit operator and a shift value.</p>
 <p>Variables are mapped to qubits in the same order, i.e.,
 i-th variable is mapped to i-th qubit.
@@ -754,8 +784,8 @@ See <a class="reference external" href="https://github.com/Qiskit/qiskit-terra/i
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>qubit_op</strong> (<em>BaseOperator</em>) – The qubit operator of the problem.</p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The constant value in the Ising Hamiltonian.</p></li>
-<li><p><strong>linear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – If linear is True, <span class="math notranslate nohighlight">\(x^2\)</span> is treated as a linear term
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The constant value in the Ising Hamiltonian.</p></li>
+<li><p><strong>linear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If linear is True, <span class="math notranslate nohighlight">\(x^2\)</span> is treated as a linear term
 since <span class="math notranslate nohighlight">\(x^2 = x\)</span> for <span class="math notranslate nohighlight">\(x \in \{0,1\}\)</span>.
 Else, <span class="math notranslate nohighlight">\(x^2\)</span> is treated as a quadratic term.
 The default value is False.</p></li>
@@ -765,7 +795,7 @@ The default value is False.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – If there are Pauli Xs in any Pauli term</p></li>
 <li><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – If there are more than 2 Pauli Zs in any Pauli term</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – If the input operator is a ListOp</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – If the input operator is a ListOp</p></li>
 </ul>
 </dd>
 </dl>
@@ -773,7 +803,7 @@ The default value is False.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_feasibility_info">
-<span class="sig-name descname"><span class="pre">get_feasibility_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_feasibility_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_feasibility_info" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_feasibility_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_feasibility_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_feasibility_info" title="Link to this definition">¶</a></dt>
 <dd><p>Returns whether a solution is feasible or not along with the violations.
 :param x: a solution value, such as returned in an optimizer result.</p>
 <dl class="field-list simple">
@@ -793,100 +823,100 @@ List[Constraint]: List of constraints which are violated.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_linear_constraint">
-<span class="sig-name descname"><span class="pre">get_linear_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_linear_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_linear_constraint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_linear_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_linear_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_linear_constraint" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a linear constraint for a given name or index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the index or name of the constraint.</p>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the index or name of the constraint.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The corresponding constraint.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.12)"><strong>IndexError</strong></a> – if the index is out of the list size</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.12)"><strong>KeyError</strong></a> – if the name does not exist</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.13)"><strong>IndexError</strong></a> – if the index is out of the list size</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – if the name does not exist</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint" title="qiskit_optimization.problems.linear_constraint.LinearConstraint"><em>LinearConstraint</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint" title="qiskit_optimization.problems.LinearConstraint">LinearConstraint</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_num_binary_vars">
-<span class="sig-name descname"><span class="pre">get_num_binary_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_binary_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_binary_vars" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_num_binary_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_binary_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_binary_vars" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the total number of binary variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The total number of binary variables.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_num_continuous_vars">
-<span class="sig-name descname"><span class="pre">get_num_continuous_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_continuous_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_continuous_vars" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_num_continuous_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_continuous_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_continuous_vars" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the total number of continuous variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The total number of continuous variables.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_num_integer_vars">
-<span class="sig-name descname"><span class="pre">get_num_integer_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_integer_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_integer_vars" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_num_integer_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_integer_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_integer_vars" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the total number of integer variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The total number of integer variables.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_num_linear_constraints">
-<span class="sig-name descname"><span class="pre">get_num_linear_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_linear_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_linear_constraints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_num_linear_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_linear_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_linear_constraints" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the number of linear constraints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The number of linear constraints.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_num_quadratic_constraints">
-<span class="sig-name descname"><span class="pre">get_num_quadratic_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_quadratic_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_quadratic_constraints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_num_quadratic_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_quadratic_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_quadratic_constraints" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the number of quadratic constraints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The number of quadratic constraints.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_num_vars">
-<span class="sig-name descname"><span class="pre">get_num_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vartype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_vars" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_num_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vartype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_num_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_num_vars" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the total number of variables or the number of variables of the specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -896,61 +926,61 @@ List[Constraint]: List of constraints which are violated.</p>
 <dd class="field-even"><p>The total number of variables.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_quadratic_constraint">
-<span class="sig-name descname"><span class="pre">get_quadratic_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_quadratic_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_quadratic_constraint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_quadratic_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_quadratic_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_quadratic_constraint" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a quadratic constraint for a given name or index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the index or name of the constraint.</p>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the index or name of the constraint.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The corresponding constraint.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.12)"><strong>IndexError</strong></a> – if the index is out of the list size</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.12)"><strong>KeyError</strong></a> – if the name does not exist</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.13)"><strong>IndexError</strong></a> – if the index is out of the list size</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – if the name does not exist</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint" title="qiskit_optimization.problems.quadratic_constraint.QuadraticConstraint"><em>QuadraticConstraint</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint" title="qiskit_optimization.problems.QuadraticConstraint">QuadraticConstraint</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.get_variable">
-<span class="sig-name descname"><span class="pre">get_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_variable" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.get_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.get_variable" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a variable for a given name or index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the index or name of the variable.</p>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the index or name of the variable.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The corresponding variable.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.integer_var">
-<span class="sig-name descname"><span class="pre">integer_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.integer_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.integer_var" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">integer_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.integer_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.integer_var" title="Link to this definition">¶</a></dt>
 <dd><p>Adds an integer variable to the quadratic program.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The lowerbound of the variable.</p></li>
-<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The upperbound of the variable.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name of the variable.
+<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The lowerbound of the variable.</p></li>
+<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The upperbound of the variable.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name of the variable.
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
 </ul>
 </dd>
@@ -961,24 +991,24 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 <dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – if the variable name is already occupied.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.integer_var_dict">
-<span class="sig-name descname"><span class="pre">integer_var_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.integer_var_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.integer_var_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">integer_var_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.integer_var_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.integer_var_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Uses ‘var_dict’ to construct a dictionary of integer variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
-<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
+<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
+<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
-<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
-<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><em>Sequence</em></a>) – If keys: int, it is interpreted as the number of variables to construct.
+<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
+<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>Sequence</em>) – If keys: int, it is interpreted as the number of variables to construct.
 Otherwise, the elements of the sequence are converted to strings via ‘str’ and
 substituted into <cite>key_format</cite>.</p></li>
 </ul>
@@ -995,24 +1025,24 @@ substituted into <cite>key_format</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>, <a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.integer_var_list">
-<span class="sig-name descname"><span class="pre">integer_var_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.integer_var_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.integer_var_list" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">integer_var_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.integer_var_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.integer_var_list" title="Link to this definition">¶</a></dt>
 <dd><p>Uses ‘var_list’ to construct a list of integer variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
-<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
+<li><p><strong>lowerbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The lower bound of the variable(s).</p></li>
+<li><p><strong>upperbound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The upper bound of the variable(s).</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name(s) of the variable(s).
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">x0</span></code>, is used.</p></li>
-<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
-<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><em>Sequence</em></a>) – If keys: int, it is interpreted as the number of variables to construct.
+<li><p><strong>key_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The format used to name/index the variable(s).</p></li>
+<li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>Sequence</em>) – If keys: int, it is interpreted as the number of variables to construct.
 Otherwise, the elements of the sequence are converted to strings via ‘str’ and
 substituted into <cite>key_format</cite>.</p></li>
 </ul>
@@ -1029,31 +1059,31 @@ substituted into <cite>key_format</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a>[<a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.variable.Variable"><em>Variable</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference internal" href="qiskit_optimization.problems.Variable.html#qiskit_optimization.problems.Variable" title="qiskit_optimization.problems.Variable">Variable</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.is_feasible">
-<span class="sig-name descname"><span class="pre">is_feasible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.is_feasible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.is_feasible" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_feasible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.is_feasible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.is_feasible" title="Link to this definition">¶</a></dt>
 <dd><p>Returns whether a solution is feasible or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – a solution value, such as returned in an optimizer result.</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>np.ndarray</em>) – a solution value, such as returned in an optimizer result.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the solution provided is feasible otherwise <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.linear_constraint">
-<span class="sig-name descname"><span class="pre">linear_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.linear_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.linear_constraint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">linear_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.linear_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.linear_constraint" title="Link to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Adds a linear equality constraint to the quadratic program of the form:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(linear</span> <span class="pre">*</span> <span class="pre">x)</span> <span class="pre">sense</span> <span class="pre">rhs</span></code>.</p>
 </dd>
@@ -1061,16 +1091,16 @@ substituted into <cite>key_format</cite>.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>linear</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The linear coefficients of the left-hand side of the constraint.</p></li>
-<li><p><strong>sense</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>ConstraintSense</em>) – <p>The sense of the constraint,</p>
+<li><p><strong>linear</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The linear coefficients of the left-hand side of the constraint.</p></li>
+<li><p><strong>sense</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>ConstraintSense</em>) – <p>The sense of the constraint,</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">E</span></code>, and <code class="docutils literal notranslate"><span class="pre">EQ</span></code> denote ‘equal to’.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">G</span></code>, and <code class="docutils literal notranslate"><span class="pre">GE</span></code> denote ‘greater-than-or-equal-to’.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">L</span></code>, and <code class="docutils literal notranslate"><span class="pre">LE</span></code> denote ‘less-than-or-equal-to’.</p></li>
 </ul>
 </p></li>
-<li><p><strong>rhs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The right-hand side of the constraint.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name of the constraint.
+<li><p><strong>rhs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The right-hand side of the constraint.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name of the constraint.
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">c0</span></code>, is used.</p></li>
 </ul>
 </dd>
@@ -1082,21 +1112,21 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
     valid.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint" title="qiskit_optimization.problems.linear_constraint.LinearConstraint"><em>LinearConstraint</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.LinearConstraint.html#qiskit_optimization.problems.LinearConstraint" title="qiskit_optimization.problems.LinearConstraint">LinearConstraint</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.maximize">
-<span class="sig-name descname"><span class="pre">maximize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.maximize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.maximize" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">maximize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.maximize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.maximize" title="Link to this definition">¶</a></dt>
 <dd><p>Sets a quadratic objective to be maximized.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the constant offset of the objective.</p></li>
-<li><p><strong>linear</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the linear part of the objective.</p></li>
-<li><p><strong>quadratic</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the quadratic part of the objective.</p></li>
+<li><p><strong>constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the constant offset of the objective.</p></li>
+<li><p><strong>linear</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the linear part of the objective.</p></li>
+<li><p><strong>quadratic</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the quadratic part of the objective.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1110,14 +1140,14 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.minimize">
-<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.minimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.minimize" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.minimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.minimize" title="Link to this definition">¶</a></dt>
 <dd><p>Sets a quadratic objective to be minimized.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the constant offset of the objective.</p></li>
-<li><p><strong>linear</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the linear part of the objective.</p></li>
-<li><p><strong>quadratic</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the quadratic part of the objective.</p></li>
+<li><p><strong>constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the constant offset of the objective.</p></li>
+<li><p><strong>linear</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the linear part of the objective.</p></li>
+<li><p><strong>quadratic</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – the coefficients of the quadratic part of the objective.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1131,11 +1161,11 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.prettyprint">
-<span class="sig-name descname"><span class="pre">prettyprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.prettyprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.prettyprint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">prettyprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.prettyprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.prettyprint" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a pretty printed string of this problem.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The text width to wrap the output strings. It is disabled by setting 0.
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The text width to wrap the output strings. It is disabled by setting 0.
 Note that some strings might exceed this value, for example, a long variable
 name won’t be wrapped. The default value is 80.</p>
 </dd>
@@ -1146,14 +1176,14 @@ name won’t be wrapped. The default value is 80.</p>
 <dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – if there is a non-printable name.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.quadratic_constraint">
-<span class="sig-name descname"><span class="pre">quadratic_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.quadratic_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.quadratic_constraint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">quadratic_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.quadratic_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.quadratic_constraint" title="Link to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Adds a quadratic equality constraint to the quadratic program of the form:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(x</span> <span class="pre">*</span> <span class="pre">quadratic</span> <span class="pre">*</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">linear</span> <span class="pre">*</span> <span class="pre">x)</span> <span class="pre">sense</span> <span class="pre">rhs</span></code>.</p>
 </dd>
@@ -1161,17 +1191,17 @@ name won’t be wrapped. The default value is 80.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>linear</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The linear coefficients of the constraint.</p></li>
-<li><p><strong>quadratic</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The quadratic coefficients of the constraint.</p></li>
-<li><p><strong>sense</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>ConstraintSense</em>) – <p>The sense of the constraint,</p>
+<li><p><strong>linear</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The linear coefficients of the constraint.</p></li>
+<li><p><strong>quadratic</strong> (<em>ndarray</em><em> | </em><em>spmatrix</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The quadratic coefficients of the constraint.</p></li>
+<li><p><strong>sense</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>ConstraintSense</em>) – <p>The sense of the constraint,</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">E</span></code>, and <code class="docutils literal notranslate"><span class="pre">EQ</span></code> denote ‘equal to’.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">G</span></code>, and <code class="docutils literal notranslate"><span class="pre">GE</span></code> denote ‘greater-than-or-equal-to’.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">L</span></code>, and <code class="docutils literal notranslate"><span class="pre">LE</span></code> denote ‘less-than-or-equal-to’.</p></li>
 </ul>
 </p></li>
-<li><p><strong>rhs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The right-hand side of the constraint.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – The name of the constraint.
+<li><p><strong>rhs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The right-hand side of the constraint.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>) – The name of the constraint.
 If it’s <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>, the default name, e.g., <code class="docutils literal notranslate"><span class="pre">q0</span></code>, is used.</p></li>
 </ul>
 </dd>
@@ -1182,21 +1212,24 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 <dd class="field-odd"><p><a class="reference internal" href="qiskit_optimization.QiskitOptimizationError.html#qiskit_optimization.QiskitOptimizationError" title="qiskit_optimization.QiskitOptimizationError"><strong>QiskitOptimizationError</strong></a> – if the constraint name already exists.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint" title="qiskit_optimization.problems.quadratic_constraint.QuadraticConstraint"><em>QuadraticConstraint</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_optimization.problems.QuadraticConstraint.html#qiskit_optimization.problems.QuadraticConstraint" title="qiskit_optimization.problems.QuadraticConstraint">QuadraticConstraint</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.read_from_lp_file">
-<span class="sig-name descname"><span class="pre">read_from_lp_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.read_from_lp_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.read_from_lp_file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">read_from_lp_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.read_from_lp_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.read_from_lp_file" title="Link to this definition">¶</a></dt>
 <dd><p>Loads the quadratic program from a LP file.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit_optimization.problems.quadratic_program.QuadraticProgram.read_from_lp_file()</span></code> is deprecated as of Qiskit 0.7.0. It will be removed no earlier than 3 months after the release date. Use from_docplex_mp or from_gurobipy instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename of the file to be loaded.</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename of the file to be loaded.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.12)"><strong>FileNotFoundError</strong></a> – If the file does not exist.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.13)"><strong>FileNotFoundError</strong></a> – If the file does not exist.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -1207,16 +1240,16 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.remove_linear_constraint">
-<span class="sig-name descname"><span class="pre">remove_linear_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.remove_linear_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.remove_linear_constraint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove_linear_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.remove_linear_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.remove_linear_constraint" title="Link to this definition">¶</a></dt>
 <dd><p>Remove a linear constraint</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – an index or a name of a linear constraint</p>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – an index or a name of a linear constraint</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.12)"><strong>KeyError</strong></a> – if name does not exist</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.12)"><strong>IndexError</strong></a> – if index is out of range</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – if name does not exist</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.13)"><strong>IndexError</strong></a> – if index is out of range</p></li>
 </ul>
 </dd>
 </dl>
@@ -1224,16 +1257,16 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.remove_quadratic_constraint">
-<span class="sig-name descname"><span class="pre">remove_quadratic_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.remove_quadratic_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.remove_quadratic_constraint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove_quadratic_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.remove_quadratic_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.remove_quadratic_constraint" title="Link to this definition">¶</a></dt>
 <dd><p>Remove a quadratic constraint</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – an index or a name of a quadratic constraint</p>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – an index or a name of a quadratic constraint</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.12)"><strong>KeyError</strong></a> – if name does not exist</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.12)"><strong>IndexError</strong></a> – if index is out of range</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – if name does not exist</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.13)"><strong>IndexError</strong></a> – if index is out of range</p></li>
 </ul>
 </dd>
 </dl>
@@ -1241,14 +1274,14 @@ If it’s <code class="docutils literal notranslate"><span class="pre">None</spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.substitute_variables">
-<span class="sig-name descname"><span class="pre">substitute_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constants</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.substitute_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.substitute_variables" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">substitute_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constants</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.substitute_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.substitute_variables" title="Link to this definition">¶</a></dt>
 <dd><p>Substitutes variables with constants or other variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>constants</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – replace variable by constant
+<li><p><strong>constants</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – replace variable by constant
 e.g., <code class="docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">2}</span></code> means <code class="docutils literal notranslate"><span class="pre">x</span></code> is substituted with 2</p></li>
-<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – replace variables by weighted other variable
+<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – replace variables by weighted other variable
 need to copy everything using name reference to make sure that indices are matched
 correctly. The lower and upper bounds are updated accordingly.
 e.g., <code class="docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">('y',</span> <span class="pre">2)}</span></code> means <code class="docutils literal notranslate"><span class="pre">x</span></code> is substituted with <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">*</span> <span class="pre">2</span></code></p></li>
@@ -1267,14 +1300,14 @@ Otherwise, it gets <code class="docutils literal notranslate"><span class="pre">
     - Coefficient of variable substitution is zero.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#qiskit_optimization.QuadraticProgram" title="qiskit_optimization.problems.quadratic_program.QuadraticProgram"><em>QuadraticProgram</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#qiskit_optimization.QuadraticProgram" title="qiskit_optimization.QuadraticProgram">QuadraticProgram</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.to_ising">
-<span class="sig-name descname"><span class="pre">to_ising</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.to_ising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.to_ising" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_ising</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.to_ising"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.to_ising" title="Link to this definition">¶</a></dt>
 <dd><p>Return the Ising Hamiltonian of this problem.</p>
 <p>Variables are mapped to qubits in the same order, i.e.,
 i-th variable is mapped to i-th qubit.
@@ -1298,17 +1331,20 @@ offset: The constant value in the Ising Hamiltonian.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_optimization.QuadraticProgram.write_to_lp_file">
-<span class="sig-name descname"><span class="pre">write_to_lp_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.write_to_lp_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.write_to_lp_file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">write_to_lp_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_optimization/problems/quadratic_program.html#QuadraticProgram.write_to_lp_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_optimization.QuadraticProgram.write_to_lp_file" title="Link to this definition">¶</a></dt>
 <dd><p>Writes the quadratic program to an LP file.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit_optimization.problems.quadratic_program.QuadraticProgram.write_to_lp_file()</span></code> is deprecated as of Qiskit 0.7.0. It will be removed no earlier than 3 months after the release date. Use to_docplex_mp or to_gurobipy instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename of the file the model is written to.
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename of the file the model is written to.
 If filename is a directory, file name ‘my_problem.lp’ is appended.
 If filename does not end with ‘.lp’, suffix ‘.lp’ is appended.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If this cannot open a file.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.13)"><strong>OSError</strong></a> – If this cannot open a file.</p></li>
 <li><p><strong>DOcplexException</strong> – If filename is an empty string</p></li>
 </ul>
 </dd>
@@ -1360,7 +1396,7 @@ If filename does not end with ‘.lp’, suffix ‘.lp’ is appended.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+                Copyright &#169; 2018, 2025, Qiskit Optimization Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1446,11 +1482,11 @@ If filename does not end with ‘.lp’, suffix ‘.lp’ is appended.</p>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09aae1b8"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>

@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Release Notes" href="../release_notes.html" /><link rel="prev" title="Qiskit Optimization Explanations" href="index.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>Background on Quantum Random Access Optimization: Quantum relaxations, quantum random access codes, rounding schemes - Qiskit Optimization 0.6.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Background on Quantum Random Access Optimization: Quantum relaxations, quantum random access codes, rounding schemes - Qiskit Optimization 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -201,7 +201,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Optimization 0.6.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -228,7 +228,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Optimization 0.6.1</span>
+  <span class="sidebar-brand-text">Qiskit Optimization 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -241,6 +241,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/03_migration_guide_to_v0.7.html">Qiskit Optimization v0.7 Migration Guide</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -354,9 +355,35 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.minimum_eigensolvers.html">Minimum Eigensolvers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.minimum_eigensolvers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Minimum Eigensolvers (qiskit_optimization.minimum_eigensolvers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.QAOA.html">QAOA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html">VQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQEResult.html">VQEResult</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Explanations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_optimization.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.utils.html">Utility functions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.utils</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Utility functions (qiskit_optimization.utils)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.utils.algorithm_globals.html">algorithm_globals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Explanations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
 </ul>
 </li>
@@ -427,11 +454,11 @@
         </div>
         <article role="main">
           <br><br><br><section id="background-on-quantum-random-access-optimization-quantum-relaxations-quantum-random-access-codes-rounding-schemes">
-<h1>Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em><a class="headerlink" href="#background-on-quantum-random-access-optimization-quantum-relaxations-quantum-random-access-codes-rounding-schemes" title="Permalink to this heading">#</a></h1>
+<h1>Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em><a class="headerlink" href="#background-on-quantum-random-access-optimization-quantum-relaxations-quantum-random-access-codes-rounding-schemes" title="Link to this heading">¶</a></h1>
 <p>This material provides a deeper look into the concepts behind Quantum
 Random Access Optimization.</p>
 <section id="relaxations">
-<h2>Relaxations<a class="headerlink" href="#relaxations" title="Permalink to this heading">#</a></h2>
+<h2>Relaxations<a class="headerlink" href="#relaxations" title="Link to this heading">¶</a></h2>
 <p>Consider a binary optimization problem defined on binary variables
 <span class="math notranslate nohighlight">\(m_i \in \{-1,1\}\)</span>. The choice of using <span class="math notranslate nohighlight">\(\pm 1\)</span> variables
 instead of <span class="math notranslate nohighlight">\(0/1\)</span> variables is not important, but will be
@@ -474,7 +501,7 @@ of a variable assignment as:</p>
 </div>
 </section>
 <section id="quantum-relaxation">
-<h2>Quantum Relaxation<a class="headerlink" href="#quantum-relaxation" title="Permalink to this heading">#</a></h2>
+<h2>Quantum Relaxation<a class="headerlink" href="#quantum-relaxation" title="Link to this heading">¶</a></h2>
 <p>Our goal is to define a relaxation of our MaxCut objective function. We
 will do this by mapping our objective function’s binary variables into
 the space of single qubit Pauli observables and by embedding the set of
@@ -505,7 +532,7 @@ bounding it. This detail will become crucially important further down
 when we explicitly define our quantum relaxation.</p>
 </section>
 <section id="a-simple-quantum-relaxation">
-<h2>A Simple Quantum Relaxation<a class="headerlink" href="#a-simple-quantum-relaxation" title="Permalink to this heading">#</a></h2>
+<h2>A Simple Quantum Relaxation<a class="headerlink" href="#a-simple-quantum-relaxation" title="Link to this heading">¶</a></h2>
 <p>Before explicating the full quantum relaxation scheme based on
 single-qubit Quantum Random Access Codes (QRACs), it may be helpful to
 first discuss <a class="reference external" href="https://github.com/Qiskit/qiskit-optimization/blob/main/docs/tutorials/06_examples_max_cut_and_tsp.ipynb">a version of quantum
@@ -548,7 +575,7 @@ state onto the set of computational basis states, and consequently, onto
 the image of <span class="math notranslate nohighlight">\(F^{(1)}\)</span>.</p>
 </section>
 <section id="quantum-relaxations-via-quantum-random-access-codes-qracs">
-<h2>Quantum Relaxations via Quantum Random Access Codes (QRACs)<a class="headerlink" href="#quantum-relaxations-via-quantum-random-access-codes-qracs" title="Permalink to this heading">#</a></h2>
+<h2>Quantum Relaxations via Quantum Random Access Codes (QRACs)<a class="headerlink" href="#quantum-relaxations-via-quantum-random-access-codes-qracs" title="Link to this heading">¶</a></h2>
 <p>Quantum Random Access Codes were <a class="reference external" href="http://users.cms.caltech.edu/~vidick/teaching/120_qcrypto/wiesner.pdf">first outlined in 1983 by Stephen
 Wiesner
 [2]</a>
@@ -558,7 +585,7 @@ are co-opting them to define our quantum relaxations. For this reason
 will not provide a full introduction to RACs or QRACs, but encourage
 interested readers to seek out more information about them.</p>
 <section id="p-and-3-1-p-quantum-random-access-codes">
-<h3><span class="math notranslate nohighlight">\((1,1,1)\)</span>, <span class="math notranslate nohighlight">\((2,1,p)\)</span>, and <span class="math notranslate nohighlight">\((3,1,p)\)</span> Quantum Random Access Codes<a class="headerlink" href="#p-and-3-1-p-quantum-random-access-codes" title="Permalink to this heading">#</a></h3>
+<h3><span class="math notranslate nohighlight">\((1,1,1)\)</span>, <span class="math notranslate nohighlight">\((2,1,p)\)</span>, and <span class="math notranslate nohighlight">\((3,1,p)\)</span> Quantum Random Access Codes<a class="headerlink" href="#p-and-3-1-p-quantum-random-access-codes" title="Link to this heading">¶</a></h3>
 <p>A <span class="math notranslate nohighlight">\((k,1,p)\)</span>-QRAC, is a scheme for embedding <span class="math notranslate nohighlight">\(k\)</span> classical
 bits into a 1-qubit state, such that given a single copy of this state,
 you can recover any one of the <span class="math notranslate nohighlight">\(k\)</span>-bits with probability <span class="math notranslate nohighlight">\(p\)</span>
@@ -608,7 +635,7 @@ with the appropriate number of <span class="math notranslate nohighlight">\(+1\)
 </div>
 </section>
 <section id="recovering-encoded-bits">
-<h3>Recovering Encoded Bits<a class="headerlink" href="#recovering-encoded-bits" title="Permalink to this heading">#</a></h3>
+<h3>Recovering Encoded Bits<a class="headerlink" href="#recovering-encoded-bits" title="Link to this heading">¶</a></h3>
 <p>Given a QRAC state, we can recover the values of the encoded bits by
 estimating the expectation value of each bit’s corresponding observable.
 Note that there is a re-scaling factor which depends on the density of
@@ -629,7 +656,7 @@ the QRAC.</p>
 </div>
 </section>
 <section id="encoded-problem-hamiltonians">
-<h3>Encoded Problem Hamiltonians<a class="headerlink" href="#encoded-problem-hamiltonians" title="Permalink to this heading">#</a></h3>
+<h3>Encoded Problem Hamiltonians<a class="headerlink" href="#encoded-problem-hamiltonians" title="Link to this heading">¶</a></h3>
 <p>Using the tools we have outlined above, we can explicitly write out the
 Hamiltonians which encode the relaxed versions of our MaxCut problem. We
 do this by substituting each decision variable with the unique
@@ -657,7 +684,7 @@ acting on qubit <span class="math notranslate nohighlight">\(i\)</span>, because
 decision variables.</p>
 </section>
 <section id="commutation-of-quantum-relaxation">
-<h3>Commutation of Quantum Relaxation<a class="headerlink" href="#commutation-of-quantum-relaxation" title="Permalink to this heading">#</a></h3>
+<h3>Commutation of Quantum Relaxation<a class="headerlink" href="#commutation-of-quantum-relaxation" title="Link to this heading">¶</a></h3>
 <p>Note that for the <span class="math notranslate nohighlight">\((2,1,p)\)</span> and <span class="math notranslate nohighlight">\((3,1,p)\)</span> QRACs, we are
 associating multiple decision variables to each qubit. This means that
 each decision variable is assigned a <em>unique</em> single-qubit Pauli
@@ -692,7 +719,7 @@ variables to the same qubit only if they have the same color.</p>
 </section>
 </section>
 <section id="quantum-rounding-schemes">
-<h2>Quantum Rounding Schemes<a class="headerlink" href="#quantum-rounding-schemes" title="Permalink to this heading">#</a></h2>
+<h2>Quantum Rounding Schemes<a class="headerlink" href="#quantum-rounding-schemes" title="Link to this heading">¶</a></h2>
 <p>Because the final solution we obtain for the relaxed problem
 <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> is unlikely to be in the image of <span class="math notranslate nohighlight">\(F\)</span>,
 we need a strategy for mapping <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> to the image of
@@ -700,7 +727,7 @@ we need a strategy for mapping <span class="math notranslate nohighlight">\(\rho
 <p>In [1] there are two strategies proposed for rounding
 <span class="math notranslate nohighlight">\(\rho_\text{relax}\)</span> back to <span class="math notranslate nohighlight">\(m \in \{-1,1\}^M\)</span>.</p>
 <section id="semi-deterministic-rounding">
-<h3>Semi-deterministic Rounding<a class="headerlink" href="#semi-deterministic-rounding" title="Permalink to this heading">#</a></h3>
+<h3>Semi-deterministic Rounding<a class="headerlink" href="#semi-deterministic-rounding" title="Link to this heading">¶</a></h3>
 <p>A natural choice for extracting a solution is to use the results of
 Table <span class="math notranslate nohighlight">\(2\)</span> and simply estimate
 <span class="math notranslate nohighlight">\(\text{Tr}(P_{[i]}\rho_\text{relax})\)</span> for all <span class="math notranslate nohighlight">\(i\)</span> in order
@@ -729,13 +756,14 @@ exponentially with the number of shots used to estimate each
 <span class="math notranslate nohighlight">\(\text{Tr}(P_{[i]}\rho_\text{relax})\)</span></p>
 </section>
 <section id="magic-state-rounding">
-<h3>Magic State Rounding<a class="headerlink" href="#magic-state-rounding" title="Permalink to this heading">#</a></h3>
+<h3>Magic State Rounding<a class="headerlink" href="#magic-state-rounding" title="Link to this heading">¶</a></h3>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/magic_state_rounding.svg"><img alt="../_images/magic_state_rounding.svg" src="../_images/magic_state_rounding.svg" width="100%" /></a>
+<a class="reference internal image-reference" href="../_images/magic_state_rounding.svg"><img alt="../_images/magic_state_rounding.svg" src="../_images/magic_state_rounding.svg" style="width: 100%;" />
+</a>
 <figcaption>
 <p><span class="caption-number">Fig. 1 </span><span class="caption-text">Three different encodings, the states and the measurement bases, of variables into a
 single qubit. (a) One variable per qubit. (b) Two variables per qubit. (c) Three variables per
-qubit. Taken from <a class="reference external" href="https://arxiv.org/pdf/2111.03167.pdf">[1]</a>.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+qubit. Taken from <a class="reference external" href="https://arxiv.org/pdf/2111.03167.pdf">[1]</a>.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Rather than seeking to independently distinguish each <span class="math notranslate nohighlight">\(m_i\)</span>, magic
@@ -779,7 +807,7 @@ let <span class="math notranslate nohighlight">\(\rho^*\)</span> be the maximal 
 </section>
 </section>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <p>[1] Bryce Fuller et al., “Approximate solutions of combinatorial problems via quantum
 relaxations,” (2021), <a class="reference external" href="https://arxiv.org/pdf/2111.03167.pdf">arXiv:2111.03167</a>,</p>
 <p>[2] Stephen Wiesner, “Conjugate coding,” SIGACT News, vol. 15, issue 1,
@@ -833,7 +861,7 @@ one of four bits,” New Journal of Physics, vol. 8, number 8, pp. 129, 2006.
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018, 2024, Qiskit Optimization Development Team
+                Copyright &#169; 2018, 2025, Qiskit Optimization Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -889,11 +917,11 @@ one of four bits,” New Journal of Physics, vol. 8, number 8, pp. 129, 2006.
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09aae1b8"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>

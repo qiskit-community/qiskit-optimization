@@ -1,0 +1,8 @@
+﻿
+
+algorithm_globals
+===========================================
+
+.. currentmodule:: qiskit_optimization.utils
+
+.. autodata:: algorithm_globals

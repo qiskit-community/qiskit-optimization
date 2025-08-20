@@ -83,7 +83,13 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Restricted license - for non-production use only - expires 2025-11-24\n",
+      "Restricted license - for non-production use only - expires 2026-11-23\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
       "cplex\n",
       "objective function value: 4.0\n",
       "variable values: x=1.0, y=4.0\n",
@@ -126,19 +132,91 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Version identifier: 22.1.1.0 | 2023-02-11 | 22d6266e5\n",
-      "CPXPARAM_Read_DataCheck                          1\n",
-      "CPXPARAM_Threads                                 1\n",
-      "CPXPARAM_TimeLimit                               0.10000000000000001\n",
-      "Found incumbent of value 0.000000 after 0.00 sec. (0.00 ticks)\n",
-      "Found incumbent of value 4.000000 after 0.00 sec. (0.00 ticks)\n",
+      "Version identifier: 22.1.1.0 | 2023-06-15 | d64d5bd77\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "CPXPARAM_Read_DataCheck                          1\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "CPXPARAM_Threads                                 1\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "CPXPARAM_TimeLimit                               0.10000000000000001\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Found incumbent of value 0.000000 after 0.00 sec. (0.00 ticks)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Found incumbent of value 4.000000 after 0.00 sec. (0.00 ticks)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
       "\n",
-      "Root node processing (before b&c):\n",
-      "  Real time             =    0.00 sec. (0.00 ticks)\n",
-      "Sequential b&c:\n",
-      "  Real time             =    0.00 sec. (0.00 ticks)\n",
-      "                          ------------\n",
-      "Total (root+branch&cut) =    0.00 sec. (0.00 ticks)\n",
+      "Root node processing (before b&c):\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "  Real time             =    0.00 sec. (0.00 ticks)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Sequential b&c:\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "  Real time             =    0.00 sec. (0.00 ticks)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                          ------------\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Total (root+branch&cut) =    0.00 sec. (0.00 ticks)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
       "objective function value: 4.0\n",
       "variable values: x=1.0, y=4.0\n",
       "status: SUCCESS\n"
@@ -168,25 +246,33 @@
      "text": [
       "objective function value: 4.0\n",
       "variable values: x=1.0, y=4.0\n",
-      "status: SUCCESS\n",
+      "status: SUCCESS"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
       "\n",
       "display the best 5 solution samples\n",
-      "SolutionSample(x=array([1., 4.]), fval=4.0, probability=0.024179976472345502, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
-      "SolutionSample(x=array([1., 3.]), fval=3.0, probability=0.05819514104929059, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
-      "SolutionSample(x=array([1., 2.]), fval=2.0, probability=0.16262615426689528, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
-      "SolutionSample(x=array([1., 1.]), fval=1.0, probability=0.1342595428408242, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
-      "SolutionSample(x=array([0., 0.]), fval=0.0, probability=0.048555539627953996, status=<OptimizationResultStatus.SUCCESS: 0>)\n"
+      "SolutionSample(x=array([1., 4.]), fval=np.float64(4.0), probability=0.1533203125, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
+      "SolutionSample(x=array([1., 3.]), fval=np.float64(3.0), probability=0.12890625, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
+      "SolutionSample(x=array([1., 2.]), fval=np.float64(2.0), probability=0.05859375, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
+      "SolutionSample(x=array([1., 1.]), fval=np.float64(1.0), probability=0.095703125, status=<OptimizationResultStatus.SUCCESS: 0>)\n",
+      "SolutionSample(x=array([0., 2.]), fval=np.float64(0.0), probability=0.1865234375, status=<OptimizationResultStatus.SUCCESS: 0>)\n"
      ]
     }
    ],
    "source": [
+    "from qiskit.primitives import StatevectorSampler\n",
     "from qiskit_optimization.algorithms import MinimumEigenOptimizer\n",
+    "from qiskit_optimization.minimum_eigensolvers import QAOA\n",
+    "from qiskit_optimization.optimizers import COBYLA\n",
     "\n",
-    "from qiskit_algorithms import QAOA\n",
-    "from qiskit_algorithms.optimizers import COBYLA\n",
-    "from qiskit.primitives import Sampler\n",
-    "\n",
-    "meo = MinimumEigenOptimizer(QAOA(sampler=Sampler(), optimizer=COBYLA(maxiter=100)))\n",
+    "meo = MinimumEigenOptimizer(\n",
+    "    QAOA(sampler=StatevectorSampler(seed=123), optimizer=COBYLA(maxiter=100), initial_point=[1, 1])\n",
+    ")\n",
     "result = meo.solve(qp)\n",
     "print(result.prettyprint())\n",
     "print(\"\\ndisplay the best 5 solution samples\")\n",
@@ -244,7 +330,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 23,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -271,8 +357,8 @@
    "source": [
     "# gurobi model\n",
     "from io import StringIO\n",
-    "from tempfile import NamedTemporaryFile\n",
     "from os import remove\n",
+    "from tempfile import NamedTemporaryFile\n",
     "\n",
     "import gurobipy as gp\n",
     "\n",
@@ -368,7 +454,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 25,
+   "execution_count": 8,
    "metadata": {},
    "outputs": [
     {
@@ -389,7 +475,13 @@
       "Generals\n",
       " y\n",
       "End\n",
-      "\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
       "\n",
       "convert gurobipy to docplex via QuadraticProgram\n",
       "\\ This file has been generated by DOcplex\n",
@@ -416,7 +508,7 @@
     }
    ],
    "source": [
-    "from qiskit_optimization.translators import to_gurobipy, to_docplex_mp\n",
+    "from qiskit_optimization.translators import to_docplex_mp, to_gurobipy\n",
     "\n",
     "gmod = to_gurobipy(from_docplex_mp(docplex_model))\n",
     "print(\"convert docplex to gurobipy via QuadraticProgram\")\n",
@@ -500,12 +592,25 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "QAOA\n",
+      "QAOA"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
       "objective function value: 6.0\n",
       "variable values: x=1.0, y=2.0, z=-1.0\n",
       "status: SUCCESS\n",
       "-----\n",
-      "CPLEX\n",
+      "CPLEX\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
       "solution for: docplex\n",
       "objective: 6\n",
       "status: OPTIMAL_SOLUTION(2)\n",
@@ -533,7 +638,7 @@
     {
      "data": {
       "text/html": [
-       "<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.1</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.7.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.13</td></tr><tr><td>Python compiler</td><td>GCC 13.2.1 20230728 (Red Hat 13.2.1-1)</td></tr><tr><td>Python build</td><td>main, Aug 28 2023 00:00:00</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>12</td></tr><tr><td>Memory (Gb)</td><td>31.056411743164062</td></tr><tr><td colspan='2'>Wed Dec 06 10:30:30 2023 CET</td></tr></table>"
+       "<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.1.1</td></tr><tr><td><code>qiskit_optimization</code></td><td>0.7.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.11.13</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td colspan='2'>Mon Aug 18 14:22:04 2025 JST</td></tr></table>"
       ],
       "text/plain": [
        "<IPython.core.display.HTML object>"
@@ -545,7 +650,7 @@
     {
      "data": {
       "text/html": [
-       "<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2023.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div>"
+       "<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div>"
       ],
       "text/plain": [
        "<IPython.core.display.HTML object>"
@@ -564,22 +669,8 @@
   }
  ],
  "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3",
-   "language": "python",
-   "name": "python3"
-  },
   "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.10.13"
+   "name": "python"
   }
  },
  "nbformat": 4,

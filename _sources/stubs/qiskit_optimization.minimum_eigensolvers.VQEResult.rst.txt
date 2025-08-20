@@ -1,0 +1,42 @@
+﻿
+
+VQEResult
+==================================================
+
+.. currentmodule:: qiskit_optimization.minimum_eigensolvers
+
+.. autoclass:: VQEResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: VQEResult.aux_operators_evaluated
+   .. autoattribute:: VQEResult.cost_function_evals
+   .. autoattribute:: VQEResult.eigenvalue
+   .. autoattribute:: VQEResult.optimal_circuit
+   .. autoattribute:: VQEResult.optimal_parameters
+   .. autoattribute:: VQEResult.optimal_point
+   .. autoattribute:: VQEResult.optimal_value
+   .. autoattribute:: VQEResult.optimizer_evals
+   .. autoattribute:: VQEResult.optimizer_result
+   .. autoattribute:: VQEResult.optimizer_time
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: VQEResult.combine
+
+   
+   

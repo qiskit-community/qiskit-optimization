@@ -1,0 +1,35 @@
+﻿
+
+NumPyMinimumEigensolverResult
+======================================================================
+
+.. currentmodule:: qiskit_optimization.minimum_eigensolvers
+
+.. autoclass:: NumPyMinimumEigensolverResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: NumPyMinimumEigensolverResult.aux_operators_evaluated
+   .. autoattribute:: NumPyMinimumEigensolverResult.eigenstate
+   .. autoattribute:: NumPyMinimumEigensolverResult.eigenvalue
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: NumPyMinimumEigensolverResult.combine
+
+   
+   

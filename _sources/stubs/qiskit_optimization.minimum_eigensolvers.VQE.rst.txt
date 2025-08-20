@@ -1,0 +1,34 @@
+﻿
+
+VQE
+============================================
+
+.. currentmodule:: qiskit_optimization.minimum_eigensolvers
+
+.. autoclass:: VQE
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: VQE.initial_point
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: VQE.compute_minimum_eigenvalue
+   .. automethod:: VQE.supports_aux_operators
+
+   
+   

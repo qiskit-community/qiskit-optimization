@@ -1,0 +1,44 @@
+﻿
+
+SamplingVQEResult
+==========================================================
+
+.. currentmodule:: qiskit_optimization.minimum_eigensolvers
+
+.. autoclass:: SamplingVQEResult
+   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+   
+   
+
+   .. rubric:: Attributes
+
+   
+   .. autoattribute:: SamplingVQEResult.aux_operators_evaluated
+   .. autoattribute:: SamplingVQEResult.best_measurement
+   .. autoattribute:: SamplingVQEResult.cost_function_evals
+   .. autoattribute:: SamplingVQEResult.eigenstate
+   .. autoattribute:: SamplingVQEResult.eigenvalue
+   .. autoattribute:: SamplingVQEResult.optimal_circuit
+   .. autoattribute:: SamplingVQEResult.optimal_parameters
+   .. autoattribute:: SamplingVQEResult.optimal_point
+   .. autoattribute:: SamplingVQEResult.optimal_value
+   .. autoattribute:: SamplingVQEResult.optimizer_evals
+   .. autoattribute:: SamplingVQEResult.optimizer_result
+   .. autoattribute:: SamplingVQEResult.optimizer_time
+   
+   
+
+   
+   
+
+   .. rubric:: Methods
+
+   
+   .. automethod:: SamplingVQEResult.combine
+
+   
+   

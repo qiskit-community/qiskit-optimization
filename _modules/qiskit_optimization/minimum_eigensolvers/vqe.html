@@ -1,0 +1,950 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_optimization.minimum_eigensolvers.vqe - Qiskit Optimization 0.7.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../../../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Qiskit Optimization 0.7.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../../../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.7.0</span>
+</div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../migration/index.html">Migration Guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration/01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration/02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration/03_migration_guide_to_v0.7.html">Qiskit Optimization v0.7 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/01_quadratic_program.html">Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/02_converters_for_quadratic_programs.html">Converters for Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/03_minimum_eigen_optimizer.html">Minimum Eigen Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/04_grover_optimizer.html">Grover Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/05_admm_optimizer.html">ADMM Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/06_examples_max_cut_and_tsp.html">Max-Cut and Traveling Salesman Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/07_examples_vehicle_routing.html">Vehicle Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/08_cvar_optimization.html">Improving Variational Quantum Optimization using CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/09_application_classes.html">Application Classes for Optimization Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/10_warm_start_qaoa.html">Warm-starting quantum optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/11_using_classical_optimization_solvers_and_models.html">Using Classical Optimization Solvers and Models with Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/12_quantum_random_access_optimizer.html">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.minimum_eigensolvers.html">Minimum Eigensolvers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.minimum_eigensolvers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Minimum Eigensolvers (qiskit_optimization.minimum_eigensolvers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.QAOA.html">QAOA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html">VQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.VQEResult.html">VQEResult</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_optimization.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_optimization.utils.html">Utility functions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.utils</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Utility functions (qiskit_optimization.utils)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_optimization.utils.algorithm_globals.html">algorithm_globals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">English</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/_modules/qiskit_optimization/minimum_eigensolvers/vqe.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/_modules/qiskit_optimization/minimum_eigensolvers/vqe.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/_modules/qiskit_optimization/minimum_eigensolvers/vqe.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for qiskit_optimization.minimum_eigensolvers.vqe</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of a Qiskit project.</span>
+<span class="c1">#</span>
+<span class="c1"># (C) Copyright IBM 2022, 2025.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
+<span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
+<span class="c1"># of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Any modifications or derivative works of this code must retain this</span>
+<span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
+<span class="c1"># that they have been altered from the originals.</span>
+
+<span class="sd">&quot;&quot;&quot;The variational quantum eigensolver algorithm.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.passmanager</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePassManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimatorV1</span><span class="p">,</span> <span class="n">BaseEstimatorV2</span><span class="p">,</span> <span class="n">StatevectorEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info.operators.base_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOperator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Minimizer</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_bounds</span><span class="p">,</span> <span class="n">validate_initial_point</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">_apply_layout</span><span class="p">,</span> <span class="n">_init_observable</span>
+
+<span class="c1"># private function as we expect this to be updated in the next released</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils.set_batching</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_default_batchsize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.list_or_dict</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListOrDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.minimum_eigensolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigensolver</span><span class="p">,</span> <span class="n">MinimumEigensolverResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.observables_evaluator</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_observables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.variational_algorithm</span><span class="w"> </span><span class="kn">import</span> <span class="n">VariationalAlgorithm</span><span class="p">,</span> <span class="n">VariationalResult</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="VQE">
+<a class="viewcode-back" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html#qiskit_optimization.minimum_eigensolvers.VQE">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VQE</span><span class="p">(</span><span class="n">VariationalAlgorithm</span><span class="p">,</span> <span class="n">MinimumEigensolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The Variational Quantum Eigensolver (VQE) algorithm.</span>
+
+<span class="sd">    VQE is a hybrid quantum-classical algorithm that uses a variational technique to find the</span>
+<span class="sd">    minimum eigenvalue of a given Hamiltonian operator :math:`H`.</span>
+
+<span class="sd">    The ``VQE`` algorithm is executed using an :attr:`estimator` primitive, which computes</span>
+<span class="sd">    expectation values of operators (observables).</span>
+
+<span class="sd">    An instance of ``VQE`` also requires an :attr:`ansatz`, a parameterized</span>
+<span class="sd">    :class:`.QuantumCircuit`, to prepare the trial state :math:`|\psi(\vec\theta)\rangle`. It also</span>
+<span class="sd">    needs a classical :attr:`optimizer` which varies the circuit parameters :math:`\vec\theta` such</span>
+<span class="sd">    that the expectation value of the operator on the corresponding state approaches a minimum,</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \min_{\vec\theta} \langle\psi(\vec\theta)|H|\psi(\vec\theta)\rangle.</span>
+
+<span class="sd">    The :attr:`estimator` is used to compute this expectation value for every optimization step.</span>
+
+<span class="sd">    The optimizer can either be one of Qiskit&#39;s optimizers, such as</span>
+<span class="sd">    :class:`~qiskit_optimization.optimizers.SPSA` or a callable with the following signature:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from qiskit_optimization.optimizers import OptimizerResult</span>
+
+<span class="sd">        def my_minimizer(fun, x0, jac=None, bounds=None) -&gt; OptimizerResult:</span>
+<span class="sd">            # Note that the callable *must* have these argument names!</span>
+<span class="sd">            # Args:</span>
+<span class="sd">            #     fun (callable): the function to minimize</span>
+<span class="sd">            #     x0 (np.ndarray): the initial point for the optimization</span>
+<span class="sd">            #     jac (callable, optional): the gradient of the objective function</span>
+<span class="sd">            #     bounds (list, optional): a list of tuples specifying the parameter bounds</span>
+
+<span class="sd">            result = OptimizerResult()</span>
+<span class="sd">            result.x = # optimal parameters</span>
+<span class="sd">            result.fun = # optimal function value</span>
+<span class="sd">            return result</span>
+
+<span class="sd">    The above signature also allows one to use any SciPy minimizer, for instance as</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from functools import partial</span>
+<span class="sd">        from scipy.optimize import minimize</span>
+
+<span class="sd">        optimizer = partial(minimize, method=&quot;L-BFGS-B&quot;)</span>
+
+<span class="sd">    The following attributes can be set via the initializer but can also be read and updated once</span>
+<span class="sd">    the VQE object has been constructed.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        estimator (BaseEstimator): The estimator primitive to compute the expectation value of the</span>
+<span class="sd">            Hamiltonian operator.</span>
+<span class="sd">        ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.</span>
+<span class="sd">        optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This</span>
+<span class="sd">            can either be a Qiskit :class:`.Optimizer` or a callable implementing the</span>
+<span class="sd">            :class:`.Minimizer` protocol.</span>
+<span class="sd">        gradient (BaseEstimatorGradient | None): An optional estimator gradient to be used with the</span>
+<span class="sd">            optimizer.</span>
+<span class="sd">        callback (Callable[[int, np.ndarray, float, dict[str, Any]], None] | None): A callback that</span>
+<span class="sd">            can access the intermediate data at each optimization step. These data are: the</span>
+<span class="sd">            evaluation count, the optimizer parameters for the ansatz, the evaluated mean, and the</span>
+<span class="sd">            metadata dictionary.</span>
+<span class="sd">        pass_manager: A pass manager to transpile the circuits.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1]: Peruzzo, A., et al, &quot;A variational eigenvalue solver on a quantum processor&quot;</span>
+<span class="sd">            `arXiv:1304.3061 &lt;https://arxiv.org/abs/1304.3061&gt;`__</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimatorV1</span> <span class="o">|</span> <span class="n">BaseEstimatorV2</span><span class="p">,</span>
+        <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span> <span class="o">|</span> <span class="n">Minimizer</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">gradient</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">initial_point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pass_manager</span><span class="p">:</span> <span class="n">BasePassManager</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            estimator: The estimator primitive to compute the expectation value of the</span>
+<span class="sd">                Hamiltonian operator.</span>
+<span class="sd">            ansatz: A parameterized quantum circuit to prepare the trial state.</span>
+<span class="sd">            optimizer: A classical optimizer to find the minimum energy. This can either be a</span>
+<span class="sd">                Qiskit :class:`.Optimizer` or a callable implementing the :class:`.Minimizer`</span>
+<span class="sd">                protocol.</span>
+<span class="sd">            gradient: An optional estimator gradient to be used with the optimizer.</span>
+<span class="sd">            initial_point: An optional initial point (i.e. initial parameter values) for the</span>
+<span class="sd">                optimizer. The length of the initial point must match the number of :attr:`ansatz`</span>
+<span class="sd">                parameters. If ``None``, a random point will be generated within certain parameter</span>
+<span class="sd">                bounds. ``VQE`` will look to the ansatz for these bounds. If the ansatz does not</span>
+<span class="sd">                specify bounds, bounds of :math:`-2\pi`, :math:`2\pi` will be used.</span>
+<span class="sd">            callback: A callback that can access the intermediate data at each optimization step.</span>
+<span class="sd">                These data are: the evaluation count, the optimizer parameters for the ansatz, the</span>
+<span class="sd">                estimated value, and the metadata dictionary.</span>
+<span class="sd">            pass_manager: A pass manager to transpile the circuits.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="n">ansatz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="n">gradient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pass_manager</span> <span class="o">=</span> <span class="n">pass_manager</span>
+
+        <span class="c1"># this has to go via getters and setters due to the VariationalAlgorithm interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_point</span> <span class="o">=</span> <span class="n">initial_point</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">BaseEstimatorV1</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Using Estimator V1 is deprecated since 0.7.0. Instead use Estimator V2.&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">BaseEstimatorV2</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">StatevectorEstimator</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">pass_manager</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Using Estimator V2 (other than StatevectorEstimator) without a pass_manager &quot;</span>
+                <span class="s2">&quot;may result in an error. Consider providing a pass_manager for proper &quot;</span>
+                <span class="s2">&quot;circuit transpilation.&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_point</span>
+
+    <span class="nd">@initial_point</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_point</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="VQE.compute_minimum_eigenvalue">
+<a class="viewcode-back" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html#qiskit_optimization.minimum_eigensolvers.VQE.compute_minimum_eigenvalue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_minimum_eigenvalue</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">operator</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
+        <span class="n">aux_operators</span><span class="p">:</span> <span class="n">ListOrDict</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VQEResult</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_operator_ansatz</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
+
+        <span class="n">initial_point</span> <span class="o">=</span> <span class="n">validate_initial_point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="p">)</span>
+
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">validate_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="p">)</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_manager</span><span class="p">:</span>
+            <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="p">)</span>
+            <span class="n">layout</span> <span class="o">=</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span>
+            <span class="n">operator</span> <span class="o">=</span> <span class="n">_init_observable</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
+            <span class="n">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">aux_operators</span><span class="p">:</span>
+                <span class="n">aux_operators</span> <span class="o">=</span> <span class="n">_apply_layout</span><span class="p">(</span><span class="n">aux_operators</span><span class="p">,</span> <span class="n">layout</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span>
+
+        <span class="n">evaluate_energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_evaluate_energy</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">evaluate_gradient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_evaluate_gradient</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">evaluate_gradient</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># perform optimization</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">):</span>
+            <span class="n">optimizer_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">(</span>
+                <span class="n">fun</span><span class="o">=</span><span class="n">evaluate_energy</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                <span class="n">x0</span><span class="o">=</span><span class="n">initial_point</span><span class="p">,</span>
+                <span class="n">jac</span><span class="o">=</span><span class="n">evaluate_gradient</span><span class="p">,</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># we always want to submit as many estimations per job as possible for minimal</span>
+            <span class="c1"># overhead on the hardware</span>
+            <span class="n">was_updated</span> <span class="o">=</span> <span class="n">_set_default_batchsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
+
+            <span class="n">optimizer_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span>
+                <span class="n">fun</span><span class="o">=</span><span class="n">evaluate_energy</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                <span class="n">x0</span><span class="o">=</span><span class="n">initial_point</span><span class="p">,</span>
+                <span class="n">jac</span><span class="o">=</span><span class="n">evaluate_gradient</span><span class="p">,</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># reset to original value</span>
+            <span class="k">if</span> <span class="n">was_updated</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">set_max_evals_grouped</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">optimizer_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Optimization complete in </span><span class="si">%s</span><span class="s2"> seconds.</span><span class="se">\n</span><span class="s2">Found optimal point </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">optimizer_time</span><span class="p">,</span>
+            <span class="n">optimizer_result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">aux_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">aux_operators_evaluated</span> <span class="o">=</span> <span class="n">estimate_observables</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span>
+                <span class="n">ansatz</span><span class="p">,</span>
+                <span class="n">aux_operators</span><span class="p">,</span>
+                <span class="n">optimizer_result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aux_operators_evaluated</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_vqe_result</span><span class="p">(</span>
+            <span class="n">ansatz</span><span class="p">,</span>
+            <span class="n">optimizer_result</span><span class="p">,</span>
+            <span class="n">aux_operators_evaluated</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+            <span class="n">optimizer_time</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VQE.supports_aux_operators">
+<a class="viewcode-back" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html#qiskit_optimization.minimum_eigensolvers.VQE.supports_aux_operators">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_aux_operators</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_evaluate_energy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+        <span class="n">operator</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a function handle to evaluate the energy at given parameters for the ansatz.</span>
+<span class="sd">        This is the objective function to be passed to the optimizer that is used for evaluation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ansatz: The ansatz preparing the quantum state.</span>
+<span class="sd">            operator: The operator whose energy to evaluate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A callable that computes and returns the energy of the hamiltonian of each parameter.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AlgorithmError: If the primitive job to evaluate the energy fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_parameters</span> <span class="o">=</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span>
+
+        <span class="c1"># avoid creating an instance variable to remain stateless regarding results</span>
+        <span class="n">eval_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_energy</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="k">nonlocal</span> <span class="n">eval_count</span>
+
+            <span class="c1"># handle broadcasting: ensure parameters is of shape [array, array, ...]</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_parameters</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="n">BaseEstimatorV1</span><span class="p">):</span>
+                <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                        <span class="n">batch_size</span> <span class="o">*</span> <span class="p">[</span><span class="n">ansatz</span><span class="p">],</span> <span class="n">batch_size</span> <span class="o">*</span> <span class="p">[</span><span class="n">operator</span><span class="p">],</span> <span class="n">parameters</span>
+                    <span class="p">)</span>
+                    <span class="n">estimator_result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span>
+                        <span class="s2">&quot;The primitive job to evaluate the energy failed!&quot;</span>
+                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+                <span class="n">values</span> <span class="o">=</span> <span class="n">estimator_result</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">estimator_result</span><span class="o">.</span><span class="n">metadata</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)])</span>
+                    <span class="n">estimator_result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span>
+                        <span class="s2">&quot;The primitive job to evaluate the energy failed!&quot;</span>
+                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+                <span class="n">values</span> <span class="o">=</span> <span class="n">estimator_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
+                <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="o">.</span><span class="n">item</span><span class="p">()]</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">params</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">meta</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+                    <span class="n">eval_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">meta</span><span class="p">)</span>
+
+            <span class="n">energy</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">values</span>
+
+            <span class="k">return</span> <span class="n">energy</span>
+
+        <span class="k">return</span> <span class="n">evaluate_energy</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_evaluate_gradient</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+        <span class="n">operator</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a function handle to evaluate the gradient at given parameters for the ansatz.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ansatz: The ansatz preparing the quantum state.</span>
+<span class="sd">            operator: The operator whose energy to evaluate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A function handle to evaluate the gradient at given parameters for the ansatz.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AlgorithmError: If the primitive job to evaluate the gradient fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_gradient</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="c1"># broadcasting not required for the estimator gradients</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">ansatz</span><span class="p">],</span> <span class="p">[</span><span class="n">operator</span><span class="p">],</span> <span class="p">[</span><span class="n">parameters</span><span class="p">])</span>
+                <span class="n">gradients</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The primitive job to evaluate the gradient failed!&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+            <span class="k">return</span> <span class="n">gradients</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">evaluate_gradient</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_operator_ansatz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that the number of qubits of operator and ansatz match and that the ansatz is</span>
+<span class="sd">        parameterized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">operator</span><span class="o">.</span><span class="n">num_qubits</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Trying to resize ansatz to match operator on </span><span class="si">%s</span><span class="s2"> qubits.&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">num_qubits</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_qubits</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">num_qubits</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span>
+                    <span class="s2">&quot;The number of qubits of the ansatz does not match the &quot;</span>
+                    <span class="s2">&quot;operator, and the ansatz does not allow setting the &quot;</span>
+                    <span class="s2">&quot;number of qubits using `num_qubits`.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The ansatz must be parameterized, but has no free parameters.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_vqe_result</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+        <span class="n">optimizer_result</span><span class="p">:</span> <span class="n">OptimizerResult</span><span class="p">,</span>
+        <span class="n">aux_operators_evaluated</span><span class="p">:</span> <span class="n">ListOrDict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">complex</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">complex</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">optimizer_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VQEResult</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">VQEResult</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">optimal_circuit</span> <span class="o">=</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span> <span class="o">=</span> <span class="n">optimizer_result</span><span class="o">.</span><span class="n">fun</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">cost_function_evals</span> <span class="o">=</span> <span class="n">optimizer_result</span><span class="o">.</span><span class="n">nfev</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">optimal_point</span> <span class="o">=</span> <span class="n">optimizer_result</span><span class="o">.</span><span class="n">x</span>  <span class="c1"># type: ignore[assignment]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">optimal_parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">optimizer_result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+        <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">optimal_value</span> <span class="o">=</span> <span class="n">optimizer_result</span><span class="o">.</span><span class="n">fun</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">optimizer_time</span> <span class="o">=</span> <span class="n">optimizer_time</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">aux_operators_evaluated</span> <span class="o">=</span> <span class="n">aux_operators_evaluated</span>  <span class="c1"># type: ignore[assignment]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">optimizer_result</span> <span class="o">=</span> <span class="n">optimizer_result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="VQEResult">
+<a class="viewcode-back" href="../../../stubs/qiskit_optimization.minimum_eigensolvers.VQEResult.html#qiskit_optimization.minimum_eigensolvers.VQEResult">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VQEResult</span><span class="p">(</span><span class="n">VariationalResult</span><span class="p">,</span> <span class="n">MinimumEigensolverResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Variational Quantum Eigensolver (VQE) result.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cost_function_evals</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_function_evals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of cost optimizer evaluations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cost_function_evals</span>
+
+    <span class="nd">@cost_function_evals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_function_evals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cost_function_evals</span> <span class="o">=</span> <span class="n">value</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2025, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

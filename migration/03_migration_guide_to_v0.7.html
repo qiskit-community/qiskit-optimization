@@ -1,0 +1,1044 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Optimization Tutorials" href="../tutorials/index.html" /><link rel="prev" title="Qiskit Optimization v0.6 Migration Guide" href="02_migration_guide_to_v0.6.html" />
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Qiskit Optimization v0.7 Migration Guide - Qiskit Optimization 0.7.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script>
+<script>
+  (function () {
+    window._analytics = {
+      segment_key: 'ffdYLviQze3kzomaINXNk6NwpY9LlXcw',
+      coremetrics: false,
+      optimizely: false,
+      googleAddServices: false,
+      fullStory: false,
+      autoPageEventSpa: false,
+      autoFormEvents: false,
+      autoPageView: false
+    }
+
+    window.digitalData = {
+      page: {
+        pageInfo: {
+          productTitle: 'IBM Q Experience',
+          analytics: {
+            category: 'Qiskit.org'
+          }
+        }
+      }
+    }
+  }());
+</script>
+<script src="https://cloud.ibm.com/analytics/build/bluemix-analytics.min.js"></script>
+<script>
+  (function () {
+    'use strict'
+
+    if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+    const category = window.digitalData.page.pageInfo.analytics.category
+    const productTitle = window.digitalData.page.pageInfo.productTitle
+    const routeName = 'documentation'
+
+    window.bluemixAnalytics.pageEvent(category, routeName, {
+      navigationType: 'pushState',
+      productTitle: productTitle,
+      title: document.title
+    })
+
+    window.trackCta = (action) => {
+      if (!window.bluemixAnalytics || !window.digitalData) { return }
+
+      const category = window.digitalData.page.pageInfo.analytics.category
+      const productTitle = window.digitalData.page.pageInfo.productTitle
+
+      window.bluemixAnalytics.trackEvent('CTA Clicked', {
+        productTitle,
+        category,
+        CTA: action
+      })
+    }
+
+  }());
+</script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Optimization 0.7.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Optimization 0.7.0</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Migration Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Migration Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_migration_guide_to_v0.5.html">Qiskit Optimization v0.5 Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_migration_guide_to_v0.6.html">Qiskit Optimization v0.6 Migration Guide</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Qiskit Optimization v0.7 Migration Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_quadratic_program.html">Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/02_converters_for_quadratic_programs.html">Converters for Quadratic Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/03_minimum_eigen_optimizer.html">Minimum Eigen Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_grover_optimizer.html">Grover Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/05_admm_optimizer.html">ADMM Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/06_examples_max_cut_and_tsp.html">Max-Cut and Traveling Salesman Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/07_examples_vehicle_routing.html">Vehicle Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/08_cvar_optimization.html">Improving Variational Quantum Optimization using CVaR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/09_application_classes.html">Application Classes for Optimization Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/10_warm_start_qaoa.html">Warm-starting quantum optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/11_using_classical_optimization_solvers_and_models.html">Using Classical Optimization Solvers and Models with Qiskit Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/12_quantum_random_access_optimizer.html">Quantum Random Access Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QuadraticProgram.html">QuadraticProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.QiskitOptimizationError.html">QiskitOptimizationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_optimization.infinity.INFINITY.html">INFINITY</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.html">Optimization algorithms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Optimization algorithms (qiskit_optimization.algorithms)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationAlgorithm.html">OptimizationAlgorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MultiStartOptimizer.html">MultiStartOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResult.html">OptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.BaseAggregator.html">BaseAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizationResult.html">ADMMOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMOptimizer.html">ADMMOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMParameters.html">ADMMParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ADMMState.html">ADMMState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CobylaOptimizer.html">CobylaOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.CplexOptimizer.html">CplexOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizer.html">GoemansWilliamsonOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GoemansWilliamsonOptimizationResult.html">GoemansWilliamsonOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizationResult.html">GroverOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GroverOptimizer.html">GroverOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.GurobiOptimizer.html">GurobiOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.IntermediateResult.html">IntermediateResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MeanAggregator.html">MeanAggregator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizationResult.html">MinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.MinimumEigenOptimizer.html">MinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.OptimizationResultStatus.html">OptimizationResultStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizationResult.html">RecursiveMinimumEigenOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.RecursiveMinimumEigenOptimizer.html">RecursiveMinimumEigenOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.ScipyMilpOptimizer.html">ScipyMilpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizationResult.html">SlsqpOptimizationResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SlsqpOptimizer.html">SlsqpOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.SolutionSample.html">SolutionSample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAOptimizer.html">WarmStartQAOAOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.WarmStartQAOAFactory.html">WarmStartQAOAFactory</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.algorithms.qrao.html">Quantum Random Access Optimization (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.algorithms.qrao</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quantum Random Access Optimization (qiskit_optimization.algorithms.qrao)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.EncodingCommutationVerifier.html">EncodingCommutationVerifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessEncoding.html">QuantumRandomAccessEncoding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizer.html">QuantumRandomAccessOptimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.QuantumRandomAccessOptimizationResult.html">QuantumRandomAccessOptimizationResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.MagicRounding.html">MagicRounding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingScheme.html">RoundingScheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingContext.html">RoundingContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.RoundingResult.html">RoundingResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_optimization.algorithms.qrao.SemideterministicRounding.html">SemideterministicRounding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.applications.html">Optimization applications (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.applications</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Optimization applications (qiskit_optimization.applications)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.OptimizationApplication.html">OptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphOptimizationApplication.html">GraphOptimizationApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.BinPacking.html">BinPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Clique.html">Clique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.ExactCover.html">ExactCover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.GraphPartition.html">GraphPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Knapsack.html">Knapsack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Maxcut.html">Maxcut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.NumberPartition.html">NumberPartition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SetPacking.html">SetPacking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.SKModel.html">SKModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.StableSet.html">StableSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.Tsp.html">Tsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VehicleRouting.html">VehicleRouting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.applications.VertexCover.html">VertexCover</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.converters.html">Optimization converters (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.converters</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Optimization converters (qiskit_optimization.converters)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramConverter.html">QuadraticProgramConverter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.InequalityToEquality.html">InequalityToEquality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.IntegerToBinary.html">IntegerToBinary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearEqualityToPenalty.html">LinearEqualityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.LinearInequalityToPenalty.html">LinearInequalityToPenalty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MaximizeToMinimize.html">MaximizeToMinimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.MinimizeToMaximize.html">MinimizeToMaximize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.converters.QuadraticProgramToQubo.html">QuadraticProgramToQubo</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.problems.html">Optimization problems (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.problems</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Optimization problems (qiskit_optimization.problems)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Constraint.html">Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearExpression.html">LinearExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.LinearConstraint.html">LinearConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticExpression.html">QuadraticExpression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticConstraint.html">QuadraticConstraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticObjective.html">QuadraticObjective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.QuadraticProgramElement.html">QuadraticProgramElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.problems.Variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.translators.html">Quadratic program translators (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.translators</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Quadratic program translators (qiskit_optimization.translators)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_docplex_mp.html">from_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_docplex_mp.html">to_docplex_mp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_gurobipy.html">from_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_gurobipy.html">to_gurobipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.from_ising.html">from_ising</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.translators.to_ising.html">to_ising</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.minimum_eigensolvers.html">Minimum Eigensolvers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.minimum_eigensolvers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Minimum Eigensolvers (qiskit_optimization.minimum_eigensolvers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.QAOA.html">QAOA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQE.html">VQE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.minimum_eigensolvers.VQEResult.html">VQEResult</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_optimization.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_optimization.utils.html">Utility functions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_optimization.utils</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Utility functions (qiskit_optimization.utils)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_optimization.utils.algorithm_globals.html">algorithm_globals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/qrao.html">Background on Quantum Random Access Optimization: <em>Quantum relaxations, quantum random access codes, rounding schemes</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-optimization">GitHub</a></li>
+</ul>
+
+</div></div><div class="qiskit-translations-container" aria-label="languages">
+  <input id="translations-checkbox" name="translations-checkbox" role="switch" type="checkbox">
+  <div class="qiskit-translations-header-container"><label for="translations-checkbox">
+      <p role="note">English</p>
+      <div class="qiskit-translations-toggle-container">
+        <div class="visually-hidden">Toggle translations list</div>
+        <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i>
+      </div>
+    </label>
+  </div>
+  <div class="qiskit-translations-list-container">
+    <ul>
+      
+        <li><a href="/qiskit-optimization/migration/03_migration_guide_to_v0.7.html">English</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/ja_JP/migration/03_migration_guide_to_v0.7.html">Japanese</a></li>
+      
+        <li><a href="/qiskit-optimization/locale/es_UN/migration/03_migration_guide_to_v0.7.html">Spanish</a></li>
+      
+    </ul>
+  </div>
+  <script>
+    document.querySelectorAll('.version').forEach((element) => {
+      element.addEventListener('click', (evt) => {
+        const hash = window.location.hash;
+        const complete_url = evt.target.href + hash;
+        window.location = complete_url;
+        evt.preventDefault();
+      });
+    });
+  </script>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <br><br><br><section id="qiskit-optimization-v0-7-migration-guide">
+<h1>Qiskit Optimization v0.7 Migration Guide<a class="headerlink" href="#qiskit-optimization-v0-7-migration-guide" title="Link to this heading">¶</a></h1>
+<p>This tutorial will guide you through the process of migrating your code from Qiskit Optimization v0.6 to v0.7,
+which includes two major changes:</p>
+<ol class="arabic simple">
+<li><p><strong>Migration from qiskit-algorithms dependency</strong>: Essential components have been copied into qiskit-optimization</p></li>
+<li><p><strong>Migration from V1 to V2 Primitives</strong>: V1 Primitives usage is deprecated in favor of V2 Primitives</p></li>
+</ol>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>Qiskit Optimization v0.7 introduces significant changes to improve independence and performance:</p>
+<p><strong>qiskit-algorithms Independence:</strong></p>
+<ul class="simple">
+<li><p>Removed dependency on <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> package</p></li>
+<li><p>Migrated essential minimum eigensolvers, optimizers, and utilities directly into qiskit-optimization</p></li>
+</ul>
+<p><strong>V2 Primitives Support:</strong>
+Qiskit Optimization v0.7 introduces support for Qiskit’s V2 Primitives (<code class="docutils literal notranslate"><span class="pre">BaseEstimatorV2</span></code> and <code class="docutils literal notranslate"><span class="pre">BaseSamplerV2</span></code>)
+while deprecating support for V1 Primitives (<code class="docutils literal notranslate"><span class="pre">BaseEstimatorV1</span></code> and <code class="docutils literal notranslate"><span class="pre">BaseSamplerV1</span></code>). This migration
+guide provides comprehensive examples for updating your code to use the new V2 Primitives interface.</p>
+<p>The main differences between V1 and V2 Primitives are:</p>
+<ul class="simple">
+<li><p><strong>Different input/output formats</strong>: V2 Primitives use a different interface for submitting jobs and retrieving results</p></li>
+<li><p><strong>Pass manager requirement</strong>: V2 Primitives (except <code class="docutils literal notranslate"><span class="pre">StatevectorEstimator</span></code> and <code class="docutils literal notranslate"><span class="pre">StatevectorSampler</span></code>) require explicit pass managers for circuit transpilation</p></li>
+</ul>
+</section>
+<section id="key-changes">
+<h2>Key Changes<a class="headerlink" href="#key-changes" title="Link to this heading">¶</a></h2>
+<p>V1 Primitive usage is deprecated as of Qiskit Optimization v0.7.0 and will be removed in a future release.
+All algorithms now support both V1 and V2 Primitives with automatic detection and appropriate warnings.</p>
+</section>
+<section id="migration-from-qiskit-algorithms-to-qiskit-optimization">
+<h2>Migration from qiskit-algorithms to qiskit-optimization<a class="headerlink" href="#migration-from-qiskit-algorithms-to-qiskit-optimization" title="Link to this heading">¶</a></h2>
+<p>As part of Qiskit Optimization v0.7, the dependency on <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> has been removed.
+Essential components previously imported from <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> have been migrated directly
+into <code class="docutils literal notranslate"><span class="pre">qiskit-optimization</span></code>. This section covers the key migration patterns.</p>
+<section id="optimizers-migration">
+<h3>Optimizers Migration<a class="headerlink" href="#optimizers-migration" title="Link to this heading">¶</a></h3>
+<p><strong>Before (with qiskit-algorithms dependency):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">42</span>
+</pre></div>
+</div>
+<p><strong>After (qiskit-optimization v0.7):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">42</span>
+</pre></div>
+</div>
+<p><strong>Available migrated optimizers:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">COBYLA</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NELDER_MEAD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SciPyOptimizer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPSA</span></code></p></li>
+</ul>
+</section>
+<section id="algorithm-globals-migration">
+<h3>Algorithm Globals Migration<a class="headerlink" href="#algorithm-globals-migration" title="Link to this heading">¶</a></h3>
+<p><strong>Before:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">42</span>
+</pre></div>
+</div>
+<p><strong>After:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">42</span>
+</pre></div>
+</div>
+</section>
+<section id="minimum-eigensolvers">
+<h3>Minimum Eigensolvers<a class="headerlink" href="#minimum-eigensolvers" title="Link to this heading">¶</a></h3>
+<p><strong>Before:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+</pre></div>
+</div>
+<p><strong>After:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+</pre></div>
+</div>
+<p><strong>Available migrated minimum eigensolvers:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SamplingVQE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QAOA</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VQE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NumPyMinimumEigensolver</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="v2-primitives-migration">
+<h2>V2 Primitives Migration<a class="headerlink" href="#v2-primitives-migration" title="Link to this heading">¶</a></h2>
+<section id="vqe-with-estimatorv2">
+<h3>VQE with EstimatorV2<a class="headerlink" href="#vqe-with-estimatorv2" title="Link to this heading">¶</a></h3>
+<p><strong>V1 Primitive (Deprecated):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">Estimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V1 Estimator - deprecated</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>V2 Primitive (Recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AerSimulator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">EstimatorV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V2 Estimator with pass_manager (for hardware/simulators)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerSimulator</span><span class="p">()</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
+    <span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">target</span>
+<span class="p">)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">EstimatorV2</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;default_precision&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;backend_options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;seed_simulator&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">}})</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>  <span class="c1"># Required for V2 Primitives (except StatevectorEstimator)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="qaoa-with-samplerv2">
+<h3>QAOA with SamplerV2<a class="headerlink" href="#qaoa-with-samplerv2" title="Link to this heading">¶</a></h3>
+<p><strong>V1 Primitive (Deprecated):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V1 Sampler - deprecated</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+
+<span class="n">qaoa</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+    <span class="n">reps</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>V2 Primitive (Recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AerSimulator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V2 Sampler with pass_manager (for hardware/simulators)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerSimulator</span><span class="p">()</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
+    <span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
+<span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">default_shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+
+<span class="n">qaoa</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+    <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>  <span class="c1"># Required for V2 Primitives (except StatevectorSampler)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="samplingvqe-migration">
+<h3>SamplingVQE Migration<a class="headerlink" href="#samplingvqe-migration" title="Link to this heading">¶</a></h3>
+<p><strong>V1 Primitive (Deprecated):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplingVQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V1 Sampler - deprecated</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+
+<span class="n">sampling_vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>V2 Primitive (Recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AerSimulator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplingVQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V2 Sampler with pass_manager (for hardware/simulators)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerSimulator</span><span class="p">()</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
+    <span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
+<span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">default_shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+
+<span class="n">sampling_vqe</span> <span class="o">=</span> <span class="n">SamplingVQE</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>  <span class="c1"># Required for V2 Primitives (except StatevectorSampler)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="qrao-quantum-random-access-optimization-migration">
+<h3>QRAO (Quantum Random Access Optimization) Migration<a class="headerlink" href="#qrao-quantum-random-access-optimization-migration" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">MagicRounding</span></code> requires a Sampler and must be updated to use V2 Primitives.
+<code class="docutils literal notranslate"><span class="pre">SemideterministicRounding</span></code> does not require a Sampler and does not need changes.</p>
+<p><strong>V1 Primitive (Deprecated):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">Estimator</span><span class="p">,</span> <span class="n">Sampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms.qrao</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MagicRounding</span><span class="p">,</span>
+    <span class="n">QuantumRandomAccessOptimizer</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V1 Primitives - deprecated</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">())</span>
+<span class="n">magic_rounding</span> <span class="o">=</span> <span class="n">MagicRounding</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">)</span>
+
+<span class="n">qrao</span> <span class="o">=</span> <span class="n">QuantumRandomAccessOptimizer</span><span class="p">(</span>
+    <span class="n">min_eigen_solver</span><span class="o">=</span><span class="n">vqe</span><span class="p">,</span>
+    <span class="n">rounding_scheme</span><span class="o">=</span><span class="n">magic_rounding</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>V2 Primitive (Recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealAmplitudes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AerSimulator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">EstimatorV2</span><span class="p">,</span> <span class="n">SamplerV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms.qrao</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MagicRounding</span><span class="p">,</span>
+    <span class="n">QuantumRandomAccessOptimizer</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+
+<span class="c1"># V2 Primitives with pass_manager (for hardware/simulators)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerSimulator</span><span class="p">()</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
+    <span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
+<span class="p">)</span>
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">EstimatorV2</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;default_precision&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;backend_options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;seed_simulator&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">}})</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">default_shots</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">RealAmplitudes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span>
+    <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">COBYLA</span><span class="p">(),</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>
+<span class="p">)</span>
+<span class="n">magic_rounding</span> <span class="o">=</span> <span class="n">MagicRounding</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>
+<span class="p">)</span>
+
+<span class="n">qrao</span> <span class="o">=</span> <span class="n">QuantumRandomAccessOptimizer</span><span class="p">(</span>
+    <span class="n">min_eigen_solver</span><span class="o">=</span><span class="n">vqe</span><span class="p">,</span>
+    <span class="n">rounding_scheme</span><span class="o">=</span><span class="n">magic_rounding</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="grover-optimizer-with-samplerv2">
+<h3>Grover Optimizer with SamplerV2<a class="headerlink" href="#grover-optimizer-with-samplerv2" title="Link to this heading">¶</a></h3>
+<p><strong>V1 Primitive (Deprecated):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroverOptimizer</span>
+
+<span class="c1"># V1 Sampler - deprecated</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">grover_optimizer</span> <span class="o">=</span> <span class="n">GroverOptimizer</span><span class="p">(</span>
+    <span class="n">num_value_qubits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">num_iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>V2 Primitive (Recommended):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AerSimulator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroverOptimizer</span>
+
+<span class="c1"># V2 Sampler with pass_manager (for hardware/simulators)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerSimulator</span><span class="p">()</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
+    <span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
+<span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">default_shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">grover_optimizer</span> <span class="o">=</span> <span class="n">GroverOptimizer</span><span class="p">(</span>
+    <span class="n">num_value_qubits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">num_iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>  <span class="c1"># Required for V2 Primitives (except StatevectorSampler)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="migration-example-complete-workflow">
+<h3>Migration Example: Complete Workflow<a class="headerlink" href="#migration-example-complete-workflow" title="Link to this heading">¶</a></h3>
+<p><strong>Before (v0.6 with qiskit-algorithms):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sampler</span>  <span class="c1"># V1 Primitive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+
+<span class="c1"># Set global random seed</span>
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Create problem</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">()</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+
+<span class="c1"># Create QAOA with V1 Primitives and qiskit-algorithms optimizer</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>
+<span class="n">qaoa</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Solve</span>
+<span class="n">meo</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">qaoa</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">meo</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>After (v0.7 with internal components and V2 Primitives):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AerSimulator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerV2</span>  <span class="c1"># V2 Primitive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuadraticProgram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigenOptimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAOA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span>  <span class="c1"># Now internal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_optimization.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>  <span class="c1"># Now internal</span>
+
+<span class="c1"># Set global random seed - same API</span>
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Create problem - unchanged</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">QuadraticProgram</span><span class="p">()</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">binary_var</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+
+<span class="c1"># Create QAOA with V2 Primitives, internal optimizer, and pass_manager</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerSimulator</span><span class="p">()</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
+    <span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+    <span class="n">seed_transpiler</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">default_shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">COBYLA</span><span class="p">()</span>  <span class="c1"># Same class, now from qiskit_optimization</span>
+
+<span class="n">qaoa</span> <span class="o">=</span> <span class="n">QAOA</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+    <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">pass_manager</span><span class="o">=</span><span class="n">pass_manager</span>  <span class="c1"># Required for V2 Primitives (except StatevectorSampler)</span>
+<span class="p">)</span>
+
+<span class="c1"># Solve - unchanged</span>
+<span class="n">meo</span> <span class="o">=</span> <span class="n">MinimumEigenOptimizer</span><span class="p">(</span><span class="n">qaoa</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">meo</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="migration-checklist">
+<h2>Migration Checklist<a class="headerlink" href="#migration-checklist" title="Link to this heading">¶</a></h2>
+<p>To migrate your code to Qiskit Optimization v0.7:</p>
+<p><strong>qiskit-algorithms Migration:</strong></p>
+<dl class="simple">
+<dt>☐ <strong>Update optimizer imports</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms.optimizers</span> <span class="pre">import</span> <span class="pre">COBYLA</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.optimizers</span> <span class="pre">import</span> <span class="pre">COBYLA</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms.optimizers</span> <span class="pre">import</span> <span class="pre">NELDER_MEAD</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.optimizers</span> <span class="pre">import</span> <span class="pre">NELDER_MEAD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms.optimizers</span> <span class="pre">import</span> <span class="pre">SciPyOptimizer</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.optimizers</span> <span class="pre">import</span> <span class="pre">SciPyOptimizer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms.optimizers</span> <span class="pre">import</span> <span class="pre">SPSA</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.optimizers</span> <span class="pre">import</span> <span class="pre">SPSA</span></code></p></li>
+</ul>
+</dd>
+<dt>☐ <strong>Update minimum_eigensolver imports</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms</span> <span class="pre">import</span> <span class="pre">QAOA</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.minimum_eigensolvers</span> <span class="pre">import</span> <span class="pre">QAOA</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms</span> <span class="pre">import</span> <span class="pre">VQE</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.minimum_eigensolvers</span> <span class="pre">import</span> <span class="pre">VQE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms</span> <span class="pre">import</span> <span class="pre">SamplingVQE</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.minimum_eigensolvers</span> <span class="pre">import</span> <span class="pre">SamplingVQE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms</span> <span class="pre">import</span> <span class="pre">NumPyMinimumEigensolver</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.minimum_eigensolvers</span> <span class="pre">import</span> <span class="pre">NumPyMinimumEigensolver</span></code></p></li>
+</ul>
+</dd>
+<dt>☐ <strong>Update algorithm_globals import</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_algorithms.utils</span> <span class="pre">import</span> <span class="pre">algorithm_globals</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_optimization.utils</span> <span class="pre">import</span> <span class="pre">algorithm_globals</span></code></p></li>
+</ul>
+</dd>
+<dt>☐ <strong>Remove qiskit-algorithms dependency</strong> (if only used for the above components):</dt><dd><ul class="simple">
+<li><p>Remove from <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> or <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> dependencies</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>V2 Primitives Migration:</strong></p>
+<dl class="simple">
+<dt>☐ <strong>Replace primitive imports for simulators and hardware</strong>:</dt><dd><ul class="simple">
+<li><p>For simulators: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit.primitives</span> <span class="pre">import</span> <span class="pre">Estimator</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit.primitives</span> <span class="pre">import</span> <span class="pre">StatevectorEstimator</span></code> or <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_aer.primitives</span> <span class="pre">import</span> <span class="pre">EstimatorV2</span></code></p></li>
+<li><p>For simulators: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit.primitives</span> <span class="pre">import</span> <span class="pre">Sampler</span></code> → <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit.primitives</span> <span class="pre">import</span> <span class="pre">StatevectorSampler</span></code> or <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_aer.primitives</span> <span class="pre">import</span> <span class="pre">SamplerV2</span></code></p></li>
+<li><p>For hardware: use the appropriate provider’s primitives (e.g., <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit_ibm_runtime</span> <span class="pre">import</span> <span class="pre">EstimatorV2,</span> <span class="pre">SamplerV2</span></code> for IBM Quantum hardware)</p></li>
+</ul>
+</dd>
+<dt>☐ <strong>Update primitive initialization</strong>:</dt><dd><ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">default_shots</span></code> parameter for V2 Sampler</p></li>
+<li><dl class="simple">
+<dt>Add <code class="docutils literal notranslate"><span class="pre">default_precision</span></code> or <code class="docutils literal notranslate"><span class="pre">default_shots</span></code> parameter for V2 Estimator</dt><dd><ul>
+<li><p>Refer to <a class="reference external" href="https://quantum.cloud.ibm.com/docs/en/guides/runtime-options-overview">Introduction to options</a> for details of options</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">seed</span></code> parameter for SamplerV2 of Qiskit Aer (to ensure deterministic results for simulations)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">options={&quot;backend_options&quot;:</span> <span class="pre">{&quot;seed_simulator&quot;:</span> <span class="pre">seed}}</span></code> for EstimatorV2 of Qiskit Aer (to ensure deterministic results for simulations)</p></li>
+</ul>
+</dd>
+<dt>☐ <strong>Add pass manager</strong> (if not using Statevector primitives):</dt><dd><ul class="simple">
+<li><p>Import: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit</span> <span class="pre">import</span> <span class="pre">generate_preset_pass_manager</span></code> or <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">qiskit.transpiler.preset_passmanagers</span> <span class="pre">import</span> <span class="pre">generate_preset_pass_manager</span></code></p></li>
+<li><p>Create: <code class="docutils literal notranslate"><span class="pre">pass_manager</span> <span class="pre">=</span> <span class="pre">generate_preset_pass_manager(optimization_level=2,</span> <span class="pre">backend=backend)</span></code></p></li>
+<li><p>Pass to algorithm constructor: <code class="docutils literal notranslate"><span class="pre">pass_manager=pass_manager</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>☐ <strong>Test your code</strong> to ensure results remain consistent</p>
+<p>☐ <strong>Remove any V1-specific result access patterns</strong> if you have custom result processing</p>
+<p>By following this migration guide, you’ll successfully transition your Qiskit Optimization code to v0.7,
+eliminating the qiskit-algorithms dependency and adopting the V2 Primitives interface for future compatibility.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+  <script>
+    function userFeedbackClicked(ctaType) {
+      document.getElementById('qiskit-analytics-thank-you').style.visibility = 'visible';
+      window.trackCta(`Helpful - ${ctaType}`);
+    }
+  </script>
+    <div class="qiskit-analytics-container">
+      <div>Was this page helpful?</div>
+      <a onclick="userFeedbackClicked('yes')">Yes</a>
+      <a onclick="userFeedbackClicked('no')">No</a>
+      <div id="qiskit-analytics-thank-you">Thank you!</div>
+    </div>
+<div class="related-pages">
+          <a class="next-page" href="../tutorials/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Optimization Tutorials</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="02_migration_guide_to_v0.6.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Qiskit Optimization v0.6 Migration Guide</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018, 2025, Qiskit Optimization Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Qiskit Optimization v0.7 Migration Guide</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#key-changes">Key Changes</a></li>
+<li><a class="reference internal" href="#migration-from-qiskit-algorithms-to-qiskit-optimization">Migration from qiskit-algorithms to qiskit-optimization</a><ul>
+<li><a class="reference internal" href="#optimizers-migration">Optimizers Migration</a></li>
+<li><a class="reference internal" href="#algorithm-globals-migration">Algorithm Globals Migration</a></li>
+<li><a class="reference internal" href="#minimum-eigensolvers">Minimum Eigensolvers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v2-primitives-migration">V2 Primitives Migration</a><ul>
+<li><a class="reference internal" href="#vqe-with-estimatorv2">VQE with EstimatorV2</a></li>
+<li><a class="reference internal" href="#qaoa-with-samplerv2">QAOA with SamplerV2</a></li>
+<li><a class="reference internal" href="#samplingvqe-migration">SamplingVQE Migration</a></li>
+<li><a class="reference internal" href="#qrao-quantum-random-access-optimization-migration">QRAO (Quantum Random Access Optimization) Migration</a></li>
+<li><a class="reference internal" href="#grover-optimizer-with-samplerv2">Grover Optimizer with SamplerV2</a></li>
+<li><a class="reference internal" href="#migration-example-complete-workflow">Migration Example: Complete Workflow</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#migration-checklist">Migration Checklist</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>
