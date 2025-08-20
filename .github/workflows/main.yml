@@ -274,8 +274,6 @@ jobs:
         run: |
           # clean last sphinx output
           make clean_sphinx
-          # workaround to run stable tutorials
-          pip install qiskit-algorithms 'qiskit<2'
           # get current version
           version=$(pip show qiskit-optimization | awk -F. '/^Version:/ { print substr($1,10), $2-1 }' OFS=.)
           # download stable version
