@@ -240,7 +240,6 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
-            print(sample)
             self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
         self.assertAlmostEqual(results.fval, results.samples[0].fval)
