@@ -50,8 +50,8 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         super().setUp()
         algorithm_globals.random_seed = 1
         self.sampler = {
-            "v1": Sampler(run_options={"seed_simulator": 123}),
-            "v2": SamplerV2(seed=123),
+            "v1": Sampler(run_options={"seed_simulator": 123, "shots": 20000}),
+            "v2": SamplerV2(seed=123, default_shots=20000),
         }
         self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target
@@ -240,6 +240,7 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
         for sample in results.raw_samples:
+            print(sample)
             self.assertEqual(sample.status, success)
         np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
         self.assertAlmostEqual(results.fval, results.samples[0].fval)
