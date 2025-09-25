@@ -50,8 +50,8 @@ class TestGroverOptimizer(QiskitOptimizationTestCase):
         super().setUp()
         algorithm_globals.random_seed = 1
         self.sampler = {
-            "v1": Sampler(run_options={"seed_simulator": 123}),
-            "v2": SamplerV2(seed=123),
+            "v1": Sampler(run_options={"seed_simulator": 123, "shots": 20000}),
+            "v2": SamplerV2(seed=123, default_shots=20000),
         }
         self.pass_manager = generate_preset_pass_manager(
             optimization_level=1, target=AerSimulator().target
