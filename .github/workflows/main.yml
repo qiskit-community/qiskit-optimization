@@ -337,7 +337,7 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: macos-latest-3.11
-          path: /tmp/m312
+          path: /tmp/m311
       - uses: actions/download-artifact@v5
         with:
           name: windows-latest-3.9
