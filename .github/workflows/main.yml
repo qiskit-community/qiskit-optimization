@@ -339,7 +339,7 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: macos-latest-3.11
-          path: /tmp/m312
+          path: /tmp/m311
       - uses: actions/download-artifact@v5
         with:
           name: windows-latest-3.9
@@ -359,7 +359,7 @@ jobs:
         run: coverage3 combine /tmp/o39/opt.dat
         shell: bash
       - name: Upload to Coveralls
+        run: coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: coveralls --service=github
         shell: bash
