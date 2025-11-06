@@ -25,7 +25,8 @@ from ..minimum_eigensolvers import (
     SamplingMinimumEigensolver,
     SamplingMinimumEigensolverResult,
 )
-from ..problems.quadratic_program import QuadraticProgram, Variable
+from ..problems.variable import Variable
+from ..problems.quadratic_program import QuadraticProgram
 from .optimization_algorithm import (
     OptimizationAlgorithm,
     OptimizationResult,
