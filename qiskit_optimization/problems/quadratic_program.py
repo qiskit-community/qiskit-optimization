@@ -50,6 +50,14 @@ class QuadraticProgram:
     def __getattr__(self, item):
         return getattr(self._optimizationproblem, item)
 
+    @deprecate_func(since="0.7.0", additional_msg="Use prettyprint instead.")
+    def export_as_lp_string(self) -> str:
+        """Returns the quadratic program as a string of LP format.
+        Returns:
+            A string representing the quadratic program.
+        """
+        return self._optimizationproblem.export_as_lp_string()
+
     @_optionals.HAS_CPLEX.require_in_call
     @deprecate_func(since="0.7.0", additional_msg="Use from_docplex_mp or from_gurobipy instead.")
     def read_from_lp_file(self, filename: str) -> None:
@@ -65,3 +73,16 @@ class QuadraticProgram:
             This method requires CPLEX to be installed and present in ``PYTHONPATH``.
         """
         return self._optimizationproblem.read_from_lp_file(filename=filename)
+
+    @deprecate_func(since="0.7.0", additional_msg="Use to_docplex_mp or to_gurobipy instead.")
+    def write_to_lp_file(self, filename: str) -> None:
+        """Writes the quadratic program to an LP file.
+        Args:
+            filename: The filename of the file the model is written to.
+              If filename is a directory, file name 'my_problem.lp' is appended.
+              If filename does not end with '.lp', suffix '.lp' is appended.
+        Raises:
+            OSError: If this cannot open a file.
+            DOcplexException: If filename is an empty string
+        """
+        return self._optimizationproblem.write_to_lp_file(filename=filename)
