@@ -28,7 +28,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: [3.9]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v6
