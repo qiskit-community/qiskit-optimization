@@ -4,7 +4,7 @@
 
 > [!WARNING]
 > **Qiskit Optimization is no longer officially supported by IBM**.
-> While you may continue to use or extend it under the Apache 2.0 license, please note that it is provided as-is and without official support. For a fully supported solution, migrate to the 
+> While you may continue to use or extend it under the Apache 2.0 license, please note that it is provided as-is and without official support. For a fully supported solution and extended mapping features, migrate to the 
 [qiskit-addon-opt-mapper](https://github.com/Qiskit/qiskit-addon-opt-mapper) library.
 
 **Qiskit Optimization** is an open-source framework that covers the whole range from high-level modeling of optimization
