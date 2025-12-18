@@ -22,11 +22,9 @@ from qiskit_optimization.algorithms.optimization_algorithm import (
     OptimizationResult,
     OptimizationResultStatus,
 )
-from qiskit_optimization.problems.quadratic_program import (
-    ConstraintSense,
-    QuadraticProgram,
-    VarType,
-)
+from qiskit_optimization.problems.constraint import ConstraintSense
+from qiskit_optimization.problems.variable import VarType
+from qiskit_optimization.problems.quadratic_program import QuadraticProgram
 
 
 def _conv_inf(val):
