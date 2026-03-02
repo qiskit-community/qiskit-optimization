@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -36,7 +36,6 @@ class TestReadmeSample(QiskitOptimizationTestCase):
         readme_path = Path(__file__).parent.parent.joinpath(readme_name)
         if not readme_path.exists() or not readme_path.is_file():
             self.fail(msg=f"{readme_name} not found at {readme_path}")
-            return
 
         # gets the first matched code sample
         # assumes one code sample to test per readme
@@ -60,7 +59,6 @@ class TestReadmeSample(QiskitOptimizationTestCase):
                 exec(readme_sample, globals())
             except Exception as ex:  # pylint: disable=broad-except
                 self.fail(str(ex))
-                return
 
         result_x = None
         result_fval = None
@@ -80,10 +78,8 @@ class TestReadmeSample(QiskitOptimizationTestCase):
 
         if result_x is None:
             self.fail(f"Failed to find result.x inside {readme_name}.")
-            return
         if result_fval is None:
             self.fail(f"Failed to find result.fval inside {readme_name}.")
-            return
 
         with self.subTest("test result.x"):
             self.assertEqual(result_x, "x0=1.0, x1=0.0, x2=1.0, x3=0.0")
