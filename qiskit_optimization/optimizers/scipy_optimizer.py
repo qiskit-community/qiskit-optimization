@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2025.
+# (C) Copyright IBM 2018, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Wrapper class of scipy.optimize.minimize."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -127,7 +128,6 @@ class SciPyOptimizer(Optimizer):
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
-
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored:
             bounds = None
@@ -141,7 +141,9 @@ class SciPyOptimizer(Optimizer):
                 epsilon = self._options["eps"]
             else:
                 epsilon = (
-                    1e-8 if self._method in {"l-bfgs-b", "tnc"} else np.sqrt(np.finfo(float).eps)
+                    1e-8
+                    if self._method in {"l-bfgs-b", "tnc"}
+                    else np.sqrt(np.finfo(float).eps)  # pylint: disable=no-member
                 )
             jac = Optimizer.wrap_function(
                 Optimizer.gradient_num_diff, (fun, epsilon, self._max_evals_grouped)
