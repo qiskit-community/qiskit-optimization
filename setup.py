@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2025.
+# (C) Copyright IBM 2021, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -61,22 +61,20 @@ setuptools.setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Topic :: Scientific/Engineering",
     ],
     keywords="qiskit sdk quantum optimization",
     packages=setuptools.find_packages(include=["qiskit_optimization", "qiskit_optimization.*"]),
     install_requires=REQUIREMENTS,
     include_package_data=True,
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     extras_require={
-        "cplex": [
-            "cplex; (python_version < '3.13' and platform_system != 'Darwin') or (python_version < '3.12' and platform_system == 'Darwin')"
-        ],
+        "cplex": ["cplex; python_version < '3.15'"],
         "cvx": ["cvxpy"],
         "matplotlib": ["matplotlib"],
         "gurobi": ["gurobipy"],
